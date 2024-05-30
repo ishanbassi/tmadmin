@@ -1,0 +1,105 @@
+
+application {
+    config {
+        applicationType monolith
+        authenticationType jwt
+        baseName tmapp
+        buildTool gradle
+        cacheProvider ehcache
+        clientFramework angular
+        clientTheme none
+        creationTimestamp 1699622845821
+        databaseType sql
+        devDatabaseType postgresql
+        enableHibernateCache true
+        enableSwaggerCodegen false
+        enableTranslation false
+        messageBroker false
+        microfrontends []
+        nativeLanguage en
+        packageName com.bassi.tmapp
+        prodDatabaseType postgresql
+        reactive false
+        searchEngine false
+        serviceDiscoveryType false
+        testFrameworks []
+        withAdminUi true
+    }
+  entities *
+}
+
+entity Trademark{
+	name String
+    details String
+    applicationNo Long
+    applicationDate LocalDate
+    agentName String
+    agentAddress String
+    proprietorName String
+    proprietorAddress String
+    headOffice HeadOffice
+    imgUrl String
+    tmClass Integer
+    journalNo Integer
+    deleted Boolean
+    usage String
+    associatedTms String
+    trademarkStatus String
+}
+
+entity Phonetics{
+	sanitizedTm String
+    phoneticPk String
+    phoneticSk String
+    complete Boolean
+}
+entity PublishedTmPhonetics{
+	sanitizedTm String
+    phoneticPk String
+    phoneticSk String
+    complete Boolean
+}
+entity PublishedTm{
+	name String
+    details String
+    applicationNo Long
+    applicationDate LocalDate
+    agentName String
+    agentAddress String
+    proprietorName String
+    proprietorAddress String
+    headOffice HeadOffice
+    imgUrl String
+    tmClass Integer
+    journalNo Integer
+    deleted Boolean
+    usage String
+    associatedTms String
+}
+
+enum HeadOffice {
+	DELHI,
+	MUMBAI,
+	AHMEDABAD,
+	KOLKATA,
+	CHENNAI
+}
+enum TrademarkStatus{
+	REGISTERED,
+	OPPOSED,
+	WITHDRAWN,
+	REJECTED,
+	HEARING,
+	PUBLISHED,
+	PROVISIONAL
+}
+
+relationship ManyToOne{
+	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
+    PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
+    
+}
+
+// Use Data Transfer Objects (DTO)
+dto * with mapstruct
+service * with serviceClass

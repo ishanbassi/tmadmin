@@ -1,7 +1,6 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { TranslateService } from '@ngx-translate/core';
 import { Observable, ReplaySubject, of } from 'rxjs';
 import { shareReplay, tap, catchError } from 'rxjs/operators';
 
@@ -15,7 +14,6 @@ export class AccountService {
   private authenticationState = new ReplaySubject<Account | null>(1);
   private accountCache$?: Observable<Account> | null;
 
-  private translateService = inject(TranslateService);
   private http = inject(HttpClient);
   private stateStorageService = inject(StateStorageService);
   private router = inject(Router);
@@ -53,13 +51,6 @@ export class AccountService {
       this.accountCache$ = this.fetch().pipe(
         tap((account: Account) => {
           this.authenticate(account);
-
-          // After retrieve the account info, the language will be changed to
-          // the user's preferred language configured in the account setting
-          // unless user have choosed other language in the current session
-          if (!this.stateStorageService.getLocale()) {
-            this.translateService.use(account.langKey);
-          }
 
           this.navigateToStoredUrl();
         }),

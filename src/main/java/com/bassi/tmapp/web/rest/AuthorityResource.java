@@ -55,7 +55,7 @@ public class AuthorityResource {
         }
         authority = authorityRepository.save(authority);
         return ResponseEntity.created(new URI("/api/authorities/" + authority.getName()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, authority.getName()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, authority.getName()))
             .body(authority);
     }
 
@@ -96,6 +96,6 @@ public class AuthorityResource {
     public ResponseEntity<Void> deleteAuthority(@PathVariable("id") String id) {
         log.debug("REST request to delete Authority : {}", id);
         authorityRepository.deleteById(id);
-        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id)).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
 }

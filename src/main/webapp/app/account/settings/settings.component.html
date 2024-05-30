@@ -2,14 +2,14 @@
   <div class="d-flex justify-content-center">
     <div class="col-md-8">
       @if (settingsForm.value.login) {
-        <h2 jhiTranslate="settings.title" [translateValues]="{ username: settingsForm.value.login }">
+        <h2>
           User settings for [<strong>{{ settingsForm.value.login }}</strong
           >]
         </h2>
       }
 
       @if (success()) {
-        <div class="alert alert-success" jhiTranslate="settings.messages.success"><strong>Settings saved!</strong></div>
+        <div class="alert alert-success"><strong>Settings saved!</strong></div>
       }
 
       <jhi-alert-error></jhi-alert-error>
@@ -17,13 +17,13 @@
       @if (settingsForm.value.login) {
         <form name="form" (ngSubmit)="save()" [formGroup]="settingsForm" novalidate>
           <div class="mb-3">
-            <label class="form-label" for="firstName" jhiTranslate="settings.form.firstname">First Name</label>
+            <label class="form-label" for="firstName">First Name</label>
             <input
               type="text"
               class="form-control"
               id="firstName"
               name="firstName"
-              placeholder="{{ 'settings.form.firstname.placeholder' | translate }}"
+              placeholder="Your first name"
               formControlName="firstName"
               data-cy="firstname"
             />
@@ -33,34 +33,28 @@
             ) {
               <div>
                 @if (settingsForm.get('firstName')?.errors?.required) {
-                  <small class="form-text text-danger" jhiTranslate="settings.messages.validate.firstname.required"
-                    >Your first name is required.</small
-                  >
+                  <small class="form-text text-danger">Your first name is required.</small>
                 }
 
                 @if (settingsForm.get('firstName')?.errors?.minlength) {
-                  <small class="form-text text-danger" jhiTranslate="settings.messages.validate.firstname.minlength"
-                    >Your first name is required to be at least 1 character</small
-                  >
+                  <small class="form-text text-danger">Your first name is required to be at least 1 character</small>
                 }
 
                 @if (settingsForm.get('firstName')?.errors?.maxlength) {
-                  <small class="form-text text-danger" jhiTranslate="settings.messages.validate.firstname.maxlength"
-                    >Your first name cannot be longer than 50 characters</small
-                  >
+                  <small class="form-text text-danger">Your first name cannot be longer than 50 characters</small>
                 }
               </div>
             }
           </div>
 
           <div class="mb-3">
-            <label class="form-label" for="lastName" jhiTranslate="settings.form.lastname">Last Name</label>
+            <label class="form-label" for="lastName">Last Name</label>
             <input
               type="text"
               class="form-control"
               id="lastName"
               name="lastName"
-              placeholder="{{ 'settings.form.lastname.placeholder' | translate }}"
+              placeholder="Your last name"
               formControlName="lastName"
               data-cy="lastname"
             />
@@ -68,34 +62,28 @@
             @if (settingsForm.get('lastName')!.invalid && (settingsForm.get('lastName')!.dirty || settingsForm.get('lastName')!.touched)) {
               <div>
                 @if (settingsForm.get('lastName')?.errors?.required) {
-                  <small class="form-text text-danger" jhiTranslate="settings.messages.validate.lastname.required"
-                    >Your last name is required.</small
-                  >
+                  <small class="form-text text-danger">Your last name is required.</small>
                 }
 
                 @if (settingsForm.get('lastName')?.errors?.minlength) {
-                  <small class="form-text text-danger" jhiTranslate="settings.messages.validate.lastname.minlength"
-                    >Your last name is required to be at least 1 character</small
-                  >
+                  <small class="form-text text-danger">Your last name is required to be at least 1 character</small>
                 }
 
                 @if (settingsForm.get('lastName')?.errors?.maxlength) {
-                  <small class="form-text text-danger" jhiTranslate="settings.messages.validate.lastname.maxlength"
-                    >Your last name cannot be longer than 50 characters</small
-                  >
+                  <small class="form-text text-danger">Your last name cannot be longer than 50 characters</small>
                 }
               </div>
             }
           </div>
 
           <div class="mb-3">
-            <label class="form-label" for="email" jhiTranslate="global.form.email.label">Email</label>
+            <label class="form-label" for="email">Email</label>
             <input
               type="email"
               class="form-control"
               id="email"
               name="email"
-              placeholder="{{ 'global.form.email.placeholder' | translate }}"
+              placeholder="Your email"
               formControlName="email"
               data-cy="email"
             />
@@ -103,50 +91,25 @@
             @if (settingsForm.get('email')!.invalid && (settingsForm.get('email')!.dirty || settingsForm.get('email')!.touched)) {
               <div>
                 @if (settingsForm.get('email')?.errors?.required) {
-                  <small class="form-text text-danger" jhiTranslate="global.messages.validate.email.required"
-                    >Your email is required.</small
-                  >
+                  <small class="form-text text-danger">Your email is required.</small>
                 }
 
                 @if (settingsForm.get('email')?.errors?.email) {
-                  <small class="form-text text-danger" jhiTranslate="global.messages.validate.email.invalid">Your email is invalid.</small>
+                  <small class="form-text text-danger">Your email is invalid.</small>
                 }
 
                 @if (settingsForm.get('email')?.errors?.minlength) {
-                  <small class="form-text text-danger" jhiTranslate="global.messages.validate.email.minlength"
-                    >Your email is required to be at least 5 characters.</small
-                  >
+                  <small class="form-text text-danger">Your email is required to be at least 5 characters.</small>
                 }
 
                 @if (settingsForm.get('email')?.errors?.maxlength) {
-                  <small class="form-text text-danger" jhiTranslate="global.messages.validate.email.maxlength"
-                    >Your email cannot be longer than 50 characters.</small
-                  >
+                  <small class="form-text text-danger">Your email cannot be longer than 50 characters.</small>
                 }
               </div>
             }
           </div>
 
-          @if (languages && languages.length > 0) {
-            <div class="mb-3">
-              <label for="langKey" jhiTranslate="settings.form.language">Language</label>
-              <select class="form-control" id="langKey" name="langKey" formControlName="langKey" data-cy="langKey">
-                @for (language of languages; track $index) {
-                  <option [value]="language">{{ language | findLanguageFromKey }}</option>
-                }
-              </select>
-            </div>
-          }
-
-          <button
-            type="submit"
-            [disabled]="settingsForm.invalid"
-            class="btn btn-primary"
-            data-cy="submit"
-            jhiTranslate="settings.form.button"
-          >
-            Save
-          </button>
+          <button type="submit" [disabled]="settingsForm.invalid" class="btn btn-primary" data-cy="submit">Save</button>
         </form>
       }
     </div>

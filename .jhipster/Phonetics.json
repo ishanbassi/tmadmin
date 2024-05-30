@@ -1,0 +1,40 @@
+{
+  "annotations": {
+    "changelogDate": "20240522160736"
+  },
+  "applications": ["tmapp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "sanitizedTm",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phoneticPk",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phoneticSk",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "complete",
+      "fieldType": "Boolean"
+    }
+  ],
+  "name": "Phonetics",
+  "relationships": [
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "trademark",
+      "relationshipName": "trademark",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
