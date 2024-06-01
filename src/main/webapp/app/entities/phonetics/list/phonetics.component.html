@@ -1,0 +1,123 @@
+<div>
+  <h2 id="page-heading" data-cy="PhoneticsHeading">
+    <span>Phonetics</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-phonetics"
+        [routerLink]="['/phonetics/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Phonetics</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (phonetics?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Phonetics found</span>
+    </div>
+  }
+
+  @if (phonetics && phonetics.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sanitizedTm">
+              <div class="d-flex">
+                <span>Sanitized Tm</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="phoneticPk">
+              <div class="d-flex">
+                <span>Phonetic Pk</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="phoneticSk">
+              <div class="d-flex">
+                <span>Phonetic Sk</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="complete">
+              <div class="d-flex">
+                <span>Complete</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="trademark.id">
+              <div class="d-flex">
+                <span>Trademark</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (phonetics of phonetics; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/phonetics', phonetics.id, 'view']">{{ phonetics.id }}</a>
+              </td>
+              <td>{{ phonetics.sanitizedTm }}</td>
+              <td>{{ phonetics.phoneticPk }}</td>
+              <td>{{ phonetics.phoneticSk }}</td>
+              <td>{{ phonetics.complete }}</td>
+              <td>
+                @if (phonetics.trademark) {
+                  <div>
+                    <a [routerLink]="['/trademark', phonetics.trademark.id, 'view']">{{ phonetics.trademark.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/phonetics', phonetics.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a [routerLink]="['/phonetics', phonetics.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(phonetics)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

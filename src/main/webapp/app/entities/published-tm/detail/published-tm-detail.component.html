@@ -1,0 +1,109 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (publishedTm()) {
+      <div>
+        <h2 data-cy="publishedTmDetailsHeading"><span>Published Tm</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.id }}</span>
+          </dd>
+          <dt><span>Name</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.name }}</span>
+          </dd>
+          <dt><span>Details</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.details }}</span>
+          </dd>
+          <dt><span>Application No</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.applicationNo }}</span>
+          </dd>
+          <dt><span>Application Date</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.applicationDate | formatMediumDate }}</span>
+          </dd>
+          <dt><span>Agent Name</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.agentName }}</span>
+          </dd>
+          <dt><span>Agent Address</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.agentAddress }}</span>
+          </dd>
+          <dt><span>Proprietor Name</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.proprietorName }}</span>
+          </dd>
+          <dt><span>Proprietor Address</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.proprietorAddress }}</span>
+          </dd>
+          <dt><span>Head Office</span></dt>
+          <dd>
+            <span>{{
+              { null: '', DELHI: 'DELHI', MUMBAI: 'MUMBAI', AHMEDABAD: 'AHMEDABAD', KOLKATA: 'KOLKATA', CHENNAI: 'CHENNAI' }[
+                publishedTm()!.headOffice ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span>Img Url</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.imgUrl }}</span>
+          </dd>
+          <dt><span>Tm Class</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.tmClass }}</span>
+          </dd>
+          <dt><span>Journal No</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.journalNo }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.deleted }}</span>
+          </dd>
+          <dt><span>Usage</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.usage }}</span>
+          </dd>
+          <dt><span>Associated Tms</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.associatedTms }}</span>
+          </dd>
+          <dt><span>Trademark Status</span></dt>
+          <dd>
+            <span>{{
+              {
+                null: '',
+                REGISTERED: 'REGISTERED',
+                OPPOSED: 'OPPOSED',
+                WITHDRAWN: 'WITHDRAWN',
+                REJECTED: 'REJECTED',
+                HEARING: 'HEARING',
+                PUBLISHED: 'PUBLISHED',
+                PROVISIONAL: 'PROVISIONAL'
+              }[publishedTm()!.trademarkStatus ?? 'null']
+            }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/published-tm', publishedTm()!.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

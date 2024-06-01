@@ -1,0 +1,225 @@
+<div>
+  <h2 id="page-heading" data-cy="TrademarkHeading">
+    <span>Trademarks</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-trademark"
+        [routerLink]="['/trademark/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Trademark</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (trademarks?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Trademarks found</span>
+    </div>
+  }
+
+  @if (trademarks && trademarks.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="name">
+              <div class="d-flex">
+                <span>Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="details">
+              <div class="d-flex">
+                <span>Details</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="applicationNo">
+              <div class="d-flex">
+                <span>Application No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="applicationDate">
+              <div class="d-flex">
+                <span>Application Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="agentName">
+              <div class="d-flex">
+                <span>Agent Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="agentAddress">
+              <div class="d-flex">
+                <span>Agent Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="proprietorName">
+              <div class="d-flex">
+                <span>Proprietor Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="proprietorAddress">
+              <div class="d-flex">
+                <span>Proprietor Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="headOffice">
+              <div class="d-flex">
+                <span>Head Office</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="imgUrl">
+              <div class="d-flex">
+                <span>Img Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tmClass">
+              <div class="d-flex">
+                <span>Tm Class</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="journalNo">
+              <div class="d-flex">
+                <span>Journal No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="deleted">
+              <div class="d-flex">
+                <span>Deleted</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usage">
+              <div class="d-flex">
+                <span>Usage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="associatedTms">
+              <div class="d-flex">
+                <span>Associated Tms</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="trademarkStatus">
+              <div class="d-flex">
+                <span>Trademark Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (trademark of trademarks; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/trademark', trademark.id, 'view']">{{ trademark.id }}</a>
+              </td>
+              <td>{{ trademark.name }}</td>
+              <td>{{ trademark.details }}</td>
+              <td>{{ trademark.applicationNo }}</td>
+              <td>{{ trademark.applicationDate | formatMediumDate }}</td>
+              <td>{{ trademark.agentName }}</td>
+              <td>{{ trademark.agentAddress }}</td>
+              <td>{{ trademark.proprietorName }}</td>
+              <td>{{ trademark.proprietorAddress }}</td>
+              <td>
+                {{
+                  { null: '', DELHI: 'DELHI', MUMBAI: 'MUMBAI', AHMEDABAD: 'AHMEDABAD', KOLKATA: 'KOLKATA', CHENNAI: 'CHENNAI' }[
+                    trademark.headOffice ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ trademark.imgUrl }}</td>
+              <td>{{ trademark.tmClass }}</td>
+              <td>{{ trademark.journalNo }}</td>
+              <td>{{ trademark.deleted }}</td>
+              <td>{{ trademark.usage }}</td>
+              <td>{{ trademark.associatedTms }}</td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    REGISTERED: 'REGISTERED',
+                    OPPOSED: 'OPPOSED',
+                    WITHDRAWN: 'WITHDRAWN',
+                    REJECTED: 'REJECTED',
+                    HEARING: 'HEARING',
+                    PUBLISHED: 'PUBLISHED',
+                    PROVISIONAL: 'PROVISIONAL'
+                  }[trademark.trademarkStatus ?? 'null']
+                }}
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/trademark', trademark.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a [routerLink]="['/trademark', trademark.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(trademark)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

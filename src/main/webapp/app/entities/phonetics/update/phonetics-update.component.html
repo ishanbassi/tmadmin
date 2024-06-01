@@ -1,0 +1,92 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-phonetics-heading" data-cy="PhoneticsCreateUpdateHeading">Create or edit a Phonetics</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_sanitizedTm">Sanitized Tm</label>
+          <input
+            type="text"
+            class="form-control"
+            name="sanitizedTm"
+            id="field_sanitizedTm"
+            data-cy="sanitizedTm"
+            formControlName="sanitizedTm"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_phoneticPk">Phonetic Pk</label>
+          <input
+            type="text"
+            class="form-control"
+            name="phoneticPk"
+            id="field_phoneticPk"
+            data-cy="phoneticPk"
+            formControlName="phoneticPk"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_phoneticSk">Phonetic Sk</label>
+          <input
+            type="text"
+            class="form-control"
+            name="phoneticSk"
+            id="field_phoneticSk"
+            data-cy="phoneticSk"
+            formControlName="phoneticSk"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_complete">Complete</label>
+          <input type="checkbox" class="form-check" name="complete" id="field_complete" data-cy="complete" formControlName="complete" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_trademark">Trademark</label>
+          <select
+            class="form-control"
+            id="field_trademark"
+            data-cy="trademark"
+            name="trademark"
+            formControlName="trademark"
+            [compareWith]="compareTrademark"
+          >
+            <option [ngValue]="null"></option>
+            @for (trademarkOption of trademarksSharedCollection; track $index) {
+              <option [ngValue]="trademarkOption">{{ trademarkOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

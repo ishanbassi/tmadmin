@@ -1,0 +1,79 @@
+{
+  "annotations": {
+    "changelogDate": "20240522160735"
+  },
+  "applications": ["tmapp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "details",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "applicationNo",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "applicationDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "agentName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "agentAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "proprietorName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "proprietorAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "headOffice",
+      "fieldType": "HeadOffice",
+      "fieldValues": "DELHI,MUMBAI,AHMEDABAD,KOLKATA,CHENNAI"
+    },
+    {
+      "fieldName": "imgUrl",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "tmClass",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "journalNo",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "usage",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "associatedTms",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "trademarkStatus",
+      "fieldType": "TrademarkStatus",
+      "fieldValues": "REGISTERED,OPPOSED,WITHDRAWN,REJECTED,HEARING,PUBLISHED,PROVISIONAL"
+    }
+  ],
+  "name": "Trademark",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
