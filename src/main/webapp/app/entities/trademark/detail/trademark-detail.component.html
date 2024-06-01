@@ -81,7 +81,18 @@
           </dd>
           <dt><span>Trademark Status</span></dt>
           <dd>
-            <span>{{ trademark()!.trademarkStatus }}</span>
+            <span>{{
+              {
+                null: '',
+                REGISTERED: 'REGISTERED',
+                OPPOSED: 'OPPOSED',
+                WITHDRAWN: 'WITHDRAWN',
+                REJECTED: 'REJECTED',
+                HEARING: 'HEARING',
+                PUBLISHED: 'PUBLISHED',
+                PROVISIONAL: 'PROVISIONAL'
+              }[trademark()!.trademarkStatus ?? 'null']
+            }}</span>
           </dd>
         </dl>
 

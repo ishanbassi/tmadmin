@@ -35,6 +35,7 @@ describe('PublishedTm Form Service', () => {
             deleted: expect.any(Object),
             usage: expect.any(Object),
             associatedTms: expect.any(Object),
+            trademarkStatus: expect.any(Object),
           }),
         );
       });
@@ -60,6 +61,7 @@ describe('PublishedTm Form Service', () => {
             deleted: expect.any(Object),
             usage: expect.any(Object),
             associatedTms: expect.any(Object),
+            trademarkStatus: expect.any(Object),
           }),
         );
       });

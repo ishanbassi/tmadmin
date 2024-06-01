@@ -1,11 +1,11 @@
-id;name;details;application_no;application_date;agent_name;agent_address;proprietor_name;proprietor_address;head_office;img_url;tm_class;journal_no;deleted;usage;associated_tms
-1;heavenly at finally;homestead hide readily;1938;2024-05-22;slaw;convince yippee;almost;zowie plush the;KOLKATA;aw;8999;22653;false;humour;gripping however
-2;under;uneven ew;22089;2024-05-21;so instantly;uh-huh;gah;excluding warm-up quicker;KOLKATA;intently;12489;829;true;french;meet
-3;pollinate;fatally yahoo gutter;9434;2024-05-22;till worse downsize;for mmm where;so;warrior thing safely;AHMEDABAD;unlike;30663;27163;true;gladly whereas phrase;borrower
-4;ha;about;17259;2024-05-22;worth until kibitz;yet cleaner;lapse;duh;AHMEDABAD;and when;3461;3310;false;punctually;tangible gadzooks
-5;serpentine rivet;how;32104;2024-05-21;unaccountably;dwindle irradiate meh;ah happy-go-lucky yowza;daintily piercing boohoo;DELHI;sweet whether;9892;26885;false;decontaminate ha ink;behind detect yuck
-6;among;dialogue porcupine;17178;2024-05-22;village ick;round;outpace hosepipe mysteriously;obedient longingly;CHENNAI;oh antechamber aggravating;23439;14265;true;after;irresponsible
-7;primary;ferry supposing;27345;2024-05-22;assured after;concrete vacantly;oblong caption;huzzah;AHMEDABAD;uh-huh;22153;15281;false;mmm;frugal easily
-8;under schmooze;career um;8994;2024-05-22;beneath;which yet;crinoline;chant ack consequently;DELHI;following when grizzle;12537;938;true;similar;dimly microphone
-9;first bah;accomplished;21201;2024-05-22;supposing hm dismiss;justly;pfft gosh;repulse enormously;DELHI;remaster;5199;12907;false;hen after pfft;amid
-10;concentrate next;scuttle gosh abaft;28765;2024-05-22;woot how unless;ack ferryboat whereas;psychiatrist correctly;since often;AHMEDABAD;once to gerbil;4549;2376;false;thoughtful militate er;tile
+id;name;details;application_no;application_date;agent_name;agent_address;proprietor_name;proprietor_address;head_office;img_url;tm_class;journal_no;deleted;usage;associated_tms;trademark_status
+1;heavenly at finally;homestead hide readily;1938;2024-05-22;slaw;convince yippee;almost;zowie plush the;KOLKATA;aw;8999;22653;false;humour;gripping however;REGISTERED
+2;meh uneven ew;amidst spare amongst;12406;2024-05-21;sprinkle this ugh;brooch astride;vinyl arrogantly meet;pollinate;CHENNAI;soon;11717;19457;true;impolite;problem;HEARING
+3;ugh representation solid;worth provided;15507;2024-05-21;so;warrior thing safely;an creepy;though if;MUMBAI;qua eek mission;19514;15367;true;republic;ventilate;REJECTED
+4;ambassador;keenly whoa;5469;2024-05-22;cheapen duh;eating delete;likewise uh-huh confused;emancipate via righteously;CHENNAI;cooked unaccountably yuck;9298;13777;false;timely;kneejerk;WITHDRAWN
+5;sag past near;over;19887;2024-05-22;belch;sweet whether;contradict;gah finally astride;AHMEDABAD;despise equal er;11423;4314;true;for medicate;brr;PROVISIONAL
+6;essential round;outpace hosepipe mysteriously;14550;2024-05-21;stained times;sanction extremely;hospitalisation;nickel;DELHI;irresponsible;2776;5747;false;flawless outstanding fooey;assured after;WITHDRAWN
+7;march;suddenly total yuck;31996;2024-05-22;whose poll;likewise wealthy;but peripheral retch;joyously;CHENNAI;even yahoo;1821;13431;false;but;yet vineyard even;REGISTERED
+8;ack;as;28530;2024-05-22;pawn up;about gadzooks dart;upstage;zero prattle;KOLKATA;accomplished;21201;12149;false;gadzooks if as;nor;PUBLISHED
+9;restroom reduplicate;wee bleakly;15718;2024-05-22;orbit admirable majestically;pfft;amid;concentrate next;CHENNAI;authorized;1265;1858;true;garrote sabotage pet;gate uplift anenst;HEARING
+10;home;back;20967;2024-05-21;correctly yowza dead;easily yellowish;flamboyant solidly;triumphantly girlfriend subtract;KOLKATA;finally tremendous orientate;10192;4392;true;dickey endpoint plastic;solemnly insecure;WITHDRAWN

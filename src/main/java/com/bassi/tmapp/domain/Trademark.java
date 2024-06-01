@@ -1,6 +1,7 @@
 package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -70,8 +71,9 @@ public class Trademark implements Serializable {
     @Column(name = "associated_tms")
     private String associatedTms;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
-    private String trademarkStatus;
+    private TrademarkStatus trademarkStatus;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -283,16 +285,16 @@ public class Trademark implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public String getTrademarkStatus() {
+    public TrademarkStatus getTrademarkStatus() {
         return this.trademarkStatus;
     }
 
-    public Trademark trademarkStatus(String trademarkStatus) {
+    public Trademark trademarkStatus(TrademarkStatus trademarkStatus) {
         this.setTrademarkStatus(trademarkStatus);
         return this;
     }
 
-    public void setTrademarkStatus(String trademarkStatus) {
+    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
 

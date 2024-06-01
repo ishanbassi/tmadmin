@@ -147,6 +147,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="trademarkStatus">
+              <div class="d-flex">
+                <span>Trademark Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -177,6 +184,20 @@
               <td>{{ publishedTm.deleted }}</td>
               <td>{{ publishedTm.usage }}</td>
               <td>{{ publishedTm.associatedTms }}</td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    REGISTERED: 'REGISTERED',
+                    OPPOSED: 'OPPOSED',
+                    WITHDRAWN: 'WITHDRAWN',
+                    REJECTED: 'REJECTED',
+                    HEARING: 'HEARING',
+                    PUBLISHED: 'PUBLISHED',
+                    PROVISIONAL: 'PROVISIONAL'
+                  }[publishedTm.trademarkStatus ?? 'null']
+                }}
+              </td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/published-tm', publishedTm.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

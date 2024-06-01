@@ -44,7 +44,7 @@ entity Trademark{
     deleted Boolean
     usage String
     associatedTms String
-    trademarkStatus String
+    trademarkStatus TrademarkStatus
 }
 
 entity Phonetics{
@@ -75,6 +75,7 @@ entity PublishedTm{
     deleted Boolean
     usage String
     associatedTms String
+    trademarkStatus TrademarkStatus
 }
 
 enum HeadOffice {

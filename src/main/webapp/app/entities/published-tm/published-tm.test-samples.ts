@@ -3,34 +3,36 @@ import dayjs from 'dayjs/esm';
 import { IPublishedTm, NewPublishedTm } from './published-tm.model';
 
 export const sampleWithRequiredData: IPublishedTm = {
-  id: 16810,
+  id: 23335,
 };
 
 export const sampleWithPartialData: IPublishedTm = {
-  id: 14830,
-  proprietorName: 'who jovial which',
-  headOffice: 'AHMEDABAD',
-  imgUrl: 'instead cardigan',
-  usage: 'although',
+  id: 8464,
+  agentAddress: 'freely able mysteriously',
+  proprietorAddress: 'helplessly astride',
+  headOffice: 'KOLKATA',
+  deleted: true,
+  associatedTms: 'terribly reflection',
 };
 
 export const sampleWithFullData: IPublishedTm = {
-  id: 3502,
-  name: 'dirty till',
-  details: 'nicely profess',
-  applicationNo: 16494,
+  id: 1755,
+  name: 'past',
+  details: 'ah geez',
+  applicationNo: 30888,
   applicationDate: dayjs('2024-05-22'),
-  agentName: 'gamebird',
-  agentAddress: 'dune bicker roadway',
-  proprietorName: 'hint',
-  proprietorAddress: 'whenever inspect',
+  agentName: 'constant suddenly',
+  agentAddress: 'sequester naturally',
+  proprietorName: 'adjective duck supposing',
+  proprietorAddress: 'meanwhile vainly',
   headOffice: 'MUMBAI',
-  imgUrl: 'as bitterly',
-  tmClass: 29874,
-  journalNo: 8870,
-  deleted: true,
-  usage: 'woozy like chuckle',
-  associatedTms: 'marxism',
+  imgUrl: 'secret',
+  tmClass: 32119,
+  journalNo: 4917,
+  deleted: false,
+  usage: 'flub before underneath',
+  associatedTms: 'pace oh',
+  trademarkStatus: 'PROVISIONAL',
 };
 
 export const sampleWithNewData: NewPublishedTm = {

@@ -33,6 +33,7 @@ type PublishedTmFormGroupContent = {
   deleted: FormControl<IPublishedTm['deleted']>;
   usage: FormControl<IPublishedTm['usage']>;
   associatedTms: FormControl<IPublishedTm['associatedTms']>;
+  trademarkStatus: FormControl<IPublishedTm['trademarkStatus']>;
 };
 
 export type PublishedTmFormGroup = FormGroup<PublishedTmFormGroupContent>;
@@ -67,6 +68,7 @@ export class PublishedTmFormService {
       deleted: new FormControl(publishedTmRawValue.deleted),
       usage: new FormControl(publishedTmRawValue.usage),
       associatedTms: new FormControl(publishedTmRawValue.associatedTms),
+      trademarkStatus: new FormControl(publishedTmRawValue.trademarkStatus),
     });
   }
 

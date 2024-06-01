@@ -68,7 +68,8 @@
     },
     {
       "fieldName": "trademarkStatus",
-      "fieldType": "String"
+      "fieldType": "TrademarkStatus",
+      "fieldValues": "REGISTERED,OPPOSED,WITHDRAWN,REJECTED,HEARING,PUBLISHED,PROVISIONAL"
     }
   ],
   "name": "Trademark",

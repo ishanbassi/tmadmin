@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
@@ -81,8 +82,8 @@ class TrademarkResourceIT {
     private static final String DEFAULT_ASSOCIATED_TMS = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_TMS = "BBBBBBBBBB";
 
-    private static final String DEFAULT_TRADEMARK_STATUS = "AAAAAAAAAA";
-    private static final String UPDATED_TRADEMARK_STATUS = "BBBBBBBBBB";
+    private static final TrademarkStatus DEFAULT_TRADEMARK_STATUS = TrademarkStatus.REGISTERED;
+    private static final TrademarkStatus UPDATED_TRADEMARK_STATUS = TrademarkStatus.OPPOSED;
 
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -233,7 +234,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)));
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
     }
 
     @Test
@@ -263,7 +264,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
-            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS));
+            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()));
     }
 
     @Test

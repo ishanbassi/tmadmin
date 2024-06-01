@@ -59,6 +59,9 @@
             <column name="associated_tms" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="trademark_status" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
     </changeSet>
@@ -95,6 +98,7 @@
             <column name="deleted" type="boolean"/>
             <column name="usage" type="string"/>
             <column name="associated_tms" type="string"/>
+            <column name="trademark_status" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

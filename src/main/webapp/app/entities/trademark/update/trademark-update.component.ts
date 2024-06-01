@@ -8,6 +8,7 @@ import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
+import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 import { ITrademark } from '../trademark.model';
 import { TrademarkService } from '../service/trademark.service';
 import { TrademarkFormService, TrademarkFormGroup } from './trademark-form.service';
@@ -22,6 +23,7 @@ export class TrademarkUpdateComponent implements OnInit {
   isSaving = false;
   trademark: ITrademark | null = null;
   headOfficeValues = Object.keys(HeadOffice);
+  trademarkStatusValues = Object.keys(TrademarkStatus);
 
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);

@@ -61,7 +61,8 @@ public class PublishedTmAsserts {
             .satisfies(e -> assertThat(e.getJournalNo()).as("check journalNo").isEqualTo(actual.getJournalNo()))
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
             .satisfies(e -> assertThat(e.getUsage()).as("check usage").isEqualTo(actual.getUsage()))
-            .satisfies(e -> assertThat(e.getAssociatedTms()).as("check associatedTms").isEqualTo(actual.getAssociatedTms()));
+            .satisfies(e -> assertThat(e.getAssociatedTms()).as("check associatedTms").isEqualTo(actual.getAssociatedTms()))
+            .satisfies(e -> assertThat(e.getTrademarkStatus()).as("check trademarkStatus").isEqualTo(actual.getTrademarkStatus()));
     }
 
     /**

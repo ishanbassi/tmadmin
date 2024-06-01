@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -42,6 +43,8 @@ public class PublishedTmDTO implements Serializable {
     private String usage;
 
     private String associatedTms;
+
+    private TrademarkStatus trademarkStatus;
 
     public Long getId() {
         return id;
@@ -171,6 +174,14 @@ public class PublishedTmDTO implements Serializable {
         this.associatedTms = associatedTms;
     }
 
+    public TrademarkStatus getTrademarkStatus() {
+        return trademarkStatus;
+    }
+
+    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
+        this.trademarkStatus = trademarkStatus;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -212,6 +223,7 @@ public class PublishedTmDTO implements Serializable {
             ", deleted='" + getDeleted() + "'" +
             ", usage='" + getUsage() + "'" +
             ", associatedTms='" + getAssociatedTms() + "'" +
+            ", trademarkStatus='" + getTrademarkStatus() + "'" +
             "}";
     }
 }

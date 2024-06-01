@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
@@ -81,6 +82,9 @@ class PublishedTmResourceIT {
     private static final String DEFAULT_ASSOCIATED_TMS = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_TMS = "BBBBBBBBBB";
 
+    private static final TrademarkStatus DEFAULT_TRADEMARK_STATUS = TrademarkStatus.REGISTERED;
+    private static final TrademarkStatus UPDATED_TRADEMARK_STATUS = TrademarkStatus.OPPOSED;
+
     private static final String ENTITY_API_URL = "/api/published-tms";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -126,7 +130,8 @@ class PublishedTmResourceIT {
             .journalNo(DEFAULT_JOURNAL_NO)
             .deleted(DEFAULT_DELETED)
             .usage(DEFAULT_USAGE)
-            .associatedTms(DEFAULT_ASSOCIATED_TMS);
+            .associatedTms(DEFAULT_ASSOCIATED_TMS)
+            .trademarkStatus(DEFAULT_TRADEMARK_STATUS);
         return publishedTm;
     }
 
@@ -152,7 +157,8 @@ class PublishedTmResourceIT {
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
-            .associatedTms(UPDATED_ASSOCIATED_TMS);
+            .associatedTms(UPDATED_ASSOCIATED_TMS)
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
         return publishedTm;
     }
 
@@ -227,7 +233,8 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
-            .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)));
+            .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
     }
 
     @Test
@@ -256,7 +263,8 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.journalNo").value(DEFAULT_JOURNAL_NO))
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
-            .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS));
+            .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
+            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()));
     }
 
     @Test
@@ -293,7 +301,8 @@ class PublishedTmResourceIT {
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
-            .associatedTms(UPDATED_ASSOCIATED_TMS);
+            .associatedTms(UPDATED_ASSOCIATED_TMS)
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
         PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(updatedPublishedTm);
 
         restPublishedTmMockMvc
@@ -392,7 +401,8 @@ class PublishedTmResourceIT {
             .imgUrl(UPDATED_IMG_URL)
             .tmClass(UPDATED_TM_CLASS)
             .usage(UPDATED_USAGE)
-            .associatedTms(UPDATED_ASSOCIATED_TMS);
+            .associatedTms(UPDATED_ASSOCIATED_TMS)
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
 
         restPublishedTmMockMvc
             .perform(
@@ -438,7 +448,8 @@ class PublishedTmResourceIT {
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
-            .associatedTms(UPDATED_ASSOCIATED_TMS);
+            .associatedTms(UPDATED_ASSOCIATED_TMS)
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
 
         restPublishedTmMockMvc
             .perform(

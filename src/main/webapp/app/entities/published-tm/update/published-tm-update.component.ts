@@ -8,6 +8,7 @@ import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
+import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 import { IPublishedTm } from '../published-tm.model';
 import { PublishedTmService } from '../service/published-tm.service';
 import { PublishedTmFormService, PublishedTmFormGroup } from './published-tm-form.service';
@@ -22,6 +23,7 @@ export class PublishedTmUpdateComponent implements OnInit {
   isSaving = false;
   publishedTm: IPublishedTm | null = null;
   headOfficeValues = Object.keys(HeadOffice);
+  trademarkStatusValues = Object.keys(TrademarkStatus);
 
   protected publishedTmService = inject(PublishedTmService);
   protected publishedTmFormService = inject(PublishedTmFormService);

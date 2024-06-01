@@ -148,14 +148,31 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_trademarkStatus">Trademark Status</label>
-          <input
-            type="text"
+          <select
             class="form-control"
             name="trademarkStatus"
+            formControlName="trademarkStatus"
             id="field_trademarkStatus"
             data-cy="trademarkStatus"
-            formControlName="trademarkStatus"
-          />
+          >
+            <option [ngValue]="null"></option>
+            @for (trademarkStatus of trademarkStatusValues; track $index) {
+              <option [value]="trademarkStatus">
+                {{
+                  {
+                    null: '',
+                    REGISTERED: 'REGISTERED',
+                    OPPOSED: 'OPPOSED',
+                    WITHDRAWN: 'WITHDRAWN',
+                    REJECTED: 'REJECTED',
+                    HEARING: 'HEARING',
+                    PUBLISHED: 'PUBLISHED',
+                    PROVISIONAL: 'PROVISIONAL'
+                  }[trademarkStatus]
+                }}
+              </option>
+            }
+          </select>
         </div>
       </div>
 

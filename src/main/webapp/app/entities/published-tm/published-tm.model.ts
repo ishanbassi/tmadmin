@@ -1,5 +1,6 @@
 import dayjs from 'dayjs/esm';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
+import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 
 export interface IPublishedTm {
   id: number;
@@ -18,6 +19,7 @@ export interface IPublishedTm {
   deleted?: boolean | null;
   usage?: string | null;
   associatedTms?: string | null;
+  trademarkStatus?: keyof typeof TrademarkStatus | null;
 }
 
 export type NewPublishedTm = Omit<IPublishedTm, 'id'> & { id: null };

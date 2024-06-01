@@ -36,7 +36,7 @@ export const sampleWithFullData: ITrademark = {
   deleted: false,
   usage: 'insidious who considering',
   associatedTms: 'gadzooks bite',
-  trademarkStatus: 'corrode incidentally zowie',
+  trademarkStatus: 'PROVISIONAL',
 };
 
 export const sampleWithNewData: NewTrademark = {

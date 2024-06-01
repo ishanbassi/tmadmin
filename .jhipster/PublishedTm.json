@@ -65,6 +65,11 @@
     {
       "fieldName": "associatedTms",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "trademarkStatus",
+      "fieldType": "TrademarkStatus",
+      "fieldValues": "REGISTERED,OPPOSED,WITHDRAWN,REJECTED,HEARING,PUBLISHED,PROVISIONAL"
     }
   ],
   "name": "PublishedTm",

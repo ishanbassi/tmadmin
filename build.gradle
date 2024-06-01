@@ -172,6 +172,10 @@ task cleanResources(type: Delete) {
     delete "build/resources"
 }
 
+task.named('bootJar'){
+    
+    launchScript()
+}
 
 compileJava.dependsOn processResources
 processResources.dependsOn bootBuildInfo
