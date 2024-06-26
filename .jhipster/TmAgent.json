@@ -1,0 +1,37 @@
+{
+  "annotations": {
+    "changelogDate": "20240602162757"
+  },
+  "applications": ["tmapp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "agentCode",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "firstName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    }
+  ],
+  "name": "TmAgent",
+  "relationships": [
+    {
+      "otherEntityName": "trademark",
+      "otherEntityRelationshipName": "tmAgent",
+      "relationshipName": "trademarks",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

@@ -17,4 +17,8 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'PublishedTm',
     route: '/published-tm',
   },
+  {
+    name: 'TmAgent',
+    route: '/tm-agent',
+  },
 ];

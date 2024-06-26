@@ -78,6 +78,13 @@ entity PublishedTm{
     trademarkStatus TrademarkStatus
 }
 
+entity TmAgent{
+	agentCode Integer
+	firstName String
+	lastName String
+	address String
+}
+
 enum HeadOffice {
 	DELHI,
 	MUMBAI,
@@ -98,6 +105,7 @@ enum TrademarkStatus{
 relationship ManyToOne{
 	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
     PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
+    Trademark { tmAgent } to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent{trademarks}
     
 }
 

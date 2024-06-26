@@ -26,6 +26,11 @@ const routes: Routes = [
     data: { pageTitle: 'PublishedTms' },
     loadChildren: () => import('./published-tm/published-tm.routes'),
   },
+  {
+    path: 'tm-agent',
+    data: { pageTitle: 'TmAgents' },
+    loadChildren: () => import('./tm-agent/tm-agent.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

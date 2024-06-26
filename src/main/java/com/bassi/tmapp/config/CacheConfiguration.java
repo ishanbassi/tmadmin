@@ -54,6 +54,8 @@ public class CacheConfiguration {
             createCache(cm, com.bassi.tmapp.domain.Phonetics.class.getName());
             createCache(cm, com.bassi.tmapp.domain.PublishedTmPhonetics.class.getName());
             createCache(cm, com.bassi.tmapp.domain.PublishedTm.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.TmAgent.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.TmAgent.class.getName() + ".trademarks");
             // jhipster-needle-ehcache-add-entry
         };
     }

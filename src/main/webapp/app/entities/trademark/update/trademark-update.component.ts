@@ -2,15 +2,17 @@ import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
+import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
-import { ITrademark } from '../trademark.model';
 import { TrademarkService } from '../service/trademark.service';
+import { ITrademark } from '../trademark.model';
 import { TrademarkFormService, TrademarkFormGroup } from './trademark-form.service';
 
 @Component({
@@ -25,12 +27,17 @@ export class TrademarkUpdateComponent implements OnInit {
   headOfficeValues = Object.keys(HeadOffice);
   trademarkStatusValues = Object.keys(TrademarkStatus);
 
+  tmAgentsSharedCollection: ITmAgent[] = [];
+
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);
+  protected tmAgentService = inject(TmAgentService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: TrademarkFormGroup = this.trademarkFormService.createTrademarkFormGroup();
+
+  compareTmAgent = (o1: ITmAgent | null, o2: ITmAgent | null): boolean => this.tmAgentService.compareTmAgent(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ trademark }) => {
@@ -38,6 +45,8 @@ export class TrademarkUpdateComponent implements OnInit {
       if (trademark) {
         this.updateForm(trademark);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -77,5 +86,18 @@ export class TrademarkUpdateComponent implements OnInit {
   protected updateForm(trademark: ITrademark): void {
     this.trademark = trademark;
     this.trademarkFormService.resetForm(this.editForm, trademark);
+
+    this.tmAgentsSharedCollection = this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(
+      this.tmAgentsSharedCollection,
+      trademark.tmAgent,
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.tmAgentService
+      .query()
+      .pipe(map((res: HttpResponse<ITmAgent[]>) => res.body ?? []))
+      .pipe(map((tmAgents: ITmAgent[]) => this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(tmAgents, this.trademark?.tmAgent)))
+      .subscribe((tmAgents: ITmAgent[]) => (this.tmAgentsSharedCollection = tmAgents));
   }
 }

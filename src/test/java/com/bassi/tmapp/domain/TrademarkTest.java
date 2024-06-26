@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import static com.bassi.tmapp.domain.TmAgentTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,5 +21,17 @@ class TrademarkTest {
 
         trademark2 = getTrademarkSample2();
         assertThat(trademark1).isNotEqualTo(trademark2);
+    }
+
+    @Test
+    void tmAgentTest() throws Exception {
+        Trademark trademark = getTrademarkRandomSampleGenerator();
+        TmAgent tmAgentBack = getTmAgentRandomSampleGenerator();
+
+        trademark.setTmAgent(tmAgentBack);
+        assertThat(trademark.getTmAgent()).isEqualTo(tmAgentBack);
+
+        trademark.tmAgent(null);
+        assertThat(trademark.getTmAgent()).isNull();
     }
 }

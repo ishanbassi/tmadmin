@@ -41,13 +41,16 @@ repositories {
 
 apply plugin: 'io.spring.dependency-management'
 
-apply from: "gradle/liquibase.gradle"
+
+
 // jhipster-needle-gradle-apply-from - JHipster will add additional gradle scripts to be applied here
 
 if (project.hasProperty("prod")) {
     apply from: "gradle/profile_prod.gradle"
+    apply from: "gradle/liquibase.gradle"
 } else {
     apply from: "gradle/profile_dev.gradle"
+    apply from: "gradle/liquibase_dev.gradle"
 }
 
 if (project.hasProperty("war")) {
@@ -165,13 +168,16 @@ dependencies {
     testImplementation "org.testcontainers:jdbc"
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:testcontainers"
+	
+	implementation 'org.apache.pdfbox:pdfbox:2.0.1'
+
+    
     // jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }
 
 task cleanResources(type: Delete) {
     delete "build/resources"
 }
-
 
 
 compileJava.dependsOn processResources

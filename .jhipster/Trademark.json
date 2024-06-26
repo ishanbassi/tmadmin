@@ -73,7 +73,19 @@
     }
   ],
   "name": "Trademark",
-  "relationships": [],
+  "relationships": [
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "tmAgent",
+      "otherEntityRelationshipName": "trademarks",
+      "relationshipName": "tmAgent",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceClass"
 }

@@ -2,6 +2,7 @@ package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -74,6 +75,10 @@ public class Trademark implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
     private TrademarkStatus trademarkStatus;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "trademarks" }, allowSetters = true)
+    private TmAgent tmAgent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -296,6 +301,19 @@ public class Trademark implements Serializable {
 
     public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
+    }
+
+    public TmAgent getTmAgent() {
+        return this.tmAgent;
+    }
+
+    public void setTmAgent(TmAgent tmAgent) {
+        this.tmAgent = tmAgent;
+    }
+
+    public Trademark tmAgent(TmAgent tmAgent) {
+        this.setTmAgent(tmAgent);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

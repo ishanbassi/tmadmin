@@ -46,6 +46,8 @@ public class TrademarkDTO implements Serializable {
 
     private TrademarkStatus trademarkStatus;
 
+    private TmAgentDTO tmAgent;
+
     public Long getId() {
         return id;
     }
@@ -182,6 +184,14 @@ public class TrademarkDTO implements Serializable {
         this.trademarkStatus = trademarkStatus;
     }
 
+    public TmAgentDTO getTmAgent() {
+        return tmAgent;
+    }
+
+    public void setTmAgent(TmAgentDTO tmAgent) {
+        this.tmAgent = tmAgent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -224,6 +234,7 @@ public class TrademarkDTO implements Serializable {
             ", usage='" + getUsage() + "'" +
             ", associatedTms='" + getAssociatedTms() + "'" +
             ", trademarkStatus='" + getTrademarkStatus() + "'" +
+            ", tmAgent=" + getTmAgent() +
             "}";
     }
 }

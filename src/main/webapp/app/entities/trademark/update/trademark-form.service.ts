@@ -34,6 +34,7 @@ type TrademarkFormGroupContent = {
   usage: FormControl<ITrademark['usage']>;
   associatedTms: FormControl<ITrademark['associatedTms']>;
   trademarkStatus: FormControl<ITrademark['trademarkStatus']>;
+  tmAgent: FormControl<ITrademark['tmAgent']>;
 };
 
 export type TrademarkFormGroup = FormGroup<TrademarkFormGroupContent>;
@@ -69,6 +70,7 @@ export class TrademarkFormService {
       usage: new FormControl(trademarkRawValue.usage),
       associatedTms: new FormControl(trademarkRawValue.associatedTms),
       trademarkStatus: new FormControl(trademarkRawValue.trademarkStatus),
+      tmAgent: new FormControl(trademarkRawValue.tmAgent),
     });
   }
 

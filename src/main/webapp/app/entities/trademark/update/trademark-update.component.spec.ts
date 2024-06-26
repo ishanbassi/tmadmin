@@ -5,6 +5,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
 
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
+import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormService } from './trademark-form.service';
@@ -17,6 +19,7 @@ describe('Trademark Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let trademarkFormService: TrademarkFormService;
   let trademarkService: TrademarkService;
+  let tmAgentService: TmAgentService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('Trademark Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     trademarkFormService = TestBed.inject(TrademarkFormService);
     trademarkService = TestBed.inject(TrademarkService);
+    tmAgentService = TestBed.inject(TmAgentService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call TmAgent query and add missing value', () => {
       const trademark: ITrademark = { id: 456 };
+      const tmAgent: ITmAgent = { id: 6940 };
+      trademark.tmAgent = tmAgent;
+
+      const tmAgentCollection: ITmAgent[] = [{ id: 17160 }];
+      jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
+      const additionalTmAgents = [tmAgent];
+      const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
+      jest.spyOn(tmAgentService, 'addTmAgentToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
+      expect(tmAgentService.query).toHaveBeenCalled();
+      expect(tmAgentService.addTmAgentToCollectionIfMissing).toHaveBeenCalledWith(
+        tmAgentCollection,
+        ...additionalTmAgents.map(expect.objectContaining),
+      );
+      expect(comp.tmAgentsSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const trademark: ITrademark = { id: 456 };
+      const tmAgent: ITmAgent = { id: 6337 };
+      trademark.tmAgent = tmAgent;
+
+      activatedRoute.data = of({ trademark });
+      comp.ngOnInit();
+
+      expect(comp.tmAgentsSharedCollection).toContain(tmAgent);
       expect(comp.trademark).toEqual(trademark);
     });
   });
@@ -118,6 +147,18 @@ describe('Trademark Management Update Component', () => {
       expect(trademarkService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareTmAgent', () => {
+      it('Should forward to tmAgentService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(tmAgentService, 'compareTmAgent');
+        comp.compareTmAgent(entity, entity2);
+        expect(tmAgentService.compareTmAgent).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

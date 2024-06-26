@@ -94,6 +94,14 @@
               }[trademark()!.trademarkStatus ?? 'null']
             }}</span>
           </dd>
+          <dt><span>Tm Agent</span></dt>
+          <dd>
+            @if (trademark()!.tmAgent) {
+              <div>
+                <a [routerLink]="['/tm-agent', trademark()!.tmAgent?.id, 'view']">{{ trademark()!.tmAgent?.id }}</a>
+              </div>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
