@@ -21,7 +21,7 @@ liquibase {
   activities {
     main {
       driver "org.postgresql.Driver"
-      url "jdbc:postgresql://localhost:5432/tmapp"
+      url "jdbc:postgresql://localhost:5432/tmadmin"
       username "tmadmin"
       password "admin"
       changelogFile "src/main/resources/config/liquibase/master.xml"
@@ -30,9 +30,6 @@ liquibase {
     }
     diffLog {
       driver "org.postgresql.Driver"
-      url "jdbc:postgresql://localhost:5432/tmapp"
-	  username "tmadmin"
-      password "admin"
       changelogFile project.ext.diffChangelogFile
       referenceUrl "hibernate:spring:com.bassi.tmapp.domain?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
       logLevel "debug"

@@ -7,8 +7,9 @@ import com.bassi.tmapp.service.dto.MatchingTrademarkExportDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 
-@Service
+
 public class MatchingTmExportService extends CSVExportService<MatchingTrademarkExportDto>{
+	
 	
 	public MatchingTmExportService(String sheetName) {
 		super(sheetName);

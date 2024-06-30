@@ -17,11 +17,11 @@ public class MatchingTrademarkService {
     private final Logger log = LoggerFactory.getLogger(MatchingTrademarkService .class);
 
 	
-	private MatchingTmExportService MatchingTmExportService;
-	
-	MatchingTrademarkService (MatchingTmExportService MatchingTmExportService) {
-		this.MatchingTmExportService = MatchingTmExportService;
-	}
+//	private MatchingTmExportService MatchingTmExportService;
+//	
+//	MatchingTrademarkService (MatchingTmExportService MatchingTmExportService) {
+//		this.MatchingTmExportService = MatchingTmExportService;
+//	}
 	
 	public byte[] exportTrademarks( List<MatchingTrademarkExportDto> matchingTrademarkExportDtoList) {
 		MatchingTmExportService fileExportedExportService = new MatchingTmExportService("Trademark Journal");
