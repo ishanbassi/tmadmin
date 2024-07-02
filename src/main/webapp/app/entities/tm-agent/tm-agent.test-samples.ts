@@ -1,21 +1,19 @@
 import { ITmAgent, NewTmAgent } from './tm-agent.model';
 
 export const sampleWithRequiredData: ITmAgent = {
-  id: 27672,
+  id: 31842,
 };
 
 export const sampleWithPartialData: ITmAgent = {
-  id: 29891,
-  agentCode: 14730,
-  lastName: 'Ledner',
+  id: 31571,
 };
 
 export const sampleWithFullData: ITmAgent = {
-  id: 13992,
-  agentCode: 8111,
-  firstName: 'Jason',
-  lastName: 'Stracke',
-  address: 'trench virtuous',
+  id: 2491,
+  agentCode: 10386,
+  firstName: 'Lilian',
+  lastName: 'Dach',
+  address: 'hmph',
 };
 
 export const sampleWithNewData: NewTmAgent = {

@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, HttpResponse } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
@@ -23,8 +22,9 @@ describe('PublishedTmPhonetics Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, PublishedTmPhoneticsUpdateComponent],
+      imports: [PublishedTmPhoneticsUpdateComponent],
       providers: [
+        provideHttpClient(),
         FormBuilder,
         {
           provide: ActivatedRoute,
@@ -49,10 +49,10 @@ describe('PublishedTmPhonetics Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call PublishedTm query and add missing value', () => {
       const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 19326 };
+      const publishedTm: IPublishedTm = { id: 9031 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
-      const publishedTmCollection: IPublishedTm[] = [{ id: 31446 }];
+      const publishedTmCollection: IPublishedTm[] = [{ id: 31720 }];
       jest.spyOn(publishedTmService, 'query').mockReturnValue(of(new HttpResponse({ body: publishedTmCollection })));
       const additionalPublishedTms = [publishedTm];
       const expectedCollection: IPublishedTm[] = [...additionalPublishedTms, ...publishedTmCollection];
@@ -71,7 +71,7 @@ describe('PublishedTmPhonetics Management Update Component', () => {
 
     it('Should update editForm', () => {
       const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 16810 };
+      const publishedTm: IPublishedTm = { id: 14832 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
       activatedRoute.data = of({ publishedTmPhonetics });

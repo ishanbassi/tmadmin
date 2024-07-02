@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, HttpResponse } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
@@ -23,8 +22,9 @@ describe('Phonetics Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, PhoneticsUpdateComponent],
+      imports: [PhoneticsUpdateComponent],
       providers: [
+        provideHttpClient(),
         FormBuilder,
         {
           provide: ActivatedRoute,
@@ -49,10 +49,10 @@ describe('Phonetics Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Trademark query and add missing value', () => {
       const phonetics: IPhonetics = { id: 456 };
-      const trademark: ITrademark = { id: 7914 };
+      const trademark: ITrademark = { id: 6417 };
       phonetics.trademark = trademark;
 
-      const trademarkCollection: ITrademark[] = [{ id: 29589 }];
+      const trademarkCollection: ITrademark[] = [{ id: 16286 }];
       jest.spyOn(trademarkService, 'query').mockReturnValue(of(new HttpResponse({ body: trademarkCollection })));
       const additionalTrademarks = [trademark];
       const expectedCollection: ITrademark[] = [...additionalTrademarks, ...trademarkCollection];
@@ -71,7 +71,7 @@ describe('Phonetics Management Update Component', () => {
 
     it('Should update editForm', () => {
       const phonetics: IPhonetics = { id: 456 };
-      const trademark: ITrademark = { id: 15152 };
+      const trademark: ITrademark = { id: 4836 };
       phonetics.trademark = trademark;
 
       activatedRoute.data = of({ phonetics });

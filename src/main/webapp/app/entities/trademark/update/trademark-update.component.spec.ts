@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient, HttpResponse } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
@@ -23,8 +22,9 @@ describe('Trademark Management Update Component', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, TrademarkUpdateComponent],
+      imports: [TrademarkUpdateComponent],
       providers: [
+        provideHttpClient(),
         FormBuilder,
         {
           provide: ActivatedRoute,
@@ -49,10 +49,10 @@ describe('Trademark Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call TmAgent query and add missing value', () => {
       const trademark: ITrademark = { id: 456 };
-      const tmAgent: ITmAgent = { id: 6940 };
+      const tmAgent: ITmAgent = { id: 27147 };
       trademark.tmAgent = tmAgent;
 
-      const tmAgentCollection: ITmAgent[] = [{ id: 17160 }];
+      const tmAgentCollection: ITmAgent[] = [{ id: 22640 }];
       jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
       const additionalTmAgents = [tmAgent];
       const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
@@ -71,7 +71,7 @@ describe('Trademark Management Update Component', () => {
 
     it('Should update editForm', () => {
       const trademark: ITrademark = { id: 456 };
-      const tmAgent: ITmAgent = { id: 6337 };
+      const tmAgent: ITmAgent = { id: 27355 };
       trademark.tmAgent = tmAgent;
 
       activatedRoute.data = of({ trademark });

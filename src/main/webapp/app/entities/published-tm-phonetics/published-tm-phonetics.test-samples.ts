@@ -1,19 +1,20 @@
 import { IPublishedTmPhonetics, NewPublishedTmPhonetics } from './published-tm-phonetics.model';
 
 export const sampleWithRequiredData: IPublishedTmPhonetics = {
-  id: 16699,
+  id: 22249,
 };
 
 export const sampleWithPartialData: IPublishedTmPhonetics = {
-  id: 20274,
-  phoneticPk: 'traverse stupendous unnaturally',
+  id: 13990,
+  sanitizedTm: 'sheepishly scrawl',
+  phoneticSk: 'beloved',
 };
 
 export const sampleWithFullData: IPublishedTmPhonetics = {
-  id: 4487,
-  sanitizedTm: 'authentication',
-  phoneticPk: 'randomise',
-  phoneticSk: 'inaugurate shanghai needily',
+  id: 3615,
+  sanitizedTm: 'consequently front badge',
+  phoneticPk: 'thoroughly showy',
+  phoneticSk: 'chill gee',
   complete: false,
 };
 

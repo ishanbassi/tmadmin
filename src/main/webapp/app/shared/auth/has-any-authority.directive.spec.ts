@@ -1,6 +1,7 @@
 jest.mock('app/core/auth/account.service');
 
-import { Component, ElementRef, ViewChild, WritableSignal, signal } from '@angular/core';
+import { Component, ElementRef, WritableSignal, signal, viewChild } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 
 import { AccountService } from 'app/core/auth/account.service';
@@ -12,8 +13,7 @@ import HasAnyAuthorityDirective from './has-any-authority.directive';
   template: ` <div *jhiHasAnyAuthority="'ROLE_ADMIN'" #content></div> `,
 })
 class TestHasAnyAuthorityDirectiveComponent {
-  @ViewChild('content', { static: false })
-  content?: ElementRef;
+  content = viewChild<ElementRef>('content');
 }
 
 describe('HasAnyAuthorityDirective tests', () => {
@@ -24,7 +24,7 @@ describe('HasAnyAuthorityDirective tests', () => {
     TestBed.configureTestingModule({
       imports: [HasAnyAuthorityDirective],
       declarations: [TestHasAnyAuthorityDirectiveComponent],
-      providers: [AccountService],
+      providers: [provideHttpClient(), AccountService],
     });
   }));
 
@@ -60,7 +60,7 @@ describe('HasAnyAuthorityDirective tests', () => {
       fixture.detectChanges();
 
       // THEN
-      expect(comp.content).toBeUndefined();
+      expect(comp.content()).toBeUndefined();
     });
   });
 
@@ -76,7 +76,7 @@ describe('HasAnyAuthorityDirective tests', () => {
       fixture.detectChanges();
 
       // THEN
-      expect(comp.content).toBeDefined();
+      expect(comp.content()).toBeDefined();
 
       // GIVEN
       currentAccount.set(null);
@@ -85,7 +85,7 @@ describe('HasAnyAuthorityDirective tests', () => {
       fixture.detectChanges();
 
       // THEN
-      expect(comp.content).toBeUndefined();
+      expect(comp.content()).toBeUndefined();
 
       // WHEN
       currentAccount.set({ activated: true, authorities: ['foo'] } as any);

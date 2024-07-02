@@ -3,36 +3,41 @@ import dayjs from 'dayjs/esm';
 import { IPublishedTm, NewPublishedTm } from './published-tm.model';
 
 export const sampleWithRequiredData: IPublishedTm = {
-  id: 23335,
+  id: 19875,
 };
 
 export const sampleWithPartialData: IPublishedTm = {
-  id: 8464,
-  agentAddress: 'freely able mysteriously',
-  proprietorAddress: 'helplessly astride',
-  headOffice: 'KOLKATA',
-  deleted: true,
-  associatedTms: 'terribly reflection',
+  id: 29171,
+  name: 'woot from',
+  applicationNo: 25308,
+  applicationDate: dayjs('2024-05-21'),
+  agentName: 'upon',
+  agentAddress: 'near adolescent weakly',
+  proprietorName: 'bandwidth once shoemaker',
+  imgUrl: 'via answer limply',
+  tmClass: 2826,
+  journalNo: 20307,
+  trademarkStatus: 'REJECTED',
 };
 
 export const sampleWithFullData: IPublishedTm = {
-  id: 1755,
-  name: 'past',
-  details: 'ah geez',
-  applicationNo: 30888,
-  applicationDate: dayjs('2024-05-22'),
-  agentName: 'constant suddenly',
-  agentAddress: 'sequester naturally',
-  proprietorName: 'adjective duck supposing',
-  proprietorAddress: 'meanwhile vainly',
-  headOffice: 'MUMBAI',
-  imgUrl: 'secret',
-  tmClass: 32119,
-  journalNo: 4917,
-  deleted: false,
-  usage: 'flub before underneath',
-  associatedTms: 'pace oh',
-  trademarkStatus: 'PROVISIONAL',
+  id: 19858,
+  name: 'shrilly masquerade',
+  details: 'whoever chubby daintily',
+  applicationNo: 1516,
+  applicationDate: dayjs('2024-05-21'),
+  agentName: 'from',
+  agentAddress: 'unfinished against whoa',
+  proprietorName: 'declaration drat',
+  proprietorAddress: 'tidy against but',
+  headOffice: 'CHENNAI',
+  imgUrl: 'past which er',
+  tmClass: 3158,
+  journalNo: 20535,
+  deleted: true,
+  usage: 'pro pooh',
+  associatedTms: 'lest hash',
+  trademarkStatus: 'REJECTED',
 };
 
 export const sampleWithNewData: NewPublishedTm = {
