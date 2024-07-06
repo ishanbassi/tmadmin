@@ -39,7 +39,6 @@ public class PdfReaderService extends PDFTextStripper  {
 
 	@Override
     protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
-		getCurrentPageNo()
         for (TextPosition text : textPositions) {
         	
         	System.out.println("String[" +

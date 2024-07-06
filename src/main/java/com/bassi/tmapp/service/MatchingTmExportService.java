@@ -1,11 +1,16 @@
 package com.bassi.tmapp.service;
 
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.service.dto.MatchingTrademarkExportDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import static java.util.Map.entry;
+
 
 
 public class MatchingTmExportService extends CSVExportService<MatchingTrademarkExportDto>{
@@ -34,7 +39,8 @@ public class MatchingTmExportService extends CSVExportService<MatchingTrademarkE
 				"Proprietor Address",
 				"Head Office",
 				"Journal No.",
-				"Usage"
+				"Usage",
+				"Trademark Status"
 
 		};
 		csvWriter.writeNext(headers);
@@ -49,17 +55,40 @@ public class MatchingTmExportService extends CSVExportService<MatchingTrademarkE
 				trademarkDTO.getName(),
 				publishedTmDTO.getClass().toString(),
 				publishedTmDTO.getDetails(),
-				publishedTmDTO.getApplicationNo().toString(),
+				getApplicationNo(publishedTmDTO.getApplicationNo()),
 				publishedTmDTO.getAgentName(),
 				publishedTmDTO.getAgentAddress(),
 				publishedTmDTO.getProprietorName(),
 				publishedTmDTO.getProprietorAddress(),
-				publishedTmDTO.getHeadOffice().toString(),
+				getHeadOffice(publishedTmDTO.getHeadOffice()),
 				publishedTmDTO.getJournalNo().toString(),
-				publishedTmDTO.getUsage()
+				publishedTmDTO.getUsage(),
+				getTrademarkStatus(publishedTmDTO.getTrademarkStatus())
 				
 				
 		});
+	}
+
+	private String getHeadOffice(HeadOffice headOffice) {
+		if(headOffice == null) {
+			return "";
+		}
+		return headOffice.name();
+	}
+
+
+	private String getTrademarkStatus(TrademarkStatus trademarkStatus) {
+		if(trademarkStatus == null) {
+			return "";
+		}
+		return trademarkStatus.name();
+	}
+	
+	private String getApplicationNo(Long applicationNo) {
+		if(applicationNo == null) {
+			return "";
+		}
+		return applicationNo.toString();
 	}
 
 
