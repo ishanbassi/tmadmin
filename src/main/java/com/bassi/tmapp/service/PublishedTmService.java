@@ -109,4 +109,9 @@ public class PublishedTmService {
         log.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepository.deleteById(id);
     }
+    
+    public String sanitizeWord(String word) {
+    	
+    	return null;
+    }
 }

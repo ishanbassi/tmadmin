@@ -170,6 +170,8 @@ dependencies {
     testImplementation "org.testcontainers:testcontainers"
 	
 	implementation 'org.apache.pdfbox:pdfbox:2.0.1'
+	implementation 'commons-codec:commons-codec:1.5'
+	
 
     
     // jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
