@@ -171,6 +171,7 @@ dependencies {
 	
 	implementation 'org.apache.pdfbox:pdfbox:2.0.1'
 	implementation 'commons-codec:commons-codec:1.5'
+	implementation 'com.itextpdf:itext-core:8.0.4'
 	
 
     

@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -11,6 +12,10 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PublishedTmDTO implements Serializable {
+	
+	 public static final String APPLICATION_NUMBER_ADDRESS = "APPLICATION_NUMBER_ADDRESS";
+	public static final String AGENT_NAME_ADDRESS = "AGENT_NAME_ADDRESS";
+	public static final String TRADEMARK_USAGE = "TRADEMARK_USAGE";
 
     private Long id;
 
@@ -45,8 +50,19 @@ public class PublishedTmDTO implements Serializable {
     private String associatedTms;
 
     private TrademarkStatus trademarkStatus;
+    
+    private Map<String,Integer> textIndexes;
+    
+    public Map<String,Integer> getTextIndexMap() {
+    	return this.textIndexes;
+    }
+    
 
-    public Long getId() {
+	public void setTextIndexes(String key ,int value) {
+		this.textIndexes.put(key, value);
+	}
+
+	public Long getId() {
         return id;
     }
 

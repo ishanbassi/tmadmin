@@ -2,6 +2,7 @@ package com.bassi.tmapp.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -18,28 +19,48 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.service.dto.PublishedTmDTO;
+
 @Service
 public class PdfReaderService extends PDFTextStripper  {
 	
 	@Autowired
 	private ResourceLoader resourceLoader;
-	private static final Logger log = LoggerFactory.getLogger(CSVExportService.class);
+	private static final Logger log = LoggerFactory.getLogger(PdfReaderService.class);
 	
-	private static final float MIN_TM_HEIGHT = 23f;
+	private static final float MIN_TM_HEIGHT = 23;
 	private static final float MAX_TM_HEIGHT = 24.5f;
+	private static final float MIN_APPLICATION_NO_HEIGHT = 11;
+	private static final float MAX_APPLICATION_NO_HEIGHT = 13;
 	private static final Pattern tmClassPattern = Pattern.compile("Class\\s+(\\d{1,2})");
 	private static final Pattern applicationDatePattern  = Pattern.compile("^\\d\\d\\/\\d\\d\\/\\d\\d\\d\\d");
 	private static final Pattern applicationNoPattern  = Pattern.compile("^(\\d{5,7})$");
 
+	private List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
+	
+	private Integer currentPageNo;
 	
  	public PdfReaderService() throws IOException {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
     protected void writeString(String string, List<TextPosition> textPositions) throws IOException {
+		PublishedTmDTO publishedTmDTO = new PublishedTmDTO();
+		String trademark = null , details, agentName, agentAddress, proprietorName, proprietorAddress, usage, associatedTrademarks;
+		Integer tmClass;
+		Long applicationNo;
+		
         for (TextPosition text : textPositions) {
+        	if(isTrademark(text)) {
+        		if(publishedTmDTO.getName() != null) {
+        			publishedTmDTO.setName(publishedTmDTO.getName().concat(text.getUnicode()));
+        			
+        		}else {
+        			publishedTmDTO.setName(text.getUnicode());
+        		}
+        	}
         	
         	System.out.println("String[" +
     				text.getXDirAdj() + "," +
@@ -56,7 +77,17 @@ public class PdfReaderService extends PDFTextStripper  {
                    " Text =" +  text.getUnicode());
         }
     } 
-	@EventListener(ApplicationReadyEvent.class)
+    @Override
+    public  void processPage(PDPage page) throws IOException {
+    	currentPageNo = getCurrentPageNo();
+        super.processPage(page);
+    }
+    @Override
+    protected void writeLineSeparator() throws IOException {
+        super.writeLineSeparator();
+        
+    }
+//	@EventListener(ApplicationReadyEvent.class)
 	public void readPdf() throws IOException{
 		Resource resource = resourceLoader.getResource("classpath:pdfs/1-16.pdf");
 		PDDocument document = PDDocument.load(resource.getFile());
@@ -69,4 +100,7 @@ public class PdfReaderService extends PDFTextStripper  {
 		
 	}
 	
+	public boolean isTrademark(TextPosition textPosition) {
+		return false;
+	}
 }
