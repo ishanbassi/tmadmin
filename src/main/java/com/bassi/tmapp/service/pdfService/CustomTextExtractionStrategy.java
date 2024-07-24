@@ -1,20 +1,33 @@
 package com.bassi.tmapp.service.pdfService;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+
 import com.itextpdf.kernel.geom.Vector;
 import com.itextpdf.kernel.pdf.canvas.parser.EventType;
 import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
+import com.itextpdf.kernel.pdf.canvas.parser.data.ImageRenderInfo;
 import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy;
+import com.itextpdf.kernel.pdf.canvas.parser.listener.IEventListener;
+import com.itextpdf.kernel.pdf.xobject.PdfImageXObject;
 
-public class CustomTextExtractionStrategy extends LocationTextExtractionStrategy{
+public class CustomTextExtractionStrategy implements IEventListener {
+    private final Logger log = LoggerFactory.getLogger(CustomTextExtractionStrategy.class);
+    
 	private List<LineInfo> lines = new ArrayList<>();
+	private PdfImage pdfImage; 
     private List<TextRenderInfo> currentLine = new ArrayList<>();
     private Vector lastBaseLine;
+    
+    @Value("{file-upload-base-path}")
+    private String baseDirectory;
 
 
 	@Override
@@ -41,8 +54,17 @@ public class CustomTextExtractionStrategy extends LocationTextExtractionStrategy
 			}
 			lastBaseLine = currentBaseLine;
 		}
-		
+		if(type == EventType.RENDER_IMAGE) {
+	        ImageRenderInfo img = (ImageRenderInfo) data;
+	        img.preserveGraphicsState();
+	        
+        	PdfImageXObject imgObject = img.getImage();
+        	String imageType = imgObject.identifyImageFileExtension();
+        	byte[] imageContent = imgObject.getImageBytes();
+        	pdfImage = new PdfImage(imageType, imageContent);
+		}
 	}
+
 
 	public void processLine(List<TextRenderInfo> textInfos) {
 		 if (textInfos.isEmpty()) return;
@@ -72,13 +94,19 @@ public class CustomTextExtractionStrategy extends LocationTextExtractionStrategy
 		return Math.abs(lastBaseLine.get(Vector.I2) - currentBaseLine.get(Vector.I2)) < tolerance;
 }
 
-	@Override
-	public Set<EventType> getSupportedEvents() {
-		return EnumSet.of(EventType.RENDER_TEXT);
-	}
 	public List<LineInfo> getLines() {
         return lines;
     }
+	
+	public PdfImage getImage() {
+		return pdfImage;
+	}
+
+
+	@Override
+	public Set<EventType> getSupportedEvents() {
+		return null;
+	}
 	
 }
 
