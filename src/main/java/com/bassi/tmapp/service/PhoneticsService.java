@@ -8,6 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -108,5 +110,13 @@ public class PhoneticsService {
     public void delete(Long id) {
         log.debug("Request to delete Phonetics : {}", id);
         phoneticsRepository.deleteById(id);
+    }
+    
+    
+    public String generatePhonetics(String val) {
+    	if(val == null || val.isBlank()) return val;
+    	DoubleMetaphone dm = new DoubleMetaphone();
+    	dm.setMaxCodeLen(100);
+    	return dm.doubleMetaphone(val);
     }
 }
