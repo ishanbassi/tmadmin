@@ -4,10 +4,7 @@ import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TrademarkService {
 
-    private final Logger log = LoggerFactory.getLogger(TrademarkService.class);
+    private static final Logger log = LoggerFactory.getLogger(TrademarkService.class);
 
     private final TrademarkRepository trademarkRepository;
 
@@ -75,17 +72,6 @@ public class TrademarkService {
             })
             .map(trademarkRepository::save)
             .map(trademarkMapper::toDto);
-    }
-
-    /**
-     * Get all the trademarks.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<TrademarkDTO> findAll() {
-        log.debug("Request to get all Trademarks");
-        return trademarkRepository.findAll().stream().map(trademarkMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**

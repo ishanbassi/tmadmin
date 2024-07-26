@@ -24,7 +24,7 @@ class PublishedTmPhoneticsTest {
     }
 
     @Test
-    void publishedTmTest() throws Exception {
+    void publishedTmTest() {
         PublishedTmPhonetics publishedTmPhonetics = getPublishedTmPhoneticsRandomSampleGenerator();
         PublishedTm publishedTmBack = getPublishedTmRandomSampleGenerator();
 

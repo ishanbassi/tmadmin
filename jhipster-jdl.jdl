@@ -109,6 +109,12 @@ relationship ManyToOne{
     
 }
 
+filter Trademark
+filter PublishedTm
+
+paginate Trademark , PublishedTm with infinite-scroll
+
+
 // Use Data Transfer Objects (DTO)
 dto * with mapstruct
 service * with serviceClass

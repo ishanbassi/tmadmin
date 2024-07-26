@@ -72,7 +72,9 @@
       "fieldValues": "REGISTERED,OPPOSED,WITHDRAWN,REJECTED,HEARING,PUBLISHED,PROVISIONAL"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "PublishedTm",
+  "pagination": "infinite-scroll",
   "relationships": [],
   "searchEngine": "no",
   "service": "serviceClass"

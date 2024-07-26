@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,8 @@ class PhoneticsResourceIT {
 
     private Phonetics phonetics;
 
+    private Phonetics insertedPhonetics;
+
     /**
      * Create an entity for this test.
      *
@@ -103,6 +106,14 @@ class PhoneticsResourceIT {
         phonetics = createEntity(em);
     }
 
+    @AfterEach
+    public void cleanup() {
+        if (insertedPhonetics != null) {
+            phoneticsRepository.delete(insertedPhonetics);
+            insertedPhonetics = null;
+        }
+    }
+
     @Test
     @Transactional
     void createPhonetics() throws Exception {
@@ -123,6 +134,8 @@ class PhoneticsResourceIT {
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
         var returnedPhonetics = phoneticsMapper.toEntity(returnedPhoneticsDTO);
         assertPhoneticsUpdatableFieldsEquals(returnedPhonetics, getPersistedPhonetics(returnedPhonetics));
+
+        insertedPhonetics = returnedPhonetics;
     }
 
     @Test
@@ -147,7 +160,7 @@ class PhoneticsResourceIT {
     @Transactional
     void getAllPhonetics() throws Exception {
         // Initialize the database
-        phoneticsRepository.saveAndFlush(phonetics);
+        insertedPhonetics = phoneticsRepository.saveAndFlush(phonetics);
 
         // Get all the phoneticsList
         restPhoneticsMockMvc
@@ -165,7 +178,7 @@ class PhoneticsResourceIT {
     @Transactional
     void getPhonetics() throws Exception {
         // Initialize the database
-        phoneticsRepository.saveAndFlush(phonetics);
+        insertedPhonetics = phoneticsRepository.saveAndFlush(phonetics);
 
         // Get the phonetics
         restPhoneticsMockMvc
@@ -190,7 +203,7 @@ class PhoneticsResourceIT {
     @Transactional
     void putExistingPhonetics() throws Exception {
         // Initialize the database
-        phoneticsRepository.saveAndFlush(phonetics);
+        insertedPhonetics = phoneticsRepository.saveAndFlush(phonetics);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -284,7 +297,7 @@ class PhoneticsResourceIT {
     @Transactional
     void partialUpdatePhoneticsWithPatch() throws Exception {
         // Initialize the database
-        phoneticsRepository.saveAndFlush(phonetics);
+        insertedPhonetics = phoneticsRepository.saveAndFlush(phonetics);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -292,7 +305,7 @@ class PhoneticsResourceIT {
         Phonetics partialUpdatedPhonetics = new Phonetics();
         partialUpdatedPhonetics.setId(phonetics.getId());
 
-        partialUpdatedPhonetics.sanitizedTm(UPDATED_SANITIZED_TM).phoneticSk(UPDATED_PHONETIC_SK).complete(UPDATED_COMPLETE);
+        partialUpdatedPhonetics.phoneticPk(UPDATED_PHONETIC_PK);
 
         restPhoneticsMockMvc
             .perform(
@@ -315,7 +328,7 @@ class PhoneticsResourceIT {
     @Transactional
     void fullUpdatePhoneticsWithPatch() throws Exception {
         // Initialize the database
-        phoneticsRepository.saveAndFlush(phonetics);
+        insertedPhonetics = phoneticsRepository.saveAndFlush(phonetics);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -409,7 +422,7 @@ class PhoneticsResourceIT {
     @Transactional
     void deletePhonetics() throws Exception {
         // Initialize the database
-        phoneticsRepository.saveAndFlush(phonetics);
+        insertedPhonetics = phoneticsRepository.saveAndFlush(phonetics);
 
         long databaseSizeBeforeDelete = getRepositoryCount();
 

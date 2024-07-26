@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,8 @@ class TmAgentResourceIT {
 
     private TmAgent tmAgent;
 
+    private TmAgent insertedTmAgent;
+
     /**
      * Create an entity for this test.
      *
@@ -103,6 +106,14 @@ class TmAgentResourceIT {
         tmAgent = createEntity(em);
     }
 
+    @AfterEach
+    public void cleanup() {
+        if (insertedTmAgent != null) {
+            tmAgentRepository.delete(insertedTmAgent);
+            insertedTmAgent = null;
+        }
+    }
+
     @Test
     @Transactional
     void createTmAgent() throws Exception {
@@ -123,6 +134,8 @@ class TmAgentResourceIT {
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
         var returnedTmAgent = tmAgentMapper.toEntity(returnedTmAgentDTO);
         assertTmAgentUpdatableFieldsEquals(returnedTmAgent, getPersistedTmAgent(returnedTmAgent));
+
+        insertedTmAgent = returnedTmAgent;
     }
 
     @Test
@@ -147,7 +160,7 @@ class TmAgentResourceIT {
     @Transactional
     void getAllTmAgents() throws Exception {
         // Initialize the database
-        tmAgentRepository.saveAndFlush(tmAgent);
+        insertedTmAgent = tmAgentRepository.saveAndFlush(tmAgent);
 
         // Get all the tmAgentList
         restTmAgentMockMvc
@@ -165,7 +178,7 @@ class TmAgentResourceIT {
     @Transactional
     void getTmAgent() throws Exception {
         // Initialize the database
-        tmAgentRepository.saveAndFlush(tmAgent);
+        insertedTmAgent = tmAgentRepository.saveAndFlush(tmAgent);
 
         // Get the tmAgent
         restTmAgentMockMvc
@@ -190,7 +203,7 @@ class TmAgentResourceIT {
     @Transactional
     void putExistingTmAgent() throws Exception {
         // Initialize the database
-        tmAgentRepository.saveAndFlush(tmAgent);
+        insertedTmAgent = tmAgentRepository.saveAndFlush(tmAgent);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -276,7 +289,7 @@ class TmAgentResourceIT {
     @Transactional
     void partialUpdateTmAgentWithPatch() throws Exception {
         // Initialize the database
-        tmAgentRepository.saveAndFlush(tmAgent);
+        insertedTmAgent = tmAgentRepository.saveAndFlush(tmAgent);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -284,7 +297,7 @@ class TmAgentResourceIT {
         TmAgent partialUpdatedTmAgent = new TmAgent();
         partialUpdatedTmAgent.setId(tmAgent.getId());
 
-        partialUpdatedTmAgent.lastName(UPDATED_LAST_NAME);
+        partialUpdatedTmAgent.address(UPDATED_ADDRESS);
 
         restTmAgentMockMvc
             .perform(
@@ -304,7 +317,7 @@ class TmAgentResourceIT {
     @Transactional
     void fullUpdateTmAgentWithPatch() throws Exception {
         // Initialize the database
-        tmAgentRepository.saveAndFlush(tmAgent);
+        insertedTmAgent = tmAgentRepository.saveAndFlush(tmAgent);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -398,7 +411,7 @@ class TmAgentResourceIT {
     @Transactional
     void deleteTmAgent() throws Exception {
         // Initialize the database
-        tmAgentRepository.saveAndFlush(tmAgent);
+        insertedTmAgent = tmAgentRepository.saveAndFlush(tmAgent);
 
         long databaseSizeBeforeDelete = getRepositoryCount();
 

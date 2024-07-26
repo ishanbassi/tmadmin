@@ -4,7 +4,7 @@
 
     <div class="d-flex justify-content-end">
       <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
-        <fa-icon icon="sync" [spin]="isLoading"></fa-icon>
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
         <span>Refresh list</span>
       </button>
 
@@ -157,7 +157,7 @@
             <th scope="col"></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
           @for (publishedTm of publishedTms; track trackId) {
             <tr data-cy="entityTable">
               <td>
@@ -194,7 +194,7 @@
                     REJECTED: 'REJECTED',
                     HEARING: 'HEARING',
                     PUBLISHED: 'PUBLISHED',
-                    PROVISIONAL: 'PROVISIONAL'
+                    PROVISIONAL: 'PROVISIONAL',
                   }[publishedTm.trademarkStatus ?? 'null']
                 }}
               </td>

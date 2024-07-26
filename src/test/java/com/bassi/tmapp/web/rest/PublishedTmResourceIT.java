@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +46,11 @@ class PublishedTmResourceIT {
 
     private static final Long DEFAULT_APPLICATION_NO = 1L;
     private static final Long UPDATED_APPLICATION_NO = 2L;
+    private static final Long SMALLER_APPLICATION_NO = 1L - 1L;
 
     private static final LocalDate DEFAULT_APPLICATION_DATE = LocalDate.ofEpochDay(0L);
     private static final LocalDate UPDATED_APPLICATION_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate SMALLER_APPLICATION_DATE = LocalDate.ofEpochDay(-1L);
 
     private static final String DEFAULT_AGENT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_AGENT_NAME = "BBBBBBBBBB";
@@ -69,9 +72,11 @@ class PublishedTmResourceIT {
 
     private static final Integer DEFAULT_TM_CLASS = 1;
     private static final Integer UPDATED_TM_CLASS = 2;
+    private static final Integer SMALLER_TM_CLASS = 1 - 1;
 
     private static final Integer DEFAULT_JOURNAL_NO = 1;
     private static final Integer UPDATED_JOURNAL_NO = 2;
+    private static final Integer SMALLER_JOURNAL_NO = 1 - 1;
 
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
@@ -107,6 +112,8 @@ class PublishedTmResourceIT {
     private MockMvc restPublishedTmMockMvc;
 
     private PublishedTm publishedTm;
+
+    private PublishedTm insertedPublishedTm;
 
     /**
      * Create an entity for this test.
@@ -167,6 +174,14 @@ class PublishedTmResourceIT {
         publishedTm = createEntity(em);
     }
 
+    @AfterEach
+    public void cleanup() {
+        if (insertedPublishedTm != null) {
+            publishedTmRepository.delete(insertedPublishedTm);
+            insertedPublishedTm = null;
+        }
+    }
+
     @Test
     @Transactional
     void createPublishedTm() throws Exception {
@@ -187,6 +202,8 @@ class PublishedTmResourceIT {
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
         var returnedPublishedTm = publishedTmMapper.toEntity(returnedPublishedTmDTO);
         assertPublishedTmUpdatableFieldsEquals(returnedPublishedTm, getPersistedPublishedTm(returnedPublishedTm));
+
+        insertedPublishedTm = returnedPublishedTm;
     }
 
     @Test
@@ -211,7 +228,7 @@ class PublishedTmResourceIT {
     @Transactional
     void getAllPublishedTms() throws Exception {
         // Initialize the database
-        publishedTmRepository.saveAndFlush(publishedTm);
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
 
         // Get all the publishedTmList
         restPublishedTmMockMvc
@@ -241,7 +258,7 @@ class PublishedTmResourceIT {
     @Transactional
     void getPublishedTm() throws Exception {
         // Initialize the database
-        publishedTmRepository.saveAndFlush(publishedTm);
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
 
         // Get the publishedTm
         restPublishedTmMockMvc
@@ -269,6 +286,974 @@ class PublishedTmResourceIT {
 
     @Test
     @Transactional
+    void getPublishedTmsByIdFiltering() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        Long id = publishedTm.getId();
+
+        defaultPublishedTmFiltering("id.equals=" + id, "id.notEquals=" + id);
+
+        defaultPublishedTmFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
+
+        defaultPublishedTmFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where name equals to
+        defaultPublishedTmFiltering("name.equals=" + DEFAULT_NAME, "name.equals=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where name in
+        defaultPublishedTmFiltering("name.in=" + DEFAULT_NAME + "," + UPDATED_NAME, "name.in=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where name is not null
+        defaultPublishedTmFiltering("name.specified=true", "name.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByNameContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where name contains
+        defaultPublishedTmFiltering("name.contains=" + DEFAULT_NAME, "name.contains=" + UPDATED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where name does not contain
+        defaultPublishedTmFiltering("name.doesNotContain=" + UPDATED_NAME, "name.doesNotContain=" + DEFAULT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDetailsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where details equals to
+        defaultPublishedTmFiltering("details.equals=" + DEFAULT_DETAILS, "details.equals=" + UPDATED_DETAILS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDetailsIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where details in
+        defaultPublishedTmFiltering("details.in=" + DEFAULT_DETAILS + "," + UPDATED_DETAILS, "details.in=" + UPDATED_DETAILS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDetailsIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where details is not null
+        defaultPublishedTmFiltering("details.specified=true", "details.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDetailsContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where details contains
+        defaultPublishedTmFiltering("details.contains=" + DEFAULT_DETAILS, "details.contains=" + UPDATED_DETAILS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDetailsNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where details does not contain
+        defaultPublishedTmFiltering("details.doesNotContain=" + UPDATED_DETAILS, "details.doesNotContain=" + DEFAULT_DETAILS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo equals to
+        defaultPublishedTmFiltering("applicationNo.equals=" + DEFAULT_APPLICATION_NO, "applicationNo.equals=" + UPDATED_APPLICATION_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo in
+        defaultPublishedTmFiltering(
+            "applicationNo.in=" + DEFAULT_APPLICATION_NO + "," + UPDATED_APPLICATION_NO,
+            "applicationNo.in=" + UPDATED_APPLICATION_NO
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo is not null
+        defaultPublishedTmFiltering("applicationNo.specified=true", "applicationNo.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo is greater than or equal to
+        defaultPublishedTmFiltering(
+            "applicationNo.greaterThanOrEqual=" + DEFAULT_APPLICATION_NO,
+            "applicationNo.greaterThanOrEqual=" + UPDATED_APPLICATION_NO
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo is less than or equal to
+        defaultPublishedTmFiltering(
+            "applicationNo.lessThanOrEqual=" + DEFAULT_APPLICATION_NO,
+            "applicationNo.lessThanOrEqual=" + SMALLER_APPLICATION_NO
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo is less than
+        defaultPublishedTmFiltering("applicationNo.lessThan=" + UPDATED_APPLICATION_NO, "applicationNo.lessThan=" + DEFAULT_APPLICATION_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationNoIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationNo is greater than
+        defaultPublishedTmFiltering(
+            "applicationNo.greaterThan=" + SMALLER_APPLICATION_NO,
+            "applicationNo.greaterThan=" + DEFAULT_APPLICATION_NO
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate equals to
+        defaultPublishedTmFiltering(
+            "applicationDate.equals=" + DEFAULT_APPLICATION_DATE,
+            "applicationDate.equals=" + UPDATED_APPLICATION_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate in
+        defaultPublishedTmFiltering(
+            "applicationDate.in=" + DEFAULT_APPLICATION_DATE + "," + UPDATED_APPLICATION_DATE,
+            "applicationDate.in=" + UPDATED_APPLICATION_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate is not null
+        defaultPublishedTmFiltering("applicationDate.specified=true", "applicationDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate is greater than or equal to
+        defaultPublishedTmFiltering(
+            "applicationDate.greaterThanOrEqual=" + DEFAULT_APPLICATION_DATE,
+            "applicationDate.greaterThanOrEqual=" + UPDATED_APPLICATION_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate is less than or equal to
+        defaultPublishedTmFiltering(
+            "applicationDate.lessThanOrEqual=" + DEFAULT_APPLICATION_DATE,
+            "applicationDate.lessThanOrEqual=" + SMALLER_APPLICATION_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate is less than
+        defaultPublishedTmFiltering(
+            "applicationDate.lessThan=" + UPDATED_APPLICATION_DATE,
+            "applicationDate.lessThan=" + DEFAULT_APPLICATION_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByApplicationDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where applicationDate is greater than
+        defaultPublishedTmFiltering(
+            "applicationDate.greaterThan=" + SMALLER_APPLICATION_DATE,
+            "applicationDate.greaterThan=" + DEFAULT_APPLICATION_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentName equals to
+        defaultPublishedTmFiltering("agentName.equals=" + DEFAULT_AGENT_NAME, "agentName.equals=" + UPDATED_AGENT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentName in
+        defaultPublishedTmFiltering("agentName.in=" + DEFAULT_AGENT_NAME + "," + UPDATED_AGENT_NAME, "agentName.in=" + UPDATED_AGENT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentName is not null
+        defaultPublishedTmFiltering("agentName.specified=true", "agentName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentNameContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentName contains
+        defaultPublishedTmFiltering("agentName.contains=" + DEFAULT_AGENT_NAME, "agentName.contains=" + UPDATED_AGENT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentName does not contain
+        defaultPublishedTmFiltering("agentName.doesNotContain=" + UPDATED_AGENT_NAME, "agentName.doesNotContain=" + DEFAULT_AGENT_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentAddress equals to
+        defaultPublishedTmFiltering("agentAddress.equals=" + DEFAULT_AGENT_ADDRESS, "agentAddress.equals=" + UPDATED_AGENT_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentAddressIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentAddress in
+        defaultPublishedTmFiltering(
+            "agentAddress.in=" + DEFAULT_AGENT_ADDRESS + "," + UPDATED_AGENT_ADDRESS,
+            "agentAddress.in=" + UPDATED_AGENT_ADDRESS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentAddressIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentAddress is not null
+        defaultPublishedTmFiltering("agentAddress.specified=true", "agentAddress.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentAddressContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentAddress contains
+        defaultPublishedTmFiltering("agentAddress.contains=" + DEFAULT_AGENT_ADDRESS, "agentAddress.contains=" + UPDATED_AGENT_ADDRESS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAgentAddressNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where agentAddress does not contain
+        defaultPublishedTmFiltering(
+            "agentAddress.doesNotContain=" + UPDATED_AGENT_ADDRESS,
+            "agentAddress.doesNotContain=" + DEFAULT_AGENT_ADDRESS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorName equals to
+        defaultPublishedTmFiltering("proprietorName.equals=" + DEFAULT_PROPRIETOR_NAME, "proprietorName.equals=" + UPDATED_PROPRIETOR_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorName in
+        defaultPublishedTmFiltering(
+            "proprietorName.in=" + DEFAULT_PROPRIETOR_NAME + "," + UPDATED_PROPRIETOR_NAME,
+            "proprietorName.in=" + UPDATED_PROPRIETOR_NAME
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorName is not null
+        defaultPublishedTmFiltering("proprietorName.specified=true", "proprietorName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorNameContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorName contains
+        defaultPublishedTmFiltering(
+            "proprietorName.contains=" + DEFAULT_PROPRIETOR_NAME,
+            "proprietorName.contains=" + UPDATED_PROPRIETOR_NAME
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorName does not contain
+        defaultPublishedTmFiltering(
+            "proprietorName.doesNotContain=" + UPDATED_PROPRIETOR_NAME,
+            "proprietorName.doesNotContain=" + DEFAULT_PROPRIETOR_NAME
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorAddressIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorAddress equals to
+        defaultPublishedTmFiltering(
+            "proprietorAddress.equals=" + DEFAULT_PROPRIETOR_ADDRESS,
+            "proprietorAddress.equals=" + UPDATED_PROPRIETOR_ADDRESS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorAddressIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorAddress in
+        defaultPublishedTmFiltering(
+            "proprietorAddress.in=" + DEFAULT_PROPRIETOR_ADDRESS + "," + UPDATED_PROPRIETOR_ADDRESS,
+            "proprietorAddress.in=" + UPDATED_PROPRIETOR_ADDRESS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorAddressIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorAddress is not null
+        defaultPublishedTmFiltering("proprietorAddress.specified=true", "proprietorAddress.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorAddressContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorAddress contains
+        defaultPublishedTmFiltering(
+            "proprietorAddress.contains=" + DEFAULT_PROPRIETOR_ADDRESS,
+            "proprietorAddress.contains=" + UPDATED_PROPRIETOR_ADDRESS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByProprietorAddressNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where proprietorAddress does not contain
+        defaultPublishedTmFiltering(
+            "proprietorAddress.doesNotContain=" + UPDATED_PROPRIETOR_ADDRESS,
+            "proprietorAddress.doesNotContain=" + DEFAULT_PROPRIETOR_ADDRESS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByHeadOfficeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where headOffice equals to
+        defaultPublishedTmFiltering("headOffice.equals=" + DEFAULT_HEAD_OFFICE, "headOffice.equals=" + UPDATED_HEAD_OFFICE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByHeadOfficeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where headOffice in
+        defaultPublishedTmFiltering(
+            "headOffice.in=" + DEFAULT_HEAD_OFFICE + "," + UPDATED_HEAD_OFFICE,
+            "headOffice.in=" + UPDATED_HEAD_OFFICE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByHeadOfficeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where headOffice is not null
+        defaultPublishedTmFiltering("headOffice.specified=true", "headOffice.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByImgUrlIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where imgUrl equals to
+        defaultPublishedTmFiltering("imgUrl.equals=" + DEFAULT_IMG_URL, "imgUrl.equals=" + UPDATED_IMG_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByImgUrlIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where imgUrl in
+        defaultPublishedTmFiltering("imgUrl.in=" + DEFAULT_IMG_URL + "," + UPDATED_IMG_URL, "imgUrl.in=" + UPDATED_IMG_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByImgUrlIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where imgUrl is not null
+        defaultPublishedTmFiltering("imgUrl.specified=true", "imgUrl.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByImgUrlContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where imgUrl contains
+        defaultPublishedTmFiltering("imgUrl.contains=" + DEFAULT_IMG_URL, "imgUrl.contains=" + UPDATED_IMG_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByImgUrlNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where imgUrl does not contain
+        defaultPublishedTmFiltering("imgUrl.doesNotContain=" + UPDATED_IMG_URL, "imgUrl.doesNotContain=" + DEFAULT_IMG_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass equals to
+        defaultPublishedTmFiltering("tmClass.equals=" + DEFAULT_TM_CLASS, "tmClass.equals=" + UPDATED_TM_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass in
+        defaultPublishedTmFiltering("tmClass.in=" + DEFAULT_TM_CLASS + "," + UPDATED_TM_CLASS, "tmClass.in=" + UPDATED_TM_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass is not null
+        defaultPublishedTmFiltering("tmClass.specified=true", "tmClass.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass is greater than or equal to
+        defaultPublishedTmFiltering("tmClass.greaterThanOrEqual=" + DEFAULT_TM_CLASS, "tmClass.greaterThanOrEqual=" + UPDATED_TM_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass is less than or equal to
+        defaultPublishedTmFiltering("tmClass.lessThanOrEqual=" + DEFAULT_TM_CLASS, "tmClass.lessThanOrEqual=" + SMALLER_TM_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass is less than
+        defaultPublishedTmFiltering("tmClass.lessThan=" + UPDATED_TM_CLASS, "tmClass.lessThan=" + DEFAULT_TM_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmClassIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where tmClass is greater than
+        defaultPublishedTmFiltering("tmClass.greaterThan=" + SMALLER_TM_CLASS, "tmClass.greaterThan=" + DEFAULT_TM_CLASS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo equals to
+        defaultPublishedTmFiltering("journalNo.equals=" + DEFAULT_JOURNAL_NO, "journalNo.equals=" + UPDATED_JOURNAL_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo in
+        defaultPublishedTmFiltering("journalNo.in=" + DEFAULT_JOURNAL_NO + "," + UPDATED_JOURNAL_NO, "journalNo.in=" + UPDATED_JOURNAL_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo is not null
+        defaultPublishedTmFiltering("journalNo.specified=true", "journalNo.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo is greater than or equal to
+        defaultPublishedTmFiltering(
+            "journalNo.greaterThanOrEqual=" + DEFAULT_JOURNAL_NO,
+            "journalNo.greaterThanOrEqual=" + UPDATED_JOURNAL_NO
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo is less than or equal to
+        defaultPublishedTmFiltering("journalNo.lessThanOrEqual=" + DEFAULT_JOURNAL_NO, "journalNo.lessThanOrEqual=" + SMALLER_JOURNAL_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo is less than
+        defaultPublishedTmFiltering("journalNo.lessThan=" + UPDATED_JOURNAL_NO, "journalNo.lessThan=" + DEFAULT_JOURNAL_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByJournalNoIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where journalNo is greater than
+        defaultPublishedTmFiltering("journalNo.greaterThan=" + SMALLER_JOURNAL_NO, "journalNo.greaterThan=" + DEFAULT_JOURNAL_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDeletedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where deleted equals to
+        defaultPublishedTmFiltering("deleted.equals=" + DEFAULT_DELETED, "deleted.equals=" + UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDeletedIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where deleted in
+        defaultPublishedTmFiltering("deleted.in=" + DEFAULT_DELETED + "," + UPDATED_DELETED, "deleted.in=" + UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByDeletedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where deleted is not null
+        defaultPublishedTmFiltering("deleted.specified=true", "deleted.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByUsageIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where usage equals to
+        defaultPublishedTmFiltering("usage.equals=" + DEFAULT_USAGE, "usage.equals=" + UPDATED_USAGE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByUsageIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where usage in
+        defaultPublishedTmFiltering("usage.in=" + DEFAULT_USAGE + "," + UPDATED_USAGE, "usage.in=" + UPDATED_USAGE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByUsageIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where usage is not null
+        defaultPublishedTmFiltering("usage.specified=true", "usage.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByUsageContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where usage contains
+        defaultPublishedTmFiltering("usage.contains=" + DEFAULT_USAGE, "usage.contains=" + UPDATED_USAGE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByUsageNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where usage does not contain
+        defaultPublishedTmFiltering("usage.doesNotContain=" + UPDATED_USAGE, "usage.doesNotContain=" + DEFAULT_USAGE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAssociatedTmsIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where associatedTms equals to
+        defaultPublishedTmFiltering("associatedTms.equals=" + DEFAULT_ASSOCIATED_TMS, "associatedTms.equals=" + UPDATED_ASSOCIATED_TMS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAssociatedTmsIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where associatedTms in
+        defaultPublishedTmFiltering(
+            "associatedTms.in=" + DEFAULT_ASSOCIATED_TMS + "," + UPDATED_ASSOCIATED_TMS,
+            "associatedTms.in=" + UPDATED_ASSOCIATED_TMS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAssociatedTmsIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where associatedTms is not null
+        defaultPublishedTmFiltering("associatedTms.specified=true", "associatedTms.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAssociatedTmsContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where associatedTms contains
+        defaultPublishedTmFiltering("associatedTms.contains=" + DEFAULT_ASSOCIATED_TMS, "associatedTms.contains=" + UPDATED_ASSOCIATED_TMS);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByAssociatedTmsNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where associatedTms does not contain
+        defaultPublishedTmFiltering(
+            "associatedTms.doesNotContain=" + UPDATED_ASSOCIATED_TMS,
+            "associatedTms.doesNotContain=" + DEFAULT_ASSOCIATED_TMS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTrademarkStatusIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where trademarkStatus equals to
+        defaultPublishedTmFiltering(
+            "trademarkStatus.equals=" + DEFAULT_TRADEMARK_STATUS,
+            "trademarkStatus.equals=" + UPDATED_TRADEMARK_STATUS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTrademarkStatusIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where trademarkStatus in
+        defaultPublishedTmFiltering(
+            "trademarkStatus.in=" + DEFAULT_TRADEMARK_STATUS + "," + UPDATED_TRADEMARK_STATUS,
+            "trademarkStatus.in=" + UPDATED_TRADEMARK_STATUS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTrademarkStatusIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where trademarkStatus is not null
+        defaultPublishedTmFiltering("trademarkStatus.specified=true", "trademarkStatus.specified=false");
+    }
+
+    private void defaultPublishedTmFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
+        defaultPublishedTmShouldBeFound(shouldBeFound);
+        defaultPublishedTmShouldNotBeFound(shouldNotBeFound);
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultPublishedTmShouldBeFound(String filter) throws Exception {
+        restPublishedTmMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(publishedTm.getId().intValue())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].details").value(hasItem(DEFAULT_DETAILS)))
+            .andExpect(jsonPath("$.[*].applicationNo").value(hasItem(DEFAULT_APPLICATION_NO.intValue())))
+            .andExpect(jsonPath("$.[*].applicationDate").value(hasItem(DEFAULT_APPLICATION_DATE.toString())))
+            .andExpect(jsonPath("$.[*].agentName").value(hasItem(DEFAULT_AGENT_NAME)))
+            .andExpect(jsonPath("$.[*].agentAddress").value(hasItem(DEFAULT_AGENT_ADDRESS)))
+            .andExpect(jsonPath("$.[*].proprietorName").value(hasItem(DEFAULT_PROPRIETOR_NAME)))
+            .andExpect(jsonPath("$.[*].proprietorAddress").value(hasItem(DEFAULT_PROPRIETOR_ADDRESS)))
+            .andExpect(jsonPath("$.[*].headOffice").value(hasItem(DEFAULT_HEAD_OFFICE.toString())))
+            .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
+            .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
+            .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
+            .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
+
+        // Check, that the count call also returns 1
+        restPublishedTmMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultPublishedTmShouldNotBeFound(String filter) throws Exception {
+        restPublishedTmMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restPublishedTmMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
+    }
+
+    @Test
+    @Transactional
     void getNonExistingPublishedTm() throws Exception {
         // Get the publishedTm
         restPublishedTmMockMvc.perform(get(ENTITY_API_URL_ID, Long.MAX_VALUE)).andExpect(status().isNotFound());
@@ -278,7 +1263,7 @@ class PublishedTmResourceIT {
     @Transactional
     void putExistingPublishedTm() throws Exception {
         // Initialize the database
-        publishedTmRepository.saveAndFlush(publishedTm);
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -384,7 +1369,7 @@ class PublishedTmResourceIT {
     @Transactional
     void partialUpdatePublishedTmWithPatch() throws Exception {
         // Initialize the database
-        publishedTmRepository.saveAndFlush(publishedTm);
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -394,13 +1379,16 @@ class PublishedTmResourceIT {
 
         partialUpdatedPublishedTm
             .name(UPDATED_NAME)
+            .details(UPDATED_DETAILS)
+            .applicationNo(UPDATED_APPLICATION_NO)
             .applicationDate(UPDATED_APPLICATION_DATE)
+            .agentName(UPDATED_AGENT_NAME)
             .agentAddress(UPDATED_AGENT_ADDRESS)
             .proprietorName(UPDATED_PROPRIETOR_NAME)
             .proprietorAddress(UPDATED_PROPRIETOR_ADDRESS)
-            .imgUrl(UPDATED_IMG_URL)
             .tmClass(UPDATED_TM_CLASS)
-            .usage(UPDATED_USAGE)
+            .journalNo(UPDATED_JOURNAL_NO)
+            .deleted(UPDATED_DELETED)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
             .trademarkStatus(UPDATED_TRADEMARK_STATUS);
 
@@ -425,7 +1413,7 @@ class PublishedTmResourceIT {
     @Transactional
     void fullUpdatePublishedTmWithPatch() throws Exception {
         // Initialize the database
-        publishedTmRepository.saveAndFlush(publishedTm);
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -531,7 +1519,7 @@ class PublishedTmResourceIT {
     @Transactional
     void deletePublishedTm() throws Exception {
         // Initialize the database
-        publishedTmRepository.saveAndFlush(publishedTm);
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
 
         long databaseSizeBeforeDelete = getRepositoryCount();
 

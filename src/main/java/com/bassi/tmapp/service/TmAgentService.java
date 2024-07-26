@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TmAgentService {
 
-    private final Logger log = LoggerFactory.getLogger(TmAgentService.class);
+    private static final Logger log = LoggerFactory.getLogger(TmAgentService.class);
 
     private final TmAgentRepository tmAgentRepository;
 

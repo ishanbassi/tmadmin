@@ -24,7 +24,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/phonetics")
 public class PhoneticsResource {
 
-    private final Logger log = LoggerFactory.getLogger(PhoneticsResource.class);
+    private static final Logger log = LoggerFactory.getLogger(PhoneticsResource.class);
 
     private static final String ENTITY_NAME = "phonetics";
 

@@ -1,7 +1,9 @@
 package com.bassi.tmapp.web.rest;
 
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
+import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -12,9 +14,14 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -24,7 +31,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/trademarks")
 public class TrademarkResource {
 
-    private final Logger log = LoggerFactory.getLogger(TrademarkResource.class);
+    private static final Logger log = LoggerFactory.getLogger(TrademarkResource.class);
 
     private static final String ENTITY_NAME = "trademark";
 
@@ -35,9 +42,16 @@ public class TrademarkResource {
 
     private final TrademarkRepository trademarkRepository;
 
-    public TrademarkResource(TrademarkService trademarkService, TrademarkRepository trademarkRepository) {
+    private final TrademarkQueryService trademarkQueryService;
+
+    public TrademarkResource(
+        TrademarkService trademarkService,
+        TrademarkRepository trademarkRepository,
+        TrademarkQueryService trademarkQueryService
+    ) {
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
+        this.trademarkQueryService = trademarkQueryService;
     }
 
     /**
@@ -131,12 +145,32 @@ public class TrademarkResource {
     /**
      * {@code GET  /trademarks} : get all the trademarks.
      *
+     * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trademarks in body.
      */
     @GetMapping("")
-    public List<TrademarkDTO> getAllTrademarks() {
-        log.debug("REST request to get all Trademarks");
-        return trademarkService.findAll();
+    public ResponseEntity<List<TrademarkDTO>> getAllTrademarks(
+        TrademarkCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        log.debug("REST request to get Trademarks by criteria: {}", criteria);
+
+        Page<TrademarkDTO> page = trademarkQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /trademarks/count} : count all the trademarks.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countTrademarks(TrademarkCriteria criteria) {
+        log.debug("REST request to count Trademarks by criteria: {}", criteria);
+        return ResponseEntity.ok().body(trademarkQueryService.countByCriteria(criteria));
     }
 
     /**

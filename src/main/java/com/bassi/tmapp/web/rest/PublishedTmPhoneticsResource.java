@@ -24,7 +24,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/published-tm-phonetics")
 public class PublishedTmPhoneticsResource {
 
-    private final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsResource.class);
+    private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsResource.class);
 
     private static final String ENTITY_NAME = "publishedTmPhonetics";
 

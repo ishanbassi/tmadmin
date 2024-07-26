@@ -26,7 +26,7 @@ class TmAgentTest {
     }
 
     @Test
-    void trademarksTest() throws Exception {
+    void trademarksTest() {
         TmAgent tmAgent = getTmAgentRandomSampleGenerator();
         Trademark trademarkBack = getTrademarkRandomSampleGenerator();
 

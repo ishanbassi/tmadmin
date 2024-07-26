@@ -1,5 +1,4 @@
-
-	configurations {
+configurations {
     liquibaseRuntime.extendsFrom sourceSets.main.compileClasspath
 }
 
@@ -7,7 +6,7 @@ dependencies {
   implementation "org.liquibase:liquibase-core"
   liquibaseRuntime "org.liquibase:liquibase-core"
   // Dependency required to parse options. Refer to https://github.com/liquibase/liquibase-gradle-plugin/tree/Release_2.2.0#news.
-  liquibaseRuntime "info.picocli:picocli:4.7.5"
+  liquibaseRuntime "info.picocli:picocli:4.7.6"
   liquibaseRuntime "org.postgresql:postgresql"
   liquibaseRuntime "org.liquibase.ext:liquibase-hibernate6:${dependencyManagement.importedProperties['liquibase.version']}"
   // jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
@@ -22,19 +21,16 @@ liquibase {
   activities {
     main {
       driver "org.postgresql.Driver"
-      url "jdbc:postgresql://localhost:5432/tmadmin"
-      username "tmadmin"
-      password "admin"
+      url "jdbc:postgresql://localhost:5432/tmapp"
+      username "tmapp"
       changelogFile "src/main/resources/config/liquibase/master.xml"
       logLevel "debug"
-      referenceUrl "hibernate:spring:com.bassi.tmapp.domain?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
       classpath "src/main/resources/"
     }
     diffLog {
       driver "org.postgresql.Driver"
-      url "jdbc:postgresql://localhost:5432/tmadmin"
-      username "tmadmin"
-      password "admin"
+      url "jdbc:postgresql://localhost:5432/tmapp"
+      username "tmapp"
       changelogFile project.ext.diffChangelogFile
       referenceUrl "hibernate:spring:com.bassi.tmapp.domain?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
       logLevel "debug"

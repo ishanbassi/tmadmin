@@ -24,7 +24,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/tm-agents")
 public class TmAgentResource {
 
-    private final Logger log = LoggerFactory.getLogger(TmAgentResource.class);
+    private static final Logger log = LoggerFactory.getLogger(TmAgentResource.class);
 
     private static final String ENTITY_NAME = "tmAgent";
 

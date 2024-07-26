@@ -16,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,8 @@ class PublishedTmPhoneticsResourceIT {
 
     private PublishedTmPhonetics publishedTmPhonetics;
 
+    private PublishedTmPhonetics insertedPublishedTmPhonetics;
+
     /**
      * Create an entity for this test.
      *
@@ -103,6 +106,14 @@ class PublishedTmPhoneticsResourceIT {
         publishedTmPhonetics = createEntity(em);
     }
 
+    @AfterEach
+    public void cleanup() {
+        if (insertedPublishedTmPhonetics != null) {
+            publishedTmPhoneticsRepository.delete(insertedPublishedTmPhonetics);
+            insertedPublishedTmPhonetics = null;
+        }
+    }
+
     @Test
     @Transactional
     void createPublishedTmPhonetics() throws Exception {
@@ -128,6 +139,8 @@ class PublishedTmPhoneticsResourceIT {
             returnedPublishedTmPhonetics,
             getPersistedPublishedTmPhonetics(returnedPublishedTmPhonetics)
         );
+
+        insertedPublishedTmPhonetics = returnedPublishedTmPhonetics;
     }
 
     @Test
@@ -152,7 +165,7 @@ class PublishedTmPhoneticsResourceIT {
     @Transactional
     void getAllPublishedTmPhonetics() throws Exception {
         // Initialize the database
-        publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
+        insertedPublishedTmPhonetics = publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
 
         // Get all the publishedTmPhoneticsList
         restPublishedTmPhoneticsMockMvc
@@ -170,7 +183,7 @@ class PublishedTmPhoneticsResourceIT {
     @Transactional
     void getPublishedTmPhonetics() throws Exception {
         // Initialize the database
-        publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
+        insertedPublishedTmPhonetics = publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
 
         // Get the publishedTmPhonetics
         restPublishedTmPhoneticsMockMvc
@@ -195,7 +208,7 @@ class PublishedTmPhoneticsResourceIT {
     @Transactional
     void putExistingPublishedTmPhonetics() throws Exception {
         // Initialize the database
-        publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
+        insertedPublishedTmPhonetics = publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -291,18 +304,13 @@ class PublishedTmPhoneticsResourceIT {
     @Transactional
     void partialUpdatePublishedTmPhoneticsWithPatch() throws Exception {
         // Initialize the database
-        publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
+        insertedPublishedTmPhonetics = publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
         // Update the publishedTmPhonetics using partial update
         PublishedTmPhonetics partialUpdatedPublishedTmPhonetics = new PublishedTmPhonetics();
         partialUpdatedPublishedTmPhonetics.setId(publishedTmPhonetics.getId());
-
-        partialUpdatedPublishedTmPhonetics
-            .sanitizedTm(UPDATED_SANITIZED_TM)
-            .phoneticPk(UPDATED_PHONETIC_PK)
-            .phoneticSk(UPDATED_PHONETIC_SK);
 
         restPublishedTmPhoneticsMockMvc
             .perform(
@@ -325,7 +333,7 @@ class PublishedTmPhoneticsResourceIT {
     @Transactional
     void fullUpdatePublishedTmPhoneticsWithPatch() throws Exception {
         // Initialize the database
-        publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
+        insertedPublishedTmPhonetics = publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
 
         long databaseSizeBeforeUpdate = getRepositoryCount();
 
@@ -424,7 +432,7 @@ class PublishedTmPhoneticsResourceIT {
     @Transactional
     void deletePublishedTmPhonetics() throws Exception {
         // Initialize the database
-        publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
+        insertedPublishedTmPhonetics = publishedTmPhoneticsRepository.saveAndFlush(publishedTmPhonetics);
 
         long databaseSizeBeforeDelete = getRepositoryCount();
 

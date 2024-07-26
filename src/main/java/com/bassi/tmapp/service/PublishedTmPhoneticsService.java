@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PublishedTmPhoneticsService {
 
-    private final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsService.class);
+    private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsService.class);
 
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
 

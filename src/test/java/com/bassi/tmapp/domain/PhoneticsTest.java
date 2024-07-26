@@ -24,7 +24,7 @@ class PhoneticsTest {
     }
 
     @Test
-    void trademarkTest() throws Exception {
+    void trademarkTest() {
         Phonetics phonetics = getPhoneticsRandomSampleGenerator();
         Trademark trademarkBack = getTrademarkRandomSampleGenerator();
 
