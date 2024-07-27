@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import com.bassi.tmapp.service.dto.MatchingTrademarkExportDto;
+	import com.bassi.tmapp.service.dto.MatchingTrademarktDto;
 
 
 @Service
@@ -23,7 +23,7 @@ public class MatchingTrademarkService {
 //		this.MatchingTmExportService = MatchingTmExportService;
 //	}
 	
-	public byte[] exportTrademarks( List<MatchingTrademarkExportDto> matchingTrademarkExportDtoList) {
+	public byte[] exportTrademarks( List<MatchingTrademarktDto> matchingTrademarkExportDtoList) {
 		MatchingTmExportService fileExportedExportService = new MatchingTmExportService("Trademark Journal");
         if (matchingTrademarkExportDtoList.isEmpty()) {
             return fileExportedExportService.export().toByteArray();

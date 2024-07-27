@@ -1,6 +1,9 @@
 package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.PublishedTm;
+
+import java.util.List;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +12,9 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface PublishedTmRepository extends JpaRepository<PublishedTm, Long>, JpaSpecificationExecutor<PublishedTm> {}
+public interface PublishedTmRepository extends JpaRepository<PublishedTm, Long>, JpaSpecificationExecutor<PublishedTm> {
+	
+	
+	@Query("")
+	List<MatchingTrademarks> findMatchingTrademarks(int tmClass);
+}

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bassi.tmapp.service.MatchingTrademarkService;
-import com.bassi.tmapp.service.dto.MatchingTrademarkExportDto;
+import com.bassi.tmapp.service.dto.MatchingTrademarktDto;
 
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
@@ -30,7 +30,7 @@ public class MatchingTrademarkResources {
 	
 	
 	@GetMapping(path = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<byte[]> getMethodName(@RequestParam Integer journalNo, @RequestBody List<MatchingTrademarkExportDto> matchingTrademarkExportDtoList) {
+	public ResponseEntity<byte[]> getMethodName(@RequestParam Integer journalNo, @RequestBody List<MatchingTrademarktDto> matchingTrademarkExportDtoList) {
 		String fileName = "Trademark-Journal-No-" + journalNo + ".csv";
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);

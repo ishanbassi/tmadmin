@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
-import com.bassi.tmapp.service.dto.MatchingTrademarkExportDto;
+import com.bassi.tmapp.service.dto.MatchingTrademarktDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import static java.util.Map.entry;
 
 
 
-public class MatchingTmExportService extends CSVExportService<MatchingTrademarkExportDto>{
+public class MatchingTmExportService extends CSVExportService<MatchingTrademarktDto>{
 	
 	
 	public MatchingTmExportService(String sheetName) {
@@ -47,7 +47,7 @@ public class MatchingTmExportService extends CSVExportService<MatchingTrademarkE
 	}
 
 	@Override
-	public void writeRow( MatchingTrademarkExportDto element, int rowNr) {
+	public void writeRow( MatchingTrademarktDto element, int rowNr) {
 		PublishedTmDTO publishedTmDTO = element.getPublishedTmDTO();
 		TrademarkDTO trademarkDTO= element.getTrademarkDto();
 		csvWriter.writeNext(new String[] {

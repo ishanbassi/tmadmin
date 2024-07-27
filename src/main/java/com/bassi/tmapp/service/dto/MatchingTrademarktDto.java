@@ -2,7 +2,7 @@ package com.bassi.tmapp.service.dto;
 
 
 
-public class MatchingTrademarkExportDto {
+public class MatchingTrademarktDto {
 	private PublishedTmDTO publishedTmDTO;
 	
 	private TrademarkDTO trademarkDto;
