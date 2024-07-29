@@ -106,5 +106,6 @@ jhipster:
 
 # application:
 
-file-upload-base-path: G:/opt/application/production/files/
+file-upload-base-path: /opt/application/staging/files/
+pdf-file-base-path: /opt/application/staging/files/
 

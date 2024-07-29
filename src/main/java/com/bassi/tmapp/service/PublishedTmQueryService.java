@@ -129,4 +129,5 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
         }
         return specification;
     }
+    
 }

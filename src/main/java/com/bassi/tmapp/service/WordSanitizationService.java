@@ -12,9 +12,15 @@ import com.bassi.tmapp.service.constants.StopWords;
 @Service
 public class WordSanitizationService {
 	
+	private List<String> stopWords = StopWords.STOP_WORDS_LIST;
+	
 	public String removeStopWords(String word) {
-		List<String> = Stream.of(word.split(" "))
+		ArrayList<String> allWords = Stream.of(word.toLowerCase().split(" "))
 				.collect(Collectors.toCollection(ArrayList<String>::new));
+		
+		allWords.removeAll(stopWords);
+		return allWords.stream().collect(Collectors.joining(" "));
+		
 				
 		
 	}

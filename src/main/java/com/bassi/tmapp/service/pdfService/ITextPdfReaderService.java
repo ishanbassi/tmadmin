@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.pdfService;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -65,7 +66,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	}
 	
 
-	@EventListener(ApplicationReadyEvent.class)
+	
 	public void readPdf() throws IOException {
 		String src = "pdfs/1-16.pdf";
 		List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
@@ -93,6 +94,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
             	currentPublishedTmDto.setImgUrl(path);
             	
             }
+            if()
             publishedTrademarks.add(currentPublishedTmDto);
         }
         
@@ -338,6 +340,11 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		List<String> subWords = new ArrayList<>(Arrays.asList(trademark.split(" ")));
 		subWords.add(trademark);
 		return subWords.stream().map(word -> phoneticsService.generatePhonetics(word)).toList();
+	}
+	
+	public void readPdfFilesFromFileSystem() {
+		File baseDirectory = new File(Paths.get(baseUploadDirectory).toAbsolutePath().toString());
+		File[] pdfFiles  =  baseDirectory.listFiles();
 	}
 }
 

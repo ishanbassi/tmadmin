@@ -12,7 +12,6 @@ import com.bassi.tmapp.service.dto.TrademarkDTO;
 import static java.util.Map.entry;
 
 
-
 public class MatchingTmExportService extends CSVExportService<MatchingTrademarktDto>{
 	
 	
