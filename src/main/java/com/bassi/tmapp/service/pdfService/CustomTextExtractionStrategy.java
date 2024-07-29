@@ -26,9 +26,6 @@ public class CustomTextExtractionStrategy implements IEventListener {
     private List<TextRenderInfo> currentLine = new ArrayList<>();
     private Vector lastBaseLine;
     
-    @Value("{file-upload-base-path}")
-    private String baseDirectory;
-
 
 	@Override
 	public void eventOccurred(IEventData data, EventType type) {

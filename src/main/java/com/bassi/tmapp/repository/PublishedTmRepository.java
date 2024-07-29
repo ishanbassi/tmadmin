@@ -15,6 +15,6 @@ import org.springframework.stereotype.Repository;
 public interface PublishedTmRepository extends JpaRepository<PublishedTm, Long>, JpaSpecificationExecutor<PublishedTm> {
 	
 	
-	@Query("")
-	List<MatchingTrademarks> findMatchingTrademarks(int tmClass);
+//	@Query("")
+//	List<MatchingTrademarks> findMatchingTrademarks(int tmClass);
 }

@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 
+import lombok.ToString;
+
+@ToString
 public class LineInfo {
     private List<WordInfo> words;
 
@@ -17,18 +20,12 @@ public class LineInfo {
         return words;
     }
     
-    public WordInfo getAllWordsFromSameLineWithInfo() {
+    public String getAllWordsFromSameLineWithInfo() {
     	if(words == null  || words.isEmpty()) {
     		return null;
     	}
-    	List<String> textList = words.stream().map(word -> word.getText()).toList();
-    	String text = String.join("", textList);
-    	Optional<WordInfo> wordInfo = words.stream().findFirst();
-    	
-    	if(wordInfo.isPresent()) {
-    		return wordInfo.get().setText(text);
-    	}
-    	return null;
+    	List<String> textList = words.stream().map(WordInfo::getText).toList();
+    	return String.join("", textList);
     }
     
     

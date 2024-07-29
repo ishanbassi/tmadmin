@@ -2,6 +2,9 @@ package com.bassi.tmapp.service.pdfService;
 
 import java.util.Objects;
 
+import lombok.ToString;
+
+@ToString
 public class WordInfo {
     private String text;
     private  String fontFamily;

@@ -1,4 +1,4 @@
-package com.bassi.tmapp.domain;
+ package com.bassi.tmapp.domain;
 
 import jakarta.persistence.*;
 import java.io.Serializable;
