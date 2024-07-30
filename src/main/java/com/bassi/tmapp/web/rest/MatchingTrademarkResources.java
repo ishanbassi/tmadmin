@@ -1,4 +1,4 @@
-package com.bassi.tmapp.resources;
+package com.bassi.tmapp.web.rest;
 
 import java.util.List;
 

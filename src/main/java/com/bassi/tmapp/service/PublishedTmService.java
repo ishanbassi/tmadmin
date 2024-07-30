@@ -4,6 +4,8 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
+import com.bassi.tmapp.service.pdfService.ITextPdfReaderService;
+
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +24,12 @@ public class PublishedTmService {
     private final PublishedTmRepository publishedTmRepository;
 
     private final PublishedTmMapper publishedTmMapper;
+    private final ITextPdfReaderService pdfReaderService;
 
-    public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper) {
+    public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,ITextPdfReaderService pdfReaderService) {
         this.publishedTmRepository = publishedTmRepository;
         this.publishedTmMapper = publishedTmMapper;
+        this.pdfReaderService = pdfReaderService;
     }
 
     /**
@@ -95,4 +99,8 @@ public class PublishedTmService {
         log.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepository.deleteById(id);
     }
+
+	public void readPdfFile(String journalNo) {
+		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
+	}
 }

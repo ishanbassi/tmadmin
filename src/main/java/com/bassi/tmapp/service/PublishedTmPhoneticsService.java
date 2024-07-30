@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
@@ -8,6 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -23,12 +26,13 @@ public class PublishedTmPhoneticsService {
     private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsService.class);
 
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
-
     private final PublishedTmPhoneticsMapper publishedTmPhoneticsMapper;
+    private final WordSanitizationService wordSanitizationService;
 
     public PublishedTmPhoneticsService(
         PublishedTmPhoneticsRepository publishedTmPhoneticsRepository,
-        PublishedTmPhoneticsMapper publishedTmPhoneticsMapper
+        PublishedTmPhoneticsMapper publishedTmPhoneticsMapper,
+        WordSanitizationService wordSanitizationService
     ) {
         this.publishedTmPhoneticsRepository = publishedTmPhoneticsRepository;
         this.publishedTmPhoneticsMapper = publishedTmPhoneticsMapper;
@@ -115,5 +119,25 @@ public class PublishedTmPhoneticsService {
     public void delete(Long id) {
         log.debug("Request to delete PublishedTmPhonetics : {}", id);
         publishedTmPhoneticsRepository.deleteById(id);
+    }
+
+	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
+		List<PublishedTmPhonetics> publishedPhonetics =  publishedTrademarks.stream()
+				.filter(tm -> tm.getName() != null  || !tm.getName().isBlank() )
+				.map(tm -> {
+			PublishedTmPhonetics tmPhonetics = new PublishedTmPhonetics();
+			tmPhonetics.setPublishedTm(tm);
+			tmPhonetics.setPhoneticPk(generatePhonetics(tm.getName()));
+			tmPhonetics.setSanitizedTm(null);
+			
+		});
+		return null;
+	}
+	
+    public String generatePhonetics(String val) {
+    	if(val == null || val.isBlank()) return null;
+    	DoubleMetaphone dm = new DoubleMetaphone();
+    	dm.setMaxCodeLen(100);
+    	return dm.doubleMetaphone(val);
     }
 }

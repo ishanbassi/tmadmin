@@ -30,11 +30,17 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.PdfReaderService;
 import com.bassi.tmapp.service.PhoneticsService;
+import com.bassi.tmapp.service.PublishedTmPhoneticsService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
+import com.bassi.tmapp.service.mapper.PublishedTmMapper;
+import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.geom.Vector;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -59,26 +65,35 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	private PublishedTmDTO currentPublishedTmDto;
 	private  PhoneticsService phoneticsService;
+	private PublishedTmRepository publishedTmRepository;
+	private PublishedTmPhoneticsService publishedTmPhoneticsService;
 	
 	@Value("${file-upload-base-path}")
     private String baseUploadDirectory;
 	
 	@Value("${pdf-file-base-path}")
     private String basePdfDirectory;
+	
+	private PublishedTmMapper publishedTmMapper;
 
-	public ITextPdfReaderService(PhoneticsService phoneticsService) {
+	public ITextPdfReaderService(PhoneticsService phoneticsService,PublishedTmRepository publishedTmRepository,PublishedTmMapper publishedTmMapper ) {
 		this.phoneticsService = phoneticsService;
+		this.publishedTmRepository = publishedTmRepository;
+		this.publishedTmMapper = publishedTmMapper;
 	}
 	
 
 	
-	public void readPdf(String pdfFilePath) throws IOException {
+	public List<PublishedTmDTO>  readPdf(String pdfFilePath){
+		log.info("Going to read pdf file: {}" , pdfFilePath);
 		List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
-		List<PublishedTmDTO> errors = new ArrayList<>();
-
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
-        
-        
+		PdfDocument pdfDoc;
+		try {
+			pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));	
+		}
+		catch(IOException e) {
+			throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath +  " Reason: " + e.getLocalizedMessage());
+		}
         for (int i = 11; i <= 11; i++) {
         	log.info("Going to process page number {}", i);
         	currentPublishedTmDto =  new PublishedTmDTO();
@@ -102,7 +117,8 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
         }
         
 		pdfDoc.close();
-
+		publishedTrademarks  =  checkAnyMissingInformation(publishedTrademarks);
+		return publishedTrademarks;
 	}
 	
 	public void extractAndSavePublishedTrademark(List<LineInfo> lines) {
@@ -344,19 +360,48 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		subWords.add(trademark);
 		return subWords.stream().map(word -> phoneticsService.generatePhonetics(word)).toList();
 	}
-	@EventListener(ApplicationReadyEvent.class)
+	
+	
 	public void readPdfFilesFromFileSystem(String journalNo) {
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
-		List<String> pdfFiles  =  Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath).collect(Collectors.toList());
+		List<String> pdfFilePath  =  Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath).toList();
 		try {
-			readPdf(pdfFiles.get(0));	
+			List<PublishedTmDTO> publishedTrademarksDto = readPdf(journalNo);
+			List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
+			savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
+			
+				
 		}
-		catch(Exception e) {
-			log.error(e.getLocalizedMessage());
+		catch(Exception e) { 
+			throw new InternalServerAlertException("Unable to Read pdf files from the journal " + journalNo + " Reason: " + e.getLocalizedMessage());
 		}
 		
 		
 	}
+	
+	private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
+		publishedTrademarks =  publishedTmRepository.saveAll(publishedTrademarks);
+		List<PublishedTmPhonetics> publishedPhonetics = publishedTmPhoneticsService.saveAll(publishedTrademarks); 
+		
+		
+	}
+
+
+
+	private List<PublishedTmDTO> checkAnyMissingInformation(List<PublishedTmDTO> publishedTrademarks) {
+		List<PublishedTmDTO> errors = new ArrayList<>();
+		List<PublishedTmDTO> validTms = new ArrayList<>();
+		for(PublishedTmDTO tm: publishedTrademarks) {
+			if(tm != null && tm.getName() != null && tm.getTmClass() != null && tm.getApplicationNo() != null
+					&& tm.getApplicationDate() != null && tm.getHeadOffice() != null && tm.getJournalNo() != null) {
+				validTms.add(tm);
+			}else {
+				errors.add(tm);
+			}
+		}
+		return validTms;
+	}
+
 }
 
 

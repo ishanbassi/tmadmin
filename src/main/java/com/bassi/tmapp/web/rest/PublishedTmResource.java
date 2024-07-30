@@ -200,4 +200,12 @@ public class PublishedTmResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+    
+	@PostMapping("/extract/{journalNo}")
+	public String extractPublishedTm(@PathVariable String journalNo) {
+		publishedTmService.readPdfFile(journalNo);
+		return "Trademarks extraction has been initialized";
+	}
+	
+	
 }
