@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,18 +63,20 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	@Value("${file-upload-base-path}")
     private String baseUploadDirectory;
 	
+	@Value("${pdf-file-base-path}")
+    private String basePdfDirectory;
+
 	public ITextPdfReaderService(PhoneticsService phoneticsService) {
 		this.phoneticsService = phoneticsService;
 	}
 	
 
 	
-	public void readPdf() throws IOException {
-		String src = "pdfs/1-16.pdf";
+	public void readPdf(String pdfFilePath) throws IOException {
 		List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
 		List<PublishedTmDTO> errors = new ArrayList<>();
 
-        PdfDocument pdfDoc = new PdfDocument(new PdfReader(src));
+        PdfDocument pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
         
         
         for (int i = 11; i <= 11; i++) {
@@ -94,7 +98,6 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
             	currentPublishedTmDto.setImgUrl(path);
             	
             }
-            if()
             publishedTrademarks.add(currentPublishedTmDto);
         }
         
@@ -335,16 +338,24 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		}
 		return filePath;
 	}
-	
+
 	public List<String> generatePhonetics(String trademark) {
 		List<String> subWords = new ArrayList<>(Arrays.asList(trademark.split(" ")));
 		subWords.add(trademark);
 		return subWords.stream().map(word -> phoneticsService.generatePhonetics(word)).toList();
 	}
-	
-	public void readPdfFilesFromFileSystem() {
-		File baseDirectory = new File(Paths.get(baseUploadDirectory).toAbsolutePath().toString());
-		File[] pdfFiles  =  baseDirectory.listFiles();
+	@EventListener(ApplicationReadyEvent.class)
+	public void readPdfFilesFromFileSystem(String journalNo) {
+		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
+		List<String> pdfFiles  =  Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath).collect(Collectors.toList());
+		try {
+			readPdf(pdfFiles.get(0));	
+		}
+		catch(Exception e) {
+			log.error(e.getLocalizedMessage());
+		}
+		
+		
 	}
 }
 
