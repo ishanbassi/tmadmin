@@ -6,6 +6,9 @@ import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
+
+import jakarta.persistence.criteria.Join;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -129,5 +132,13 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
         }
         return specification;
     }
-    
+//    
+//    protected Specification<PublishedTm> filterTmByPhoneticSimilarity(int journalNo , int tmClass){
+//    	return (root, query, cb) -> {
+//    		Join<PublishedTm , PublishedTmPhonetics> tmPhonetics = root.join("published_tm_phonetics");
+//    		Join<PublishedTmPhonetics, Phonetics> phonetics = tmPhonetics.join("phonetics")
+//    				.on(cb.equal(tmPhonetics.get("phonetic_pk")));
+//    	}
+//        return null;
+//    }
 }

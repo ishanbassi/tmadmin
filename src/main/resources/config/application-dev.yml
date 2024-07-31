@@ -108,4 +108,5 @@ jhipster:
 
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/
+json-file-base-path: /opt/application/staging/json/ 
 

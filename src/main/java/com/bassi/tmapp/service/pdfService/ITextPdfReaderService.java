@@ -41,6 +41,7 @@ import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.geom.Vector;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -73,6 +74,9 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	@Value("${pdf-file-base-path}")
     private String basePdfDirectory;
+	
+	@Value("${json-file-base-path}")
+    private String baseJsonDirectory;
 	
 	private PublishedTmMapper publishedTmMapper;
 
@@ -364,17 +368,19 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	public void readPdfFilesFromFileSystem(String journalNo) {
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
-		List<String> pdfFilePath  =  Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath).toList();
-		try {
-			List<PublishedTmDTO> publishedTrademarksDto = readPdf(journalNo);
-			List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
-			savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
-			
-				
-		}
-		catch(Exception e) { 
-			throw new InternalServerAlertException("Unable to Read pdf files from the journal " + journalNo + " Reason: " + e.getLocalizedMessage());
-		}
+		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
+				.forEach(path -> {
+					try {
+						List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
+						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
+						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
+						
+					}
+					catch(Exception e) { 
+						throw new InternalServerAlertException("Unable to Read pdf files from the journal " + journalNo + " Reason: " + e.getLocalizedMessage());
+					}
+				});
+		
 		
 		
 	}
@@ -399,7 +405,25 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 				errors.add(tm);
 			}
 		}
+		log.info("Going to save missing information to the json file");
+		writeErrorsToJson(errors);
 		return validTms;
+	}
+
+
+
+	private void writeErrorsToJson(List<PublishedTmDTO> errors) {
+		ObjectMapper mapper = new ObjectMapper();
+		String jsonDir = Paths.get(baseJsonDirectory).toAbsolutePath().toString();
+		String fileName  = new Date().getTime() + "-errors.json";
+		File file = new File(Paths.get(jsonDir , fileName).toString());
+		 try {  
+		        mapper.writeValue(file, errors );
+
+		    } catch (IOException e) {  
+		        e.printStackTrace();  
+		    }
+		
 	}
 
 }
