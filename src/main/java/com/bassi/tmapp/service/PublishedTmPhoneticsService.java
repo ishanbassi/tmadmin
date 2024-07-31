@@ -36,6 +36,7 @@ public class PublishedTmPhoneticsService {
     ) {
         this.publishedTmPhoneticsRepository = publishedTmPhoneticsRepository;
         this.publishedTmPhoneticsMapper = publishedTmPhoneticsMapper;
+        this.wordSanitizationService = wordSanitizationService;
     }
 
     /**
@@ -122,16 +123,16 @@ public class PublishedTmPhoneticsService {
     }
 
 	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
-		List<PublishedTmPhonetics> publishedPhonetics =  publishedTrademarks.stream()
-				.filter(tm -> tm.getName() != null  || !tm.getName().isBlank() )
-				.map(tm -> {
+		return publishedTrademarks.stream().filter(tm -> tm.getName() != null || !tm.getName().isBlank()).map(tm -> {
+			String sanitizedTm = this.wordSanitizationService.sanitizeWord(tm.getName());
 			PublishedTmPhonetics tmPhonetics = new PublishedTmPhonetics();
 			tmPhonetics.setPublishedTm(tm);
 			tmPhonetics.setPhoneticPk(generatePhonetics(tm.getName()));
-			tmPhonetics.setSanitizedTm(null);
-			
-		});
-		return null;
+			tmPhonetics.setSanitizedTm(sanitizedTm);
+
+			return tmPhonetics;
+
+		}).toList();
 	}
 	
     public String generatePhonetics(String val) {

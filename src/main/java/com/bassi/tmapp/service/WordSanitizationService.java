@@ -14,7 +14,13 @@ public class WordSanitizationService {
 	
 	private List<String> stopWords = StopWords.STOP_WORDS_LIST;
 	
-	public String removeStopWords(String word) {
+	
+	
+	public String sanitizeWord(String word) {
+		return removeStopWords(removeSpecialCharacters(word));
+	}
+	
+	private String removeStopWords(String word) {
 		ArrayList<String> allWords = Stream.of(word.toLowerCase().split(" "))
 				.collect(Collectors.toCollection(ArrayList<String>::new));
 		
@@ -25,7 +31,7 @@ public class WordSanitizationService {
 		
 	}
 	
-	public String removeSpecialCharacters(String word) {
-		return null;
+	private String removeSpecialCharacters(String word) {
+		return word.replaceAll("[–~`!@#$%^&*(){}\\[\\];:\"'<,.>?\\/\\\\|_+=-]", " ");
 	}
 }
