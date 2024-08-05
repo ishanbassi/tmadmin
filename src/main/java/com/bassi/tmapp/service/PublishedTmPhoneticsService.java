@@ -123,7 +123,7 @@ public class PublishedTmPhoneticsService {
     }
 
 	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
-		return publishedTrademarks.stream().filter(tm -> tm.getName() != null || !tm.getName().isBlank()).map(tm -> {
+		List<PublishedTmPhonetics> publishedTmPhoneticsList =  publishedTrademarks.stream().filter(tm -> tm.getName() != null && !tm.getName().isBlank()).map(tm -> {
 			String sanitizedTm = this.wordSanitizationService.sanitizeWord(tm.getName());
 			PublishedTmPhonetics tmPhonetics = new PublishedTmPhonetics();
 			tmPhonetics.setPublishedTm(tm);
@@ -133,6 +133,7 @@ public class PublishedTmPhoneticsService {
 			return tmPhonetics;
 
 		}).toList();
+		return publishedTmPhoneticsRepository.saveAll(publishedTmPhoneticsList);
 	}
 	
     public String generatePhonetics(String val) {

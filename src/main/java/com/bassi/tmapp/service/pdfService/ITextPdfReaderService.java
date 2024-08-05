@@ -80,10 +80,12 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	private PublishedTmMapper publishedTmMapper;
 
-	public ITextPdfReaderService(PhoneticsService phoneticsService,PublishedTmRepository publishedTmRepository,PublishedTmMapper publishedTmMapper ) {
+	public ITextPdfReaderService(PhoneticsService phoneticsService, PublishedTmRepository publishedTmRepository,
+			PublishedTmMapper publishedTmMapper, PublishedTmPhoneticsService publishedTmPhoneticsService) {
 		this.phoneticsService = phoneticsService;
 		this.publishedTmRepository = publishedTmRepository;
 		this.publishedTmMapper = publishedTmMapper;
+		this.publishedTmPhoneticsService = publishedTmPhoneticsService;
 	}
 	
 
@@ -398,15 +400,18 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		List<PublishedTmDTO> errors = new ArrayList<>();
 		List<PublishedTmDTO> validTms = new ArrayList<>();
 		for(PublishedTmDTO tm: publishedTrademarks) {
-			if(tm != null && tm.getName() != null && tm.getTmClass() != null && tm.getApplicationNo() != null
-					&& tm.getApplicationDate() != null && tm.getHeadOffice() != null && tm.getJournalNo() != null) {
+			if(tm != null && tm.getTmClass() != null && tm.getApplicationNo() != null
+					&& tm.getApplicationDate() != null && tm.getHeadOffice() != null && tm.getJournalNo() != null
+					&& (tm.getName() != null || tm.getImgUrl() != null)) {
 				validTms.add(tm);
 			}else {
 				errors.add(tm);
 			}
 		}
 		log.info("Going to save missing information to the json file");
-		writeErrorsToJson(errors);
+		if(!errors.isEmpty()) {
+			writeErrorsToJson(errors);
+		}
 		return validTms;
 	}
 

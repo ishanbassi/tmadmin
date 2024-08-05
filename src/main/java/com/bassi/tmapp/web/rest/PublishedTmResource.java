@@ -202,7 +202,7 @@ public class PublishedTmResource {
     }
     
 	@PostMapping("/extract/{journalNo}")
-	public String extractPublishedTm(@PathVariable String journalNo) {
+	public String extractPublishedTm(@PathVariable("journalNo") String journalNo) {
 		publishedTmService.readPdfFile(journalNo);
 		return "Trademarks extraction has been initialized";
 	}
