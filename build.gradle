@@ -133,12 +133,10 @@ dependencies {
     testRuntimeOnly("com.tngtech.archunit:archunit-junit5-engine:${archunitJunit5Version}") {
         exclude group: "org.slf4j", module: "slf4j-api"
     }
-    implementation "io.dropwizard.metrics:metrics-core"
+    implementation "io.dropwizard.metrics:metrics-core:4.2.26"
     implementation "io.micrometer:micrometer-registry-prometheus"
     implementation "jakarta.annotation:jakarta.annotation-api"
     implementation "org.apache.commons:commons-lang3"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
     implementation "org.springframework.boot:spring-boot-loader-tools"
     implementation "org.springframework.boot:spring-boot-starter-actuator"
@@ -174,10 +172,12 @@ dependencies {
     testImplementation "org.testcontainers:junit-jupiter"
     testImplementation "org.testcontainers:testcontainers"
 	
-	implementation 'org.apache.pdfbox:pdfbox:2.0.1'
-	implementation 'commons-codec:commons-codec:1.5'
-	implementation 'com.itextpdf:itext-core:8.0.4'
-	implementation 'edu.stanford.nlp:stanford-corenlp:4.0.0'
+	implementation "org.apache.pdfbox:pdfbox:2.0.1"
+	implementation "commons-codec:commons-codec:1.5"
+	implementation "com.itextpdf:itext-core:8.0.4"
+	implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+	annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    
 	
 
     

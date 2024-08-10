@@ -3,6 +3,7 @@ package com.bassi.tmapp.service.dto;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -47,6 +48,14 @@ public class TrademarkDTO implements Serializable {
     private TrademarkStatus trademarkStatus;
 
     private TmAgentDTO tmAgent;
+    
+    private String createdBy;
+    
+    private Instant createdDate = Instant.now();
+    
+    private String lastModifiedBy;
+
+    private Instant lastModifiedDate = Instant.now();
 
     public Long getId() {
         return id;
@@ -191,8 +200,42 @@ public class TrademarkDTO implements Serializable {
     public void setTmAgent(TmAgentDTO tmAgent) {
         this.tmAgent = tmAgent;
     }
+    
+    
 
-    @Override
+    public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public Instant getCreatedDate() {
+		return createdDate;
+	}
+
+	public void setCreatedDate(Instant createdDate) {
+		this.createdDate = createdDate;
+	}
+
+	public String getLastModifiedBy() {
+		return lastModifiedBy;
+	}
+
+	public void setLastModifiedBy(String lastModifiedBy) {
+		this.lastModifiedBy = lastModifiedBy;
+	}
+
+	public Instant getLastModifiedDate() {
+		return lastModifiedDate;
+	}
+
+	public void setLastModifiedDate(Instant lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -207,6 +250,7 @@ public class TrademarkDTO implements Serializable {
         }
         return Objects.equals(this.id, trademarkDTO.id);
     }
+    
 
     @Override
     public int hashCode() {
