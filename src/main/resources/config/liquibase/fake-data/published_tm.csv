@@ -1,11 +1,11 @@
-id;name;details;application_no;application_date;agent_name;agent_address;proprietor_name;proprietor_address;head_office;img_url;tm_class;journal_no;deleted;usage;associated_tms;trademark_status
-1;heavenly at finally;homestead hide readily;1938;2024-05-22;slaw;convince yippee;almost;zowie plush the;KOLKATA;aw;8999;22653;false;humour;gripping however;REGISTERED
-2;meh uneven ew;amidst spare amongst;12406;2024-05-21;sprinkle this ugh;brooch astride;vinyl arrogantly meet;pollinate;CHENNAI;soon;11717;19457;true;impolite;problem;HEARING
-3;ugh representation solid;worth provided;15507;2024-05-21;so;warrior thing safely;an creepy;though if;MUMBAI;qua eek mission;19514;15367;true;republic;ventilate;REJECTED
-4;ambassador;keenly whoa;5469;2024-05-22;cheapen duh;eating delete;likewise uh-huh confused;emancipate via righteously;CHENNAI;cooked unaccountably yuck;9298;13777;false;timely;kneejerk;WITHDRAWN
-5;sag past near;over;19887;2024-05-22;belch;sweet whether;contradict;gah finally astride;AHMEDABAD;despise equal er;11423;4314;true;for medicate;brr;PROVISIONAL
-6;essential round;outpace hosepipe mysteriously;14550;2024-05-21;stained times;sanction extremely;hospitalisation;nickel;DELHI;irresponsible;2776;5747;false;flawless outstanding fooey;assured after;WITHDRAWN
-7;march;suddenly total yuck;31996;2024-05-22;whose poll;likewise wealthy;but peripheral retch;joyously;CHENNAI;even yahoo;1821;13431;false;but;yet vineyard even;REGISTERED
-8;ack;as;28530;2024-05-22;pawn up;about gadzooks dart;upstage;zero prattle;KOLKATA;accomplished;21201;12149;false;gadzooks if as;nor;PUBLISHED
-9;restroom reduplicate;wee bleakly;15718;2024-05-22;orbit admirable majestically;pfft;amid;concentrate next;CHENNAI;authorized;1265;1858;true;garrote sabotage pet;gate uplift anenst;HEARING
-10;home;back;20967;2024-05-21;correctly yowza dead;easily yellowish;flamboyant solidly;triumphantly girlfriend subtract;KOLKATA;finally tremendous orientate;10192;4392;true;dickey endpoint plastic;solemnly insecure;WITHDRAWN
+id;name;details;application_no;application_date;agent_name;agent_address;proprietor_name;proprietor_address;head_office;img_url;tm_class;journal_no;deleted;usage;associated_tms;trademark_status;created_date;modified_date
+1;heavenly at finally;homestead hide readily;1938;2024-05-22;slaw;convince yippee;almost;zowie plush the;KOLKATA;aw;8999;22653;false;humour;gripping however;REGISTERED;2024-05-21T17:07:44;2024-05-22T09:47:47
+2;than usually whoever;so instantly;2190;2024-05-22;try;off;indeed;incense;DELHI;beautifully;7450;26738;true;hmph concerning;surprisingly bag;PROVISIONAL;2024-05-21T21:59:46;2024-05-21T22:10:00
+3;even;heavily problem;23113;2024-05-21;yummy over;fussy;mmm;cramp;KOLKATA;boohoo scram during;19131;29729;false;powder;solidly gladly whereas;REGISTERED;2024-05-22T02:52:55;2024-05-22T08:54:08
+4;whenever;eek mission near;25358;2024-05-22;yang daily;times dump near;although lest;and when;DELHI;eraser;6616;19910;false;well-lit;neglect;WITHDRAWN;2024-05-22T04:42:07;2024-05-22T08:41:09
+5;and to ram;gentle hearth ack;31408;2024-05-21;kneejerk;meh lapse;near ack knowledgeably;ouch;KOLKATA;evenly limited incidentally;12129;4247;true;finally astride;known eek;OPPOSED;2024-05-22T16:01:54;2024-05-22T14:49:07
+6;lest;for medicate;9271;2024-05-22;hilarious essential;unwelcome;slump gratefully;which offbeat wisely;CHENNAI;sanction extremely;5992;26560;true;theory furthermore irresponsible;primary;REJECTED;2024-05-21T21:16:26;2024-05-22T09:08:11
+7;unique loyally;now woot concrete;16954;2024-05-21;concerning greedy weekender;crossly;poll annually rare;for until usefully;KOLKATA;joyously;30048;21311;true;doll;upward;WITHDRAWN;2024-05-22T08:07:17;2024-05-22T03:58:48
+8;times;piece;5255;2024-05-22;legal hence;innocently wherever force;mentor;exonerate high-level;KOLKATA;so unwitting circa;3586;26703;true;reluctantly rescind;scrutinize;OPPOSED;2024-05-22T09:01:24;2024-05-22T08:09:34
+9;yowza ick;infamous inside;18175;2024-05-21;repulse enormously;poetry;handsome phew partially;inasmuch pan;DELHI;before jewel bask;7569;22038;false;abaft mink tattle;disrespect restfully;HEARING;2024-05-22T04:45:34;2024-05-21T21:20:12
+10;supposing kaleidoscopic;bakeware down since;25144;2024-05-21;masonry lovingly livid;bifurcate repeatedly boo;mantle detour;duh than but;MUMBAI;dickey endpoint plastic;13119;13714;false;who wasteful instead;mockingly metronome;REGISTERED;2024-05-21T16:56:38;2024-05-22T09:29:15

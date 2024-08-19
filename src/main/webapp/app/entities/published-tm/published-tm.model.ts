@@ -20,6 +20,8 @@ export interface IPublishedTm {
   usage?: string | null;
   associatedTms?: string | null;
   trademarkStatus?: keyof typeof TrademarkStatus | null;
+  createdDate?: dayjs.Dayjs | null;
+  modifiedDate?: dayjs.Dayjs | null;
 }
 
 export type NewPublishedTm = Omit<IPublishedTm, 'id'> & { id: null };

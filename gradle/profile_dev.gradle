@@ -60,7 +60,7 @@ processResources {
     inputs.property('springProfiles', springProfiles)
     filesMatching("**/application.yml") {
         filter {
-            it.replace("#project.version#", version)
+            it.replace("@project.version@", version)
         }
         filter {
             it.replace("@spring.profiles.active@", springProfiles)
@@ -76,6 +76,7 @@ task integrationTest(type: Test) {
     include "**/*IT*", "**/*IntTest*"
     testLogging {
         events 'FAILED', 'SKIPPED'
+        exceptionFormat "full"
     }
     systemProperty('spring.profiles.active', 'testdev')
     systemProperty('java.security.egd', 'file:/dev/./urandom')

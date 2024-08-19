@@ -94,6 +94,14 @@
               }[trademark()!.trademarkStatus ?? 'null']
             }}</span>
           </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ trademark()!.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ trademark()!.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
           <dt><span>Tm Agent</span></dt>
           <dd>
             @if (trademark()!.tmAgent) {

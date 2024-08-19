@@ -26,8 +26,16 @@
             <column name="address" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="created_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="modified_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <dropDefaultValue tableName="tm_agent" columnName="created_date" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="tm_agent" columnName="modified_date" columnDataType="${datetimeType}"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -51,6 +59,8 @@
             <column name="first_name" type="string"/>
             <column name="last_name" type="string"/>
             <column name="address" type="string"/>
+            <column name="created_date" type="date"/>
+            <column name="modified_date" type="date"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

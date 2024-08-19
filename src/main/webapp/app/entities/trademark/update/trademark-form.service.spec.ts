@@ -36,6 +36,8 @@ describe('Trademark Form Service', () => {
             usage: expect.any(Object),
             associatedTms: expect.any(Object),
             trademarkStatus: expect.any(Object),
+            createdDate: expect.any(Object),
+            modifiedDate: expect.any(Object),
             tmAgent: expect.any(Object),
           }),
         );
@@ -63,6 +65,8 @@ describe('Trademark Form Service', () => {
             usage: expect.any(Object),
             associatedTms: expect.any(Object),
             trademarkStatus: expect.any(Object),
+            createdDate: expect.any(Object),
+            modifiedDate: expect.any(Object),
             tmAgent: expect.any(Object),
           }),
         );

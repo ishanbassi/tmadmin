@@ -2,6 +2,7 @@ package com.bassi.tmapp.web.rest;
 
 import static com.bassi.tmapp.domain.TrademarkAsserts.*;
 import static com.bassi.tmapp.web.rest.TestUtil.createUpdateProxyForBean;
+import static com.bassi.tmapp.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -17,8 +18,11 @@ import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -91,6 +95,14 @@ class TrademarkResourceIT {
     private static final TrademarkStatus DEFAULT_TRADEMARK_STATUS = TrademarkStatus.REGISTERED;
     private static final TrademarkStatus UPDATED_TRADEMARK_STATUS = TrademarkStatus.OPPOSED;
 
+    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
+    private static final ZonedDateTime DEFAULT_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -139,7 +151,9 @@ class TrademarkResourceIT {
             .deleted(DEFAULT_DELETED)
             .usage(DEFAULT_USAGE)
             .associatedTms(DEFAULT_ASSOCIATED_TMS)
-            .trademarkStatus(DEFAULT_TRADEMARK_STATUS);
+            .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
+            .createdDate(DEFAULT_CREATED_DATE)
+            .modifiedDate(DEFAULT_MODIFIED_DATE);
         return trademark;
     }
 
@@ -166,7 +180,9 @@ class TrademarkResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
         return trademark;
     }
 
@@ -252,7 +268,9 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
     }
 
     @Test
@@ -282,7 +300,9 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
-            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()));
+            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()))
+            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
+            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)));
     }
 
     @Test
@@ -1197,6 +1217,164 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByCreatedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate equals to
+        defaultTrademarkFiltering("createdDate.equals=" + DEFAULT_CREATED_DATE, "createdDate.equals=" + UPDATED_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCreatedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate in
+        defaultTrademarkFiltering(
+            "createdDate.in=" + DEFAULT_CREATED_DATE + "," + UPDATED_CREATED_DATE,
+            "createdDate.in=" + UPDATED_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCreatedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate is not null
+        defaultTrademarkFiltering("createdDate.specified=true", "createdDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCreatedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate is greater than or equal to
+        defaultTrademarkFiltering(
+            "createdDate.greaterThanOrEqual=" + DEFAULT_CREATED_DATE,
+            "createdDate.greaterThanOrEqual=" + UPDATED_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCreatedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate is less than or equal to
+        defaultTrademarkFiltering(
+            "createdDate.lessThanOrEqual=" + DEFAULT_CREATED_DATE,
+            "createdDate.lessThanOrEqual=" + SMALLER_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCreatedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate is less than
+        defaultTrademarkFiltering("createdDate.lessThan=" + UPDATED_CREATED_DATE, "createdDate.lessThan=" + DEFAULT_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCreatedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where createdDate is greater than
+        defaultTrademarkFiltering("createdDate.greaterThan=" + SMALLER_CREATED_DATE, "createdDate.greaterThan=" + DEFAULT_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate equals to
+        defaultTrademarkFiltering("modifiedDate.equals=" + DEFAULT_MODIFIED_DATE, "modifiedDate.equals=" + UPDATED_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate in
+        defaultTrademarkFiltering(
+            "modifiedDate.in=" + DEFAULT_MODIFIED_DATE + "," + UPDATED_MODIFIED_DATE,
+            "modifiedDate.in=" + UPDATED_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate is not null
+        defaultTrademarkFiltering("modifiedDate.specified=true", "modifiedDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate is greater than or equal to
+        defaultTrademarkFiltering(
+            "modifiedDate.greaterThanOrEqual=" + DEFAULT_MODIFIED_DATE,
+            "modifiedDate.greaterThanOrEqual=" + UPDATED_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate is less than or equal to
+        defaultTrademarkFiltering(
+            "modifiedDate.lessThanOrEqual=" + DEFAULT_MODIFIED_DATE,
+            "modifiedDate.lessThanOrEqual=" + SMALLER_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate is less than
+        defaultTrademarkFiltering("modifiedDate.lessThan=" + UPDATED_MODIFIED_DATE, "modifiedDate.lessThan=" + DEFAULT_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByModifiedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where modifiedDate is greater than
+        defaultTrademarkFiltering("modifiedDate.greaterThan=" + SMALLER_MODIFIED_DATE, "modifiedDate.greaterThan=" + DEFAULT_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByTmAgentIsEqualToSomething() throws Exception {
         TmAgent tmAgent;
         if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
@@ -1246,7 +1424,9 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -1310,7 +1490,9 @@ class TrademarkResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
         TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
@@ -1408,7 +1590,8 @@ class TrademarkResourceIT {
             .proprietorName(UPDATED_PROPRIETOR_NAME)
             .headOffice(UPDATED_HEAD_OFFICE)
             .tmClass(UPDATED_TM_CLASS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE);
 
         restTrademarkMockMvc
             .perform(
@@ -1455,7 +1638,9 @@ class TrademarkResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
 
         restTrademarkMockMvc
             .perform(

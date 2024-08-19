@@ -2,6 +2,7 @@ package com.bassi.tmapp.web.rest;
 
 import static com.bassi.tmapp.domain.PublishedTmAsserts.*;
 import static com.bassi.tmapp.web.rest.TestUtil.createUpdateProxyForBean;
+import static com.bassi.tmapp.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -16,8 +17,11 @@ import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -90,6 +94,14 @@ class PublishedTmResourceIT {
     private static final TrademarkStatus DEFAULT_TRADEMARK_STATUS = TrademarkStatus.REGISTERED;
     private static final TrademarkStatus UPDATED_TRADEMARK_STATUS = TrademarkStatus.OPPOSED;
 
+    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
+    private static final ZonedDateTime DEFAULT_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
+
     private static final String ENTITY_API_URL = "/api/published-tms";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -138,7 +150,9 @@ class PublishedTmResourceIT {
             .deleted(DEFAULT_DELETED)
             .usage(DEFAULT_USAGE)
             .associatedTms(DEFAULT_ASSOCIATED_TMS)
-            .trademarkStatus(DEFAULT_TRADEMARK_STATUS);
+            .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
+            .createdDate(DEFAULT_CREATED_DATE)
+            .modifiedDate(DEFAULT_MODIFIED_DATE);
         return publishedTm;
     }
 
@@ -165,7 +179,9 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
         return publishedTm;
     }
 
@@ -251,7 +267,9 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
     }
 
     @Test
@@ -281,7 +299,9 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
-            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()));
+            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()))
+            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
+            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)));
     }
 
     @Test
@@ -1194,6 +1214,167 @@ class PublishedTmResourceIT {
         defaultPublishedTmFiltering("trademarkStatus.specified=true", "trademarkStatus.specified=false");
     }
 
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate equals to
+        defaultPublishedTmFiltering("createdDate.equals=" + DEFAULT_CREATED_DATE, "createdDate.equals=" + UPDATED_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate in
+        defaultPublishedTmFiltering(
+            "createdDate.in=" + DEFAULT_CREATED_DATE + "," + UPDATED_CREATED_DATE,
+            "createdDate.in=" + UPDATED_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate is not null
+        defaultPublishedTmFiltering("createdDate.specified=true", "createdDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate is greater than or equal to
+        defaultPublishedTmFiltering(
+            "createdDate.greaterThanOrEqual=" + DEFAULT_CREATED_DATE,
+            "createdDate.greaterThanOrEqual=" + UPDATED_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate is less than or equal to
+        defaultPublishedTmFiltering(
+            "createdDate.lessThanOrEqual=" + DEFAULT_CREATED_DATE,
+            "createdDate.lessThanOrEqual=" + SMALLER_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate is less than
+        defaultPublishedTmFiltering("createdDate.lessThan=" + UPDATED_CREATED_DATE, "createdDate.lessThan=" + DEFAULT_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByCreatedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where createdDate is greater than
+        defaultPublishedTmFiltering("createdDate.greaterThan=" + SMALLER_CREATED_DATE, "createdDate.greaterThan=" + DEFAULT_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate equals to
+        defaultPublishedTmFiltering("modifiedDate.equals=" + DEFAULT_MODIFIED_DATE, "modifiedDate.equals=" + UPDATED_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate in
+        defaultPublishedTmFiltering(
+            "modifiedDate.in=" + DEFAULT_MODIFIED_DATE + "," + UPDATED_MODIFIED_DATE,
+            "modifiedDate.in=" + UPDATED_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate is not null
+        defaultPublishedTmFiltering("modifiedDate.specified=true", "modifiedDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate is greater than or equal to
+        defaultPublishedTmFiltering(
+            "modifiedDate.greaterThanOrEqual=" + DEFAULT_MODIFIED_DATE,
+            "modifiedDate.greaterThanOrEqual=" + UPDATED_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate is less than or equal to
+        defaultPublishedTmFiltering(
+            "modifiedDate.lessThanOrEqual=" + DEFAULT_MODIFIED_DATE,
+            "modifiedDate.lessThanOrEqual=" + SMALLER_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate is less than
+        defaultPublishedTmFiltering("modifiedDate.lessThan=" + UPDATED_MODIFIED_DATE, "modifiedDate.lessThan=" + DEFAULT_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByModifiedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where modifiedDate is greater than
+        defaultPublishedTmFiltering(
+            "modifiedDate.greaterThan=" + SMALLER_MODIFIED_DATE,
+            "modifiedDate.greaterThan=" + DEFAULT_MODIFIED_DATE
+        );
+    }
+
     private void defaultPublishedTmFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
         defaultPublishedTmShouldBeFound(shouldBeFound);
         defaultPublishedTmShouldNotBeFound(shouldNotBeFound);
@@ -1223,7 +1404,9 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())));
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
 
         // Check, that the count call also returns 1
         restPublishedTmMockMvc
@@ -1287,7 +1470,9 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
         PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(updatedPublishedTm);
 
         restPublishedTmMockMvc
@@ -1390,7 +1575,8 @@ class PublishedTmResourceIT {
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE);
 
         restPublishedTmMockMvc
             .perform(
@@ -1437,7 +1623,9 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
 
         restPublishedTmMockMvc
             .perform(

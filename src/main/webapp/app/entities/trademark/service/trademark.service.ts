@@ -12,8 +12,10 @@ import { ITrademark, NewTrademark } from '../trademark.model';
 
 export type PartialUpdateTrademark = Partial<ITrademark> & Pick<ITrademark, 'id'>;
 
-type RestOf<T extends ITrademark | NewTrademark> = Omit<T, 'applicationDate'> & {
+type RestOf<T extends ITrademark | NewTrademark> = Omit<T, 'applicationDate' | 'createdDate' | 'modifiedDate'> & {
   applicationDate?: string | null;
+  createdDate?: string | null;
+  modifiedDate?: string | null;
 };
 
 export type RestTrademark = RestOf<ITrademark>;
@@ -102,6 +104,8 @@ export class TrademarkService {
     return {
       ...trademark,
       applicationDate: trademark.applicationDate?.format(DATE_FORMAT) ?? null,
+      createdDate: trademark.createdDate?.toJSON() ?? null,
+      modifiedDate: trademark.modifiedDate?.toJSON() ?? null,
     };
   }
 
@@ -109,6 +113,8 @@ export class TrademarkService {
     return {
       ...restTrademark,
       applicationDate: restTrademark.applicationDate ? dayjs(restTrademark.applicationDate) : undefined,
+      createdDate: restTrademark.createdDate ? dayjs(restTrademark.createdDate) : undefined,
+      modifiedDate: restTrademark.modifiedDate ? dayjs(restTrademark.modifiedDate) : undefined,
     };
   }
 

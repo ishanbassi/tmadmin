@@ -154,6 +154,20 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="createdDate">
+              <div class="d-flex">
+                <span>Created Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifiedDate">
+              <div class="d-flex">
+                <span>Modified Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="tmAgent.id">
               <div class="d-flex">
                 <span>Tm Agent</span>
@@ -204,6 +218,8 @@
                   }[trademark.trademarkStatus ?? 'null']
                 }}
               </td>
+              <td>{{ trademark.createdDate | formatMediumDatetime }}</td>
+              <td>{{ trademark.modifiedDate | formatMediumDatetime }}</td>
               <td>
                 @if (trademark.tmAgent) {
                   <div>

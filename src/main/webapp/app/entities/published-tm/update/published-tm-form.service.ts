@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import dayjs from 'dayjs/esm';
+import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 import { IPublishedTm, NewPublishedTm } from '../published-tm.model';
 
 /**
@@ -14,26 +16,40 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type PublishedTmFormGroupInput = IPublishedTm | PartialWithRequiredKeyOf<NewPublishedTm>;
 
-type PublishedTmFormDefaults = Pick<NewPublishedTm, 'id' | 'deleted'>;
+/**
+ * Type that converts some properties for forms.
+ */
+type FormValueOf<T extends IPublishedTm | NewPublishedTm> = Omit<T, 'createdDate' | 'modifiedDate'> & {
+  createdDate?: string | null;
+  modifiedDate?: string | null;
+};
+
+type PublishedTmFormRawValue = FormValueOf<IPublishedTm>;
+
+type NewPublishedTmFormRawValue = FormValueOf<NewPublishedTm>;
+
+type PublishedTmFormDefaults = Pick<NewPublishedTm, 'id' | 'deleted' | 'createdDate' | 'modifiedDate'>;
 
 type PublishedTmFormGroupContent = {
-  id: FormControl<IPublishedTm['id'] | NewPublishedTm['id']>;
-  name: FormControl<IPublishedTm['name']>;
-  details: FormControl<IPublishedTm['details']>;
-  applicationNo: FormControl<IPublishedTm['applicationNo']>;
-  applicationDate: FormControl<IPublishedTm['applicationDate']>;
-  agentName: FormControl<IPublishedTm['agentName']>;
-  agentAddress: FormControl<IPublishedTm['agentAddress']>;
-  proprietorName: FormControl<IPublishedTm['proprietorName']>;
-  proprietorAddress: FormControl<IPublishedTm['proprietorAddress']>;
-  headOffice: FormControl<IPublishedTm['headOffice']>;
-  imgUrl: FormControl<IPublishedTm['imgUrl']>;
-  tmClass: FormControl<IPublishedTm['tmClass']>;
-  journalNo: FormControl<IPublishedTm['journalNo']>;
-  deleted: FormControl<IPublishedTm['deleted']>;
-  usage: FormControl<IPublishedTm['usage']>;
-  associatedTms: FormControl<IPublishedTm['associatedTms']>;
-  trademarkStatus: FormControl<IPublishedTm['trademarkStatus']>;
+  id: FormControl<PublishedTmFormRawValue['id'] | NewPublishedTm['id']>;
+  name: FormControl<PublishedTmFormRawValue['name']>;
+  details: FormControl<PublishedTmFormRawValue['details']>;
+  applicationNo: FormControl<PublishedTmFormRawValue['applicationNo']>;
+  applicationDate: FormControl<PublishedTmFormRawValue['applicationDate']>;
+  agentName: FormControl<PublishedTmFormRawValue['agentName']>;
+  agentAddress: FormControl<PublishedTmFormRawValue['agentAddress']>;
+  proprietorName: FormControl<PublishedTmFormRawValue['proprietorName']>;
+  proprietorAddress: FormControl<PublishedTmFormRawValue['proprietorAddress']>;
+  headOffice: FormControl<PublishedTmFormRawValue['headOffice']>;
+  imgUrl: FormControl<PublishedTmFormRawValue['imgUrl']>;
+  tmClass: FormControl<PublishedTmFormRawValue['tmClass']>;
+  journalNo: FormControl<PublishedTmFormRawValue['journalNo']>;
+  deleted: FormControl<PublishedTmFormRawValue['deleted']>;
+  usage: FormControl<PublishedTmFormRawValue['usage']>;
+  associatedTms: FormControl<PublishedTmFormRawValue['associatedTms']>;
+  trademarkStatus: FormControl<PublishedTmFormRawValue['trademarkStatus']>;
+  createdDate: FormControl<PublishedTmFormRawValue['createdDate']>;
+  modifiedDate: FormControl<PublishedTmFormRawValue['modifiedDate']>;
 };
 
 export type PublishedTmFormGroup = FormGroup<PublishedTmFormGroupContent>;
@@ -41,10 +57,10 @@ export type PublishedTmFormGroup = FormGroup<PublishedTmFormGroupContent>;
 @Injectable({ providedIn: 'root' })
 export class PublishedTmFormService {
   createPublishedTmFormGroup(publishedTm: PublishedTmFormGroupInput = { id: null }): PublishedTmFormGroup {
-    const publishedTmRawValue = {
+    const publishedTmRawValue = this.convertPublishedTmToPublishedTmRawValue({
       ...this.getFormDefaults(),
       ...publishedTm,
-    };
+    });
     return new FormGroup<PublishedTmFormGroupContent>({
       id: new FormControl(
         { value: publishedTmRawValue.id, disabled: true },
@@ -69,15 +85,17 @@ export class PublishedTmFormService {
       usage: new FormControl(publishedTmRawValue.usage),
       associatedTms: new FormControl(publishedTmRawValue.associatedTms),
       trademarkStatus: new FormControl(publishedTmRawValue.trademarkStatus),
+      createdDate: new FormControl(publishedTmRawValue.createdDate),
+      modifiedDate: new FormControl(publishedTmRawValue.modifiedDate),
     });
   }
 
   getPublishedTm(form: PublishedTmFormGroup): IPublishedTm | NewPublishedTm {
-    return form.getRawValue() as IPublishedTm | NewPublishedTm;
+    return this.convertPublishedTmRawValueToPublishedTm(form.getRawValue() as PublishedTmFormRawValue | NewPublishedTmFormRawValue);
   }
 
   resetForm(form: PublishedTmFormGroup, publishedTm: PublishedTmFormGroupInput): void {
-    const publishedTmRawValue = { ...this.getFormDefaults(), ...publishedTm };
+    const publishedTmRawValue = this.convertPublishedTmToPublishedTmRawValue({ ...this.getFormDefaults(), ...publishedTm });
     form.reset(
       {
         ...publishedTmRawValue,
@@ -87,9 +105,33 @@ export class PublishedTmFormService {
   }
 
   private getFormDefaults(): PublishedTmFormDefaults {
+    const currentTime = dayjs();
+
     return {
       id: null,
       deleted: false,
+      createdDate: currentTime,
+      modifiedDate: currentTime,
+    };
+  }
+
+  private convertPublishedTmRawValueToPublishedTm(
+    rawPublishedTm: PublishedTmFormRawValue | NewPublishedTmFormRawValue,
+  ): IPublishedTm | NewPublishedTm {
+    return {
+      ...rawPublishedTm,
+      createdDate: dayjs(rawPublishedTm.createdDate, DATE_TIME_FORMAT),
+      modifiedDate: dayjs(rawPublishedTm.modifiedDate, DATE_TIME_FORMAT),
+    };
+  }
+
+  private convertPublishedTmToPublishedTmRawValue(
+    publishedTm: IPublishedTm | (Partial<NewPublishedTm> & PublishedTmFormDefaults),
+  ): PublishedTmFormRawValue | PartialWithRequiredKeyOf<NewPublishedTmFormRawValue> {
+    return {
+      ...publishedTm,
+      createdDate: publishedTm.createdDate ? publishedTm.createdDate.format(DATE_TIME_FORMAT) : undefined,
+      modifiedDate: publishedTm.modifiedDate ? publishedTm.modifiedDate.format(DATE_TIME_FORMAT) : undefined,
     };
   }
 }

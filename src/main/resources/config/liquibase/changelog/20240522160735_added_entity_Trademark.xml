@@ -62,11 +62,19 @@
             <column name="trademark_status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="created_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
+            <column name="modified_date" type="${datetimeType}">
+                <constraints nullable="true" />
+            </column>
             <column name="tm_agent_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
+        <dropDefaultValue tableName="trademark" columnName="created_date" columnDataType="${datetimeType}"/>
+        <dropDefaultValue tableName="trademark" columnName="modified_date" columnDataType="${datetimeType}"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -102,6 +110,8 @@
             <column name="usage" type="string"/>
             <column name="associated_tms" type="string"/>
             <column name="trademark_status" type="string"/>
+            <column name="created_date" type="date"/>
+            <column name="modified_date" type="date"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

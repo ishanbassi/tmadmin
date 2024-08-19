@@ -11,6 +11,8 @@ import { TrademarkService, RestTrademark } from './trademark.service';
 const requireRestSample: RestTrademark = {
   ...sampleWithRequiredData,
   applicationDate: sampleWithRequiredData.applicationDate?.format(DATE_FORMAT),
+  createdDate: sampleWithRequiredData.createdDate?.toJSON(),
+  modifiedDate: sampleWithRequiredData.modifiedDate?.toJSON(),
 };
 
 describe('Trademark Service', () => {

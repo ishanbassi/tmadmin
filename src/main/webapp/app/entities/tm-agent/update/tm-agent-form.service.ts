@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import dayjs from 'dayjs/esm';
+import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 import { ITmAgent, NewTmAgent } from '../tm-agent.model';
 
 /**
@@ -14,14 +16,28 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type TmAgentFormGroupInput = ITmAgent | PartialWithRequiredKeyOf<NewTmAgent>;
 
-type TmAgentFormDefaults = Pick<NewTmAgent, 'id'>;
+/**
+ * Type that converts some properties for forms.
+ */
+type FormValueOf<T extends ITmAgent | NewTmAgent> = Omit<T, 'createdDate' | 'modifiedDate'> & {
+  createdDate?: string | null;
+  modifiedDate?: string | null;
+};
+
+type TmAgentFormRawValue = FormValueOf<ITmAgent>;
+
+type NewTmAgentFormRawValue = FormValueOf<NewTmAgent>;
+
+type TmAgentFormDefaults = Pick<NewTmAgent, 'id' | 'createdDate' | 'modifiedDate'>;
 
 type TmAgentFormGroupContent = {
-  id: FormControl<ITmAgent['id'] | NewTmAgent['id']>;
-  agentCode: FormControl<ITmAgent['agentCode']>;
-  firstName: FormControl<ITmAgent['firstName']>;
-  lastName: FormControl<ITmAgent['lastName']>;
-  address: FormControl<ITmAgent['address']>;
+  id: FormControl<TmAgentFormRawValue['id'] | NewTmAgent['id']>;
+  agentCode: FormControl<TmAgentFormRawValue['agentCode']>;
+  firstName: FormControl<TmAgentFormRawValue['firstName']>;
+  lastName: FormControl<TmAgentFormRawValue['lastName']>;
+  address: FormControl<TmAgentFormRawValue['address']>;
+  createdDate: FormControl<TmAgentFormRawValue['createdDate']>;
+  modifiedDate: FormControl<TmAgentFormRawValue['modifiedDate']>;
 };
 
 export type TmAgentFormGroup = FormGroup<TmAgentFormGroupContent>;
@@ -29,10 +45,10 @@ export type TmAgentFormGroup = FormGroup<TmAgentFormGroupContent>;
 @Injectable({ providedIn: 'root' })
 export class TmAgentFormService {
   createTmAgentFormGroup(tmAgent: TmAgentFormGroupInput = { id: null }): TmAgentFormGroup {
-    const tmAgentRawValue = {
+    const tmAgentRawValue = this.convertTmAgentToTmAgentRawValue({
       ...this.getFormDefaults(),
       ...tmAgent,
-    };
+    });
     return new FormGroup<TmAgentFormGroupContent>({
       id: new FormControl(
         { value: tmAgentRawValue.id, disabled: true },
@@ -45,15 +61,17 @@ export class TmAgentFormService {
       firstName: new FormControl(tmAgentRawValue.firstName),
       lastName: new FormControl(tmAgentRawValue.lastName),
       address: new FormControl(tmAgentRawValue.address),
+      createdDate: new FormControl(tmAgentRawValue.createdDate),
+      modifiedDate: new FormControl(tmAgentRawValue.modifiedDate),
     });
   }
 
   getTmAgent(form: TmAgentFormGroup): ITmAgent | NewTmAgent {
-    return form.getRawValue() as ITmAgent | NewTmAgent;
+    return this.convertTmAgentRawValueToTmAgent(form.getRawValue() as TmAgentFormRawValue | NewTmAgentFormRawValue);
   }
 
   resetForm(form: TmAgentFormGroup, tmAgent: TmAgentFormGroupInput): void {
-    const tmAgentRawValue = { ...this.getFormDefaults(), ...tmAgent };
+    const tmAgentRawValue = this.convertTmAgentToTmAgentRawValue({ ...this.getFormDefaults(), ...tmAgent });
     form.reset(
       {
         ...tmAgentRawValue,
@@ -63,8 +81,30 @@ export class TmAgentFormService {
   }
 
   private getFormDefaults(): TmAgentFormDefaults {
+    const currentTime = dayjs();
+
     return {
       id: null,
+      createdDate: currentTime,
+      modifiedDate: currentTime,
+    };
+  }
+
+  private convertTmAgentRawValueToTmAgent(rawTmAgent: TmAgentFormRawValue | NewTmAgentFormRawValue): ITmAgent | NewTmAgent {
+    return {
+      ...rawTmAgent,
+      createdDate: dayjs(rawTmAgent.createdDate, DATE_TIME_FORMAT),
+      modifiedDate: dayjs(rawTmAgent.modifiedDate, DATE_TIME_FORMAT),
+    };
+  }
+
+  private convertTmAgentToTmAgentRawValue(
+    tmAgent: ITmAgent | (Partial<NewTmAgent> & TmAgentFormDefaults),
+  ): TmAgentFormRawValue | PartialWithRequiredKeyOf<NewTmAgentFormRawValue> {
+    return {
+      ...tmAgent,
+      createdDate: tmAgent.createdDate ? tmAgent.createdDate.format(DATE_TIME_FORMAT) : undefined,
+      modifiedDate: tmAgent.modifiedDate ? tmAgent.modifiedDate.format(DATE_TIME_FORMAT) : undefined,
     };
   }
 }

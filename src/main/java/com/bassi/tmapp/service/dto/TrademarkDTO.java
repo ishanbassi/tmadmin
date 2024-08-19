@@ -5,6 +5,7 @@ import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -46,6 +47,10 @@ public class TrademarkDTO implements Serializable {
     private String associatedTms;
 
     private TrademarkStatus trademarkStatus;
+
+    private ZonedDateTime createdDate;
+
+    private ZonedDateTime modifiedDate;
 
     private TmAgentDTO tmAgent;
     
@@ -193,6 +198,22 @@ public class TrademarkDTO implements Serializable {
         this.trademarkStatus = trademarkStatus;
     }
 
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(ZonedDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
     public TmAgentDTO getTmAgent() {
         return tmAgent;
     }
@@ -278,6 +299,8 @@ public class TrademarkDTO implements Serializable {
             ", usage='" + getUsage() + "'" +
             ", associatedTms='" + getAssociatedTms() + "'" +
             ", trademarkStatus='" + getTrademarkStatus() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
             ", tmAgent=" + getTmAgent() +
             "}";
     }

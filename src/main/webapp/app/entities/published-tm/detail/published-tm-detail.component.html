@@ -94,6 +94,14 @@
               }[publishedTm()!.trademarkStatus ?? 'null']
             }}</span>
           </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ publishedTm()!.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+import dayjs from 'dayjs/esm';
+import { DATE_TIME_FORMAT } from 'app/config/input.constants';
 import { ITrademark, NewTrademark } from '../trademark.model';
 
 /**
@@ -14,27 +16,41 @@ type PartialWithRequiredKeyOf<T extends { id: unknown }> = Partial<Omit<T, 'id'>
  */
 type TrademarkFormGroupInput = ITrademark | PartialWithRequiredKeyOf<NewTrademark>;
 
-type TrademarkFormDefaults = Pick<NewTrademark, 'id' | 'deleted'>;
+/**
+ * Type that converts some properties for forms.
+ */
+type FormValueOf<T extends ITrademark | NewTrademark> = Omit<T, 'createdDate' | 'modifiedDate'> & {
+  createdDate?: string | null;
+  modifiedDate?: string | null;
+};
+
+type TrademarkFormRawValue = FormValueOf<ITrademark>;
+
+type NewTrademarkFormRawValue = FormValueOf<NewTrademark>;
+
+type TrademarkFormDefaults = Pick<NewTrademark, 'id' | 'deleted' | 'createdDate' | 'modifiedDate'>;
 
 type TrademarkFormGroupContent = {
-  id: FormControl<ITrademark['id'] | NewTrademark['id']>;
-  name: FormControl<ITrademark['name']>;
-  details: FormControl<ITrademark['details']>;
-  applicationNo: FormControl<ITrademark['applicationNo']>;
-  applicationDate: FormControl<ITrademark['applicationDate']>;
-  agentName: FormControl<ITrademark['agentName']>;
-  agentAddress: FormControl<ITrademark['agentAddress']>;
-  proprietorName: FormControl<ITrademark['proprietorName']>;
-  proprietorAddress: FormControl<ITrademark['proprietorAddress']>;
-  headOffice: FormControl<ITrademark['headOffice']>;
-  imgUrl: FormControl<ITrademark['imgUrl']>;
-  tmClass: FormControl<ITrademark['tmClass']>;
-  journalNo: FormControl<ITrademark['journalNo']>;
-  deleted: FormControl<ITrademark['deleted']>;
-  usage: FormControl<ITrademark['usage']>;
-  associatedTms: FormControl<ITrademark['associatedTms']>;
-  trademarkStatus: FormControl<ITrademark['trademarkStatus']>;
-  tmAgent: FormControl<ITrademark['tmAgent']>;
+  id: FormControl<TrademarkFormRawValue['id'] | NewTrademark['id']>;
+  name: FormControl<TrademarkFormRawValue['name']>;
+  details: FormControl<TrademarkFormRawValue['details']>;
+  applicationNo: FormControl<TrademarkFormRawValue['applicationNo']>;
+  applicationDate: FormControl<TrademarkFormRawValue['applicationDate']>;
+  agentName: FormControl<TrademarkFormRawValue['agentName']>;
+  agentAddress: FormControl<TrademarkFormRawValue['agentAddress']>;
+  proprietorName: FormControl<TrademarkFormRawValue['proprietorName']>;
+  proprietorAddress: FormControl<TrademarkFormRawValue['proprietorAddress']>;
+  headOffice: FormControl<TrademarkFormRawValue['headOffice']>;
+  imgUrl: FormControl<TrademarkFormRawValue['imgUrl']>;
+  tmClass: FormControl<TrademarkFormRawValue['tmClass']>;
+  journalNo: FormControl<TrademarkFormRawValue['journalNo']>;
+  deleted: FormControl<TrademarkFormRawValue['deleted']>;
+  usage: FormControl<TrademarkFormRawValue['usage']>;
+  associatedTms: FormControl<TrademarkFormRawValue['associatedTms']>;
+  trademarkStatus: FormControl<TrademarkFormRawValue['trademarkStatus']>;
+  createdDate: FormControl<TrademarkFormRawValue['createdDate']>;
+  modifiedDate: FormControl<TrademarkFormRawValue['modifiedDate']>;
+  tmAgent: FormControl<TrademarkFormRawValue['tmAgent']>;
 };
 
 export type TrademarkFormGroup = FormGroup<TrademarkFormGroupContent>;
@@ -42,10 +58,10 @@ export type TrademarkFormGroup = FormGroup<TrademarkFormGroupContent>;
 @Injectable({ providedIn: 'root' })
 export class TrademarkFormService {
   createTrademarkFormGroup(trademark: TrademarkFormGroupInput = { id: null }): TrademarkFormGroup {
-    const trademarkRawValue = {
+    const trademarkRawValue = this.convertTrademarkToTrademarkRawValue({
       ...this.getFormDefaults(),
       ...trademark,
-    };
+    });
     return new FormGroup<TrademarkFormGroupContent>({
       id: new FormControl(
         { value: trademarkRawValue.id, disabled: true },
@@ -70,16 +86,18 @@ export class TrademarkFormService {
       usage: new FormControl(trademarkRawValue.usage),
       associatedTms: new FormControl(trademarkRawValue.associatedTms),
       trademarkStatus: new FormControl(trademarkRawValue.trademarkStatus),
+      createdDate: new FormControl(trademarkRawValue.createdDate),
+      modifiedDate: new FormControl(trademarkRawValue.modifiedDate),
       tmAgent: new FormControl(trademarkRawValue.tmAgent),
     });
   }
 
   getTrademark(form: TrademarkFormGroup): ITrademark | NewTrademark {
-    return form.getRawValue() as ITrademark | NewTrademark;
+    return this.convertTrademarkRawValueToTrademark(form.getRawValue() as TrademarkFormRawValue | NewTrademarkFormRawValue);
   }
 
   resetForm(form: TrademarkFormGroup, trademark: TrademarkFormGroupInput): void {
-    const trademarkRawValue = { ...this.getFormDefaults(), ...trademark };
+    const trademarkRawValue = this.convertTrademarkToTrademarkRawValue({ ...this.getFormDefaults(), ...trademark });
     form.reset(
       {
         ...trademarkRawValue,
@@ -89,9 +107,31 @@ export class TrademarkFormService {
   }
 
   private getFormDefaults(): TrademarkFormDefaults {
+    const currentTime = dayjs();
+
     return {
       id: null,
       deleted: false,
+      createdDate: currentTime,
+      modifiedDate: currentTime,
+    };
+  }
+
+  private convertTrademarkRawValueToTrademark(rawTrademark: TrademarkFormRawValue | NewTrademarkFormRawValue): ITrademark | NewTrademark {
+    return {
+      ...rawTrademark,
+      createdDate: dayjs(rawTrademark.createdDate, DATE_TIME_FORMAT),
+      modifiedDate: dayjs(rawTrademark.modifiedDate, DATE_TIME_FORMAT),
+    };
+  }
+
+  private convertTrademarkToTrademarkRawValue(
+    trademark: ITrademark | (Partial<NewTrademark> & TrademarkFormDefaults),
+  ): TrademarkFormRawValue | PartialWithRequiredKeyOf<NewTrademarkFormRawValue> {
+    return {
+      ...trademark,
+      createdDate: trademark.createdDate ? trademark.createdDate.format(DATE_TIME_FORMAT) : undefined,
+      modifiedDate: trademark.modifiedDate ? trademark.modifiedDate.format(DATE_TIME_FORMAT) : undefined,
     };
   }
 }

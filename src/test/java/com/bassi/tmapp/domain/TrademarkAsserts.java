@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import static com.bassi.tmapp.domain.AssertUtils.zonedDataTimeSameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TrademarkAsserts {
@@ -62,7 +63,21 @@ public class TrademarkAsserts {
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
             .satisfies(e -> assertThat(e.getUsage()).as("check usage").isEqualTo(actual.getUsage()))
             .satisfies(e -> assertThat(e.getAssociatedTms()).as("check associatedTms").isEqualTo(actual.getAssociatedTms()))
-            .satisfies(e -> assertThat(e.getTrademarkStatus()).as("check trademarkStatus").isEqualTo(actual.getTrademarkStatus()));
+            .satisfies(e -> assertThat(e.getTrademarkStatus()).as("check trademarkStatus").isEqualTo(actual.getTrademarkStatus()))
+            .satisfies(
+                e ->
+                    assertThat(e.getCreatedDate())
+                        .as("check createdDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getCreatedDate())
+            )
+            .satisfies(
+                e ->
+                    assertThat(e.getModifiedDate())
+                        .as("check modifiedDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getModifiedDate())
+            );
     }
 
     /**

@@ -3,6 +3,7 @@ package com.bassi.tmapp.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import org.hibernate.annotations.Cache;
@@ -36,6 +37,12 @@ public class TmAgent implements Serializable {
 
     @Column(name = "address")
     private String address;
+
+    @Column(name = "created_date")
+    private ZonedDateTime createdDate;
+
+    @Column(name = "modified_date")
+    private ZonedDateTime modifiedDate;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tmAgent")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -109,6 +116,32 @@ public class TmAgent implements Serializable {
         this.address = address;
     }
 
+    public ZonedDateTime getCreatedDate() {
+        return this.createdDate;
+    }
+
+    public TmAgent createdDate(ZonedDateTime createdDate) {
+        this.setCreatedDate(createdDate);
+        return this;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTime getModifiedDate() {
+        return this.modifiedDate;
+    }
+
+    public TmAgent modifiedDate(ZonedDateTime modifiedDate) {
+        this.setModifiedDate(modifiedDate);
+        return this;
+    }
+
+    public void setModifiedDate(ZonedDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
     public Set<Trademark> getTrademarks() {
         return this.trademarks;
     }
@@ -168,6 +201,8 @@ public class TmAgent implements Serializable {
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", address='" + getAddress() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
             "}";
     }
 }

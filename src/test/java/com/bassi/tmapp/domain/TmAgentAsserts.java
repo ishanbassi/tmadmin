@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import static com.bassi.tmapp.domain.AssertUtils.zonedDataTimeSameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class TmAgentAsserts {
@@ -50,7 +51,21 @@ public class TmAgentAsserts {
             .satisfies(e -> assertThat(e.getAgentCode()).as("check agentCode").isEqualTo(actual.getAgentCode()))
             .satisfies(e -> assertThat(e.getFirstName()).as("check firstName").isEqualTo(actual.getFirstName()))
             .satisfies(e -> assertThat(e.getLastName()).as("check lastName").isEqualTo(actual.getLastName()))
-            .satisfies(e -> assertThat(e.getAddress()).as("check address").isEqualTo(actual.getAddress()));
+            .satisfies(e -> assertThat(e.getAddress()).as("check address").isEqualTo(actual.getAddress()))
+            .satisfies(
+                e ->
+                    assertThat(e.getCreatedDate())
+                        .as("check createdDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getCreatedDate())
+            )
+            .satisfies(
+                e ->
+                    assertThat(e.getModifiedDate())
+                        .as("check modifiedDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getModifiedDate())
+            );
     }
 
     /**

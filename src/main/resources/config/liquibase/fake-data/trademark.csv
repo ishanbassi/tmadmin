@@ -1,11 +1,11 @@
-id;name;details;application_no;application_date;agent_name;agent_address;proprietor_name;proprietor_address;head_office;img_url;tm_class;journal_no;deleted;usage;associated_tms;trademark_status
-1;divalent;rundown but uh-huh;32373;2024-05-21;because;amid;upon lonely;than north finally;MUMBAI;portly bah why;18390;419;true;accidentally because excluding;lumpy beastie;REGISTERED
-2;upside-down;bewitched what circuit;6113;2024-05-22;discrete unabashedly;pushy disguised;by out whoa;haunt who eek;MUMBAI;pink mmm tip;27188;11711;true;frugal given gently;huzzah how;REGISTERED
-3;once helplessly threadbare;sneer air;24153;2024-05-21;indeed the ack;limestone blah aha;beyond;whenever;DELHI;anise;347;11850;false;notwithstanding wonderful;physically unripe;OPPOSED
-4;till;quicker conflate;3240;2024-05-22;court strictly josh;primate poorly;ick;chomp powerfully hence;MUMBAI;which whereas;15825;20631;true;meh;but spout;REGISTERED
-5;greedy;incidentally;860;2024-05-22;icy;marinate wealth than;humming yuck;lightly cliff;AHMEDABAD;left;12232;10840;true;though;along aha gosh;WITHDRAWN
-6;only till an;uniform concrete deceivingly;7239;2024-05-21;hosiery joshingly;like utterly furthermore;tribe reluctantly;gathering;AHMEDABAD;although woot;17679;1362;false;sarcastic titillate;alongside because gird;OPPOSED
-7;anti dancing rawhide;thorny loads jelly;22810;2024-05-21;job;ick terrapin;aha eek because;hoick;KOLKATA;crossly worriedly;25381;29939;true;since;mmm tidy boohoo;WITHDRAWN
-8;beautifully pub woot;um;18859;2024-05-22;and denigrate;mark for;wrap instead seriously;wowee unless yahoo;MUMBAI;quarrel wisely however;300;1056;false;estate taut under;er after finally;REJECTED
-9;than;winding yawningly over;18605;2024-05-22;anaesthetize;need across misbehave;since with;communication inside although;AHMEDABAD;unnecessarily oof;1519;2907;false;opposite;hence;HEARING
-10;er eardrum defense;meanwhile willfully cylindrical;24723;2024-05-22;huzzah spry;polite;pfft frightfully see;unethically gadzooks visit;AHMEDABAD;swivel;30969;11707;true;joyous;triumphantly;HEARING
+id;name;details;application_no;application_date;agent_name;agent_address;proprietor_name;proprietor_address;head_office;img_url;tm_class;journal_no;deleted;usage;associated_tms;trademark_status;created_date;modified_date
+1;divalent;rundown but uh-huh;32373;2024-05-21;because;amid;upon lonely;than north finally;MUMBAI;portly bah why;18390;419;true;accidentally because excluding;lumpy beastie;REGISTERED;2024-05-22T10:05:17;2024-05-22T02:31:54
+2;yahoo rent drat;crowd versus;6563;2024-05-22;closet pink;carve heavily;shade;molder;AHMEDABAD;spanish bah;5709;22265;false;prostrate;mmm tip;PUBLISHED;2024-05-22T07:32:54;2024-05-22T09:03:27
+3;frugal given gently;huzzah how;3829;2024-05-21;hammer;until;reasonable view till;indeed the ack;CHENNAI;lest;22472;18001;false;collude beyond;drat;REGISTERED;2024-05-21T16:37:20;2024-05-21T21:26:42
+4;tyrannise;hm;16809;2024-05-22;mmm er will;er morphology without;liken;save;DELHI;whoever blah;9733;12401;false;poorly geez boastfully;fortunately;HEARING;2024-05-22T10:28:46;2024-05-21T17:13:12
+5;although;wordy gee inhibitor;14488;2024-05-22;but spout;spill;swoosh ugh;evidence far-flung vice;MUMBAI;forceful duh;19037;7710;true;lightly cliff;propagandize octave;WITHDRAWN;2024-05-22T07:40:36;2024-05-22T08:42:11
+6;gosh hate enfeeble;gee yuck;32190;2024-05-22;an tan shameful;deceivingly;cloakroom;majestically whip dollop;AHMEDABAD;furthermore phooey joshingly;21715;1021;false;mechanise;as oddly other;WITHDRAWN;2024-05-21T19:50:56;2024-05-21T22:55:13
+7;times alongside;more even;29087;2024-05-21;discourse;hence;like;hoarse separation embody;AHMEDABAD;beyond exterminate;15927;5191;true;ha bull-fighter;innocently reunify cold;OPPOSED;2024-05-22T14:20:03;2024-05-22T07:50:39
+8;worriedly;yahoo unrealistic thrifty;10550;2024-05-21;where corny energetically;odd;rod brag;hm pace whelp;MUMBAI;that;8245;5204;true;instead seriously given;unless yahoo interestingly;PROVISIONAL;2024-05-21T23:57:45;2024-05-22T00:20:33
+9;eek annually whereas;shock;27472;2024-05-21;onto moai;hmph;whenever;teeming;MUMBAI;little supposing boo;22722;3642;true;engineering mistake miserably;adorable across;REGISTERED;2024-05-22T14:37:27;2024-05-21T17:18:45
+10;ah wherever oddly;stopsign;12351;2024-05-21;ashamed;hmph;charming lentil;hence;KOLKATA;oh eyeball;16594;14337;false;meaty off ack;spry;OPPOSED;2024-05-21T20:42:00;2024-05-21T21:39:09

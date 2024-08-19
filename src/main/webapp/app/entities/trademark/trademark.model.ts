@@ -21,6 +21,8 @@ export interface ITrademark {
   usage?: string | null;
   associatedTms?: string | null;
   trademarkStatus?: keyof typeof TrademarkStatus | null;
+  createdDate?: dayjs.Dayjs | null;
+  modifiedDate?: dayjs.Dayjs | null;
   tmAgent?: Pick<ITmAgent, 'id'> | null;
 }
 

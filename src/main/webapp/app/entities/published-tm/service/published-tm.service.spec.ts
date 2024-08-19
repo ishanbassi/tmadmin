@@ -11,6 +11,8 @@ import { PublishedTmService, RestPublishedTm } from './published-tm.service';
 const requireRestSample: RestPublishedTm = {
   ...sampleWithRequiredData,
   applicationDate: sampleWithRequiredData.applicationDate?.format(DATE_FORMAT),
+  createdDate: sampleWithRequiredData.createdDate?.toJSON(),
+  modifiedDate: sampleWithRequiredData.modifiedDate?.toJSON(),
 };
 
 describe('PublishedTm Service', () => {

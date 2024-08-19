@@ -36,6 +36,8 @@ describe('PublishedTm Form Service', () => {
             usage: expect.any(Object),
             associatedTms: expect.any(Object),
             trademarkStatus: expect.any(Object),
+            createdDate: expect.any(Object),
+            modifiedDate: expect.any(Object),
           }),
         );
       });
@@ -62,6 +64,8 @@ describe('PublishedTm Form Service', () => {
             usage: expect.any(Object),
             associatedTms: expect.any(Object),
             trademarkStatus: expect.any(Object),
+            createdDate: expect.any(Object),
+            modifiedDate: expect.any(Object),
           }),
         );
       });

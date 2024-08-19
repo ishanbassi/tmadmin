@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.time.ZonedDateTime;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,16 +58,9 @@ public class PublishedTmDTO implements Serializable {
 
     private TrademarkStatus trademarkStatus;
     
-    private String createdBy;
-    
-    private Instant createdDate = Instant.now();
-    
-    private String lastModifiedBy;
+    private ZonedDateTime createdDate;
 
-    private Instant lastModifiedDate = Instant.now();
-
-
-
+    private ZonedDateTime modifiedDate;
     
     
     public Map<String,Integer> getTextIndexMap() {
@@ -213,8 +207,30 @@ public class PublishedTmDTO implements Serializable {
     public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
+    
+    
 
-    @Override
+    public ZonedDateTime getCreatedDate() {
+		return createdDate;
+	}
+
+
+	public void setCreatedDate(ZonedDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
+
+	public ZonedDateTime getModifiedDate() {
+		return modifiedDate;
+	}
+
+
+	public void setModifiedDate(ZonedDateTime modifiedDate) {
+		this.modifiedDate = modifiedDate;
+	}
+
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -237,44 +253,7 @@ public class PublishedTmDTO implements Serializable {
     
     
 
-    public String getCreatedBy() {
-		return createdBy;
-	}
-
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-
-	public Instant getCreatedDate() {
-		return createdDate;
-	}
-
-
-	public void setCreatedDate(Instant createdDate) {
-		this.createdDate = createdDate;
-	}
-
-
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
-	}
-
-
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
-
-
-	public Instant getLastModifiedDate() {
-		return lastModifiedDate;
-	}
-
-
-	public void setLastModifiedDate(Instant lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
+   
 
 
 	// prettier-ignore
@@ -298,6 +277,8 @@ public class PublishedTmDTO implements Serializable {
             ", usage='" + getUsage() + "'" +
             ", associatedTms='" + getAssociatedTms() + "'" +
             ", trademarkStatus='" + getTrademarkStatus() + "'" +
+            ", createdDate='" + getCreatedDate()+ "'"+
+            ", modifiedDate='" + getModifiedDate()+ "'"+
             "}";
     }
 }

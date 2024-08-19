@@ -45,6 +45,8 @@ entity Trademark{
     usage String
     associatedTms String
     trademarkStatus TrademarkStatus
+    createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
 }
 
 entity Phonetics{
@@ -76,6 +78,8 @@ entity PublishedTm{
     usage String
     associatedTms String
     trademarkStatus TrademarkStatus
+    createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
 }
 
 entity TmAgent{
@@ -83,6 +87,8 @@ entity TmAgent{
 	firstName String
 	lastName String
 	address String
+	createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
 }
 
 enum HeadOffice {

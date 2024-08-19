@@ -92,6 +92,10 @@ public class PublishedTmCriteria implements Serializable, Criteria {
 
     private TrademarkStatusFilter trademarkStatus;
 
+    private ZonedDateTimeFilter createdDate;
+
+    private ZonedDateTimeFilter modifiedDate;
+
     private Boolean distinct;
 
     public PublishedTmCriteria() {}
@@ -114,6 +118,8 @@ public class PublishedTmCriteria implements Serializable, Criteria {
         this.usage = other.optionalUsage().map(StringFilter::copy).orElse(null);
         this.associatedTms = other.optionalAssociatedTms().map(StringFilter::copy).orElse(null);
         this.trademarkStatus = other.optionalTrademarkStatus().map(TrademarkStatusFilter::copy).orElse(null);
+        this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
+        this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -445,6 +451,44 @@ public class PublishedTmCriteria implements Serializable, Criteria {
         this.trademarkStatus = trademarkStatus;
     }
 
+    public ZonedDateTimeFilter getCreatedDate() {
+        return createdDate;
+    }
+
+    public Optional<ZonedDateTimeFilter> optionalCreatedDate() {
+        return Optional.ofNullable(createdDate);
+    }
+
+    public ZonedDateTimeFilter createdDate() {
+        if (createdDate == null) {
+            setCreatedDate(new ZonedDateTimeFilter());
+        }
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTimeFilter createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTimeFilter getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public Optional<ZonedDateTimeFilter> optionalModifiedDate() {
+        return Optional.ofNullable(modifiedDate);
+    }
+
+    public ZonedDateTimeFilter modifiedDate() {
+        if (modifiedDate == null) {
+            setModifiedDate(new ZonedDateTimeFilter());
+        }
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(ZonedDateTimeFilter modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -491,6 +535,8 @@ public class PublishedTmCriteria implements Serializable, Criteria {
             Objects.equals(usage, that.usage) &&
             Objects.equals(associatedTms, that.associatedTms) &&
             Objects.equals(trademarkStatus, that.trademarkStatus) &&
+            Objects.equals(createdDate, that.createdDate) &&
+            Objects.equals(modifiedDate, that.modifiedDate) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -515,6 +561,8 @@ public class PublishedTmCriteria implements Serializable, Criteria {
             usage,
             associatedTms,
             trademarkStatus,
+            createdDate,
+            modifiedDate,
             distinct
         );
     }
@@ -540,6 +588,8 @@ public class PublishedTmCriteria implements Serializable, Criteria {
             optionalUsage().map(f -> "usage=" + f + ", ").orElse("") +
             optionalAssociatedTms().map(f -> "associatedTms=" + f + ", ").orElse("") +
             optionalTrademarkStatus().map(f -> "trademarkStatus=" + f + ", ").orElse("") +
+            optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
+            optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

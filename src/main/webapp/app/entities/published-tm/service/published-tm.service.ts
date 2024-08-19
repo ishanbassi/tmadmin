@@ -12,8 +12,10 @@ import { IPublishedTm, NewPublishedTm } from '../published-tm.model';
 
 export type PartialUpdatePublishedTm = Partial<IPublishedTm> & Pick<IPublishedTm, 'id'>;
 
-type RestOf<T extends IPublishedTm | NewPublishedTm> = Omit<T, 'applicationDate'> & {
+type RestOf<T extends IPublishedTm | NewPublishedTm> = Omit<T, 'applicationDate' | 'createdDate' | 'modifiedDate'> & {
   applicationDate?: string | null;
+  createdDate?: string | null;
+  modifiedDate?: string | null;
 };
 
 export type RestPublishedTm = RestOf<IPublishedTm>;
@@ -102,6 +104,8 @@ export class PublishedTmService {
     return {
       ...publishedTm,
       applicationDate: publishedTm.applicationDate?.format(DATE_FORMAT) ?? null,
+      createdDate: publishedTm.createdDate?.toJSON() ?? null,
+      modifiedDate: publishedTm.modifiedDate?.toJSON() ?? null,
     };
   }
 
@@ -109,6 +113,8 @@ export class PublishedTmService {
     return {
       ...restPublishedTm,
       applicationDate: restPublishedTm.applicationDate ? dayjs(restPublishedTm.applicationDate) : undefined,
+      createdDate: restPublishedTm.createdDate ? dayjs(restPublishedTm.createdDate) : undefined,
+      modifiedDate: restPublishedTm.modifiedDate ? dayjs(restPublishedTm.modifiedDate) : undefined,
     };
   }
 

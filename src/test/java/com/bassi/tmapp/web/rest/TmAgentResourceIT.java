@@ -2,6 +2,7 @@ package com.bassi.tmapp.web.rest;
 
 import static com.bassi.tmapp.domain.TmAgentAsserts.*;
 import static com.bassi.tmapp.web.rest.TestUtil.createUpdateProxyForBean;
+import static com.bassi.tmapp.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -14,6 +15,10 @@ import com.bassi.tmapp.service.dto.TmAgentDTO;
 import com.bassi.tmapp.service.mapper.TmAgentMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
@@ -45,6 +50,12 @@ class TmAgentResourceIT {
 
     private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
+
+    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final ZonedDateTime DEFAULT_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
+    private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     private static final String ENTITY_API_URL = "/api/tm-agents";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -82,7 +93,9 @@ class TmAgentResourceIT {
             .agentCode(DEFAULT_AGENT_CODE)
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
-            .address(DEFAULT_ADDRESS);
+            .address(DEFAULT_ADDRESS)
+            .createdDate(DEFAULT_CREATED_DATE)
+            .modifiedDate(DEFAULT_MODIFIED_DATE);
         return tmAgent;
     }
 
@@ -97,7 +110,9 @@ class TmAgentResourceIT {
             .agentCode(UPDATED_AGENT_CODE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
-            .address(UPDATED_ADDRESS);
+            .address(UPDATED_ADDRESS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
         return tmAgent;
     }
 
@@ -171,7 +186,9 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
-            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)));
+            .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
     }
 
     @Test
@@ -189,7 +206,9 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.agentCode").value(DEFAULT_AGENT_CODE))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
-            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS));
+            .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
+            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
+            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)));
     }
 
     @Test
@@ -211,7 +230,13 @@ class TmAgentResourceIT {
         TmAgent updatedTmAgent = tmAgentRepository.findById(tmAgent.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedTmAgent are not directly saved in db
         em.detach(updatedTmAgent);
-        updatedTmAgent.agentCode(UPDATED_AGENT_CODE).firstName(UPDATED_FIRST_NAME).lastName(UPDATED_LAST_NAME).address(UPDATED_ADDRESS);
+        updatedTmAgent
+            .agentCode(UPDATED_AGENT_CODE)
+            .firstName(UPDATED_FIRST_NAME)
+            .lastName(UPDATED_LAST_NAME)
+            .address(UPDATED_ADDRESS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
         TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(updatedTmAgent);
 
         restTmAgentMockMvc
@@ -329,7 +354,9 @@ class TmAgentResourceIT {
             .agentCode(UPDATED_AGENT_CODE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
-            .address(UPDATED_ADDRESS);
+            .address(UPDATED_ADDRESS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE);
 
         restTmAgentMockMvc
             .perform(

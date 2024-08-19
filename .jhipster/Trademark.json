@@ -70,6 +70,14 @@
       "fieldName": "trademarkStatus",
       "fieldType": "TrademarkStatus",
       "fieldValues": "REGISTERED,OPPOSED,WITHDRAWN,REJECTED,HEARING,PUBLISHED,PROVISIONAL"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "ZonedDateTime"
     }
   ],
   "jpaMetamodelFiltering": true,

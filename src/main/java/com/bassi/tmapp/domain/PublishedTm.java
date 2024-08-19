@@ -5,6 +5,7 @@ import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -74,6 +75,12 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
     private TrademarkStatus trademarkStatus;
+
+    @Column(name = "created_date")
+    private ZonedDateTime createdDate;
+
+    @Column(name = "modified_date")
+    private ZonedDateTime modifiedDate;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -298,6 +305,32 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
         this.trademarkStatus = trademarkStatus;
     }
 
+    public ZonedDateTime getCreatedDate() {
+        return this.createdDate;
+    }
+
+    public PublishedTm createdDate(ZonedDateTime createdDate) {
+        this.setCreatedDate(createdDate);
+        return this;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTime getModifiedDate() {
+        return this.modifiedDate;
+    }
+
+    public PublishedTm modifiedDate(ZonedDateTime modifiedDate) {
+        this.setModifiedDate(modifiedDate);
+        return this;
+    }
+
+    public void setModifiedDate(ZonedDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
     @Override
@@ -338,6 +371,8 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
             ", usage='" + getUsage() + "'" +
             ", associatedTms='" + getAssociatedTms() + "'" +
             ", trademarkStatus='" + getTrademarkStatus() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
             "}";
     }
 }

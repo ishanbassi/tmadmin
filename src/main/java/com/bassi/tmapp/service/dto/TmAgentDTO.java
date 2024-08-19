@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.dto;
 
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -18,6 +19,10 @@ public class TmAgentDTO implements Serializable {
     private String lastName;
 
     private String address;
+
+    private ZonedDateTime createdDate;
+
+    private ZonedDateTime modifiedDate;
 
     public Long getId() {
         return id;
@@ -59,6 +64,22 @@ public class TmAgentDTO implements Serializable {
         this.address = address;
     }
 
+    public ZonedDateTime getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(ZonedDateTime createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    public ZonedDateTime getModifiedDate() {
+        return modifiedDate;
+    }
+
+    public void setModifiedDate(ZonedDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -89,6 +110,8 @@ public class TmAgentDTO implements Serializable {
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", address='" + getAddress() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
             "}";
     }
 }

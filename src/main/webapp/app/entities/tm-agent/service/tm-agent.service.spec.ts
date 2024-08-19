@@ -5,10 +5,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { ITmAgent } from '../tm-agent.model';
 import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../tm-agent.test-samples';
 
-import { TmAgentService } from './tm-agent.service';
+import { TmAgentService, RestTmAgent } from './tm-agent.service';
 
-const requireRestSample: ITmAgent = {
+const requireRestSample: RestTmAgent = {
   ...sampleWithRequiredData,
+  createdDate: sampleWithRequiredData.createdDate?.toJSON(),
+  modifiedDate: sampleWithRequiredData.modifiedDate?.toJSON(),
 };
 
 describe('TmAgent Service', () => {
