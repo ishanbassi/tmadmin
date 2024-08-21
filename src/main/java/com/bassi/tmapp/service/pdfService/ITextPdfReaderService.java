@@ -100,9 +100,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		catch(IOException e) {
 			throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath +  " Reason: " + e.getLocalizedMessage());
 		}
-        for (int i = 11; i <= 11; i++) {
+        for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
         	log.info("Going to process page number {}", i);
         	currentPublishedTmDto =  new PublishedTmDTO();
+        	currentPublishedTmDto.setPageNo((short) i);
         	
         	CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
             PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
@@ -114,7 +115,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
             
             // extract images
             PdfImage pdfImage = strategy.getImage();
-            if(pdfImage != null) {
+            if(pdfImage != null && currentPublishedTmDto.getApplicationNo() != null) {
             	String path = saveToFileSystem(pdfImage);
             	currentPublishedTmDto.setImgUrl(path);
             	
@@ -372,15 +373,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
 		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
 				.forEach(path -> {
-					try {
 						List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
 						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
 						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
 						
-					}
-					catch(Exception e) { 
-						throw new InternalServerAlertException("Unable to Read pdf files from the journal " + journalNo + " Reason: " + e.getLocalizedMessage());
-					}
 				});
 		
 		

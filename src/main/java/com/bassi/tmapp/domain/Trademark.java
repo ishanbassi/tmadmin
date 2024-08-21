@@ -4,11 +4,16 @@ import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 /**
  * A Trademark.
@@ -17,7 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "trademark")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Trademark extends AbstractAuditingEntity<Long> implements  Serializable {
+public class Trademark implements  Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +35,8 @@ public class Trademark extends AbstractAuditingEntity<Long> implements  Serializ
     @Column(name = "name")
     private String name;
 
-    @Column(name = "details")
+    @Size(max=3000)
+    @Column(name = "details" , length=3000)
     private String details;
 
     @Column(name = "application_no")
@@ -86,6 +92,7 @@ public class Trademark extends AbstractAuditingEntity<Long> implements  Serializ
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "trademarks" }, allowSetters = true)
     private TmAgent tmAgent;
+    
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -348,10 +355,13 @@ public class Trademark extends AbstractAuditingEntity<Long> implements  Serializ
         this.setTmAgent(tmAgent);
         return this;
     }
+    
+    
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-    @Override
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

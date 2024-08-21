@@ -3,11 +3,17 @@ package com.bassi.tmapp.domain;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 
 /**
  * A PublishedTm.
@@ -16,7 +22,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "published_tm")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class PublishedTm extends AbstractAuditingEntity<Long> implements Serializable {
+public class PublishedTm implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -29,7 +35,8 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     @Column(name = "name", nullable=false)
     private String name;
 
-    @Column(name = "details")
+    @Size(max=3000)
+    @Column(name = "details" , length=3000)
     private String details;
 
     @Column(name = "application_no")
@@ -75,12 +82,17 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
     private TrademarkStatus trademarkStatus;
+    
 
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
     @Column(name = "modified_date")
     private ZonedDateTime modifiedDate;
+    
+    @Column(name="page_no", columnDefinition="SMALLINT")
+    private short pageNo;
+    
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -304,6 +316,8 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
+    
+    
 
     public ZonedDateTime getCreatedDate() {
         return this.createdDate;
@@ -330,10 +344,21 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     public void setModifiedDate(ZonedDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
+    
+    
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-    @Override
+
+	public short getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(short pageNo) {
+		this.pageNo = pageNo;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

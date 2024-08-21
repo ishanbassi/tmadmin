@@ -62,6 +62,8 @@ public class PublishedTmDTO implements Serializable {
 
     private ZonedDateTime modifiedDate;
     
+    private short pageNo;
+    
     
     public Map<String,Integer> getTextIndexMap() {
     	return this.textIndexes;
@@ -227,6 +229,18 @@ public class PublishedTmDTO implements Serializable {
 
 	public void setModifiedDate(ZonedDateTime modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	
+	
+
+
+	public short getPageNo() {
+		return pageNo;
+	}
+
+
+	public void setPageNo(short pageNo) {
+		this.pageNo = pageNo;
 	}
 
 

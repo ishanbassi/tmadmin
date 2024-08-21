@@ -54,12 +54,7 @@ public class TrademarkDTO implements Serializable {
 
     private TmAgentDTO tmAgent;
     
-    private String createdBy;
     
-    private Instant createdDate = Instant.now();
-    
-    private String lastModifiedBy;
-
     private Instant lastModifiedDate = Instant.now();
 
     public Long getId() {
@@ -224,29 +219,6 @@ public class TrademarkDTO implements Serializable {
     
     
 
-    public String getCreatedBy() {
-		return createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
-
-	public Instant getCreatedDate() {
-		return createdDate;
-	}
-
-	public void setCreatedDate(Instant createdDate) {
-		this.createdDate = createdDate;
-	}
-
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
-	}
-
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
 
 	public Instant getLastModifiedDate() {
 		return lastModifiedDate;
