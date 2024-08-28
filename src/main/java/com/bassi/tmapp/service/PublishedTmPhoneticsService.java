@@ -3,12 +3,18 @@ package com.bassi.tmapp.service;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
+import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
+import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.service.mapper.PublishedTmPhoneticsMapper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
@@ -28,15 +34,23 @@ public class PublishedTmPhoneticsService {
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
     private final PublishedTmPhoneticsMapper publishedTmPhoneticsMapper;
     private final WordSanitizationService wordSanitizationService;
+	private final PublishedTmMapper publishedTmMapper;
+	private final CommonUtilService commonUtilService;
+
+    
 
     public PublishedTmPhoneticsService(
         PublishedTmPhoneticsRepository publishedTmPhoneticsRepository,
         PublishedTmPhoneticsMapper publishedTmPhoneticsMapper,
-        WordSanitizationService wordSanitizationService
+        WordSanitizationService wordSanitizationService,
+        PublishedTmMapper publishedTmMapper,
+        CommonUtilService commonUtilService
     ) {
         this.publishedTmPhoneticsRepository = publishedTmPhoneticsRepository;
         this.publishedTmPhoneticsMapper = publishedTmPhoneticsMapper;
         this.wordSanitizationService = wordSanitizationService;
+        this.publishedTmMapper = publishedTmMapper;
+        this.commonUtilService = commonUtilService; 
     }
 
     /**
@@ -123,16 +137,30 @@ public class PublishedTmPhoneticsService {
     }
 
 	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
-		List<PublishedTmPhonetics> publishedTmPhoneticsList =  publishedTrademarks.stream().filter(tm -> tm.getName() != null && !tm.getName().isBlank()).map(tm -> {
-			String sanitizedTm = this.wordSanitizationService.sanitizeWord(tm.getName());
-			PublishedTmPhonetics tmPhonetics = new PublishedTmPhonetics();
-			tmPhonetics.setPublishedTm(tm);
-			tmPhonetics.setPhoneticPk(generatePhonetics(tm.getName()));
-			tmPhonetics.setSanitizedTm(sanitizedTm);
-
-			return tmPhonetics;
-
-		}).toList();
+		List<PublishedTmPhonetics> publishedTmPhoneticsList =  publishedTrademarks.stream()
+				.filter(tm -> tm.getName() != null && !tm.getName().isBlank())
+				.map(tm -> {
+					String sanitizedTrademark  = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
+					List<String> subWords = Arrays
+							.asList(sanitizedTrademark.split(" "));
+					
+					List<PublishedTmPhoneticsDTO> phoneticDtoList = new ArrayList<>();
+					
+					if(subWords.size() == 1) {
+						phoneticDtoList.add(generateDto(sanitizedTrademark,tm, true));
+						return  publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
+					}
+					phoneticDtoList = subWords
+							.stream()
+							.map(x -> generateDto(x,tm,false))
+							.toList();
+					
+					phoneticDtoList.add(generateDto(sanitizedTrademark,tm,true)); 
+					return  publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
+				})
+				.flatMap(List::stream)
+				.toList();
+				
 		return publishedTmPhoneticsRepository.saveAll(publishedTmPhoneticsList);
 	}
 	
@@ -142,4 +170,12 @@ public class PublishedTmPhoneticsService {
     	dm.setMaxCodeLen(100);
     	return dm.doubleMetaphone(val);
     }
+    
+    private PublishedTmPhoneticsDTO generateDto(String name , PublishedTm tm, Boolean completed ) {
+    	String phonetics = generatePhonetics(name);
+		PublishedTmDTO publishedTmDto = publishedTmMapper.toDto(tm);
+		return  new PublishedTmPhoneticsDTO(name,phonetics,completed,publishedTmDto);
+    }
+    
+    
 }

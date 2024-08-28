@@ -35,8 +35,8 @@ public class PublishedTm implements Serializable {
     @Column(name = "name", nullable=false)
     private String name;
 
-    @Size(max=3000)
-    @Column(name = "details" , length=3000)
+    
+    @Column(name = "details" , columnDefinition="text")
     private String details;
 
     @Column(name = "application_no")
@@ -48,13 +48,13 @@ public class PublishedTm implements Serializable {
     @Column(name = "agent_name")
     private String agentName;
 
-    @Column(name = "agent_address")
+    @Column(name = "agent_address", columnDefinition="text")
     private String agentAddress;
 
     @Column(name = "proprietor_name")
     private String proprietorName;
 
-    @Column(name = "proprietor_address")
+    @Column(name = "proprietor_address", columnDefinition="text")
     private String proprietorAddress;
 
     @Enumerated(EnumType.STRING)
@@ -400,4 +400,6 @@ public class PublishedTm implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             "}";
     }
+    
+    
 }

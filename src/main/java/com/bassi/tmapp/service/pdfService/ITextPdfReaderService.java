@@ -37,6 +37,7 @@ import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.PdfReaderService;
 import com.bassi.tmapp.service.PhoneticsService;
 import com.bassi.tmapp.service.PublishedTmPhoneticsService;
+import com.bassi.tmapp.service.WordSanitizationService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
@@ -63,11 +64,15 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	private static final Pattern tmClassPattern = Pattern.compile("Trade Marks Journal No:\\s*(\\d{4})\\s*,\\s+.+Class\\s+(\\d{1,2})", Pattern.CASE_INSENSITIVE);
 	private static final Pattern applicationInfoPattern  = Pattern.compile("(\\d{5,7})\s+(\\d\\d\\/\\d\\d\\/\\d\\d\\d\\d)", Pattern.CASE_INSENSITIVE);
+	private static final Pattern multiTmClassPattern  = Pattern.compile("Cl.(\\d{1,2});", Pattern.CASE_INSENSITIVE);
 	
 	private PublishedTmDTO currentPublishedTmDto;
 	private  PhoneticsService phoneticsService;
 	private PublishedTmRepository publishedTmRepository;
 	private PublishedTmPhoneticsService publishedTmPhoneticsService;
+	private WordSanitizationService wordSanitizationService;
+	
+	private List<PublishedTmDTO> errors = new ArrayList<>();
 	
 	@Value("${file-upload-base-path}")
     private String baseUploadDirectory;
@@ -75,17 +80,23 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	@Value("${pdf-file-base-path}")
     private String basePdfDirectory;
 	
-	@Value("${json-file-base-path}")
-    private String baseJsonDirectory;
+	@Value("${errors-file-base-path}")
+    private String baseErrorsDirectory;
 	
 	private PublishedTmMapper publishedTmMapper;
 
-	public ITextPdfReaderService(PhoneticsService phoneticsService, PublishedTmRepository publishedTmRepository,
-			PublishedTmMapper publishedTmMapper, PublishedTmPhoneticsService publishedTmPhoneticsService) {
+	public ITextPdfReaderService(
+			PhoneticsService phoneticsService,
+			PublishedTmRepository publishedTmRepository,
+			PublishedTmMapper publishedTmMapper,
+			PublishedTmPhoneticsService publishedTmPhoneticsService,
+			WordSanitizationService wordSanitizationService
+			) {
 		this.phoneticsService = phoneticsService;
 		this.publishedTmRepository = publishedTmRepository;
 		this.publishedTmMapper = publishedTmMapper;
 		this.publishedTmPhoneticsService = publishedTmPhoneticsService;
+		this.wordSanitizationService = wordSanitizationService;
 	}
 	
 
@@ -109,9 +120,16 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
             PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
             processor.processPageContent(pdfDoc.getPage(i));
             
+            // check if internation tm begins
+            String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
+            if(pageContent.contains("International Registration designating India")) {
+        		pdfDoc.close();
+            	return publishedTrademarks;
+            }
+            
             //extract text 
             List<LineInfo> lines = strategy.getLines();
-            extractAndSavePublishedTrademark(lines);
+            extractPublishedTrademark(lines);
             
             // extract images
             PdfImage pdfImage = strategy.getImage();
@@ -120,15 +138,36 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
             	currentPublishedTmDto.setImgUrl(path);
             	
             }
-            publishedTrademarks.add(currentPublishedTmDto);
+            
+            // if both image and trademark	 is present, remove the trademark
+ 			if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
+ 				currentPublishedTmDto.setName(null);
+ 			}
+ 			
+            // check if trademark is multi class
+			if (currentPublishedTmDto.getTmClass() != null && currentPublishedTmDto.getTmClass() == 99
+					&& currentPublishedTmDto.getDetails() != null) {
+            	List<PublishedTmDTO> class99Trademarks = processTmClass99(currentPublishedTmDto)
+            	.stream()
+            	.map(this::checkAnyMissingInformation)
+            	.filter(x -> x != null)
+            	.toList();
+            	publishedTrademarks.addAll(class99Trademarks);
+            }
+            else {
+            	currentPublishedTmDto = checkAnyMissingInformation(currentPublishedTmDto);
+     			if(currentPublishedTmDto != null) {
+     				publishedTrademarks.add(currentPublishedTmDto);
+     			}	
+            }
         }
         
 		pdfDoc.close();
-		publishedTrademarks  =  checkAnyMissingInformation(publishedTrademarks);
+		
 		return publishedTrademarks;
 	}
 	
-	public void extractAndSavePublishedTrademark(List<LineInfo> lines) {
+	public void extractPublishedTrademark(List<LineInfo> lines) {
 		
 		extractJournalNoAndTrademarkClass(lines);
 		extractApplicationNumberAndDate(lines);
@@ -171,7 +210,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		
 		if(associatedTmLine.isPresent()) {
 			int associatedTmIdx = lines.indexOf(associatedTmLine.get());
-			if(associatedTmIdx != -1) {
+			
+			// second condition ensures that we don't surpass the length of the total lines of the pdf
+			// because the position of the associated tms is not consistent across pages
+			if(associatedTmIdx != -1 && lines.size() - associatedTmIdx >= 2) {
 				LineInfo associatedTmsLineInfo = lines.get(associatedTmIdx+1);
 				String associatedTmsWordInfo = associatedTmsLineInfo.getAllWordsFromSameLineWithInfo();
 				currentPublishedTmDto.setAssociatedTms(associatedTmsWordInfo);
@@ -361,6 +403,20 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		}
 		return filePath;
 	}
+		private void deleteTmImg(String imgUrl) {
+			log.info("Going to delete tm image");
+			String resourcesDir = Paths.get(baseUploadDirectory).toAbsolutePath().toString();		
+			Path imgPath = Paths.get(String.join("/" , resourcesDir, imgUrl));
+			try {
+				Files.delete(imgPath);
+				log.info("File deleted successfully : {} ", imgUrl);
+			}
+			catch(IOException e) {
+				log.error("Failed to delete the file, Reason: {}", e.getLocalizedMessage());
+				
+			}
+			
+		}
 
 	public List<String> generatePhonetics(String trademark) {
 		List<String> subWords = new ArrayList<>(Arrays.asList(trademark.split(" ")));
@@ -379,51 +435,94 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 						
 				});
 		
-		
-		
+		// save the missing trademark information in the json file
+		if(!errors.isEmpty()) {
+			writeErrorsToJson(errors);
+		}
 	}
 	
 	private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
 		publishedTrademarks =  publishedTmRepository.saveAll(publishedTrademarks);
-		List<PublishedTmPhonetics> publishedPhonetics = publishedTmPhoneticsService.saveAll(publishedTrademarks); 
-		
-		
+		publishedTmPhoneticsService.saveAll(publishedTrademarks); 
 	}
 
 
 
-	private List<PublishedTmDTO> checkAnyMissingInformation(List<PublishedTmDTO> publishedTrademarks) {
-		List<PublishedTmDTO> errors = new ArrayList<>();
-		List<PublishedTmDTO> validTms = new ArrayList<>();
-		for(PublishedTmDTO tm: publishedTrademarks) {
+	private PublishedTmDTO checkAnyMissingInformation(PublishedTmDTO tm) {
+		
 			if(tm != null && tm.getTmClass() != null && tm.getApplicationNo() != null
 					&& tm.getApplicationDate() != null && tm.getHeadOffice() != null && tm.getJournalNo() != null
 					&& (tm.getName() != null || tm.getImgUrl() != null)) {
-				validTms.add(tm);
+				return tm;
 			}else {
 				errors.add(tm);
+				if(tm != null && tm.getImgUrl() !=null) {
+					deleteTmImg(tm.getImgUrl());
+				}
+				return null;
 			}
-		}
-		log.info("Going to save missing information to the json file");
-		if(!errors.isEmpty()) {
-			writeErrorsToJson(errors);
-		}
-		return validTms;
+
 	}
+
+
+
+	
 
 
 
 	private void writeErrorsToJson(List<PublishedTmDTO> errors) {
+		log.info("{} trademarks with missing information are going to be stored in the json file.", errors.size());
 		ObjectMapper mapper = new ObjectMapper();
-		String jsonDir = Paths.get(baseJsonDirectory).toAbsolutePath().toString();
+		String jsonDir = Paths.get(baseErrorsDirectory).toAbsolutePath().toString();
 		String fileName  = new Date().getTime() + "-errors.json";
 		File file = new File(Paths.get(jsonDir , fileName).toString());
 		 try {  
+				if(file.createNewFile()) {
+					log.info("File created : {}", file.getName());
+				}
 		        mapper.writeValue(file, errors );
 
 		    } catch (IOException e) {  
 		        e.printStackTrace();  
 		    }
+		
+	}
+	
+	private List<PublishedTmDTO> processTmClass99(PublishedTmDTO tm) {
+		log.info("Going to process multi class tm : {}", tm);
+		List<String> tmClasses = new ArrayList<>();
+		List<PublishedTmDTO> class99Trademarks = new ArrayList<>();
+		
+		// this threshold is used to remove unwanted words in the details
+		int subStringThreshold = 3;  
+		
+		Matcher matcher =  multiTmClassPattern.matcher(tm.getDetails());
+		while(matcher.find()) {
+			tmClasses.add(matcher.group(1));
+			PublishedTmDTO trademarkDto  =  new PublishedTmDTO(tm);
+			int idx = matcher.start(1);
+			int tmClass =  Integer.parseInt(matcher.group(1));
+			trademarkDto.setTmClass(tmClass);
+
+			// Save the end of the current match
+            int endOfCurrentMatch = matcher.end();
+
+            // Look for the next occurrence
+            if (matcher.find()) {
+               int  nextTmClassIndex = matcher.start(1);
+                String details = trademarkDto.getDetails().substring(idx + subStringThreshold, nextTmClassIndex - subStringThreshold);
+                trademarkDto.setDetails(details);
+            }else {
+            	String details = trademarkDto.getDetails().substring(idx+ subStringThreshold);
+                trademarkDto.setDetails(details);
+            }
+            class99Trademarks.add(trademarkDto);
+            
+            // Reset the matcher back to the end of the last match
+            matcher.region(endOfCurrentMatch, tm.getDetails().length());
+			
+		}
+		return class99Trademarks;
 		
 	}
 

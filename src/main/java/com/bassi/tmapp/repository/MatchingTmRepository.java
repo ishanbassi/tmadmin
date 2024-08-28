@@ -14,4 +14,10 @@ public interface MatchingTmRepository{
 	@Query("SELECT tm.*, t.* FROM published_tm tm inner join published_tm_phonetics ph on tm.id = ph.tm_id \r\n"
 			+ "inner join phonetics p on ph.pk = p.pk inner join trademark t on t.id = p.tm_id and tm.tm_class = t.tm_class and tm.journal_no = t.journal_no")
 	List<MatchingTrademarktDto> findAllMatchingTrademarksByClass(int tmClass);
+	
+	@Query("SELECT tm.*, t.* FROM published_tm tm ")
+	List<MatchingTrademarktDto> findAllMatchingTrademarks(int tmClass);
+	
+	
+	
 }

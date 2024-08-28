@@ -1,52 +1,81 @@
 package com.bassi.tmapp.service;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.aspectj.apache.bcel.util.ClassPath;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import com.bassi.tmapp.service.constants.StopWords;
 
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.pipeline.CoreDocument;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import opennlp.tools.postag.POSModel;
+import opennlp.tools.postag.POSTaggerME;
+import opennlp.tools.tokenize.SimpleTokenizer;
 
 @Service
 public class WordSanitizationService {
 	
 	private List<String> stopWords = StopWords.STOP_WORDS_LIST;
-	Properties props;
-	StanfordCoreNLP pipeline; 
+	
 	
 	public WordSanitizationService() {
-//		props = new Properties();
-//	    props.setProperty("annotators", "tokenize,ssplit,pos");
-//	    pipeline = new StanfordCoreNLP(props);
 	}
 	
 	
-	public String sanitizeWord(String word) {
+	public String sanitizeWord(String word){
 		removeSpecialCharacters(word);
 		removeStopWords(word);
-//		persistProperNounsOnly(word);
+		try {
+			extractProperNouns(word);
+		}catch(IOException e) {
+			e.printStackTrace();
+		}
+		
 		return word;
 	}
 	
-	private String persistProperNounsOnly(String word) {
-		List<String> properNouns = new ArrayList<>();
-        CoreDocument document = pipeline.processToCoreDocument(word);
-        for(CoreLabel token:document.tokens()) {
-        	String pos = token.tag();
-        	if(pos.equals("NNP") || pos.equals("NNPS")) {
-        		properNouns.add(token.word());
-        	}
+	
+	
+
+	private void extractProperNouns(String name) throws IOException {
+		 // Tokenize the text
+        SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
+        String[] tokens = tokenizer.tokenize(name);
+
+        // Load the POS model
+        InputStream in = new ClassPathResource("en-pos-maxent.bin").getInputStream();
+//        InputStream modelIn = WordSanitizationService.class.getResourceAsStream("banner.txt");
+
+        POSModel posModel = new POSModel(in);
+        POSTaggerME posTagger = new POSTaggerME(posModel);
+
+        // Tag the tokens
+        String[] posTags = posTagger.tag(tokens);
+
+        // Extract proper nouns
+        List<String> properNouns = new ArrayList<>();
+        for (int i = 0; i < tokens.length; i++) {
+            if (posTags[i].equals("NNP") || posTags[i].equals("NNPS")) {
+                properNouns.add(tokens[i]);
+            }
         }
-        return properNouns.stream().collect(Collectors.joining(" "));
-        
-	}
+
+        // Output the result
+        System.out.println("Proper Nouns: " + properNouns);
+    }
+
 
 	private String removeStopWords(String word) {
 		ArrayList<String> allWords = Stream.of(word.toLowerCase().split(" "))

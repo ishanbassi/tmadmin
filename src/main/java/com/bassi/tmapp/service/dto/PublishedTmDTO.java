@@ -23,6 +23,31 @@ public class PublishedTmDTO implements Serializable {
 	public static final String PROPRIETOR_NAME_ADDRESS = "PROPRIETOR_NAME_ADDRESS";
 	public static final String HEAD_OFFICE = "HEAD_OFFICE";
 	private  final Map<String,Integer> textIndexes = new HashMap<>();
+	
+	public PublishedTmDTO() {}
+	
+	public PublishedTmDTO(PublishedTmDTO other) {
+	    this.name = other.name;
+	    this.details = other.details;
+	    this.applicationDate = other.applicationDate;
+	    this.applicationNo = other.applicationNo;
+	    this.agentAddress = other.agentAddress;
+	    this.agentName = other.agentName;
+	    this.proprietorAddress = other.proprietorAddress;
+	    this.proprietorName = other.proprietorName;
+	    this.headOffice = other.headOffice;
+	    this.imgUrl = other.imgUrl;
+	    this.tmClass  = other.tmClass;
+	    this.deleted = other.deleted;
+	    this.journalNo = other.journalNo;
+	    this.usage = other.usage;
+	    this.associatedTms = other.associatedTms;
+	    this.trademarkStatus = other.trademarkStatus;
+	    this.createdDate = other.createdDate;
+	    this.modifiedDate = other.modifiedDate;
+	    this.pageNo = other.pageNo;
+	}
+	
 
     private Long id;
 
