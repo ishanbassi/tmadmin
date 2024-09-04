@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bassi.tmapp.repository.MatchingTmRepository;
+import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.dto.MatchingTrademarktDto;
 
 
@@ -18,9 +19,10 @@ public class MatchingTrademarkService {
     private final Logger log = LoggerFactory.getLogger(MatchingTrademarkService .class);
 
 	
-	private MatchingTmRepository matchingTmRepository;
+	private PublishedTmRepository publishedTmRepository;
 	
-	MatchingTrademarkService ( ) {
+	MatchingTrademarkService ( PublishedTmRepository publishedTmRepository ) {
+		this.publishedTmRepository  =  publishedTmRepository ;
 	}
 	
 	public byte[] exportTrademarks( List<MatchingTrademarktDto> matchingTrademarkExportDtoList) {
@@ -36,8 +38,8 @@ public class MatchingTrademarkService {
     }
 
 
-	public List<MatchingTrademarktDto> findAllMatchingTrademarksByClass(int tmClass) {
-		return null;
+	public List<Object> findAllMatchingTrademarksByClass(int tmClass, int journalNo) {
+		return publishedTmRepository.findAllMatchingTrademarksByJournalAndClass(journalNo, tmClass);
 	}
 
 }

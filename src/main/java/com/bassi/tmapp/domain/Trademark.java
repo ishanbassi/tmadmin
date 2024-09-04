@@ -403,4 +403,15 @@ public class Trademark implements  Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             "}";
     }
+    
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
+    }
 }

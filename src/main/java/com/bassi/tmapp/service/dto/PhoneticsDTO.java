@@ -8,6 +8,15 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PhoneticsDTO implements Serializable {
+	
+	public PhoneticsDTO() {}
+	
+	public PhoneticsDTO(String sanitizedTm, String phoneticPk,Boolean complete, TrademarkDTO  dto ) {
+		this.sanitizedTm = sanitizedTm;
+		this.phoneticPk = phoneticPk;
+		this.complete = complete;
+		this.trademark = dto;
+	}
 
     private Long id;
 

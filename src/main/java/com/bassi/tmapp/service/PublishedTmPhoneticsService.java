@@ -142,7 +142,8 @@ public class PublishedTmPhoneticsService {
 				.map(tm -> {
 					String sanitizedTrademark  = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
 					List<String> subWords = Arrays
-							.asList(sanitizedTrademark.split(" "));
+							.asList(sanitizedTrademark.split(" "))
+							;
 					
 					List<PublishedTmPhoneticsDTO> phoneticDtoList = new ArrayList<>();
 					
@@ -155,8 +156,10 @@ public class PublishedTmPhoneticsService {
 							.map(x -> generateDto(x,tm,false))
 							.toList();
 					
-					phoneticDtoList.add(generateDto(sanitizedTrademark,tm,true)); 
-					return  publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
+					List<PublishedTmPhoneticsDTO> modifiableDtoList = new ArrayList<>(phoneticDtoList);
+					
+					modifiableDtoList.add(generateDto(sanitizedTrademark,tm,true)); 
+					return  publishedTmPhoneticsMapper.toEntity(modifiableDtoList);
 				})
 				.flatMap(List::stream)
 				.toList();

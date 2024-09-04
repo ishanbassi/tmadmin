@@ -28,20 +28,26 @@ import opennlp.tools.tokenize.SimpleTokenizer;
 public class WordSanitizationService {
 	
 	private List<String> stopWords = StopWords.STOP_WORDS_LIST;
+	POSModel posModel;
 	
-	
-	public WordSanitizationService() {
+	public WordSanitizationService()  {
 	}
 	
 	
-	public String sanitizeWord(String word){
-		removeSpecialCharacters(word);
-		removeStopWords(word);
+	private void loadModel() {
 		try {
-			extractProperNouns(word);
+			InputStream in = new ClassPathResource("en-pos-maxent.bin").getInputStream();
+	        posModel = new POSModel(in);
 		}catch(IOException e) {
 			e.printStackTrace();
 		}
+		
+	}
+
+
+	public String sanitizeWord(String word) {
+		word = removeSpecialCharacters(word);
+		word = removeStopWords(word);
 		
 		return word;
 	}
@@ -49,20 +55,18 @@ public class WordSanitizationService {
 	
 	
 
-	private void extractProperNouns(String name) throws IOException {
+	private void extractProperNouns(String name)  {
 		 // Tokenize the text
         SimpleTokenizer tokenizer = SimpleTokenizer.INSTANCE;
         String[] tokens = tokenizer.tokenize(name);
 
         // Load the POS model
-        InputStream in = new ClassPathResource("en-pos-maxent.bin").getInputStream();
-//        InputStream modelIn = WordSanitizationService.class.getResourceAsStream("banner.txt");
 
-        POSModel posModel = new POSModel(in);
         POSTaggerME posTagger = new POSTaggerME(posModel);
 
         // Tag the tokens
         String[] posTags = posTagger.tag(tokens);
+        posTagger.getAllPosTags();
 
         // Extract proper nouns
         List<String> properNouns = new ArrayList<>();
@@ -89,6 +93,6 @@ public class WordSanitizationService {
 	}
 	
 	private String removeSpecialCharacters(String word) {
-		return word.replaceAll("[–~`!@#$%^&*(){}\\[\\];:\"'<,.>?\\/\\\\|_+=-]", " ");
+		return word.replaceAll("[–~`!@#$%^&*(){}\\[\\];:\"'<,.>?\\/\\\\|_+=-]", "");
 	}
 }

@@ -40,9 +40,10 @@ public class MatchingTrademarkResources {
         return ResponseEntity.ok().headers(headers).body(csvBytes);
 	}
 	
-	@GetMapping(path="/find/{class}")
-	public ResponseEntity<List<MatchingTrademarktDto>> findAllMatchingTrademarksByClass(@PathVariable("class") int tmClass) {
-		List<MatchingTrademarktDto> matchingTrademarks = matchingTrademarkService.findAllMatchingTrademarksByClass(tmClass);
+	@GetMapping(path="/find/{class}/{journalNo}")
+	public ResponseEntity<List<Object>> findAllMatchingTrademarksByClass(
+			@PathVariable("class") int tmClass, @PathVariable("journalNo") int journalNo) {
+		List<Object> matchingTrademarks = matchingTrademarkService.findAllMatchingTrademarksByClass(tmClass, journalNo);
 		return ResponseEntity.ok(matchingTrademarks);
 	}
 }

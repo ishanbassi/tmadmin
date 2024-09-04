@@ -4,11 +4,20 @@ import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Optional;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing {@link com.bassi.tmapp.domain.Trademark}.
@@ -95,4 +104,12 @@ public class TrademarkService {
         log.debug("Request to delete Trademark : {}", id);
         trademarkRepository.deleteById(id);
     }
+    
+    public List<TrademarkDTO> saveAll(List<TrademarkDTO> trademarkDtoList) {
+        log.debug("Request to save Trademarks : {}", trademarkDtoList.size());
+        List<Trademark> trademarks = trademarkMapper.toEntity(trademarkDtoList);
+        trademarks = trademarkRepository.saveAll(trademarks);
+        return trademarkMapper.toDto(trademarks);
+    } 
+
 }

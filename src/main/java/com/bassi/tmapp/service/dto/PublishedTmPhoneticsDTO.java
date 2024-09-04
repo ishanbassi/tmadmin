@@ -17,6 +17,7 @@ public class PublishedTmPhoneticsDTO implements Serializable {
 		this.sanitizedTm = sanitizedTm;
 		this.phoneticPk = phoneticPk;
 		this.complete = complete;
+		this.publishedTm = dto;
 	}
 
     private Long id;
