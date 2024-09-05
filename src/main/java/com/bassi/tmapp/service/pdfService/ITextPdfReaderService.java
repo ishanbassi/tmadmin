@@ -43,6 +43,7 @@ import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.itextpdf.kernel.geom.Rectangle;
 import com.itextpdf.kernel.geom.Vector;
 import com.itextpdf.kernel.pdf.PdfDocument;
@@ -473,6 +474,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	private void writeErrorsToJson(List<PublishedTmDTO> errors) {
 		log.info("{} trademarks with missing information are going to be stored in the json file.", errors.size());
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonDir = Paths.get(baseErrorsDirectory).toAbsolutePath().toString();
 		String fileName  = new Date().getTime() + "-errors.json";
 		File file = new File(Paths.get(jsonDir , fileName).toString());
