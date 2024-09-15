@@ -425,7 +425,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	}
 	
 	
-	public void readPdfFilesFromFileSystem(String journalNo) {
+	public void readPdfFilesFromFileSystem(int journalNo) {
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
 		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
 				.forEach(path -> {

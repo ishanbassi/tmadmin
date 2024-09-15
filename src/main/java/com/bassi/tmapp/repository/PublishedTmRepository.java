@@ -41,5 +41,12 @@ public interface PublishedTmRepository extends JpaRepository<PublishedTm, Long>,
 	List<Object> findAllMatchingTrademarksByJournalAndClass(int journalNo, int tmClass);
 
 	
+	@Query(value="select tm.* FROM published_tm tm where name is not  null and journal_no = ?1 "
+			+ "and tm.id NOT IN (SELECT published_tm_id FROM published_tm_phonetics)", nativeQuery=true)
+	List<PublishedTm> findTrademarksWherePhoneticsMissing(int journalNo);
+	
+	
+
+	
 
 }

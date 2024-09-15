@@ -79,9 +79,9 @@ public class PublishedTm implements Serializable {
     @Column(name = "associated_tms")
     private String associatedTms;
 
-    @Enumerated(EnumType.STRING)
+//    @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
-    private TrademarkStatus trademarkStatus;
+    private String trademarkStatus;
     
 
     @Column(name = "created_date")
@@ -304,16 +304,16 @@ public class PublishedTm implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public TrademarkStatus getTrademarkStatus() {
+    public String getTrademarkStatus() {
         return this.trademarkStatus;
     }
 
-    public PublishedTm trademarkStatus(TrademarkStatus trademarkStatus) {
+    public PublishedTm trademarkStatus(String trademarkStatus) {
         this.setTrademarkStatus(trademarkStatus);
         return this;
     }
 
-    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
+    public void setTrademarkStatus(String trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
     

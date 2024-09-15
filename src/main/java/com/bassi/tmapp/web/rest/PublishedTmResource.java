@@ -202,9 +202,16 @@ public class PublishedTmResource {
     }
     
 	@PostMapping("/extract/{journalNo}")
-	public String extractPublishedTm(@PathVariable("journalNo") String journalNo) {
+	public String extractPublishedTm(@PathVariable("journalNo") int journalNo) {
 		publishedTmService.readPdfFile(journalNo);
 		return "Trademarks extraction has been initialized";
+	}
+	
+	
+	@PostMapping("/generate-phonetics/{journalNo}")
+	public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
+		publishedTmService.generateMissingPhonetics(journalNo);
+		return "Phonetics generated for missing trademarks";
 	}
 	
 	

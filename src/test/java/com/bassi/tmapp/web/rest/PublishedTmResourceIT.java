@@ -150,7 +150,7 @@ class PublishedTmResourceIT {
             .deleted(DEFAULT_DELETED)
             .usage(DEFAULT_USAGE)
             .associatedTms(DEFAULT_ASSOCIATED_TMS)
-            .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
+            .trademarkStatus("")
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE);
         return publishedTm;
@@ -179,7 +179,7 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .trademarkStatus("")
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE);
         return publishedTm;
@@ -1470,7 +1470,7 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .trademarkStatus("")
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE);
         PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(updatedPublishedTm);
@@ -1575,7 +1575,7 @@ class PublishedTmResourceIT {
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .trademarkStatus("")
             .createdDate(UPDATED_CREATED_DATE);
 
         restPublishedTmMockMvc
@@ -1623,7 +1623,7 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .trademarkStatus("")
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE);
 

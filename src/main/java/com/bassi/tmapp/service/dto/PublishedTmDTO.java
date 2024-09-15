@@ -81,7 +81,7 @@ public class PublishedTmDTO implements Serializable {
 
     private String associatedTms;
 
-    private TrademarkStatus trademarkStatus;
+    private String trademarkStatus;
     
     private ZonedDateTime createdDate;
 
@@ -227,11 +227,11 @@ public class PublishedTmDTO implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public TrademarkStatus getTrademarkStatus() {
+    public String getTrademarkStatus() {
         return trademarkStatus;
     }
 
-    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
+    public void setTrademarkStatus(String trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
     

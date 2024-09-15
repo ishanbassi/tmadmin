@@ -62,7 +62,7 @@ public class MatchingTmExportService extends CSVExportService<MatchingTrademarkt
 				getHeadOffice(publishedTmDTO.getHeadOffice()),
 				publishedTmDTO.getJournalNo().toString(),
 				publishedTmDTO.getUsage(),
-				getTrademarkStatus(publishedTmDTO.getTrademarkStatus())
+				publishedTmDTO.getTrademarkStatus()
 				
 				
 		});

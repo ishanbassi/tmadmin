@@ -16,6 +16,8 @@ import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { EntityArrayResponseType, PublishedTmService } from '../service/published-tm.service';
 import { PublishedTmDeleteDialogComponent } from '../delete/published-tm-delete-dialog.component';
 import { IPublishedTm } from '../published-tm.model';
+import FilterComponent from '../../../shared/filter/filter.component';
+import { FilterOption, FilterOptions } from '../../../shared/filter/filter.model';
 
 @Component({
   standalone: true,
@@ -31,12 +33,14 @@ import { IPublishedTm } from '../published-tm.model';
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     InfiniteScrollDirective,
+    FilterComponent
   ],
 })
 export class PublishedTmComponent implements OnInit {
   subscription: Subscription | null = null;
   publishedTms?: IPublishedTm[];
   isLoading = false;
+  filters = new FilterOptions()
 
   sortState = sortStateSignal({});
 

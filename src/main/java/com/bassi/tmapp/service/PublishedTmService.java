@@ -6,6 +6,7 @@ import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.service.pdfService.ITextPdfReaderService;
 
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +26,15 @@ public class PublishedTmService {
 
     private final PublishedTmMapper publishedTmMapper;
     private final ITextPdfReaderService pdfReaderService;
+    private final PublishedTmPhoneticsService publishedTmPhoneticsService;
 
-    public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,ITextPdfReaderService pdfReaderService) {
+	public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,
+			ITextPdfReaderService pdfReaderService, PublishedTmPhoneticsService publishedTmPhoneticsService) {
         this.publishedTmRepository = publishedTmRepository;
         this.publishedTmMapper = publishedTmMapper;
         this.pdfReaderService = pdfReaderService;
+        this.publishedTmPhoneticsService = publishedTmPhoneticsService;
+        
     }
 
     /**
@@ -100,7 +105,13 @@ public class PublishedTmService {
         publishedTmRepository.deleteById(id);
     }
 
-	public void readPdfFile(String journalNo) {
+	public void readPdfFile(int journalNo) {
 		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
+	}
+
+	public void generateMissingPhonetics(int journalNo) {
+		List<PublishedTm> trademarks = publishedTmRepository.findTrademarksWherePhoneticsMissing(journalNo);
+		publishedTmPhoneticsService.saveAll(trademarks);
+		
 	}
 }
