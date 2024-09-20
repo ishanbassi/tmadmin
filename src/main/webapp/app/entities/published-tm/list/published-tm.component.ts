@@ -1,5 +1,5 @@
 import { Component, computed, NgZone, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { HttpHeaders } from '@angular/common/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -18,6 +18,8 @@ import { PublishedTmDeleteDialogComponent } from '../delete/published-tm-delete-
 import { IPublishedTm } from '../published-tm.model';
 import FilterComponent from '../../../shared/filter/filter.component';
 import { FilterOption, FilterOptions } from '../../../shared/filter/filter.model';
+import { saveAs } from 'file-saver';
+
 
 @Component({
   standalone: true,
@@ -37,6 +39,7 @@ import { FilterOption, FilterOptions } from '../../../shared/filter/filter.model
   ],
 })
 export class PublishedTmComponent implements OnInit {
+
   subscription: Subscription | null = null;
   publishedTms?: IPublishedTm[];
   isLoading = false;
@@ -163,5 +166,25 @@ export class PublishedTmComponent implements OnInit {
         queryParams: queryParamsObj,
       });
     });
+  }
+
+  download() {
+    this.downloadBackend().subscribe({
+      next: (res: any) => {
+        let fileName: any = res.headers.get('content-disposition');
+        fileName = fileName.replace('form-data; name="attachment"; filename="', '');
+        fileName = fileName.split('"').join("");
+        saveAs(res.body, fileName);
+      },
+      error: (error) => {
+        
+      }
+    })
+  }
+
+  protected downloadBackend(): Observable<HttpResponse<Blob>> {
+    this.isLoading = true;
+
+    return this.publishedTmService.download().pipe(tap(() => (this.isLoading = false)));
   }
 }

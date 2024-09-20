@@ -1,18 +1,13 @@
 package com.bassi.tmapp.service;
 
-import java.util.Map;
-
-import org.springframework.stereotype.Service;
-
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
-import com.bassi.tmapp.service.dto.MatchingTrademarktDto;
+import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
-import static java.util.Map.entry;
 
 
-public class MatchingTmExportService extends CSVExportService<MatchingTrademarktDto>{
+public class MatchingTmExportService extends CSVExportService<MatchingTrademarkDto>{
 	
 	
 	public MatchingTmExportService(String sheetName) {
@@ -36,34 +31,27 @@ public class MatchingTmExportService extends CSVExportService<MatchingTrademarkt
 				"Agent Address",
 				"Proprietor Name",
 				"Proprietor Address",
-				"Head Office",
 				"Journal No.",
-				"Usage",
-				"Trademark Status"
 
 		};
 		csvWriter.writeNext(headers);
 	}
 
 	@Override
-	public void writeRow( MatchingTrademarktDto element, int rowNr) {
-		PublishedTmDTO publishedTmDTO = element.getPublishedTmDTO();
-		TrademarkDTO trademarkDTO= element.getTrademarkDto();
+	public void writeRow( MatchingTrademarkDto element, int rowNr) {
+;
+		
 		csvWriter.writeNext(new String[] {
-				publishedTmDTO.getName(),
-				trademarkDTO.getName(),
-				publishedTmDTO.getClass().toString(),
-				publishedTmDTO.getDetails(),
-				getApplicationNo(publishedTmDTO.getApplicationNo()),
-				publishedTmDTO.getAgentName(),
-				publishedTmDTO.getAgentAddress(),
-				publishedTmDTO.getProprietorName(),
-				publishedTmDTO.getProprietorAddress(),
-				getHeadOffice(publishedTmDTO.getHeadOffice()),
-				publishedTmDTO.getJournalNo().toString(),
-				publishedTmDTO.getUsage(),
-				publishedTmDTO.getTrademarkStatus()
-				
+				element.getMatchingTrademark(),
+				element.getRegisteredTrademark(),
+				element.getTmClass().toString(),
+				element.getDetails(),
+				getApplicationNo(element.getApplicationNo()),
+				element.getAgentName(),
+				element.getAgentAddress(),
+				element.getProprietorName(),
+				element.getProprietorAddress(),
+				element.getJournalNo().toString(),
 				
 		});
 	}

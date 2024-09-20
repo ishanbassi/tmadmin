@@ -5,17 +5,12 @@ import java.util.List;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bassi.tmapp.service.MatchingTrademarkService;
-import com.bassi.tmapp.service.dto.MatchingTrademarktDto;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/api/matching/trademarks")
@@ -30,13 +25,13 @@ public class MatchingTrademarkResources {
 	
 	
 	
-	@GetMapping(path = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<byte[]> getMethodName(@RequestParam Integer journalNo, @RequestBody List<MatchingTrademarktDto> matchingTrademarkExportDtoList) {
+	@GetMapping(path = "/download/{journalNo}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<byte[]> download (@PathVariable("journalNo") int journalNo) {
 		String fileName = "Trademark-Journal-No-" + journalNo + ".csv";
 		HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentDispositionFormData("attachment", fileName);
-        byte[] csvBytes = matchingTrademarkService.exportTrademarks(matchingTrademarkExportDtoList);
+        byte[] csvBytes = matchingTrademarkService.exportTrademarks(journalNo);
         return ResponseEntity.ok().headers(headers).body(csvBytes);
 	}
 	

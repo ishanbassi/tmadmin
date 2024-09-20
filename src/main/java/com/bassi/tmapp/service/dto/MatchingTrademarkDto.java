@@ -4,16 +4,16 @@ package com.bassi.tmapp.service.dto;
 
 public class MatchingTrademarkDto {
 	
-	 String matchingTrademark;
-	String registeredTrademark;
-	Integer tmClass;
-	Long applicationNo;
-	String details;
-	Integer journalNo;
-	String proprietorName;
-	String proprietorAddress;
-	String agentName;
-	String agentAddress;
+	 private String matchingTrademark;
+	 private  String registeredTrademark;
+	 private Integer tmClass;
+	 private  Long applicationNo;
+	 private  String details;
+	 private  Integer journalNo;
+	 private  String proprietorName;
+	 private  String proprietorAddress;
+	 private  String agentName;
+	 private String agentAddress;
 	
 
     public MatchingTrademarkDto(String matchingTrademark, String registeredTrademark, Integer tmClass, 

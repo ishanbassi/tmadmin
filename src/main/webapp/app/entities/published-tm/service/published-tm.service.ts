@@ -29,10 +29,12 @@ export type EntityArrayResponseType = HttpResponse<IPublishedTm[]>;
 
 @Injectable({ providedIn: 'root' })
 export class PublishedTmService {
+  
   protected http = inject(HttpClient);
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/published-tms');
+  protected exportUrl = this.applicationConfigService.getEndpointFor('api/matching/trademarks');
 
   create(publishedTm: NewPublishedTm): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(publishedTm);
@@ -128,5 +130,11 @@ export class PublishedTmService {
     return res.clone({
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
+  }
+
+  download(req?: any): Observable<HttpResponse<Blob>> {
+    const options = createRequestOption(req);
+    return this.http
+      .get<Blob>(this.exportUrl+"/download/2174", { observe: 'response', responseType: 'blob' as 'json' });
   }
 }

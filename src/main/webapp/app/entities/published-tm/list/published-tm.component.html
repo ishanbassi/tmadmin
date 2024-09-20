@@ -14,12 +14,17 @@
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-published-tm"
+        class="btn btn-primary jh-create-entity create-published-tm me-2"
         [routerLink]="['/published-tm/new']"
       >
         <fa-icon icon="plus"></fa-icon>
         <span>Create a new Published Tm</span>
       </button>
+      <button id="jh-create-entity" data-cy="entityCreateButton"
+          class="btn btn-primary jh-create-entity ml-1" (click)="download()">
+          <fa-icon icon="download"></fa-icon>
+          <span>Export</span>
+        </button>
     </div>
   </h2>
 
