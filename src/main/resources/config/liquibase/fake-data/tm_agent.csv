@@ -1,11 +1,11 @@
-id;agent_code;first_name;last_name;address;created_date;modified_date
-1;28020;Jonas;Franecki;favor pish scrounge;2024-06-02T12:11:21;2024-06-02T07:30:43
-2;7355;Lee;Kirlin;drat perplex;2024-06-02T04:55:07;2024-06-01T17:01:56
-3;12456;Lolita;Yost;midst quantify;2024-06-02T09:35:16;2024-06-02T05:45:20
-4;3587;Idell;Hoppe;phew weakly list;2024-06-02T07:38:53;2024-06-01T20:34:25
-5;21440;Bonita;Nader;why decree link;2024-06-01T21:16:09;2024-06-02T11:20:44
-6;16431;Daryl;Kshlerin;patrolling segue;2024-06-02T02:21:07;2024-06-02T14:45:11
-7;26070;Timmy;Kulas;off;2024-06-02T05:13:42;2024-06-02T12:10:20
-8;14632;Nyasia;West;musty;2024-06-02T08:52:43;2024-06-01T17:18:56
-9;31609;Jessie;Crist;huzzah fort;2024-06-01T20:06:50;2024-06-02T16:12:10
-10;24903;Davon;Halvorson;given;2024-06-02T13:13:21;2024-06-02T09:34:29
+id;agent_code;first_name;last_name;address;created_date;modified_date;deleted;company_name
+1;functional lest unless;Ashlynn;Balistreri;flexibility drat perplex;2024-06-02T04:55:07;2024-06-01T17:01:56;true;lovely playful
+2;geez;Geraldine;Brakus;shinny;2024-06-02T00:48:11;2024-06-01T23:49:20;false;obnoxiously
+3;upon why;Ariel;Skiles;whoever damage centurion;2024-06-02T13:39:21;2024-06-02T02:21:09;false;only
+4;psst;Hiram;Predovic;undertake;2024-06-02T12:42:42;2024-06-02T08:29:24;false;videotape abate reprieve
+5;hence;Brett;Durgan;correctly mid;2024-06-02T13:40:20;2024-06-02T06:26:04;false;roughly stealth
+6;boohoo milkshake badly;Abigail;Zemlak;deeply;2024-06-02T12:15:18;2024-06-02T12:00:44;true;since
+7;knight scented advanced;Bessie;Zieme;victoriously;2024-06-02T02:16:29;2024-06-02T09:22:44;true;whoa
+8;woot;Victor;Turner;tote before combat;2024-06-01T23:49:11;2024-06-01T20:30:36;false;whoa melody whereas
+9;prime;Jasper;Lynch;brief plywood creator;2024-06-02T04:37:30;2024-06-02T07:24:46;false;carefully or
+10;blindly;Nikolas;Marquardt;ick account;2024-06-02T02:41:57;2024-06-01T22:25:43;false;qua

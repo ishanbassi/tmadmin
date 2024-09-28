@@ -32,7 +32,7 @@ public class PublishedTm implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable=false)
+    @Column(name = "name")
     private String name;
 
     
@@ -64,10 +64,10 @@ public class PublishedTm implements Serializable {
     @Column(name = "img_url")
     private String imgUrl;
 
-    @Column(name = "tm_class", nullable=false)
+    @Column(name = "tm_class")
     private Integer tmClass;
 
-    @Column(name = "journal_no", nullable=false)
+    @Column(name = "journal_no")
     private Integer journalNo;
 
     @Column(name = "deleted")

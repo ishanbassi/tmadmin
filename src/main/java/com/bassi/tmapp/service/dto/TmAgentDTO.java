@@ -12,7 +12,7 @@ public class TmAgentDTO implements Serializable {
 
     private Long id;
 
-    private Integer agentCode;
+    private String agentCode;
 
     private String firstName;
 
@@ -24,6 +24,10 @@ public class TmAgentDTO implements Serializable {
 
     private ZonedDateTime modifiedDate;
 
+    private Boolean deleted;
+
+    private String companyName;
+
     public Long getId() {
         return id;
     }
@@ -32,11 +36,11 @@ public class TmAgentDTO implements Serializable {
         this.id = id;
     }
 
-    public Integer getAgentCode() {
+    public String getAgentCode() {
         return agentCode;
     }
 
-    public void setAgentCode(Integer agentCode) {
+    public void setAgentCode(String agentCode) {
         this.agentCode = agentCode;
     }
 
@@ -80,6 +84,22 @@ public class TmAgentDTO implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -106,12 +126,14 @@ public class TmAgentDTO implements Serializable {
     public String toString() {
         return "TmAgentDTO{" +
             "id=" + getId() +
-            ", agentCode=" + getAgentCode() +
+            ", agentCode='" + getAgentCode() + "'" +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", address='" + getAddress() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
+            ", deleted='" + getDeleted() + "'" +
+            ", companyName='" + getCompanyName() + "'" +
             "}";
     }
 }

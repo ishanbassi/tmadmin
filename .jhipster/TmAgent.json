@@ -7,7 +7,7 @@
   "fields": [
     {
       "fieldName": "agentCode",
-      "fieldType": "Integer"
+      "fieldType": "String"
     },
     {
       "fieldName": "firstName",
@@ -28,6 +28,14 @@
     {
       "fieldName": "modifiedDate",
       "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "companyName",
+      "fieldType": "String"
     }
   ],
   "name": "TmAgent",

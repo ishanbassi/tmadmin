@@ -83,12 +83,15 @@ entity PublishedTm{
 }
 
 entity TmAgent{
-	agentCode Integer
 	firstName String
 	lastName String
 	address String
 	createdDate ZonedDateTime
     modifiedDate ZonedDateTime
+    deleted Boolean
+    companyName String
+    agentCode String
+    
 }
 
 enum HeadOffice {
