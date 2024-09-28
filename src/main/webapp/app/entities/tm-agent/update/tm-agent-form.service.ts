@@ -28,7 +28,7 @@ type TmAgentFormRawValue = FormValueOf<ITmAgent>;
 
 type NewTmAgentFormRawValue = FormValueOf<NewTmAgent>;
 
-type TmAgentFormDefaults = Pick<NewTmAgent, 'id' | 'createdDate' | 'modifiedDate'>;
+type TmAgentFormDefaults = Pick<NewTmAgent, 'id' | 'createdDate' | 'modifiedDate' | 'deleted'>;
 
 type TmAgentFormGroupContent = {
   id: FormControl<TmAgentFormRawValue['id'] | NewTmAgent['id']>;
@@ -38,6 +38,8 @@ type TmAgentFormGroupContent = {
   address: FormControl<TmAgentFormRawValue['address']>;
   createdDate: FormControl<TmAgentFormRawValue['createdDate']>;
   modifiedDate: FormControl<TmAgentFormRawValue['modifiedDate']>;
+  deleted: FormControl<TmAgentFormRawValue['deleted']>;
+  companyName: FormControl<TmAgentFormRawValue['companyName']>;
 };
 
 export type TmAgentFormGroup = FormGroup<TmAgentFormGroupContent>;
@@ -63,6 +65,8 @@ export class TmAgentFormService {
       address: new FormControl(tmAgentRawValue.address),
       createdDate: new FormControl(tmAgentRawValue.createdDate),
       modifiedDate: new FormControl(tmAgentRawValue.modifiedDate),
+      deleted: new FormControl(tmAgentRawValue.deleted),
+      companyName: new FormControl(tmAgentRawValue.companyName),
     });
   }
 
@@ -87,6 +91,7 @@ export class TmAgentFormService {
       id: null,
       createdDate: currentTime,
       modifiedDate: currentTime,
+      deleted: false,
     };
   }
 

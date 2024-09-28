@@ -26,6 +26,8 @@ describe('TmAgent Form Service', () => {
             address: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
+            deleted: expect.any(Object),
+            companyName: expect.any(Object),
           }),
         );
       });
@@ -42,6 +44,8 @@ describe('TmAgent Form Service', () => {
             address: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
+            deleted: expect.any(Object),
+            companyName: expect.any(Object),
           }),
         );
       });

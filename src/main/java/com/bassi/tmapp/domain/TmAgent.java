@@ -27,7 +27,7 @@ public class TmAgent implements Serializable {
     private Long id;
 
     @Column(name = "agent_code")
-    private Integer agentCode;
+    private String agentCode;
 
     @Column(name = "first_name")
     private String firstName;
@@ -43,6 +43,12 @@ public class TmAgent implements Serializable {
 
     @Column(name = "modified_date")
     private ZonedDateTime modifiedDate;
+
+    @Column(name = "deleted")
+    private Boolean deleted;
+
+    @Column(name = "company_name")
+    private String companyName;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tmAgent")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -64,16 +70,16 @@ public class TmAgent implements Serializable {
         this.id = id;
     }
 
-    public Integer getAgentCode() {
+    public String getAgentCode() {
         return this.agentCode;
     }
 
-    public TmAgent agentCode(Integer agentCode) {
+    public TmAgent agentCode(String agentCode) {
         this.setAgentCode(agentCode);
         return this;
     }
 
-    public void setAgentCode(Integer agentCode) {
+    public void setAgentCode(String agentCode) {
         this.agentCode = agentCode;
     }
 
@@ -142,6 +148,32 @@ public class TmAgent implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
+    public Boolean getDeleted() {
+        return this.deleted;
+    }
+
+    public TmAgent deleted(Boolean deleted) {
+        this.setDeleted(deleted);
+        return this;
+    }
+
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
+    }
+
+    public String getCompanyName() {
+        return this.companyName;
+    }
+
+    public TmAgent companyName(String companyName) {
+        this.setCompanyName(companyName);
+        return this;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
     public Set<Trademark> getTrademarks() {
         return this.trademarks;
     }
@@ -197,12 +229,14 @@ public class TmAgent implements Serializable {
     public String toString() {
         return "TmAgent{" +
             "id=" + getId() +
-            ", agentCode=" + getAgentCode() +
+            ", agentCode='" + getAgentCode() + "'" +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", address='" + getAddress() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
+            ", deleted='" + getDeleted() + "'" +
+            ", companyName='" + getCompanyName() + "'" +
             "}";
     }
 }

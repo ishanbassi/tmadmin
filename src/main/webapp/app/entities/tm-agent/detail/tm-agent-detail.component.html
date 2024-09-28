@@ -39,6 +39,14 @@
           <dd>
             <span>{{ tmAgent()!.modifiedDate | formatMediumDatetime }}</span>
           </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ tmAgent()!.deleted }}</span>
+          </dd>
+          <dt><span>Company Name</span></dt>
+          <dd>
+            <span>{{ tmAgent()!.companyName }}</span>
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

@@ -16,7 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "published_tm")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class PublishedTm extends AbstractAuditingEntity<Long> implements Serializable {
+public class PublishedTm implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,7 +26,7 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "name", nullable=false)
+    @Column(name = "name")
     private String name;
 
     @Column(name = "details")
@@ -57,10 +57,10 @@ public class PublishedTm extends AbstractAuditingEntity<Long> implements Seriali
     @Column(name = "img_url")
     private String imgUrl;
 
-    @Column(name = "tm_class", nullable=false)
+    @Column(name = "tm_class")
     private Integer tmClass;
 
-    @Column(name = "journal_no", nullable=false)
+    @Column(name = "journal_no")
     private Integer journalNo;
 
     @Column(name = "deleted")

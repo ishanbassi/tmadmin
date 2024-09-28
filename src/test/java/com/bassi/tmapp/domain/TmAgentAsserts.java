@@ -65,7 +65,9 @@ public class TmAgentAsserts {
                         .as("check modifiedDate")
                         .usingComparator(zonedDataTimeSameInstant)
                         .isEqualTo(actual.getModifiedDate())
-            );
+            )
+            .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
+            .satisfies(e -> assertThat(e.getCompanyName()).as("check companyName").isEqualTo(actual.getCompanyName()));
     }
 
     /**

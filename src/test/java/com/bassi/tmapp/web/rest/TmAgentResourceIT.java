@@ -39,8 +39,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class TmAgentResourceIT {
 
-    private static final Integer DEFAULT_AGENT_CODE = 1;
-    private static final Integer UPDATED_AGENT_CODE = 2;
+    private static final String DEFAULT_AGENT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_AGENT_CODE = "BBBBBBBBBB";
 
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
@@ -56,6 +56,12 @@ class TmAgentResourceIT {
 
     private static final ZonedDateTime DEFAULT_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+
+    private static final Boolean DEFAULT_DELETED = false;
+    private static final Boolean UPDATED_DELETED = true;
+
+    private static final String DEFAULT_COMPANY_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_COMPANY_NAME = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/tm-agents";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -95,7 +101,9 @@ class TmAgentResourceIT {
             .lastName(DEFAULT_LAST_NAME)
             .address(DEFAULT_ADDRESS)
             .createdDate(DEFAULT_CREATED_DATE)
-            .modifiedDate(DEFAULT_MODIFIED_DATE);
+            .modifiedDate(DEFAULT_MODIFIED_DATE)
+            .deleted(DEFAULT_DELETED)
+            .companyName(DEFAULT_COMPANY_NAME);
         return tmAgent;
     }
 
@@ -112,7 +120,9 @@ class TmAgentResourceIT {
             .lastName(UPDATED_LAST_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .companyName(UPDATED_COMPANY_NAME);
         return tmAgent;
     }
 
@@ -188,7 +198,9 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)));
     }
 
     @Test
@@ -208,7 +220,9 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
-            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.companyName").value(DEFAULT_COMPANY_NAME));
     }
 
     @Test
@@ -236,7 +250,9 @@ class TmAgentResourceIT {
             .lastName(UPDATED_LAST_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .companyName(UPDATED_COMPANY_NAME);
         TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(updatedTmAgent);
 
         restTmAgentMockMvc
@@ -356,7 +372,9 @@ class TmAgentResourceIT {
             .lastName(UPDATED_LAST_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .companyName(UPDATED_COMPANY_NAME);
 
         restTmAgentMockMvc
             .perform(

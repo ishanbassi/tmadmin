@@ -15,7 +15,7 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_agentCode">Agent Code</label>
-          <input type="number" class="form-control" name="agentCode" id="field_agentCode" data-cy="agentCode" formControlName="agentCode" />
+          <input type="text" class="form-control" name="agentCode" id="field_agentCode" data-cy="agentCode" formControlName="agentCode" />
         </div>
 
         <div class="mb-3">
@@ -61,6 +61,23 @@
               placeholder="YYYY-MM-DD HH:mm"
             />
           </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_deleted">Deleted</label>
+          <input type="checkbox" class="form-check" name="deleted" id="field_deleted" data-cy="deleted" formControlName="deleted" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_companyName">Company Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="companyName"
+            id="field_companyName"
+            data-cy="companyName"
+            formControlName="companyName"
+          />
         </div>
       </div>
 
