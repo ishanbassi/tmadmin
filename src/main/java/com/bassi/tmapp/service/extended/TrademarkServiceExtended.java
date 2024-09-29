@@ -1,0 +1,115 @@
+package com.bassi.tmapp.service.extended;
+
+import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.mapper.TrademarkMapper;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Optional;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+/**
+ * Service Implementation for managing {@link com.bassi.tmapp.domain.Trademark}.
+ */
+@Service
+@Transactional
+public class TrademarkServiceExtended {
+
+    private static final Logger log = LoggerFactory.getLogger(TrademarkServiceExtended.class);
+
+    private final TrademarkRepository trademarkRepository;
+
+    private final TrademarkMapper trademarkMapper;
+
+    public TrademarkServiceExtended(TrademarkRepository trademarkRepository, TrademarkMapper trademarkMapper) {
+        this.trademarkRepository = trademarkRepository;
+        this.trademarkMapper = trademarkMapper;
+    }
+
+    /**
+     * Save a trademark.
+     *
+     * @param trademarkDTO the entity to save.
+     * @return the persisted entity.
+     */
+    public TrademarkDTO save(TrademarkDTO trademarkDTO) {
+        log.debug("Request to save Trademark : {}", trademarkDTO);
+        Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
+        trademark = trademarkRepository.save(trademark);
+        return trademarkMapper.toDto(trademark);
+    }
+
+    /**
+     * Update a trademark.
+     *
+     * @param trademarkDTO the entity to save.
+     * @return the persisted entity.
+     */
+    public TrademarkDTO update(TrademarkDTO trademarkDTO) {
+        log.debug("Request to update Trademark : {}", trademarkDTO);
+        Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
+        trademark = trademarkRepository.save(trademark);
+        return trademarkMapper.toDto(trademark);
+    }
+
+    /**
+     * Partially update a trademark.
+     *
+     * @param trademarkDTO the entity to update partially.
+     * @return the persisted entity.
+     */
+    public Optional<TrademarkDTO> partialUpdate(TrademarkDTO trademarkDTO) {
+        log.debug("Request to partially update Trademark : {}", trademarkDTO);
+
+        return trademarkRepository
+            .findById(trademarkDTO.getId())
+            .map(existingTrademark -> {
+                trademarkMapper.partialUpdate(existingTrademark, trademarkDTO);
+
+                return existingTrademark;
+            })
+            .map(trademarkRepository::save)
+            .map(trademarkMapper::toDto);
+    }
+
+    /**
+     * Get one trademark by id.
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public Optional<TrademarkDTO> findOne(Long id) {
+        log.debug("Request to get Trademark : {}", id);
+        return trademarkRepository.findById(id).map(trademarkMapper::toDto);
+    }
+
+    /**
+     * Delete the trademark by id.
+     *
+     * @param id the id of the entity.
+     */
+    public void delete(Long id) {
+        log.debug("Request to delete Trademark : {}", id);
+        trademarkRepository.deleteById(id);
+    }
+    
+    public List<TrademarkDTO> saveAll(List<TrademarkDTO> trademarkDtoList) {
+        log.debug("Request to save Trademarks : {}", trademarkDtoList.size());
+        List<Trademark> trademarks = trademarkMapper.toEntity(trademarkDtoList);
+        trademarks = trademarkRepository.saveAll(trademarks);
+        return trademarkMapper.toDto(trademarks);
+    } 
+
+}

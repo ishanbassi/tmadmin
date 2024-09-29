@@ -1,7 +1,8 @@
-package com.bassi.tmapp.service;
+package com.bassi.tmapp.service.extended;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
+import com.bassi.tmapp.service.CSVExportService;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;

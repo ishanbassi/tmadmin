@@ -1,4 +1,4 @@
-package com.bassi.tmapp.service;
+package com.bassi.tmapp.service.extended;
 
 import com.bassi.tmapp.domain.Phonetics;
 import com.bassi.tmapp.domain.PublishedTm;
@@ -31,9 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class PhoneticsService {
+public class PhoneticsServiceExtended {
 
-    private static final Logger log = LoggerFactory.getLogger(PhoneticsService.class);
+    private static final Logger log = LoggerFactory.getLogger(PhoneticsServiceExtended.class);
 
     private final PhoneticsRepository phoneticsRepository;
 
@@ -42,7 +42,7 @@ public class PhoneticsService {
     private final WordSanitizationService wordSanitizationService;
 
 
-	public PhoneticsService(PhoneticsRepository phoneticsRepository, PhoneticsMapper phoneticsMapper,
+	public PhoneticsServiceExtended(PhoneticsRepository phoneticsRepository, PhoneticsMapper phoneticsMapper,
 			TrademarkMapper trademarkMapper, WordSanitizationService wordSanitizationService) {
         this.phoneticsRepository = phoneticsRepository;
         this.phoneticsMapper = phoneticsMapper;

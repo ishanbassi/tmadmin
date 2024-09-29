@@ -1,4 +1,4 @@
-package com.bassi.tmapp.web.rest;
+package com.bassi.tmapp.web.rest.extended;
 
 import java.util.List;
 
@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bassi.tmapp.service.extended.MatchingTrademarkService;
 
 @RestController
-@RequestMapping("/api/matching/trademarks")
-public class MatchingTrademarkResources {
+@RequestMapping("/api/extended/matching/trademarks")
+public class MatchingTrademarkResourceExtended {
 	
 	private MatchingTrademarkService matchingTrademarkService;
-	MatchingTrademarkResources(
+	MatchingTrademarkResourceExtended(
 			MatchingTrademarkService matchingTrademarkService ){
 		this.matchingTrademarkService  = matchingTrademarkService;
 	}

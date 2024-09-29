@@ -1,4 +1,4 @@
-package com.bassi.tmapp.service;
+package com.bassi.tmapp.service.extended;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,19 +22,19 @@ import jakarta.persistence.EntityManager;
  */
 @Service
 @Transactional
-public class PublishedTmService {
+public class PublishedTmServiceExtended {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmService.class);
+    private static final Logger log = LoggerFactory.getLogger(PublishedTmServiceExtended.class);
 
     private final PublishedTmRepository publishedTmRepository;
 
     private final PublishedTmMapper publishedTmMapper;
     private final ITextPdfReaderService pdfReaderService;
-    private final PublishedTmPhoneticsService publishedTmPhoneticsService;
+    private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService;
     private final EntityManager em;
 
-	public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,
-			ITextPdfReaderService pdfReaderService, PublishedTmPhoneticsService publishedTmPhoneticsService,EntityManager em) {
+	public PublishedTmServiceExtended(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,
+			ITextPdfReaderService pdfReaderService, PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService,EntityManager em) {
         this.publishedTmRepository = publishedTmRepository;
         this.publishedTmMapper = publishedTmMapper;
         this.pdfReaderService = pdfReaderService;

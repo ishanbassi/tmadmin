@@ -1,4 +1,4 @@
-package com.bassi.tmapp.service;
+package com.bassi.tmapp.service.extended;
 
 import java.util.List;
 
@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bassi.tmapp.repository.PublishedTmRepository;
+import com.bassi.tmapp.service.PublishedTmService;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 
 

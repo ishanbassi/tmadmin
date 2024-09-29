@@ -1,4 +1,4 @@
-package com.bassi.tmapp.service;
+package com.bassi.tmapp.service.extended;
 
 import org.springframework.stereotype.Service;
 

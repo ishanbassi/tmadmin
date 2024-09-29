@@ -26,20 +26,20 @@ import net.bytebuddy.asm.Advice.This;
 
 
 @Service
-public class ImportDataService {
+public class ImportDataServiceExtended {
 	
 	private TrademarkService trademarkService;
 	private PhoneticsService phoneticsService;
     private final TrademarkRepository trademarkRepository;
 
 	
-	ImportDataService(TrademarkService trademarkService, PhoneticsService phoneticsService,TrademarkRepository trademarkRepository) {
+	ImportDataServiceExtended(TrademarkService trademarkService, PhoneticsService phoneticsService,TrademarkRepository trademarkRepository) {
 		this.trademarkService = trademarkService;
 		this.phoneticsService =  phoneticsService;
 		this.trademarkRepository = trademarkRepository;
 	}
 
-	private final Logger log = LoggerFactory.getLogger(ImportDataService.class);
+	private final Logger log = LoggerFactory.getLogger(ImportDataServiceExtended.class);
 	
 	
 	public void  importTrademarks(MultipartFile file) {

@@ -1,4 +1,4 @@
-package com.bassi.tmapp.web.rest;
+package com.bassi.tmapp.web.rest.extended;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,25 +13,25 @@ import com.bassi.tmapp.service.ImportDataServiceExtended;
 
 
 @RestController
-@RequestMapping("/api/import")
+@RequestMapping("/api/import/extended")
 
-public class ImportDataResource {
+public class ImportDataResourceExtended {
 	
-    private static final Logger log = LoggerFactory.getLogger(ImportDataResource.class);
+    private static final Logger log = LoggerFactory.getLogger(ImportDataResourceExtended.class);
 
 
-    private final ImportDataServiceExtended importDataService;
+    private final ImportDataServiceExtended importDataServiceExtended;
 
 	
-	ImportDataResource(ImportDataServiceExtended importDataService){
-		this.importDataService = importDataService;
+	ImportDataResourceExtended(ImportDataServiceExtended importDataServiceExtended){
+		this.importDataServiceExtended = importDataServiceExtended;
 	}
 	
 	
     @PostMapping("/trademark/read")
     public ResponseEntity<String> readTrademarksFromExcel(@RequestParam("file") MultipartFile file) {
     	log.info("Going to read trademark from csv  file");
-    	importDataService.importTrademarks(file);
+    	importDataServiceExtended.importTrademarks(file);
     	return ResponseEntity.ok("All Trademarks read from the excel file.");
     			
     }

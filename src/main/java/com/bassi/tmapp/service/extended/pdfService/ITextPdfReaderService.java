@@ -1,4 +1,4 @@
-package com.bassi.tmapp.service.pdfService;
+package com.bassi.tmapp.service.extended.pdfService;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,12 +34,12 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.PublishedTmRepository;
-import com.bassi.tmapp.service.PdfReaderService;
 import com.bassi.tmapp.service.PhoneticsService;
 import com.bassi.tmapp.service.PublishedTmPhoneticsService;
-import com.bassi.tmapp.service.WordSanitizationService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
+import com.bassi.tmapp.service.extended.PdfReaderService;
+import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import com.fasterxml.jackson.databind.ObjectMapper;

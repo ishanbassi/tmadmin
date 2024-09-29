@@ -1,4 +1,4 @@
-package com.bassi.tmapp.service;
+package com.bassi.tmapp.service.extended;
 
 import java.io.File;
 import java.io.FileInputStream;
