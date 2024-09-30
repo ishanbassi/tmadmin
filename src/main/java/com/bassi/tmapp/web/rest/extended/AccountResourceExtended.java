@@ -1,5 +1,6 @@
 package com.bassi.tmapp.web.rest.extended;
 
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.repository.UserRepository;
 import com.bassi.tmapp.security.SecurityUtils;
@@ -7,15 +8,21 @@ import com.bassi.tmapp.service.MailService;
 import com.bassi.tmapp.service.UserService;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.PasswordChangeDTO;
+import com.bassi.tmapp.service.extended.UserServiceExtended;
+import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
 import com.bassi.tmapp.web.rest.errors.*;
 import com.bassi.tmapp.web.rest.vm.KeyAndPasswordVM;
 import com.bassi.tmapp.web.rest.vm.ManagedUserVM;
+import com.bassi.tmapp.web.rest.vm.extended.ManagedUserVMExtended;
+
 import jakarta.validation.Valid;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -36,13 +43,13 @@ public class AccountResourceExtended {
 
     private final UserRepository userRepository;
 
-    private final UserService userService;
+    private final UserServiceExtended userServiceExtended;
 
     private final MailService mailService;
 
-    public AccountResourceExtended(UserRepository userRepository, UserService userService, MailService mailService) {
+    public AccountResourceExtended(UserRepository userRepository, UserServiceExtended userServiceExtended, MailService mailService) {
         this.userRepository = userRepository;
-        this.userService = userService;
+        this.userServiceExtended = userServiceExtended;
         this.mailService = mailService;
     }
 
@@ -56,28 +63,15 @@ public class AccountResourceExtended {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVM managedUserVM) {
+    public ResponseEntity<TmAgent> registerAccount(@Valid @RequestBody ManagedUserVMExtended  managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        User user = userService.registerUser(managedUserVM, managedUserVM.getPassword());
-        mailService.sendActivationEmail(user);
+        TmAgent agent = userServiceExtended.registerUser(managedUserVM, managedUserVM.getPassword());
+        return ResponseEntity.status(HttpStatus.CREATED).body(agent);
     }
 
-    /**
-     * {@code GET  /activate} : activate the registered user.
-     *
-     * @param key the activation key.
-     * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be activated.
-     */
-    @GetMapping("/activate")
-    public void activateAccount(@RequestParam(value = "key") String key) {
-        Optional<User> user = userService.activateRegistration(key);
-        if (!user.isPresent()) {
-            throw new AccountResourceException("No user was found for this activation key");
-        }
-    }
-
+   
     /**
      * {@code GET  /account} : get the current user.
      *
@@ -86,7 +80,7 @@ public class AccountResourceExtended {
      */
     @GetMapping("/account")
     public AdminUserDTO getAccount() {
-        return userService
+        return userServiceExtended
             .getUserWithAuthorities()
             .map(AdminUserDTO::new)
             .orElseThrow(() -> new AccountResourceException("User could not be found"));
@@ -111,7 +105,7 @@ public class AccountResourceExtended {
         if (!user.isPresent()) {
             throw new AccountResourceException("User could not be found");
         }
-        userService.updateUser(
+        userServiceExtended.updateUser(
             userDTO.getFirstName(),
             userDTO.getLastName(),
             userDTO.getEmail(),
@@ -131,7 +125,7 @@ public class AccountResourceExtended {
         if (isPasswordLengthInvalid(passwordChangeDto.getNewPassword())) {
             throw new InvalidPasswordException();
         }
-        userService.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
+        userServiceExtended.changePassword(passwordChangeDto.getCurrentPassword(), passwordChangeDto.getNewPassword());
     }
 
     /**
@@ -141,7 +135,7 @@ public class AccountResourceExtended {
      */
     @PostMapping(path = "/account/reset-password/init")
     public void requestPasswordReset(@RequestBody String mail) {
-        Optional<User> user = userService.requestPasswordReset(mail);
+        Optional<User> user = userServiceExtended.requestPasswordReset(mail);
         if (user.isPresent()) {
             mailService.sendPasswordResetMail(user.orElseThrow());
         } else {
@@ -163,7 +157,7 @@ public class AccountResourceExtended {
         if (isPasswordLengthInvalid(keyAndPassword.getNewPassword())) {
             throw new InvalidPasswordException();
         }
-        Optional<User> user = userService.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey());
+        Optional<User> user = userServiceExtended.completePasswordReset(keyAndPassword.getNewPassword(), keyAndPassword.getKey());
 
         if (!user.isPresent()) {
             throw new AccountResourceException("No user was found for this reset key");

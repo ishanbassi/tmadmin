@@ -220,7 +220,6 @@ public class TmAgent implements Serializable {
 
     @Override
     public int hashCode() {
-        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -238,5 +237,16 @@ public class TmAgent implements Serializable {
             ", deleted='" + getDeleted() + "'" +
             ", companyName='" + getCompanyName() + "'" +
             "}";
+    }
+    
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
     }
 }

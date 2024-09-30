@@ -125,5 +125,5 @@ paginate Trademark , PublishedTm with infinite-scroll
 
 
 // Use Data Transfer Objects (DTO)
-dto * with mapstruct
+
 service * with serviceClass

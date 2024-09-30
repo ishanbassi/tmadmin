@@ -22,9 +22,9 @@ import tech.jhipster.web.util.ResponseUtil;
  */
 @RestController
 @RequestMapping("/api/extended/published-tm-phonetics")
-public class PublishedTmPhoneticsResource {
+public class PublishedTmPhoneticsResourceExtended {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsResource.class);
+    private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsResourceExtended.class);
 
     private static final String ENTITY_NAME = "publishedTmPhonetics";
 
@@ -35,7 +35,7 @@ public class PublishedTmPhoneticsResource {
 
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
 
-    public PublishedTmPhoneticsResource(
+    public PublishedTmPhoneticsResourceExtended(
         PublishedTmPhoneticsService publishedTmPhoneticsService,
         PublishedTmPhoneticsRepository publishedTmPhoneticsRepository
     ) {
