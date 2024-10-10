@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service;
 
-import java.util.List;
+import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.repository.PublishedTmRepository;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -28,65 +29,102 @@ public class PublishedTmService {
 
     private final PublishedTmRepository publishedTmRepository;
 
-    private final PublishedTmMapper publishedTmMapper;
-    private final ITextPdfReaderService pdfReaderService;
-    private final PublishedTmPhoneticsService publishedTmPhoneticsService;
-    private final EntityManager em;
-
-	public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,
-			ITextPdfReaderService pdfReaderService, PublishedTmPhoneticsService publishedTmPhoneticsService,EntityManager em) {
+    public PublishedTmService(PublishedTmRepository publishedTmRepository) {
         this.publishedTmRepository = publishedTmRepository;
-        this.publishedTmMapper = publishedTmMapper;
-        this.pdfReaderService = pdfReaderService;
-        this.publishedTmPhoneticsService = publishedTmPhoneticsService;
-        this.em = em;
-        
     }
 
     /**
      * Save a publishedTm.
      *
-     * @param publishedTmDTO the entity to save.
+     * @param publishedTm the entity to save.
      * @return the persisted entity.
      */
-    public PublishedTmDTO save(PublishedTmDTO publishedTmDTO) {
-        log.debug("Request to save PublishedTm : {}", publishedTmDTO);
-        PublishedTm publishedTm = publishedTmMapper.toEntity(publishedTmDTO);
-        publishedTm = publishedTmRepository.save(publishedTm);
-        return publishedTmMapper.toDto(publishedTm);
+    public PublishedTm save(PublishedTm publishedTm) {
+        log.debug("Request to save PublishedTm : {}", publishedTm);
+        return publishedTmRepository.save(publishedTm);
     }
 
     /**
      * Update a publishedTm.
      *
-     * @param publishedTmDTO the entity to save.
+     * @param publishedTm the entity to save.
      * @return the persisted entity.
      */
-    public PublishedTmDTO update(PublishedTmDTO publishedTmDTO) {
-        log.debug("Request to update PublishedTm : {}", publishedTmDTO);
-        PublishedTm publishedTm = publishedTmMapper.toEntity(publishedTmDTO);
-        publishedTm = publishedTmRepository.save(publishedTm);
-        return publishedTmMapper.toDto(publishedTm);
+    public PublishedTm update(PublishedTm publishedTm) {
+        log.debug("Request to update PublishedTm : {}", publishedTm);
+        return publishedTmRepository.save(publishedTm);
     }
 
     /**
      * Partially update a publishedTm.
      *
-     * @param publishedTmDTO the entity to update partially.
+     * @param publishedTm the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<PublishedTmDTO> partialUpdate(PublishedTmDTO publishedTmDTO) {
-        log.debug("Request to partially update PublishedTm : {}", publishedTmDTO);
+    public Optional<PublishedTm> partialUpdate(PublishedTm publishedTm) {
+        log.debug("Request to partially update PublishedTm : {}", publishedTm);
 
         return publishedTmRepository
-            .findById(publishedTmDTO.getId())
+            .findById(publishedTm.getId())
             .map(existingPublishedTm -> {
-                publishedTmMapper.partialUpdate(existingPublishedTm, publishedTmDTO);
+                if (publishedTm.getName() != null) {
+                    existingPublishedTm.setName(publishedTm.getName());
+                }
+                if (publishedTm.getDetails() != null) {
+                    existingPublishedTm.setDetails(publishedTm.getDetails());
+                }
+                if (publishedTm.getApplicationNo() != null) {
+                    existingPublishedTm.setApplicationNo(publishedTm.getApplicationNo());
+                }
+                if (publishedTm.getApplicationDate() != null) {
+                    existingPublishedTm.setApplicationDate(publishedTm.getApplicationDate());
+                }
+                if (publishedTm.getAgentName() != null) {
+                    existingPublishedTm.setAgentName(publishedTm.getAgentName());
+                }
+                if (publishedTm.getAgentAddress() != null) {
+                    existingPublishedTm.setAgentAddress(publishedTm.getAgentAddress());
+                }
+                if (publishedTm.getProprietorName() != null) {
+                    existingPublishedTm.setProprietorName(publishedTm.getProprietorName());
+                }
+                if (publishedTm.getProprietorAddress() != null) {
+                    existingPublishedTm.setProprietorAddress(publishedTm.getProprietorAddress());
+                }
+                if (publishedTm.getHeadOffice() != null) {
+                    existingPublishedTm.setHeadOffice(publishedTm.getHeadOffice());
+                }
+                if (publishedTm.getImgUrl() != null) {
+                    existingPublishedTm.setImgUrl(publishedTm.getImgUrl());
+                }
+                if (publishedTm.getTmClass() != null) {
+                    existingPublishedTm.setTmClass(publishedTm.getTmClass());
+                }
+                if (publishedTm.getJournalNo() != null) {
+                    existingPublishedTm.setJournalNo(publishedTm.getJournalNo());
+                }
+                if (publishedTm.getDeleted() != null) {
+                    existingPublishedTm.setDeleted(publishedTm.getDeleted());
+                }
+                if (publishedTm.getUsage() != null) {
+                    existingPublishedTm.setUsage(publishedTm.getUsage());
+                }
+                if (publishedTm.getAssociatedTms() != null) {
+                    existingPublishedTm.setAssociatedTms(publishedTm.getAssociatedTms());
+                }
+                if (publishedTm.getTrademarkStatus() != null) {
+                    existingPublishedTm.setTrademarkStatus(publishedTm.getTrademarkStatus());
+                }
+                if (publishedTm.getCreatedDate() != null) {
+                    existingPublishedTm.setCreatedDate(publishedTm.getCreatedDate());
+                }
+                if (publishedTm.getModifiedDate() != null) {
+                    existingPublishedTm.setModifiedDate(publishedTm.getModifiedDate());
+                }
 
                 return existingPublishedTm;
             })
-            .map(publishedTmRepository::save)
-            .map(publishedTmMapper::toDto);
+            .map(publishedTmRepository::save);
     }
 
     /**
@@ -96,9 +134,9 @@ public class PublishedTmService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<PublishedTmDTO> findOne(Long id) {
+    public Optional<PublishedTm> findOne(Long id) {
         log.debug("Request to get PublishedTm : {}", id);
-        return publishedTmRepository.findById(id).map(publishedTmMapper::toDto);
+        return publishedTmRepository.findById(id);
     }
 
     /**
@@ -110,30 +148,4 @@ public class PublishedTmService {
         log.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepository.deleteById(id);
     }
-
-	public void readPdfFile(int journalNo) {
-		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
-	}
-
-	public void generateMissingPhonetics(int journalNo) {
-		List<PublishedTm> trademarks = publishedTmRepository.findTrademarksWherePhoneticsMissing(journalNo);
-		publishedTmPhoneticsService.saveAll(trademarks);
-		
-	}
-	 
-	public List<MatchingTrademarkDto> findMatchingTrademarkByJournal(Integer journalNo) {
-		String sqlQuery = "WITH published AS "
-				+ "(SELECT tm.*, ph.phonetic_pk FROM published_tm tm "
-				+ " INNER JOIN published_tm_phonetics ph on tm.id = ph.published_tm_id WHERE journal_no =" + journalNo + " AND ph.complete=true), "
-				+ "registered AS "
-				+ "(SELECT tm.name, tm.tm_class, ph.phonetic_pk, ph.complete FROM trademark tm "
-				+ " INNER JOIN phonetics ph on tm.id = ph.trademark_id WHERE ph.complete=true) "
-				+ "SELECT tm.name as matchingTrademark, t.name as  registeredTrademark , tm.tm_class as tmClass, "
-				+ "tm.application_no as applicationNo, tm.details , tm.journal_no as journalNo , tm.proprietor_name as proprietorName ,tm.proprietor_address as proprietorAddress, "
-				+ "tm.agent_name as agentName , tm.agent_address as agentAddress "
-				+ "FROM published tm "
-				+ "  INNER JOIN registered t on tm.phonetic_pk = t.phonetic_pk and  tm.tm_class = t.tm_class ORDER BY tm.tm_class" ;
-		List<MatchingTrademarkDto> trademarks = em.createNativeQuery(sqlQuery, MatchingTrademarkDto.class).getResultList();
-		return trademarks;
-	}
 }

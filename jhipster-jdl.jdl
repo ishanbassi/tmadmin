@@ -91,6 +91,7 @@ entity TmAgent{
     deleted Boolean
     companyName String
     agentCode String
+    email String
     
 }
 

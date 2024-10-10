@@ -19,8 +19,6 @@ logging:
     tech.jhipster: DEBUG
     org.hibernate.SQL: INFO
     com.bassi.tmapp: DEBUG
-    javax.management: WARN
-
 
 spring:
   devtools:
@@ -34,9 +32,9 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://localhost:5432/tmadmin
-    username: tmadmin 
-    password: admin
+    url: jdbc:postgresql://localhost:5432/tmapp
+    username: tmapp
+    password:
     hikari:
       poolName: Hikari
       auto-commit: false

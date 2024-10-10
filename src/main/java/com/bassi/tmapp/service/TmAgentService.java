@@ -2,12 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
-import com.bassi.tmapp.service.dto.TmAgentDTO;
-import com.bassi.tmapp.service.mapper.TmAgentMapper;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -24,57 +20,75 @@ public class TmAgentService {
 
     private final TmAgentRepository tmAgentRepository;
 
-    private final TmAgentMapper tmAgentMapper;
-
-    public TmAgentService(TmAgentRepository tmAgentRepository, TmAgentMapper tmAgentMapper) {
+    public TmAgentService(TmAgentRepository tmAgentRepository) {
         this.tmAgentRepository = tmAgentRepository;
-        this.tmAgentMapper = tmAgentMapper;
     }
 
     /**
      * Save a tmAgent.
      *
-     * @param tmAgentDTO the entity to save.
+     * @param tmAgent the entity to save.
      * @return the persisted entity.
      */
-    public TmAgentDTO save(TmAgentDTO tmAgentDTO) {
-        log.debug("Request to save TmAgent : {}", tmAgentDTO);
-        TmAgent tmAgent = tmAgentMapper.toEntity(tmAgentDTO);
-        tmAgent = tmAgentRepository.save(tmAgent);
-        return tmAgentMapper.toDto(tmAgent);
+    public TmAgent save(TmAgent tmAgent) {
+        log.debug("Request to save TmAgent : {}", tmAgent);
+        return tmAgentRepository.save(tmAgent);
     }
 
     /**
      * Update a tmAgent.
      *
-     * @param tmAgentDTO the entity to save.
+     * @param tmAgent the entity to save.
      * @return the persisted entity.
      */
-    public TmAgentDTO update(TmAgentDTO tmAgentDTO) {
-        log.debug("Request to update TmAgent : {}", tmAgentDTO);
-        TmAgent tmAgent = tmAgentMapper.toEntity(tmAgentDTO);
-        tmAgent = tmAgentRepository.save(tmAgent);
-        return tmAgentMapper.toDto(tmAgent);
+    public TmAgent update(TmAgent tmAgent) {
+        log.debug("Request to update TmAgent : {}", tmAgent);
+        return tmAgentRepository.save(tmAgent);
     }
 
     /**
      * Partially update a tmAgent.
      *
-     * @param tmAgentDTO the entity to update partially.
+     * @param tmAgent the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<TmAgentDTO> partialUpdate(TmAgentDTO tmAgentDTO) {
-        log.debug("Request to partially update TmAgent : {}", tmAgentDTO);
+    public Optional<TmAgent> partialUpdate(TmAgent tmAgent) {
+        log.debug("Request to partially update TmAgent : {}", tmAgent);
 
         return tmAgentRepository
-            .findById(tmAgentDTO.getId())
+            .findById(tmAgent.getId())
             .map(existingTmAgent -> {
-                tmAgentMapper.partialUpdate(existingTmAgent, tmAgentDTO);
+                if (tmAgent.getFirstName() != null) {
+                    existingTmAgent.setFirstName(tmAgent.getFirstName());
+                }
+                if (tmAgent.getLastName() != null) {
+                    existingTmAgent.setLastName(tmAgent.getLastName());
+                }
+                if (tmAgent.getAddress() != null) {
+                    existingTmAgent.setAddress(tmAgent.getAddress());
+                }
+                if (tmAgent.getCreatedDate() != null) {
+                    existingTmAgent.setCreatedDate(tmAgent.getCreatedDate());
+                }
+                if (tmAgent.getModifiedDate() != null) {
+                    existingTmAgent.setModifiedDate(tmAgent.getModifiedDate());
+                }
+                if (tmAgent.getDeleted() != null) {
+                    existingTmAgent.setDeleted(tmAgent.getDeleted());
+                }
+                if (tmAgent.getCompanyName() != null) {
+                    existingTmAgent.setCompanyName(tmAgent.getCompanyName());
+                }
+                if (tmAgent.getAgentCode() != null) {
+                    existingTmAgent.setAgentCode(tmAgent.getAgentCode());
+                }
+                if (tmAgent.getEmail() != null) {
+                    existingTmAgent.setEmail(tmAgent.getEmail());
+                }
 
                 return existingTmAgent;
             })
-            .map(tmAgentRepository::save)
-            .map(tmAgentMapper::toDto);
+            .map(tmAgentRepository::save);
     }
 
     /**
@@ -83,9 +97,9 @@ public class TmAgentService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<TmAgentDTO> findAll() {
+    public List<TmAgent> findAll() {
         log.debug("Request to get all TmAgents");
-        return tmAgentRepository.findAll().stream().map(tmAgentMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        return tmAgentRepository.findAll();
     }
 
     /**
@@ -95,9 +109,9 @@ public class TmAgentService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<TmAgentDTO> findOne(Long id) {
+    public Optional<TmAgent> findOne(Long id) {
         log.debug("Request to get TmAgent : {}", id);
-        return tmAgentRepository.findById(id).map(tmAgentMapper::toDto);
+        return tmAgentRepository.findById(id);
     }
 
     /**

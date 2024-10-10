@@ -4,11 +4,6 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
-import com.bassi.tmapp.service.dto.PublishedTmDTO;
-import com.bassi.tmapp.service.mapper.PublishedTmMapper;
-
-import jakarta.persistence.criteria.Join;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -22,7 +17,7 @@ import tech.jhipster.service.QueryService;
  * Service for executing complex queries for {@link PublishedTm} entities in the database.
  * The main input is a {@link PublishedTmCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link Page} of {@link PublishedTmDTO} which fulfills the criteria.
+ * It returns a {@link Page} of {@link PublishedTm} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -32,24 +27,21 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
 
     private final PublishedTmRepository publishedTmRepository;
 
-    private final PublishedTmMapper publishedTmMapper;
-
-    public PublishedTmQueryService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper) {
+    public PublishedTmQueryService(PublishedTmRepository publishedTmRepository) {
         this.publishedTmRepository = publishedTmRepository;
-        this.publishedTmMapper = publishedTmMapper;
     }
 
     /**
-     * Return a {@link Page} of {@link PublishedTmDTO} which matches the criteria from the database.
+     * Return a {@link Page} of {@link PublishedTm} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<PublishedTmDTO> findByCriteria(PublishedTmCriteria criteria, Pageable page) {
+    public Page<PublishedTm> findByCriteria(PublishedTmCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<PublishedTm> specification = createSpecification(criteria);
-        return publishedTmRepository.findAll(specification, page).map(publishedTmMapper::toDto);
+        return publishedTmRepository.findAll(specification, page);
     }
 
     /**
@@ -138,13 +130,4 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
         }
         return specification;
     }
-//    
-//    protected Specification<PublishedTm> filterTmByPhoneticSimilarity(int journalNo , int tmClass){
-//    	return (root, query, cb) -> {
-//    		Join<PublishedTm , PublishedTmPhonetics> tmPhonetics = root.join("published_tm_phonetics");
-//    		Join<PublishedTmPhonetics, Phonetics> phonetics = tmPhonetics.join("phonetics")
-//    				.on(cb.equal(tmPhonetics.get("phonetic_pk")));
-//    	}
-//        return null;
-//    }
 }

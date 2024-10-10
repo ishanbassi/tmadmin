@@ -1,8 +1,8 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
 import com.bassi.tmapp.service.PublishedTmPhoneticsService;
-import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -46,43 +46,43 @@ public class PublishedTmPhoneticsResource {
     /**
      * {@code POST  /published-tm-phonetics} : Create a new publishedTmPhonetics.
      *
-     * @param publishedTmPhoneticsDTO the publishedTmPhoneticsDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new publishedTmPhoneticsDTO, or with status {@code 400 (Bad Request)} if the publishedTmPhonetics has already an ID.
+     * @param publishedTmPhonetics the publishedTmPhonetics to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new publishedTmPhonetics, or with status {@code 400 (Bad Request)} if the publishedTmPhonetics has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<PublishedTmPhoneticsDTO> createPublishedTmPhonetics(@RequestBody PublishedTmPhoneticsDTO publishedTmPhoneticsDTO)
+    public ResponseEntity<PublishedTmPhonetics> createPublishedTmPhonetics(@RequestBody PublishedTmPhonetics publishedTmPhonetics)
         throws URISyntaxException {
-        log.debug("REST request to save PublishedTmPhonetics : {}", publishedTmPhoneticsDTO);
-        if (publishedTmPhoneticsDTO.getId() != null) {
+        log.debug("REST request to save PublishedTmPhonetics : {}", publishedTmPhonetics);
+        if (publishedTmPhonetics.getId() != null) {
             throw new BadRequestAlertException("A new publishedTmPhonetics cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        publishedTmPhoneticsDTO = publishedTmPhoneticsService.save(publishedTmPhoneticsDTO);
-        return ResponseEntity.created(new URI("/api/published-tm-phonetics/" + publishedTmPhoneticsDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, publishedTmPhoneticsDTO.getId().toString()))
-            .body(publishedTmPhoneticsDTO);
+        publishedTmPhonetics = publishedTmPhoneticsService.save(publishedTmPhonetics);
+        return ResponseEntity.created(new URI("/api/published-tm-phonetics/" + publishedTmPhonetics.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, publishedTmPhonetics.getId().toString()))
+            .body(publishedTmPhonetics);
     }
 
     /**
      * {@code PUT  /published-tm-phonetics/:id} : Updates an existing publishedTmPhonetics.
      *
-     * @param id the id of the publishedTmPhoneticsDTO to save.
-     * @param publishedTmPhoneticsDTO the publishedTmPhoneticsDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated publishedTmPhoneticsDTO,
-     * or with status {@code 400 (Bad Request)} if the publishedTmPhoneticsDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the publishedTmPhoneticsDTO couldn't be updated.
+     * @param id the id of the publishedTmPhonetics to save.
+     * @param publishedTmPhonetics the publishedTmPhonetics to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated publishedTmPhonetics,
+     * or with status {@code 400 (Bad Request)} if the publishedTmPhonetics is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the publishedTmPhonetics couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<PublishedTmPhoneticsDTO> updatePublishedTmPhonetics(
+    public ResponseEntity<PublishedTmPhonetics> updatePublishedTmPhonetics(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody PublishedTmPhoneticsDTO publishedTmPhoneticsDTO
+        @RequestBody PublishedTmPhonetics publishedTmPhonetics
     ) throws URISyntaxException {
-        log.debug("REST request to update PublishedTmPhonetics : {}, {}", id, publishedTmPhoneticsDTO);
-        if (publishedTmPhoneticsDTO.getId() == null) {
+        log.debug("REST request to update PublishedTmPhonetics : {}, {}", id, publishedTmPhonetics);
+        if (publishedTmPhonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, publishedTmPhoneticsDTO.getId())) {
+        if (!Objects.equals(id, publishedTmPhonetics.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -90,33 +90,33 @@ public class PublishedTmPhoneticsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        publishedTmPhoneticsDTO = publishedTmPhoneticsService.update(publishedTmPhoneticsDTO);
+        publishedTmPhonetics = publishedTmPhoneticsService.update(publishedTmPhonetics);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, publishedTmPhoneticsDTO.getId().toString()))
-            .body(publishedTmPhoneticsDTO);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, publishedTmPhonetics.getId().toString()))
+            .body(publishedTmPhonetics);
     }
 
     /**
      * {@code PATCH  /published-tm-phonetics/:id} : Partial updates given fields of an existing publishedTmPhonetics, field will ignore if it is null
      *
-     * @param id the id of the publishedTmPhoneticsDTO to save.
-     * @param publishedTmPhoneticsDTO the publishedTmPhoneticsDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated publishedTmPhoneticsDTO,
-     * or with status {@code 400 (Bad Request)} if the publishedTmPhoneticsDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the publishedTmPhoneticsDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the publishedTmPhoneticsDTO couldn't be updated.
+     * @param id the id of the publishedTmPhonetics to save.
+     * @param publishedTmPhonetics the publishedTmPhonetics to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated publishedTmPhonetics,
+     * or with status {@code 400 (Bad Request)} if the publishedTmPhonetics is not valid,
+     * or with status {@code 404 (Not Found)} if the publishedTmPhonetics is not found,
+     * or with status {@code 500 (Internal Server Error)} if the publishedTmPhonetics couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<PublishedTmPhoneticsDTO> partialUpdatePublishedTmPhonetics(
+    public ResponseEntity<PublishedTmPhonetics> partialUpdatePublishedTmPhonetics(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody PublishedTmPhoneticsDTO publishedTmPhoneticsDTO
+        @RequestBody PublishedTmPhonetics publishedTmPhonetics
     ) throws URISyntaxException {
-        log.debug("REST request to partial update PublishedTmPhonetics partially : {}, {}", id, publishedTmPhoneticsDTO);
-        if (publishedTmPhoneticsDTO.getId() == null) {
+        log.debug("REST request to partial update PublishedTmPhonetics partially : {}, {}", id, publishedTmPhonetics);
+        if (publishedTmPhonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, publishedTmPhoneticsDTO.getId())) {
+        if (!Objects.equals(id, publishedTmPhonetics.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -124,11 +124,11 @@ public class PublishedTmPhoneticsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<PublishedTmPhoneticsDTO> result = publishedTmPhoneticsService.partialUpdate(publishedTmPhoneticsDTO);
+        Optional<PublishedTmPhonetics> result = publishedTmPhoneticsService.partialUpdate(publishedTmPhonetics);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, publishedTmPhoneticsDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, publishedTmPhonetics.getId().toString())
         );
     }
 
@@ -138,7 +138,7 @@ public class PublishedTmPhoneticsResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of publishedTmPhonetics in body.
      */
     @GetMapping("")
-    public List<PublishedTmPhoneticsDTO> getAllPublishedTmPhonetics() {
+    public List<PublishedTmPhonetics> getAllPublishedTmPhonetics() {
         log.debug("REST request to get all PublishedTmPhonetics");
         return publishedTmPhoneticsService.findAll();
     }
@@ -146,20 +146,20 @@ public class PublishedTmPhoneticsResource {
     /**
      * {@code GET  /published-tm-phonetics/:id} : get the "id" publishedTmPhonetics.
      *
-     * @param id the id of the publishedTmPhoneticsDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the publishedTmPhoneticsDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the publishedTmPhonetics to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the publishedTmPhonetics, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<PublishedTmPhoneticsDTO> getPublishedTmPhonetics(@PathVariable("id") Long id) {
+    public ResponseEntity<PublishedTmPhonetics> getPublishedTmPhonetics(@PathVariable("id") Long id) {
         log.debug("REST request to get PublishedTmPhonetics : {}", id);
-        Optional<PublishedTmPhoneticsDTO> publishedTmPhoneticsDTO = publishedTmPhoneticsService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(publishedTmPhoneticsDTO);
+        Optional<PublishedTmPhonetics> publishedTmPhonetics = publishedTmPhoneticsService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(publishedTmPhonetics);
     }
 
     /**
      * {@code DELETE  /published-tm-phonetics/:id} : delete the "id" publishedTmPhonetics.
      *
-     * @param id the id of the publishedTmPhoneticsDTO to delete.
+     * @param id the id of the publishedTmPhonetics to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

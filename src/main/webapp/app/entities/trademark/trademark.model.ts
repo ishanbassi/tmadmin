@@ -23,7 +23,7 @@ export interface ITrademark {
   trademarkStatus?: keyof typeof TrademarkStatus | null;
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
-  tmAgent?: Pick<ITmAgent, 'id'> | null;
+  tmAgent?: ITmAgent | null;
 }
 
 export type NewTrademark = Omit<ITrademark, 'id'> & { id: null };

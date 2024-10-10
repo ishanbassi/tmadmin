@@ -11,8 +11,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
-import com.bassi.tmapp.service.dto.TmAgentDTO;
-import com.bassi.tmapp.service.mapper.TmAgentMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -39,9 +37,6 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class TmAgentResourceIT {
 
-    private static final String DEFAULT_AGENT_CODE = "AAAAAAAAAA";
-    private static final String UPDATED_AGENT_CODE = "BBBBBBBBBB";
-
     private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
     private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
 
@@ -63,6 +58,12 @@ class TmAgentResourceIT {
     private static final String DEFAULT_COMPANY_NAME = "AAAAAAAAAA";
     private static final String UPDATED_COMPANY_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_AGENT_CODE = "AAAAAAAAAA";
+    private static final String UPDATED_AGENT_CODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/tm-agents";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -74,9 +75,6 @@ class TmAgentResourceIT {
 
     @Autowired
     private TmAgentRepository tmAgentRepository;
-
-    @Autowired
-    private TmAgentMapper tmAgentMapper;
 
     @Autowired
     private EntityManager em;
@@ -96,14 +94,15 @@ class TmAgentResourceIT {
      */
     public static TmAgent createEntity(EntityManager em) {
         TmAgent tmAgent = new TmAgent()
-            .agentCode(DEFAULT_AGENT_CODE)
             .firstName(DEFAULT_FIRST_NAME)
             .lastName(DEFAULT_LAST_NAME)
             .address(DEFAULT_ADDRESS)
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
             .deleted(DEFAULT_DELETED)
-            .companyName(DEFAULT_COMPANY_NAME);
+            .companyName(DEFAULT_COMPANY_NAME)
+            .agentCode(DEFAULT_AGENT_CODE)
+            .email(DEFAULT_EMAIL);
         return tmAgent;
     }
 
@@ -115,14 +114,15 @@ class TmAgentResourceIT {
      */
     public static TmAgent createUpdatedEntity(EntityManager em) {
         TmAgent tmAgent = new TmAgent()
-            .agentCode(UPDATED_AGENT_CODE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .deleted(UPDATED_DELETED)
-            .companyName(UPDATED_COMPANY_NAME);
+            .companyName(UPDATED_COMPANY_NAME)
+            .agentCode(UPDATED_AGENT_CODE)
+            .email(UPDATED_EMAIL);
         return tmAgent;
     }
 
@@ -144,20 +144,18 @@ class TmAgentResourceIT {
     void createTmAgent() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-        var returnedTmAgentDTO = om.readValue(
+        var returnedTmAgent = om.readValue(
             restTmAgentMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgentDTO)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgent)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            TmAgentDTO.class
+            TmAgent.class
         );
 
         // Validate the TmAgent in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedTmAgent = tmAgentMapper.toEntity(returnedTmAgentDTO);
         assertTmAgentUpdatableFieldsEquals(returnedTmAgent, getPersistedTmAgent(returnedTmAgent));
 
         insertedTmAgent = returnedTmAgent;
@@ -168,13 +166,12 @@ class TmAgentResourceIT {
     void createTmAgentWithExistingId() throws Exception {
         // Create the TmAgent with an existing ID
         tmAgent.setId(1L);
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTmAgentMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgentDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgent)))
             .andExpect(status().isBadRequest());
 
         // Validate the TmAgent in the database
@@ -193,14 +190,15 @@ class TmAgentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(tmAgent.getId().intValue())))
-            .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
             .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
             .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
-            .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)));
+            .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)))
+            .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
     }
 
     @Test
@@ -215,14 +213,15 @@ class TmAgentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(tmAgent.getId().intValue()))
-            .andExpect(jsonPath("$.agentCode").value(DEFAULT_AGENT_CODE))
             .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
             .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
-            .andExpect(jsonPath("$.companyName").value(DEFAULT_COMPANY_NAME));
+            .andExpect(jsonPath("$.companyName").value(DEFAULT_COMPANY_NAME))
+            .andExpect(jsonPath("$.agentCode").value(DEFAULT_AGENT_CODE))
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL));
     }
 
     @Test
@@ -245,19 +244,21 @@ class TmAgentResourceIT {
         // Disconnect from session so that the updates on updatedTmAgent are not directly saved in db
         em.detach(updatedTmAgent);
         updatedTmAgent
-            .agentCode(UPDATED_AGENT_CODE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .deleted(UPDATED_DELETED)
-            .companyName(UPDATED_COMPANY_NAME);
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(updatedTmAgent);
+            .companyName(UPDATED_COMPANY_NAME)
+            .agentCode(UPDATED_AGENT_CODE)
+            .email(UPDATED_EMAIL);
 
         restTmAgentMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, tmAgentDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgentDTO))
+                put(ENTITY_API_URL_ID, updatedTmAgent.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(updatedTmAgent))
             )
             .andExpect(status().isOk());
 
@@ -272,14 +273,9 @@ class TmAgentResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         tmAgent.setId(longCount.incrementAndGet());
 
-        // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTmAgentMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, tmAgentDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgentDTO))
-            )
+            .perform(put(ENTITY_API_URL_ID, tmAgent.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgent)))
             .andExpect(status().isBadRequest());
 
         // Validate the TmAgent in the database
@@ -292,15 +288,12 @@ class TmAgentResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         tmAgent.setId(longCount.incrementAndGet());
 
-        // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTmAgentMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(tmAgentDTO))
+                    .content(om.writeValueAsBytes(tmAgent))
             )
             .andExpect(status().isBadRequest());
 
@@ -314,12 +307,9 @@ class TmAgentResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         tmAgent.setId(longCount.incrementAndGet());
 
-        // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTmAgentMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgentDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(tmAgent)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the TmAgent in the database
@@ -338,7 +328,7 @@ class TmAgentResourceIT {
         TmAgent partialUpdatedTmAgent = new TmAgent();
         partialUpdatedTmAgent.setId(tmAgent.getId());
 
-        partialUpdatedTmAgent.address(UPDATED_ADDRESS);
+        partialUpdatedTmAgent.createdDate(UPDATED_CREATED_DATE);
 
         restTmAgentMockMvc
             .perform(
@@ -367,14 +357,15 @@ class TmAgentResourceIT {
         partialUpdatedTmAgent.setId(tmAgent.getId());
 
         partialUpdatedTmAgent
-            .agentCode(UPDATED_AGENT_CODE)
             .firstName(UPDATED_FIRST_NAME)
             .lastName(UPDATED_LAST_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .deleted(UPDATED_DELETED)
-            .companyName(UPDATED_COMPANY_NAME);
+            .companyName(UPDATED_COMPANY_NAME)
+            .agentCode(UPDATED_AGENT_CODE)
+            .email(UPDATED_EMAIL);
 
         restTmAgentMockMvc
             .perform(
@@ -396,15 +387,10 @@ class TmAgentResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         tmAgent.setId(longCount.incrementAndGet());
 
-        // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTmAgentMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, tmAgentDTO.getId())
-                    .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(tmAgentDTO))
+                patch(ENTITY_API_URL_ID, tmAgent.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(tmAgent))
             )
             .andExpect(status().isBadRequest());
 
@@ -418,15 +404,12 @@ class TmAgentResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         tmAgent.setId(longCount.incrementAndGet());
 
-        // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTmAgentMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(tmAgentDTO))
+                    .content(om.writeValueAsBytes(tmAgent))
             )
             .andExpect(status().isBadRequest());
 
@@ -440,12 +423,9 @@ class TmAgentResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         tmAgent.setId(longCount.incrementAndGet());
 
-        // Create the TmAgent
-        TmAgentDTO tmAgentDTO = tmAgentMapper.toDto(tmAgent);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTmAgentMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(tmAgentDTO)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(tmAgent)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the TmAgent in the database

@@ -3,7 +3,6 @@
     "changelogDate": "20240522160737"
   },
   "applications": ["tmapp"],
-  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "sanitizedTm",

@@ -20,7 +20,6 @@ describe('TmAgent Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            agentCode: expect.any(Object),
             firstName: expect.any(Object),
             lastName: expect.any(Object),
             address: expect.any(Object),
@@ -28,6 +27,8 @@ describe('TmAgent Form Service', () => {
             modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
             companyName: expect.any(Object),
+            agentCode: expect.any(Object),
+            email: expect.any(Object),
           }),
         );
       });
@@ -38,7 +39,6 @@ describe('TmAgent Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            agentCode: expect.any(Object),
             firstName: expect.any(Object),
             lastName: expect.any(Object),
             address: expect.any(Object),
@@ -46,6 +46,8 @@ describe('TmAgent Form Service', () => {
             modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
             companyName: expect.any(Object),
+            agentCode: expect.any(Object),
+            email: expect.any(Object),
           }),
         );
       });

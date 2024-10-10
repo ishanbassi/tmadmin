@@ -3,12 +3,7 @@
     "changelogDate": "20240602162757"
   },
   "applications": ["tmapp"],
-  "dto": "mapstruct",
   "fields": [
-    {
-      "fieldName": "agentCode",
-      "fieldType": "String"
-    },
     {
       "fieldName": "firstName",
       "fieldType": "String"
@@ -35,6 +30,14 @@
     },
     {
       "fieldName": "companyName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "agentCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
       "fieldType": "String"
     }
   ],

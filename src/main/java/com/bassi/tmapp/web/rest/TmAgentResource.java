@@ -1,8 +1,8 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.service.TmAgentService;
-import com.bassi.tmapp.service.dto.TmAgentDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,42 +43,40 @@ public class TmAgentResource {
     /**
      * {@code POST  /tm-agents} : Create a new tmAgent.
      *
-     * @param tmAgentDTO the tmAgentDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tmAgentDTO, or with status {@code 400 (Bad Request)} if the tmAgent has already an ID.
+     * @param tmAgent the tmAgent to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new tmAgent, or with status {@code 400 (Bad Request)} if the tmAgent has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<TmAgentDTO> createTmAgent(@RequestBody TmAgentDTO tmAgentDTO) throws URISyntaxException {
-        log.debug("REST request to save TmAgent : {}", tmAgentDTO);
-        if (tmAgentDTO.getId() != null) {
+    public ResponseEntity<TmAgent> createTmAgent(@RequestBody TmAgent tmAgent) throws URISyntaxException {
+        log.debug("REST request to save TmAgent : {}", tmAgent);
+        if (tmAgent.getId() != null) {
             throw new BadRequestAlertException("A new tmAgent cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        tmAgentDTO = tmAgentService.save(tmAgentDTO);
-        return ResponseEntity.created(new URI("/api/tm-agents/" + tmAgentDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, tmAgentDTO.getId().toString()))
-            .body(tmAgentDTO);
+        tmAgent = tmAgentService.save(tmAgent);
+        return ResponseEntity.created(new URI("/api/tm-agents/" + tmAgent.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, tmAgent.getId().toString()))
+            .body(tmAgent);
     }
 
     /**
      * {@code PUT  /tm-agents/:id} : Updates an existing tmAgent.
      *
-     * @param id the id of the tmAgentDTO to save.
-     * @param tmAgentDTO the tmAgentDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tmAgentDTO,
-     * or with status {@code 400 (Bad Request)} if the tmAgentDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the tmAgentDTO couldn't be updated.
+     * @param id the id of the tmAgent to save.
+     * @param tmAgent the tmAgent to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tmAgent,
+     * or with status {@code 400 (Bad Request)} if the tmAgent is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the tmAgent couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<TmAgentDTO> updateTmAgent(
-        @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TmAgentDTO tmAgentDTO
-    ) throws URISyntaxException {
-        log.debug("REST request to update TmAgent : {}, {}", id, tmAgentDTO);
-        if (tmAgentDTO.getId() == null) {
+    public ResponseEntity<TmAgent> updateTmAgent(@PathVariable(value = "id", required = false) final Long id, @RequestBody TmAgent tmAgent)
+        throws URISyntaxException {
+        log.debug("REST request to update TmAgent : {}, {}", id, tmAgent);
+        if (tmAgent.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, tmAgentDTO.getId())) {
+        if (!Objects.equals(id, tmAgent.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -86,33 +84,33 @@ public class TmAgentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        tmAgentDTO = tmAgentService.update(tmAgentDTO);
+        tmAgent = tmAgentService.update(tmAgent);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, tmAgentDTO.getId().toString()))
-            .body(tmAgentDTO);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, tmAgent.getId().toString()))
+            .body(tmAgent);
     }
 
     /**
      * {@code PATCH  /tm-agents/:id} : Partial updates given fields of an existing tmAgent, field will ignore if it is null
      *
-     * @param id the id of the tmAgentDTO to save.
-     * @param tmAgentDTO the tmAgentDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tmAgentDTO,
-     * or with status {@code 400 (Bad Request)} if the tmAgentDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the tmAgentDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the tmAgentDTO couldn't be updated.
+     * @param id the id of the tmAgent to save.
+     * @param tmAgent the tmAgent to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated tmAgent,
+     * or with status {@code 400 (Bad Request)} if the tmAgent is not valid,
+     * or with status {@code 404 (Not Found)} if the tmAgent is not found,
+     * or with status {@code 500 (Internal Server Error)} if the tmAgent couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<TmAgentDTO> partialUpdateTmAgent(
+    public ResponseEntity<TmAgent> partialUpdateTmAgent(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TmAgentDTO tmAgentDTO
+        @RequestBody TmAgent tmAgent
     ) throws URISyntaxException {
-        log.debug("REST request to partial update TmAgent partially : {}, {}", id, tmAgentDTO);
-        if (tmAgentDTO.getId() == null) {
+        log.debug("REST request to partial update TmAgent partially : {}, {}", id, tmAgent);
+        if (tmAgent.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, tmAgentDTO.getId())) {
+        if (!Objects.equals(id, tmAgent.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -120,11 +118,11 @@ public class TmAgentResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<TmAgentDTO> result = tmAgentService.partialUpdate(tmAgentDTO);
+        Optional<TmAgent> result = tmAgentService.partialUpdate(tmAgent);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, tmAgentDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, tmAgent.getId().toString())
         );
     }
 
@@ -134,7 +132,7 @@ public class TmAgentResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tmAgents in body.
      */
     @GetMapping("")
-    public List<TmAgentDTO> getAllTmAgents() {
+    public List<TmAgent> getAllTmAgents() {
         log.debug("REST request to get all TmAgents");
         return tmAgentService.findAll();
     }
@@ -142,20 +140,20 @@ public class TmAgentResource {
     /**
      * {@code GET  /tm-agents/:id} : get the "id" tmAgent.
      *
-     * @param id the id of the tmAgentDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tmAgentDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the tmAgent to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the tmAgent, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TmAgentDTO> getTmAgent(@PathVariable("id") Long id) {
+    public ResponseEntity<TmAgent> getTmAgent(@PathVariable("id") Long id) {
         log.debug("REST request to get TmAgent : {}", id);
-        Optional<TmAgentDTO> tmAgentDTO = tmAgentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(tmAgentDTO);
+        Optional<TmAgent> tmAgent = tmAgentService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(tmAgent);
     }
 
     /**
      * {@code DELETE  /tm-agents/:id} : delete the "id" tmAgent.
      *
-     * @param id the id of the tmAgentDTO to delete.
+     * @param id the id of the tmAgent to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

@@ -6,7 +6,7 @@ export interface IPhonetics {
   phoneticPk?: string | null;
   phoneticSk?: string | null;
   complete?: boolean | null;
-  trademark?: Pick<ITrademark, 'id'> | null;
+  trademark?: ITrademark | null;
 }
 
 export type NewPhonetics = Omit<IPhonetics, 'id'> & { id: null };
