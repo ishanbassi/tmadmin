@@ -26,9 +26,6 @@ public class TmAgent implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "agent_code")
-    private String agentCode;
-
     @Column(name = "first_name")
     private String firstName;
 
@@ -50,6 +47,12 @@ public class TmAgent implements Serializable {
     @Column(name = "company_name")
     private String companyName;
 
+    @Column(name = "agent_code")
+    private String agentCode;
+
+    @Column(name = "email")
+    private String email;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "tmAgent")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "tmAgent" }, allowSetters = true)
@@ -68,19 +71,6 @@ public class TmAgent implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getAgentCode() {
-        return this.agentCode;
-    }
-
-    public TmAgent agentCode(String agentCode) {
-        this.setAgentCode(agentCode);
-        return this;
-    }
-
-    public void setAgentCode(String agentCode) {
-        this.agentCode = agentCode;
     }
 
     public String getFirstName() {
@@ -174,6 +164,32 @@ public class TmAgent implements Serializable {
         this.companyName = companyName;
     }
 
+    public String getAgentCode() {
+        return this.agentCode;
+    }
+
+    public TmAgent agentCode(String agentCode) {
+        this.setAgentCode(agentCode);
+        return this;
+    }
+
+    public void setAgentCode(String agentCode) {
+        this.agentCode = agentCode;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public TmAgent email(String email) {
+        this.setEmail(email);
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public Set<Trademark> getTrademarks() {
         return this.trademarks;
     }
@@ -229,7 +245,6 @@ public class TmAgent implements Serializable {
     public String toString() {
         return "TmAgent{" +
             "id=" + getId() +
-            ", agentCode='" + getAgentCode() + "'" +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
             ", address='" + getAddress() + "'" +
@@ -237,6 +252,8 @@ public class TmAgent implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
             ", companyName='" + getCompanyName() + "'" +
+            ", agentCode='" + getAgentCode() + "'" +
+            ", email='" + getEmail() + "'" +
             "}";
     }
 }

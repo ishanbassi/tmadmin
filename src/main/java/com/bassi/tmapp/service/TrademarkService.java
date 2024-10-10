@@ -2,8 +2,6 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
-import com.bassi.tmapp.service.dto.TrademarkDTO;
-import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,57 +19,102 @@ public class TrademarkService {
 
     private final TrademarkRepository trademarkRepository;
 
-    private final TrademarkMapper trademarkMapper;
-
-    public TrademarkService(TrademarkRepository trademarkRepository, TrademarkMapper trademarkMapper) {
+    public TrademarkService(TrademarkRepository trademarkRepository) {
         this.trademarkRepository = trademarkRepository;
-        this.trademarkMapper = trademarkMapper;
     }
 
     /**
      * Save a trademark.
      *
-     * @param trademarkDTO the entity to save.
+     * @param trademark the entity to save.
      * @return the persisted entity.
      */
-    public TrademarkDTO save(TrademarkDTO trademarkDTO) {
-        log.debug("Request to save Trademark : {}", trademarkDTO);
-        Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
-        trademark = trademarkRepository.save(trademark);
-        return trademarkMapper.toDto(trademark);
+    public Trademark save(Trademark trademark) {
+        log.debug("Request to save Trademark : {}", trademark);
+        return trademarkRepository.save(trademark);
     }
 
     /**
      * Update a trademark.
      *
-     * @param trademarkDTO the entity to save.
+     * @param trademark the entity to save.
      * @return the persisted entity.
      */
-    public TrademarkDTO update(TrademarkDTO trademarkDTO) {
-        log.debug("Request to update Trademark : {}", trademarkDTO);
-        Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
-        trademark = trademarkRepository.save(trademark);
-        return trademarkMapper.toDto(trademark);
+    public Trademark update(Trademark trademark) {
+        log.debug("Request to update Trademark : {}", trademark);
+        return trademarkRepository.save(trademark);
     }
 
     /**
      * Partially update a trademark.
      *
-     * @param trademarkDTO the entity to update partially.
+     * @param trademark the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<TrademarkDTO> partialUpdate(TrademarkDTO trademarkDTO) {
-        log.debug("Request to partially update Trademark : {}", trademarkDTO);
+    public Optional<Trademark> partialUpdate(Trademark trademark) {
+        log.debug("Request to partially update Trademark : {}", trademark);
 
         return trademarkRepository
-            .findById(trademarkDTO.getId())
+            .findById(trademark.getId())
             .map(existingTrademark -> {
-                trademarkMapper.partialUpdate(existingTrademark, trademarkDTO);
+                if (trademark.getName() != null) {
+                    existingTrademark.setName(trademark.getName());
+                }
+                if (trademark.getDetails() != null) {
+                    existingTrademark.setDetails(trademark.getDetails());
+                }
+                if (trademark.getApplicationNo() != null) {
+                    existingTrademark.setApplicationNo(trademark.getApplicationNo());
+                }
+                if (trademark.getApplicationDate() != null) {
+                    existingTrademark.setApplicationDate(trademark.getApplicationDate());
+                }
+                if (trademark.getAgentName() != null) {
+                    existingTrademark.setAgentName(trademark.getAgentName());
+                }
+                if (trademark.getAgentAddress() != null) {
+                    existingTrademark.setAgentAddress(trademark.getAgentAddress());
+                }
+                if (trademark.getProprietorName() != null) {
+                    existingTrademark.setProprietorName(trademark.getProprietorName());
+                }
+                if (trademark.getProprietorAddress() != null) {
+                    existingTrademark.setProprietorAddress(trademark.getProprietorAddress());
+                }
+                if (trademark.getHeadOffice() != null) {
+                    existingTrademark.setHeadOffice(trademark.getHeadOffice());
+                }
+                if (trademark.getImgUrl() != null) {
+                    existingTrademark.setImgUrl(trademark.getImgUrl());
+                }
+                if (trademark.getTmClass() != null) {
+                    existingTrademark.setTmClass(trademark.getTmClass());
+                }
+                if (trademark.getJournalNo() != null) {
+                    existingTrademark.setJournalNo(trademark.getJournalNo());
+                }
+                if (trademark.getDeleted() != null) {
+                    existingTrademark.setDeleted(trademark.getDeleted());
+                }
+                if (trademark.getUsage() != null) {
+                    existingTrademark.setUsage(trademark.getUsage());
+                }
+                if (trademark.getAssociatedTms() != null) {
+                    existingTrademark.setAssociatedTms(trademark.getAssociatedTms());
+                }
+                if (trademark.getTrademarkStatus() != null) {
+                    existingTrademark.setTrademarkStatus(trademark.getTrademarkStatus());
+                }
+                if (trademark.getCreatedDate() != null) {
+                    existingTrademark.setCreatedDate(trademark.getCreatedDate());
+                }
+                if (trademark.getModifiedDate() != null) {
+                    existingTrademark.setModifiedDate(trademark.getModifiedDate());
+                }
 
                 return existingTrademark;
             })
-            .map(trademarkRepository::save)
-            .map(trademarkMapper::toDto);
+            .map(trademarkRepository::save);
     }
 
     /**
@@ -81,9 +124,9 @@ public class TrademarkService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<TrademarkDTO> findOne(Long id) {
+    public Optional<Trademark> findOne(Long id) {
         log.debug("Request to get Trademark : {}", id);
-        return trademarkRepository.findById(id).map(trademarkMapper::toDto);
+        return trademarkRepository.findById(id);
     }
 
     /**

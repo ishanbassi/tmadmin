@@ -6,7 +6,7 @@ export interface IPublishedTmPhonetics {
   phoneticPk?: string | null;
   phoneticSk?: string | null;
   complete?: boolean | null;
-  publishedTm?: Pick<IPublishedTm, 'id'> | null;
+  publishedTm?: IPublishedTm | null;
 }
 
 export type NewPublishedTmPhonetics = Omit<IPublishedTmPhonetics, 'id'> & { id: null };

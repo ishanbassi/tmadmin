@@ -1,8 +1,8 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.domain.Phonetics;
 import com.bassi.tmapp.repository.PhoneticsRepository;
 import com.bassi.tmapp.service.PhoneticsService;
-import com.bassi.tmapp.service.dto.PhoneticsDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,42 +43,42 @@ public class PhoneticsResource {
     /**
      * {@code POST  /phonetics} : Create a new phonetics.
      *
-     * @param phoneticsDTO the phoneticsDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new phoneticsDTO, or with status {@code 400 (Bad Request)} if the phonetics has already an ID.
+     * @param phonetics the phonetics to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new phonetics, or with status {@code 400 (Bad Request)} if the phonetics has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<PhoneticsDTO> createPhonetics(@RequestBody PhoneticsDTO phoneticsDTO) throws URISyntaxException {
-        log.debug("REST request to save Phonetics : {}", phoneticsDTO);
-        if (phoneticsDTO.getId() != null) {
+    public ResponseEntity<Phonetics> createPhonetics(@RequestBody Phonetics phonetics) throws URISyntaxException {
+        log.debug("REST request to save Phonetics : {}", phonetics);
+        if (phonetics.getId() != null) {
             throw new BadRequestAlertException("A new phonetics cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        phoneticsDTO = phoneticsService.save(phoneticsDTO);
-        return ResponseEntity.created(new URI("/api/phonetics/" + phoneticsDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, phoneticsDTO.getId().toString()))
-            .body(phoneticsDTO);
+        phonetics = phoneticsService.save(phonetics);
+        return ResponseEntity.created(new URI("/api/phonetics/" + phonetics.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, phonetics.getId().toString()))
+            .body(phonetics);
     }
 
     /**
      * {@code PUT  /phonetics/:id} : Updates an existing phonetics.
      *
-     * @param id the id of the phoneticsDTO to save.
-     * @param phoneticsDTO the phoneticsDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated phoneticsDTO,
-     * or with status {@code 400 (Bad Request)} if the phoneticsDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the phoneticsDTO couldn't be updated.
+     * @param id the id of the phonetics to save.
+     * @param phonetics the phonetics to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated phonetics,
+     * or with status {@code 400 (Bad Request)} if the phonetics is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the phonetics couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<PhoneticsDTO> updatePhonetics(
+    public ResponseEntity<Phonetics> updatePhonetics(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody PhoneticsDTO phoneticsDTO
+        @RequestBody Phonetics phonetics
     ) throws URISyntaxException {
-        log.debug("REST request to update Phonetics : {}, {}", id, phoneticsDTO);
-        if (phoneticsDTO.getId() == null) {
+        log.debug("REST request to update Phonetics : {}, {}", id, phonetics);
+        if (phonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, phoneticsDTO.getId())) {
+        if (!Objects.equals(id, phonetics.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -86,33 +86,33 @@ public class PhoneticsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        phoneticsDTO = phoneticsService.update(phoneticsDTO);
+        phonetics = phoneticsService.update(phonetics);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, phoneticsDTO.getId().toString()))
-            .body(phoneticsDTO);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, phonetics.getId().toString()))
+            .body(phonetics);
     }
 
     /**
      * {@code PATCH  /phonetics/:id} : Partial updates given fields of an existing phonetics, field will ignore if it is null
      *
-     * @param id the id of the phoneticsDTO to save.
-     * @param phoneticsDTO the phoneticsDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated phoneticsDTO,
-     * or with status {@code 400 (Bad Request)} if the phoneticsDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the phoneticsDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the phoneticsDTO couldn't be updated.
+     * @param id the id of the phonetics to save.
+     * @param phonetics the phonetics to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated phonetics,
+     * or with status {@code 400 (Bad Request)} if the phonetics is not valid,
+     * or with status {@code 404 (Not Found)} if the phonetics is not found,
+     * or with status {@code 500 (Internal Server Error)} if the phonetics couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<PhoneticsDTO> partialUpdatePhonetics(
+    public ResponseEntity<Phonetics> partialUpdatePhonetics(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody PhoneticsDTO phoneticsDTO
+        @RequestBody Phonetics phonetics
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Phonetics partially : {}, {}", id, phoneticsDTO);
-        if (phoneticsDTO.getId() == null) {
+        log.debug("REST request to partial update Phonetics partially : {}, {}", id, phonetics);
+        if (phonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, phoneticsDTO.getId())) {
+        if (!Objects.equals(id, phonetics.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -120,11 +120,11 @@ public class PhoneticsResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<PhoneticsDTO> result = phoneticsService.partialUpdate(phoneticsDTO);
+        Optional<Phonetics> result = phoneticsService.partialUpdate(phonetics);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, phoneticsDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, phonetics.getId().toString())
         );
     }
 
@@ -134,7 +134,7 @@ public class PhoneticsResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of phonetics in body.
      */
     @GetMapping("")
-    public List<PhoneticsDTO> getAllPhonetics() {
+    public List<Phonetics> getAllPhonetics() {
         log.debug("REST request to get all Phonetics");
         return phoneticsService.findAll();
     }
@@ -142,20 +142,20 @@ public class PhoneticsResource {
     /**
      * {@code GET  /phonetics/:id} : get the "id" phonetics.
      *
-     * @param id the id of the phoneticsDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the phoneticsDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the phonetics to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the phonetics, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<PhoneticsDTO> getPhonetics(@PathVariable("id") Long id) {
+    public ResponseEntity<Phonetics> getPhonetics(@PathVariable("id") Long id) {
         log.debug("REST request to get Phonetics : {}", id);
-        Optional<PhoneticsDTO> phoneticsDTO = phoneticsService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(phoneticsDTO);
+        Optional<Phonetics> phonetics = phoneticsService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(phonetics);
     }
 
     /**
      * {@code DELETE  /phonetics/:id} : delete the "id" phonetics.
      *
-     * @param id the id of the phoneticsDTO to delete.
+     * @param id the id of the phonetics to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

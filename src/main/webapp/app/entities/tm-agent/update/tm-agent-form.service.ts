@@ -32,7 +32,6 @@ type TmAgentFormDefaults = Pick<NewTmAgent, 'id' | 'createdDate' | 'modifiedDate
 
 type TmAgentFormGroupContent = {
   id: FormControl<TmAgentFormRawValue['id'] | NewTmAgent['id']>;
-  agentCode: FormControl<TmAgentFormRawValue['agentCode']>;
   firstName: FormControl<TmAgentFormRawValue['firstName']>;
   lastName: FormControl<TmAgentFormRawValue['lastName']>;
   address: FormControl<TmAgentFormRawValue['address']>;
@@ -40,6 +39,8 @@ type TmAgentFormGroupContent = {
   modifiedDate: FormControl<TmAgentFormRawValue['modifiedDate']>;
   deleted: FormControl<TmAgentFormRawValue['deleted']>;
   companyName: FormControl<TmAgentFormRawValue['companyName']>;
+  agentCode: FormControl<TmAgentFormRawValue['agentCode']>;
+  email: FormControl<TmAgentFormRawValue['email']>;
 };
 
 export type TmAgentFormGroup = FormGroup<TmAgentFormGroupContent>;
@@ -59,7 +60,6 @@ export class TmAgentFormService {
           validators: [Validators.required],
         },
       ),
-      agentCode: new FormControl(tmAgentRawValue.agentCode),
       firstName: new FormControl(tmAgentRawValue.firstName),
       lastName: new FormControl(tmAgentRawValue.lastName),
       address: new FormControl(tmAgentRawValue.address),
@@ -67,6 +67,8 @@ export class TmAgentFormService {
       modifiedDate: new FormControl(tmAgentRawValue.modifiedDate),
       deleted: new FormControl(tmAgentRawValue.deleted),
       companyName: new FormControl(tmAgentRawValue.companyName),
+      agentCode: new FormControl(tmAgentRawValue.agentCode),
+      email: new FormControl(tmAgentRawValue.email),
     });
   }
 

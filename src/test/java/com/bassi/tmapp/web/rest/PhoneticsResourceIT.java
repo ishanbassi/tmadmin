@@ -10,8 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Phonetics;
 import com.bassi.tmapp.repository.PhoneticsRepository;
-import com.bassi.tmapp.service.dto.PhoneticsDTO;
-import com.bassi.tmapp.service.mapper.PhoneticsMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.util.Random;
@@ -57,9 +55,6 @@ class PhoneticsResourceIT {
 
     @Autowired
     private PhoneticsRepository phoneticsRepository;
-
-    @Autowired
-    private PhoneticsMapper phoneticsMapper;
 
     @Autowired
     private EntityManager em;
@@ -119,20 +114,18 @@ class PhoneticsResourceIT {
     void createPhonetics() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-        var returnedPhoneticsDTO = om.readValue(
+        var returnedPhonetics = om.readValue(
             restPhoneticsMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phoneticsDTO)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phonetics)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            PhoneticsDTO.class
+            Phonetics.class
         );
 
         // Validate the Phonetics in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedPhonetics = phoneticsMapper.toEntity(returnedPhoneticsDTO);
         assertPhoneticsUpdatableFieldsEquals(returnedPhonetics, getPersistedPhonetics(returnedPhonetics));
 
         insertedPhonetics = returnedPhonetics;
@@ -143,13 +136,12 @@ class PhoneticsResourceIT {
     void createPhoneticsWithExistingId() throws Exception {
         // Create the Phonetics with an existing ID
         phonetics.setId(1L);
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPhoneticsMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phoneticsDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phonetics)))
             .andExpect(status().isBadRequest());
 
         // Validate the Phonetics in the database
@@ -216,13 +208,12 @@ class PhoneticsResourceIT {
             .phoneticPk(UPDATED_PHONETIC_PK)
             .phoneticSk(UPDATED_PHONETIC_SK)
             .complete(UPDATED_COMPLETE);
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(updatedPhonetics);
 
         restPhoneticsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, phoneticsDTO.getId())
+                put(ENTITY_API_URL_ID, updatedPhonetics.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(phoneticsDTO))
+                    .content(om.writeValueAsBytes(updatedPhonetics))
             )
             .andExpect(status().isOk());
 
@@ -237,15 +228,10 @@ class PhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         phonetics.setId(longCount.incrementAndGet());
 
-        // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPhoneticsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, phoneticsDTO.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(phoneticsDTO))
+                put(ENTITY_API_URL_ID, phonetics.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -259,15 +245,12 @@ class PhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         phonetics.setId(longCount.incrementAndGet());
 
-        // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPhoneticsMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(phoneticsDTO))
+                    .content(om.writeValueAsBytes(phonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -281,12 +264,9 @@ class PhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         phonetics.setId(longCount.incrementAndGet());
 
-        // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPhoneticsMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phoneticsDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(phonetics)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Phonetics in the database
@@ -362,15 +342,12 @@ class PhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         phonetics.setId(longCount.incrementAndGet());
 
-        // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPhoneticsMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, phoneticsDTO.getId())
+                patch(ENTITY_API_URL_ID, phonetics.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(phoneticsDTO))
+                    .content(om.writeValueAsBytes(phonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -384,15 +361,12 @@ class PhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         phonetics.setId(longCount.incrementAndGet());
 
-        // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPhoneticsMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(phoneticsDTO))
+                    .content(om.writeValueAsBytes(phonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -406,12 +380,9 @@ class PhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         phonetics.setId(longCount.incrementAndGet());
 
-        // Create the Phonetics
-        PhoneticsDTO phoneticsDTO = phoneticsMapper.toDto(phonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPhoneticsMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(phoneticsDTO)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(phonetics)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Phonetics in the database

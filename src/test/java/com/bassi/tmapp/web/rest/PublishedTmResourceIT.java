@@ -13,8 +13,6 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.repository.PublishedTmRepository;
-import com.bassi.tmapp.service.dto.PublishedTmDTO;
-import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -115,9 +113,6 @@ class PublishedTmResourceIT {
     private PublishedTmRepository publishedTmRepository;
 
     @Autowired
-    private PublishedTmMapper publishedTmMapper;
-
-    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -203,20 +198,18 @@ class PublishedTmResourceIT {
     void createPublishedTm() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-        var returnedPublishedTmDTO = om.readValue(
+        var returnedPublishedTm = om.readValue(
             restPublishedTmMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmDTO)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTm)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            PublishedTmDTO.class
+            PublishedTm.class
         );
 
         // Validate the PublishedTm in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedPublishedTm = publishedTmMapper.toEntity(returnedPublishedTmDTO);
         assertPublishedTmUpdatableFieldsEquals(returnedPublishedTm, getPersistedPublishedTm(returnedPublishedTm));
 
         insertedPublishedTm = returnedPublishedTm;
@@ -227,13 +220,12 @@ class PublishedTmResourceIT {
     void createPublishedTmWithExistingId() throws Exception {
         // Create the PublishedTm with an existing ID
         publishedTm.setId(1L);
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPublishedTmMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTm)))
             .andExpect(status().isBadRequest());
 
         // Validate the PublishedTm in the database
@@ -1473,13 +1465,12 @@ class PublishedTmResourceIT {
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE);
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(updatedPublishedTm);
 
         restPublishedTmMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, publishedTmDTO.getId())
+                put(ENTITY_API_URL_ID, updatedPublishedTm.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(publishedTmDTO))
+                    .content(om.writeValueAsBytes(updatedPublishedTm))
             )
             .andExpect(status().isOk());
 
@@ -1494,15 +1485,12 @@ class PublishedTmResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTm.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPublishedTmMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, publishedTmDTO.getId())
+                put(ENTITY_API_URL_ID, publishedTm.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(publishedTmDTO))
+                    .content(om.writeValueAsBytes(publishedTm))
             )
             .andExpect(status().isBadRequest());
 
@@ -1516,15 +1504,12 @@ class PublishedTmResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTm.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(publishedTmDTO))
+                    .content(om.writeValueAsBytes(publishedTm))
             )
             .andExpect(status().isBadRequest());
 
@@ -1538,12 +1523,9 @@ class PublishedTmResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTm.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTm)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the PublishedTm in the database
@@ -1647,15 +1629,12 @@ class PublishedTmResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTm.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPublishedTmMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, publishedTmDTO.getId())
+                patch(ENTITY_API_URL_ID, publishedTm.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(publishedTmDTO))
+                    .content(om.writeValueAsBytes(publishedTm))
             )
             .andExpect(status().isBadRequest());
 
@@ -1669,15 +1648,12 @@ class PublishedTmResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTm.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(publishedTmDTO))
+                    .content(om.writeValueAsBytes(publishedTm))
             )
             .andExpect(status().isBadRequest());
 
@@ -1691,12 +1667,9 @@ class PublishedTmResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTm.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTm
-        PublishedTmDTO publishedTmDTO = publishedTmMapper.toDto(publishedTm);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(publishedTmDTO)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(publishedTm)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the PublishedTm in the database

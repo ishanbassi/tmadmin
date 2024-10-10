@@ -12,30 +12,33 @@ public class TmAgentTestSamples {
     public static TmAgent getTmAgentSample1() {
         return new TmAgent()
             .id(1L)
-            .agentCode("agentCode1")
             .firstName("firstName1")
             .lastName("lastName1")
             .address("address1")
-            .companyName("companyName1");
+            .companyName("companyName1")
+            .agentCode("agentCode1")
+            .email("email1");
     }
 
     public static TmAgent getTmAgentSample2() {
         return new TmAgent()
             .id(2L)
-            .agentCode("agentCode2")
             .firstName("firstName2")
             .lastName("lastName2")
             .address("address2")
-            .companyName("companyName2");
+            .companyName("companyName2")
+            .agentCode("agentCode2")
+            .email("email2");
     }
 
     public static TmAgent getTmAgentRandomSampleGenerator() {
         return new TmAgent()
             .id(longCount.incrementAndGet())
-            .agentCode(UUID.randomUUID().toString())
             .firstName(UUID.randomUUID().toString())
             .lastName(UUID.randomUUID().toString())
             .address(UUID.randomUUID().toString())
-            .companyName(UUID.randomUUID().toString());
+            .companyName(UUID.randomUUID().toString())
+            .agentCode(UUID.randomUUID().toString())
+            .email(UUID.randomUUID().toString());
     }
 }

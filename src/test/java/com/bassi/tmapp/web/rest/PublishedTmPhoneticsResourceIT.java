@@ -10,8 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
-import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
-import com.bassi.tmapp.service.mapper.PublishedTmPhoneticsMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.util.Random;
@@ -57,9 +55,6 @@ class PublishedTmPhoneticsResourceIT {
 
     @Autowired
     private PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
-
-    @Autowired
-    private PublishedTmPhoneticsMapper publishedTmPhoneticsMapper;
 
     @Autowired
     private EntityManager em;
@@ -119,22 +114,18 @@ class PublishedTmPhoneticsResourceIT {
     void createPublishedTmPhonetics() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-        var returnedPublishedTmPhoneticsDTO = om.readValue(
+        var returnedPublishedTmPhonetics = om.readValue(
             restPublishedTmPhoneticsMockMvc
-                .perform(
-                    post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
-                )
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmPhonetics)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            PublishedTmPhoneticsDTO.class
+            PublishedTmPhonetics.class
         );
 
         // Validate the PublishedTmPhonetics in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
-        var returnedPublishedTmPhonetics = publishedTmPhoneticsMapper.toEntity(returnedPublishedTmPhoneticsDTO);
         assertPublishedTmPhoneticsUpdatableFieldsEquals(
             returnedPublishedTmPhonetics,
             getPersistedPublishedTmPhonetics(returnedPublishedTmPhonetics)
@@ -148,13 +139,12 @@ class PublishedTmPhoneticsResourceIT {
     void createPublishedTmPhoneticsWithExistingId() throws Exception {
         // Create the PublishedTmPhonetics with an existing ID
         publishedTmPhonetics.setId(1L);
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPublishedTmPhoneticsMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmPhoneticsDTO)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmPhonetics)))
             .andExpect(status().isBadRequest());
 
         // Validate the PublishedTmPhonetics in the database
@@ -223,13 +213,12 @@ class PublishedTmPhoneticsResourceIT {
             .phoneticPk(UPDATED_PHONETIC_PK)
             .phoneticSk(UPDATED_PHONETIC_SK)
             .complete(UPDATED_COMPLETE);
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(updatedPublishedTmPhonetics);
 
         restPublishedTmPhoneticsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, publishedTmPhoneticsDTO.getId())
+                put(ENTITY_API_URL_ID, updatedPublishedTmPhonetics.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
+                    .content(om.writeValueAsBytes(updatedPublishedTmPhonetics))
             )
             .andExpect(status().isOk());
 
@@ -244,15 +233,12 @@ class PublishedTmPhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTmPhonetics.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPublishedTmPhoneticsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, publishedTmPhoneticsDTO.getId())
+                put(ENTITY_API_URL_ID, publishedTmPhonetics.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
+                    .content(om.writeValueAsBytes(publishedTmPhonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -266,15 +252,12 @@ class PublishedTmPhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTmPhonetics.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmPhoneticsMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
+                    .content(om.writeValueAsBytes(publishedTmPhonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -288,12 +271,9 @@ class PublishedTmPhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTmPhonetics.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmPhoneticsMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmPhoneticsDTO)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(publishedTmPhonetics)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the PublishedTmPhonetics in the database
@@ -370,15 +350,12 @@ class PublishedTmPhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTmPhonetics.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPublishedTmPhoneticsMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, publishedTmPhoneticsDTO.getId())
+                patch(ENTITY_API_URL_ID, publishedTmPhonetics.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
+                    .content(om.writeValueAsBytes(publishedTmPhonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -392,15 +369,12 @@ class PublishedTmPhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTmPhonetics.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmPhoneticsMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
+                    .content(om.writeValueAsBytes(publishedTmPhonetics))
             )
             .andExpect(status().isBadRequest());
 
@@ -414,14 +388,9 @@ class PublishedTmPhoneticsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         publishedTmPhonetics.setId(longCount.incrementAndGet());
 
-        // Create the PublishedTmPhonetics
-        PublishedTmPhoneticsDTO publishedTmPhoneticsDTO = publishedTmPhoneticsMapper.toDto(publishedTmPhonetics);
-
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restPublishedTmPhoneticsMockMvc
-            .perform(
-                patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(publishedTmPhoneticsDTO))
-            )
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(publishedTmPhonetics)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the PublishedTmPhonetics in the database

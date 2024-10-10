@@ -48,7 +48,6 @@ public class TmAgentAsserts {
     public static void assertTmAgentUpdatableFieldsEquals(TmAgent expected, TmAgent actual) {
         assertThat(expected)
             .as("Verify TmAgent relevant properties")
-            .satisfies(e -> assertThat(e.getAgentCode()).as("check agentCode").isEqualTo(actual.getAgentCode()))
             .satisfies(e -> assertThat(e.getFirstName()).as("check firstName").isEqualTo(actual.getFirstName()))
             .satisfies(e -> assertThat(e.getLastName()).as("check lastName").isEqualTo(actual.getLastName()))
             .satisfies(e -> assertThat(e.getAddress()).as("check address").isEqualTo(actual.getAddress()))
@@ -67,7 +66,9 @@ public class TmAgentAsserts {
                         .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
-            .satisfies(e -> assertThat(e.getCompanyName()).as("check companyName").isEqualTo(actual.getCompanyName()));
+            .satisfies(e -> assertThat(e.getCompanyName()).as("check companyName").isEqualTo(actual.getCompanyName()))
+            .satisfies(e -> assertThat(e.getAgentCode()).as("check agentCode").isEqualTo(actual.getAgentCode()))
+            .satisfies(e -> assertThat(e.getEmail()).as("check email").isEqualTo(actual.getEmail()));
     }
 
     /**

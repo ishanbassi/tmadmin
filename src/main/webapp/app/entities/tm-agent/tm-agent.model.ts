@@ -2,7 +2,6 @@ import dayjs from 'dayjs/esm';
 
 export interface ITmAgent {
   id: number;
-  agentCode?: string | null;
   firstName?: string | null;
   lastName?: string | null;
   address?: string | null;
@@ -10,6 +9,8 @@ export interface ITmAgent {
   modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
   companyName?: string | null;
+  agentCode?: string | null;
+  email?: string | null;
 }
 
 export type NewTmAgent = Omit<ITmAgent, 'id'> & { id: null };

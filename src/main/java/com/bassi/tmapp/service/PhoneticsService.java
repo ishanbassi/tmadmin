@@ -2,14 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Phonetics;
 import com.bassi.tmapp.repository.PhoneticsRepository;
-import com.bassi.tmapp.service.dto.PhoneticsDTO;
-import com.bassi.tmapp.service.mapper.PhoneticsMapper;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,57 +20,60 @@ public class PhoneticsService {
 
     private final PhoneticsRepository phoneticsRepository;
 
-    private final PhoneticsMapper phoneticsMapper;
-
-    public PhoneticsService(PhoneticsRepository phoneticsRepository, PhoneticsMapper phoneticsMapper) {
+    public PhoneticsService(PhoneticsRepository phoneticsRepository) {
         this.phoneticsRepository = phoneticsRepository;
-        this.phoneticsMapper = phoneticsMapper;
     }
 
     /**
      * Save a phonetics.
      *
-     * @param phoneticsDTO the entity to save.
+     * @param phonetics the entity to save.
      * @return the persisted entity.
      */
-    public PhoneticsDTO save(PhoneticsDTO phoneticsDTO) {
-        log.debug("Request to save Phonetics : {}", phoneticsDTO);
-        Phonetics phonetics = phoneticsMapper.toEntity(phoneticsDTO);
-        phonetics = phoneticsRepository.save(phonetics);
-        return phoneticsMapper.toDto(phonetics);
+    public Phonetics save(Phonetics phonetics) {
+        log.debug("Request to save Phonetics : {}", phonetics);
+        return phoneticsRepository.save(phonetics);
     }
 
     /**
      * Update a phonetics.
      *
-     * @param phoneticsDTO the entity to save.
+     * @param phonetics the entity to save.
      * @return the persisted entity.
      */
-    public PhoneticsDTO update(PhoneticsDTO phoneticsDTO) {
-        log.debug("Request to update Phonetics : {}", phoneticsDTO);
-        Phonetics phonetics = phoneticsMapper.toEntity(phoneticsDTO);
-        phonetics = phoneticsRepository.save(phonetics);
-        return phoneticsMapper.toDto(phonetics);
+    public Phonetics update(Phonetics phonetics) {
+        log.debug("Request to update Phonetics : {}", phonetics);
+        return phoneticsRepository.save(phonetics);
     }
 
     /**
      * Partially update a phonetics.
      *
-     * @param phoneticsDTO the entity to update partially.
+     * @param phonetics the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<PhoneticsDTO> partialUpdate(PhoneticsDTO phoneticsDTO) {
-        log.debug("Request to partially update Phonetics : {}", phoneticsDTO);
+    public Optional<Phonetics> partialUpdate(Phonetics phonetics) {
+        log.debug("Request to partially update Phonetics : {}", phonetics);
 
         return phoneticsRepository
-            .findById(phoneticsDTO.getId())
+            .findById(phonetics.getId())
             .map(existingPhonetics -> {
-                phoneticsMapper.partialUpdate(existingPhonetics, phoneticsDTO);
+                if (phonetics.getSanitizedTm() != null) {
+                    existingPhonetics.setSanitizedTm(phonetics.getSanitizedTm());
+                }
+                if (phonetics.getPhoneticPk() != null) {
+                    existingPhonetics.setPhoneticPk(phonetics.getPhoneticPk());
+                }
+                if (phonetics.getPhoneticSk() != null) {
+                    existingPhonetics.setPhoneticSk(phonetics.getPhoneticSk());
+                }
+                if (phonetics.getComplete() != null) {
+                    existingPhonetics.setComplete(phonetics.getComplete());
+                }
 
                 return existingPhonetics;
             })
-            .map(phoneticsRepository::save)
-            .map(phoneticsMapper::toDto);
+            .map(phoneticsRepository::save);
     }
 
     /**
@@ -85,9 +82,9 @@ public class PhoneticsService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<PhoneticsDTO> findAll() {
+    public List<Phonetics> findAll() {
         log.debug("Request to get all Phonetics");
-        return phoneticsRepository.findAll().stream().map(phoneticsMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
+        return phoneticsRepository.findAll();
     }
 
     /**
@@ -97,9 +94,9 @@ public class PhoneticsService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<PhoneticsDTO> findOne(Long id) {
+    public Optional<Phonetics> findOne(Long id) {
         log.debug("Request to get Phonetics : {}", id);
-        return phoneticsRepository.findById(id).map(phoneticsMapper::toDto);
+        return phoneticsRepository.findById(id);
     }
 
     /**
@@ -110,13 +107,5 @@ public class PhoneticsService {
     public void delete(Long id) {
         log.debug("Request to delete Phonetics : {}", id);
         phoneticsRepository.deleteById(id);
-    }
-    
-    
-    public String generatePhonetics(String val) {
-    	if(val == null || val.isBlank()) return val;
-    	DoubleMetaphone dm = new DoubleMetaphone();
-    	dm.setMaxCodeLen(100);
-    	return dm.doubleMetaphone(val);
     }
 }

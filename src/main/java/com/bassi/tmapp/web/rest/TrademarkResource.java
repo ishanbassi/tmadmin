@@ -1,10 +1,10 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
-import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,42 +57,42 @@ public class TrademarkResource {
     /**
      * {@code POST  /trademarks} : Create a new trademark.
      *
-     * @param trademarkDTO the trademarkDTO to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trademarkDTO, or with status {@code 400 (Bad Request)} if the trademark has already an ID.
+     * @param trademark the trademark to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trademark, or with status {@code 400 (Bad Request)} if the trademark has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<TrademarkDTO> createTrademark(@RequestBody TrademarkDTO trademarkDTO) throws URISyntaxException {
-        log.debug("REST request to save Trademark : {}", trademarkDTO);
-        if (trademarkDTO.getId() != null) {
+    public ResponseEntity<Trademark> createTrademark(@RequestBody Trademark trademark) throws URISyntaxException {
+        log.debug("REST request to save Trademark : {}", trademark);
+        if (trademark.getId() != null) {
             throw new BadRequestAlertException("A new trademark cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        trademarkDTO = trademarkService.save(trademarkDTO);
-        return ResponseEntity.created(new URI("/api/trademarks/" + trademarkDTO.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getId().toString()))
-            .body(trademarkDTO);
+        trademark = trademarkService.save(trademark);
+        return ResponseEntity.created(new URI("/api/trademarks/" + trademark.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, trademark.getId().toString()))
+            .body(trademark);
     }
 
     /**
      * {@code PUT  /trademarks/:id} : Updates an existing trademark.
      *
-     * @param id the id of the trademarkDTO to save.
-     * @param trademarkDTO the trademarkDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademarkDTO,
-     * or with status {@code 400 (Bad Request)} if the trademarkDTO is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the trademarkDTO couldn't be updated.
+     * @param id the id of the trademark to save.
+     * @param trademark the trademark to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademark,
+     * or with status {@code 400 (Bad Request)} if the trademark is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the trademark couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<TrademarkDTO> updateTrademark(
+    public ResponseEntity<Trademark> updateTrademark(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TrademarkDTO trademarkDTO
+        @RequestBody Trademark trademark
     ) throws URISyntaxException {
-        log.debug("REST request to update Trademark : {}, {}", id, trademarkDTO);
-        if (trademarkDTO.getId() == null) {
+        log.debug("REST request to update Trademark : {}, {}", id, trademark);
+        if (trademark.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, trademarkDTO.getId())) {
+        if (!Objects.equals(id, trademark.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -100,33 +100,33 @@ public class TrademarkResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        trademarkDTO = trademarkService.update(trademarkDTO);
+        trademark = trademarkService.update(trademark);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getId().toString()))
-            .body(trademarkDTO);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademark.getId().toString()))
+            .body(trademark);
     }
 
     /**
      * {@code PATCH  /trademarks/:id} : Partial updates given fields of an existing trademark, field will ignore if it is null
      *
-     * @param id the id of the trademarkDTO to save.
-     * @param trademarkDTO the trademarkDTO to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademarkDTO,
-     * or with status {@code 400 (Bad Request)} if the trademarkDTO is not valid,
-     * or with status {@code 404 (Not Found)} if the trademarkDTO is not found,
-     * or with status {@code 500 (Internal Server Error)} if the trademarkDTO couldn't be updated.
+     * @param id the id of the trademark to save.
+     * @param trademark the trademark to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademark,
+     * or with status {@code 400 (Bad Request)} if the trademark is not valid,
+     * or with status {@code 404 (Not Found)} if the trademark is not found,
+     * or with status {@code 500 (Internal Server Error)} if the trademark couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<TrademarkDTO> partialUpdateTrademark(
+    public ResponseEntity<Trademark> partialUpdateTrademark(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TrademarkDTO trademarkDTO
+        @RequestBody Trademark trademark
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Trademark partially : {}, {}", id, trademarkDTO);
-        if (trademarkDTO.getId() == null) {
+        log.debug("REST request to partial update Trademark partially : {}, {}", id, trademark);
+        if (trademark.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, trademarkDTO.getId())) {
+        if (!Objects.equals(id, trademark.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -134,11 +134,11 @@ public class TrademarkResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<TrademarkDTO> result = trademarkService.partialUpdate(trademarkDTO);
+        Optional<Trademark> result = trademarkService.partialUpdate(trademark);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademark.getId().toString())
         );
     }
 
@@ -150,13 +150,13 @@ public class TrademarkResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trademarks in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<TrademarkDTO>> getAllTrademarks(
+    public ResponseEntity<List<Trademark>> getAllTrademarks(
         TrademarkCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get Trademarks by criteria: {}", criteria);
 
-        Page<TrademarkDTO> page = trademarkQueryService.findByCriteria(criteria, pageable);
+        Page<Trademark> page = trademarkQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -176,20 +176,20 @@ public class TrademarkResource {
     /**
      * {@code GET  /trademarks/:id} : get the "id" trademark.
      *
-     * @param id the id of the trademarkDTO to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trademarkDTO, or with status {@code 404 (Not Found)}.
+     * @param id the id of the trademark to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trademark, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TrademarkDTO> getTrademark(@PathVariable("id") Long id) {
+    public ResponseEntity<Trademark> getTrademark(@PathVariable("id") Long id) {
         log.debug("REST request to get Trademark : {}", id);
-        Optional<TrademarkDTO> trademarkDTO = trademarkService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(trademarkDTO);
+        Optional<Trademark> trademark = trademarkService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(trademark);
     }
 
     /**
      * {@code DELETE  /trademarks/:id} : delete the "id" trademark.
      *
-     * @param id the id of the trademarkDTO to delete.
+     * @param id the id of the trademark to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")
