@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.bassi.tmapp.repository.PublishedTmRepository;
+import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.PublishedTmService;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 
@@ -17,17 +18,17 @@ public class MatchingTrademarkService {
     private final Logger log = LoggerFactory.getLogger(MatchingTrademarkService .class);
 
 	
-	private PublishedTmRepository publishedTmRepository;
-	private PublishedTmService publishedTmService;
+	private PublishedTmRepositoryExtended publishedTmRepositoryExtended;
+	private PublishedTmServiceExtended publishedTmServiceExtended;
 	
-	MatchingTrademarkService ( PublishedTmRepository publishedTmRepository ,PublishedTmService publishedTmService) {
-		this.publishedTmRepository  =  publishedTmRepository ;
-		this.publishedTmService = publishedTmService;
+	MatchingTrademarkService ( PublishedTmRepositoryExtended publishedTmRepositoryExtended ,PublishedTmServiceExtended publishedTmServiceExtended) {
+		this.publishedTmRepositoryExtended  =  publishedTmRepositoryExtended ;
+		this.publishedTmServiceExtended = publishedTmServiceExtended;
 	}
 	
 	public byte[] exportTrademarks(Integer journalNo) {
 		MatchingTmExportService fileExportedExportService = new MatchingTmExportService("Trademark Journal");
-		 List<MatchingTrademarkDto> matchingTrademarkExportDtoList = publishedTmService.findMatchingTrademarkByJournal(journalNo); 
+		 List<MatchingTrademarkDto> matchingTrademarkExportDtoList = publishedTmServiceExtended.findMatchingTrademarkByJournal(journalNo); 
         if (matchingTrademarkExportDtoList.isEmpty()) {
             return fileExportedExportService.export().toByteArray();
         }
@@ -40,7 +41,7 @@ public class MatchingTrademarkService {
 
 
 	public List<Object> findAllMatchingTrademarksByClass(int tmClass, int journalNo) {
-		return publishedTmRepository.findAllMatchingTrademarksByJournalAndClass(journalNo, tmClass);
+		return publishedTmRepositoryExtended.findAllMatchingTrademarksByJournalAndClass(journalNo, tmClass);
 	}
 
 }

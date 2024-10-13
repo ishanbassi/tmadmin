@@ -1,10 +1,12 @@
 package com.bassi.tmapp.web.rest.extended;
 
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.extended.TrademarkServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,18 +41,18 @@ public class TrademarkResourceExtended {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final TrademarkService trademarkService;
+    private final TrademarkServiceExtended trademarkServiceExtended;
 
     private final TrademarkRepository trademarkRepository;
 
     private final TrademarkQueryService trademarkQueryService;
 
     public TrademarkResourceExtended(
-        TrademarkService trademarkService,
+        TrademarkServiceExtended trademarkServiceExtended,
         TrademarkRepository trademarkRepository,
         TrademarkQueryService trademarkQueryService
     ) {
-        this.trademarkService = trademarkService;
+        this.trademarkServiceExtended = trademarkServiceExtended;
         this.trademarkRepository = trademarkRepository;
         this.trademarkQueryService = trademarkQueryService;
     }
@@ -68,7 +70,7 @@ public class TrademarkResourceExtended {
         if (trademarkDTO.getId() != null) {
             throw new BadRequestAlertException("A new trademark cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        trademarkDTO = trademarkService.save(trademarkDTO);
+        trademarkDTO = trademarkServiceExtended.save(trademarkDTO);
         return ResponseEntity.created(new URI("/api/trademarks/" + trademarkDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getId().toString()))
             .body(trademarkDTO);
@@ -101,7 +103,7 @@ public class TrademarkResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        trademarkDTO = trademarkService.update(trademarkDTO);
+        trademarkDTO = trademarkServiceExtended.update(trademarkDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getId().toString()))
             .body(trademarkDTO);
@@ -135,7 +137,7 @@ public class TrademarkResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<TrademarkDTO> result = trademarkService.partialUpdate(trademarkDTO);
+        Optional<TrademarkDTO> result = trademarkServiceExtended.partialUpdate(trademarkDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -151,13 +153,13 @@ public class TrademarkResourceExtended {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trademarks in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<TrademarkDTO>> getAllTrademarks(
+    public ResponseEntity<List<Trademark>> getAllTrademarks(
         TrademarkCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get Trademarks by criteria: {}", criteria);
 
-        Page<TrademarkDTO> page = trademarkQueryService.findByCriteria(criteria, pageable);
+        Page<Trademark> page = trademarkQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -183,7 +185,7 @@ public class TrademarkResourceExtended {
     @GetMapping("/{id}")
     public ResponseEntity<TrademarkDTO> getTrademark(@PathVariable("id") Long id) {
         log.debug("REST request to get Trademark : {}", id);
-        Optional<TrademarkDTO> trademarkDTO = trademarkService.findOne(id);
+        Optional<TrademarkDTO> trademarkDTO = trademarkServiceExtended.findOne(id);
         return ResponseUtil.wrapOrNotFound(trademarkDTO);
     }
 
@@ -196,7 +198,7 @@ public class TrademarkResourceExtended {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTrademark(@PathVariable("id") Long id) {
         log.debug("REST request to delete Trademark : {}", id);
-        trademarkService.delete(id);
+        trademarkServiceExtended.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();

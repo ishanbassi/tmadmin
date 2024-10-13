@@ -1,19 +1,30 @@
 package com.bassi.tmapp.web.rest.extended;
 
-import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
-import com.bassi.tmapp.service.PublishedTmPhoneticsService;
-import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
-import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
+import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
+import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
+import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
+
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -31,15 +42,15 @@ public class PublishedTmPhoneticsResourceExtended {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PublishedTmPhoneticsService publishedTmPhoneticsService;
+    private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
 
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
 
     public PublishedTmPhoneticsResourceExtended(
-        PublishedTmPhoneticsService publishedTmPhoneticsService,
+        PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
         PublishedTmPhoneticsRepository publishedTmPhoneticsRepository
     ) {
-        this.publishedTmPhoneticsService = publishedTmPhoneticsService;
+        this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
         this.publishedTmPhoneticsRepository = publishedTmPhoneticsRepository;
     }
 
@@ -57,7 +68,7 @@ public class PublishedTmPhoneticsResourceExtended {
         if (publishedTmPhoneticsDTO.getId() != null) {
             throw new BadRequestAlertException("A new publishedTmPhonetics cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        publishedTmPhoneticsDTO = publishedTmPhoneticsService.save(publishedTmPhoneticsDTO);
+        publishedTmPhoneticsDTO = publishedTmPhoneticsServiceExtended.save(publishedTmPhoneticsDTO);
         return ResponseEntity.created(new URI("/api/published-tm-phonetics/" + publishedTmPhoneticsDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, publishedTmPhoneticsDTO.getId().toString()))
             .body(publishedTmPhoneticsDTO);
@@ -90,7 +101,7 @@ public class PublishedTmPhoneticsResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        publishedTmPhoneticsDTO = publishedTmPhoneticsService.update(publishedTmPhoneticsDTO);
+        publishedTmPhoneticsDTO = publishedTmPhoneticsServiceExtended.update(publishedTmPhoneticsDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, publishedTmPhoneticsDTO.getId().toString()))
             .body(publishedTmPhoneticsDTO);
@@ -124,7 +135,7 @@ public class PublishedTmPhoneticsResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<PublishedTmPhoneticsDTO> result = publishedTmPhoneticsService.partialUpdate(publishedTmPhoneticsDTO);
+        Optional<PublishedTmPhoneticsDTO> result = publishedTmPhoneticsServiceExtended.partialUpdate(publishedTmPhoneticsDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -140,7 +151,7 @@ public class PublishedTmPhoneticsResourceExtended {
     @GetMapping("")
     public List<PublishedTmPhoneticsDTO> getAllPublishedTmPhonetics() {
         log.debug("REST request to get all PublishedTmPhonetics");
-        return publishedTmPhoneticsService.findAll();
+        return publishedTmPhoneticsServiceExtended.findAll();
     }
 
     /**
@@ -152,7 +163,7 @@ public class PublishedTmPhoneticsResourceExtended {
     @GetMapping("/{id}")
     public ResponseEntity<PublishedTmPhoneticsDTO> getPublishedTmPhonetics(@PathVariable("id") Long id) {
         log.debug("REST request to get PublishedTmPhonetics : {}", id);
-        Optional<PublishedTmPhoneticsDTO> publishedTmPhoneticsDTO = publishedTmPhoneticsService.findOne(id);
+        Optional<PublishedTmPhoneticsDTO> publishedTmPhoneticsDTO = publishedTmPhoneticsServiceExtended.findOne(id);
         return ResponseUtil.wrapOrNotFound(publishedTmPhoneticsDTO);
     }
 
@@ -165,7 +176,7 @@ public class PublishedTmPhoneticsResourceExtended {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePublishedTmPhonetics(@PathVariable("id") Long id) {
         log.debug("REST request to delete PublishedTmPhonetics : {}", id);
-        publishedTmPhoneticsService.delete(id);
+        publishedTmPhoneticsServiceExtended.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();

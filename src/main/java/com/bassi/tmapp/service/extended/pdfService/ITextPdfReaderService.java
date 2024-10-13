@@ -39,6 +39,8 @@ import com.bassi.tmapp.service.PublishedTmPhoneticsService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
 import com.bassi.tmapp.service.extended.PdfReaderService;
+import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
+import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
@@ -68,9 +70,9 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	private static final Pattern multiTmClassPattern  = Pattern.compile("Cl.(\\d{1,2});", Pattern.CASE_INSENSITIVE);
 	
 	private PublishedTmDTO currentPublishedTmDto;
-	private  PhoneticsService phoneticsService;
+	private  PhoneticsServiceExtended phoneticsServiceExtended;
 	private PublishedTmRepository publishedTmRepository;
-	private PublishedTmPhoneticsService publishedTmPhoneticsService;
+	private PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
 	private WordSanitizationService wordSanitizationService;
 	
 	private List<PublishedTmDTO> errors = new ArrayList<>();
@@ -87,16 +89,16 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	private PublishedTmMapper publishedTmMapper;
 
 	public ITextPdfReaderService(
-			PhoneticsService phoneticsService,
+			PhoneticsServiceExtended phoneticsServiceExtended,
 			PublishedTmRepository publishedTmRepository,
 			PublishedTmMapper publishedTmMapper,
-			PublishedTmPhoneticsService publishedTmPhoneticsService,
+			PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
 			WordSanitizationService wordSanitizationService
 			) {
-		this.phoneticsService = phoneticsService;
+		this.phoneticsServiceExtended = phoneticsServiceExtended;
 		this.publishedTmRepository = publishedTmRepository;
 		this.publishedTmMapper = publishedTmMapper;
-		this.publishedTmPhoneticsService = publishedTmPhoneticsService;
+		this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
 		this.wordSanitizationService = wordSanitizationService;
 	}
 	
@@ -422,7 +424,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	public List<String> generatePhonetics(String trademark) {
 		List<String> subWords = new ArrayList<>(Arrays.asList(trademark.split(" ")));
 		subWords.add(trademark);
-		return subWords.stream().map(word -> phoneticsService.generatePhonetics(word)).toList();
+		return subWords.stream().map(word -> phoneticsServiceExtended.generatePhonetics(word)).toList();
 	}
 	
 	
@@ -444,7 +446,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
 		publishedTrademarks =  publishedTmRepository.saveAll(publishedTrademarks);
-		publishedTmPhoneticsService.saveAll(publishedTrademarks); 
+		publishedTmPhoneticsServiceExtended.saveAll(publishedTrademarks); 
 	}
 
 

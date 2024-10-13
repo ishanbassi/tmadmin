@@ -1,19 +1,30 @@
 package com.bassi.tmapp.web.rest.extended;
 
-import com.bassi.tmapp.repository.PhoneticsRepository;
-import com.bassi.tmapp.service.PhoneticsService;
-import com.bassi.tmapp.service.dto.PhoneticsDTO;
-import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.bassi.tmapp.repository.PhoneticsRepository;
+import com.bassi.tmapp.service.dto.PhoneticsDTO;
+import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
+import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
+
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -31,12 +42,12 @@ public class PhoneticsResourceExtended {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PhoneticsService phoneticsService;
+    private final PhoneticsServiceExtended phoneticsServiceExtended;
 
     private final PhoneticsRepository phoneticsRepository;
 
-    public PhoneticsResourceExtended(PhoneticsService phoneticsService, PhoneticsRepository phoneticsRepository) {
-        this.phoneticsService = phoneticsService;
+    public PhoneticsResourceExtended(PhoneticsServiceExtended phoneticsServiceExtended, PhoneticsRepository phoneticsRepository) {
+        this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.phoneticsRepository = phoneticsRepository;
     }
 
@@ -53,7 +64,7 @@ public class PhoneticsResourceExtended {
         if (phoneticsDTO.getId() != null) {
             throw new BadRequestAlertException("A new phonetics cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        phoneticsDTO = phoneticsService.save(phoneticsDTO);
+        phoneticsDTO = phoneticsServiceExtended.save(phoneticsDTO);
         return ResponseEntity.created(new URI("/api/phonetics/" + phoneticsDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, phoneticsDTO.getId().toString()))
             .body(phoneticsDTO);
@@ -86,7 +97,7 @@ public class PhoneticsResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        phoneticsDTO = phoneticsService.update(phoneticsDTO);
+        phoneticsDTO = phoneticsServiceExtended.update(phoneticsDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, phoneticsDTO.getId().toString()))
             .body(phoneticsDTO);
@@ -120,7 +131,7 @@ public class PhoneticsResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<PhoneticsDTO> result = phoneticsService.partialUpdate(phoneticsDTO);
+        Optional<PhoneticsDTO> result = phoneticsServiceExtended.partialUpdate(phoneticsDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -136,7 +147,7 @@ public class PhoneticsResourceExtended {
     @GetMapping("")
     public List<PhoneticsDTO> getAllPhonetics() {
         log.debug("REST request to get all Phonetics");
-        return phoneticsService.findAll();
+        return phoneticsServiceExtended.findAll();
     }
 
     /**
@@ -148,7 +159,7 @@ public class PhoneticsResourceExtended {
     @GetMapping("/{id}")
     public ResponseEntity<PhoneticsDTO> getPhonetics(@PathVariable("id") Long id) {
         log.debug("REST request to get Phonetics : {}", id);
-        Optional<PhoneticsDTO> phoneticsDTO = phoneticsService.findOne(id);
+        Optional<PhoneticsDTO> phoneticsDTO = phoneticsServiceExtended.findOne(id);
         return ResponseUtil.wrapOrNotFound(phoneticsDTO);
     }
 
@@ -161,7 +172,7 @@ public class PhoneticsResourceExtended {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePhonetics(@PathVariable("id") Long id) {
         log.debug("REST request to delete Phonetics : {}", id);
-        phoneticsService.delete(id);
+        phoneticsServiceExtended.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();

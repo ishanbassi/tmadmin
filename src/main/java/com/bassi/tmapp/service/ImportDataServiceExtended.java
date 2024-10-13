@@ -19,23 +19,23 @@ import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.dto.PhoneticsDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
+import com.bassi.tmapp.service.extended.TrademarkServiceExtended;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-
-import net.bytebuddy.asm.Advice.This;
 
 
 @Service
 public class ImportDataServiceExtended {
 	
-	private TrademarkService trademarkService;
-	private PhoneticsService phoneticsService;
+	private TrademarkServiceExtended trademarkServiceExtended;
+	private PhoneticsServiceExtended phoneticsServiceExtended;
     private final TrademarkRepository trademarkRepository;
 
 	
-	ImportDataServiceExtended(TrademarkService trademarkService, PhoneticsService phoneticsService,TrademarkRepository trademarkRepository) {
-		this.trademarkService = trademarkService;
-		this.phoneticsService =  phoneticsService;
+	ImportDataServiceExtended(TrademarkServiceExtended trademarkServiceExtended, PhoneticsServiceExtended phoneticsServiceExtended,TrademarkRepository trademarkRepository) {
+		this.trademarkServiceExtended = trademarkServiceExtended;
+		this.phoneticsServiceExtended =  phoneticsServiceExtended;
 		this.trademarkRepository = trademarkRepository;
 	}
 
@@ -79,7 +79,7 @@ public class ImportDataServiceExtended {
 
 	private void saveTrademarksAndGeneratePhonetics(List<Trademark> trademarks) {
 		List<Trademark> savedTrademarks = trademarkRepository.saveAll(trademarks);
-		phoneticsService.saveAll(savedTrademarks);
+		phoneticsServiceExtended.saveAll(savedTrademarks);
 		
 	}
 

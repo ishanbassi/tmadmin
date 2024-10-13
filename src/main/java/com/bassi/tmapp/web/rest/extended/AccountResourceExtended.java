@@ -8,7 +8,9 @@ import com.bassi.tmapp.service.MailService;
 import com.bassi.tmapp.service.UserService;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.PasswordChangeDTO;
+import com.bassi.tmapp.service.extended.AccountServiceExtended;
 import com.bassi.tmapp.service.extended.UserServiceExtended;
+import com.bassi.tmapp.service.extended.dto.AccountDto;
 import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
 import com.bassi.tmapp.web.rest.errors.*;
 import com.bassi.tmapp.web.rest.vm.KeyAndPasswordVM;
@@ -46,11 +48,15 @@ public class AccountResourceExtended {
     private final UserServiceExtended userServiceExtended;
 
     private final MailService mailService;
+    
+    private AccountServiceExtended accountServiceExtended;
 
-    public AccountResourceExtended(UserRepository userRepository, UserServiceExtended userServiceExtended, MailService mailService) {
+	public AccountResourceExtended(UserRepository userRepository, UserServiceExtended userServiceExtended,
+			MailService mailService, AccountServiceExtended accountServiceExtended) {
         this.userRepository = userRepository;
         this.userServiceExtended = userServiceExtended;
         this.mailService = mailService;
+        this.accountServiceExtended =accountServiceExtended;
     }
 
     /**
@@ -79,12 +85,16 @@ public class AccountResourceExtended {
      * @throws RuntimeException {@code 500 (Internal Server Error)} if the user couldn't be returned.
      */
     @GetMapping("/account")
-    public AdminUserDTO getAccount() {
-        return userServiceExtended
-            .getUserWithAuthorities()
-            .map(AdminUserDTO::new)
-            .orElseThrow(() -> new AccountResourceException("User could not be found"));
+    public AccountDto getAccount() {
+    	AccountDto account = accountServiceExtended.getAgent();
+		AdminUserDTO user=  userServiceExtended
+	    .getUserWithAuthorities()
+	    .map(AdminUserDTO::new)
+	    .orElseThrow(() -> new AccountResourceException("User could not be found"));
+		account.setUser(user);
+		return account;
     }
+    
 
     /**
      * {@code POST  /account} : update the current user information.

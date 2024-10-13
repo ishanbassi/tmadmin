@@ -1,10 +1,12 @@
 package com.bassi.tmapp.web.rest.extended;
 
+import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.PublishedTmQueryService;
 import com.bassi.tmapp.service.PublishedTmService;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
+import com.bassi.tmapp.service.extended.PublishedTmServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,18 +40,18 @@ public class PublishedTmResourceExtended {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
-    private final PublishedTmService publishedTmService;
+    private final PublishedTmServiceExtended publishedTmServiceExtended;
 
     private final PublishedTmRepository publishedTmRepository;
 
     private final PublishedTmQueryService publishedTmQueryService;
 
     public PublishedTmResourceExtended(
-        PublishedTmService publishedTmService,
+        PublishedTmServiceExtended publishedTmServiceExtended,
         PublishedTmRepository publishedTmRepository,
         PublishedTmQueryService publishedTmQueryService
     ) {
-        this.publishedTmService = publishedTmService;
+        this.publishedTmServiceExtended = publishedTmServiceExtended;
         this.publishedTmRepository = publishedTmRepository;
         this.publishedTmQueryService = publishedTmQueryService;
     }
@@ -67,7 +69,7 @@ public class PublishedTmResourceExtended {
         if (publishedTmDTO.getId() != null) {
             throw new BadRequestAlertException("A new publishedTm cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        publishedTmDTO = publishedTmService.save(publishedTmDTO);
+        publishedTmDTO = publishedTmServiceExtended.save(publishedTmDTO);
         return ResponseEntity.created(new URI("/api/published-tms/" + publishedTmDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, publishedTmDTO.getId().toString()))
             .body(publishedTmDTO);
@@ -100,7 +102,7 @@ public class PublishedTmResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        publishedTmDTO = publishedTmService.update(publishedTmDTO);
+        publishedTmDTO = publishedTmServiceExtended.update(publishedTmDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, publishedTmDTO.getId().toString()))
             .body(publishedTmDTO);
@@ -134,7 +136,7 @@ public class PublishedTmResourceExtended {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<PublishedTmDTO> result = publishedTmService.partialUpdate(publishedTmDTO);
+        Optional<PublishedTmDTO> result = publishedTmServiceExtended.partialUpdate(publishedTmDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
@@ -150,13 +152,13 @@ public class PublishedTmResourceExtended {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of publishedTms in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<PublishedTmDTO>> getAllPublishedTms(
+    public ResponseEntity<List<PublishedTm>> getAllPublishedTms(
         PublishedTmCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get PublishedTms by criteria: {}", criteria);
 
-        Page<PublishedTmDTO> page = publishedTmQueryService.findByCriteria(criteria, pageable);
+        Page<PublishedTm> page = publishedTmQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -182,7 +184,7 @@ public class PublishedTmResourceExtended {
     @GetMapping("/{id}")
     public ResponseEntity<PublishedTmDTO> getPublishedTm(@PathVariable("id") Long id) {
         log.debug("REST request to get PublishedTm : {}", id);
-        Optional<PublishedTmDTO> publishedTmDTO = publishedTmService.findOne(id);
+        Optional<PublishedTmDTO> publishedTmDTO = publishedTmServiceExtended.findOne(id);
         return ResponseUtil.wrapOrNotFound(publishedTmDTO);
     }
 
@@ -195,7 +197,7 @@ public class PublishedTmResourceExtended {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePublishedTm(@PathVariable("id") Long id) {
         log.debug("REST request to delete PublishedTm : {}", id);
-        publishedTmService.delete(id);
+        publishedTmServiceExtended.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
@@ -203,14 +205,14 @@ public class PublishedTmResourceExtended {
     
 	@PostMapping("/extract/{journalNo}")
 	public String extractPublishedTm(@PathVariable("journalNo") int journalNo) {
-		publishedTmService.readPdfFile(journalNo);
+		publishedTmServiceExtended.readPdfFile(journalNo);
 		return "Trademarks extraction has been initialized";
 	}
 	
 	
 	@PostMapping("/generate-phonetics/{journalNo}")
 	public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
-		publishedTmService.generateMissingPhonetics(journalNo);
+		publishedTmServiceExtended.generateMissingPhonetics(journalNo);
 		return "Phonetics generated for missing trademarks";
 	}
 	

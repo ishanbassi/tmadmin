@@ -2,6 +2,9 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
+
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -144,11 +147,10 @@ public class TrademarkService {
         trademarkRepository.deleteById(id);
     }
     
-    public List<TrademarkDTO> saveAll(List<TrademarkDTO> trademarkDtoList) {
-        log.debug("Request to save Trademarks : {}", trademarkDtoList.size());
-        List<Trademark> trademarks = trademarkMapper.toEntity(trademarkDtoList);
-        trademarks = trademarkRepository.saveAll(trademarks);
-        return trademarkMapper.toDto(trademarks);
+    public List<Trademark> saveAll(List<Trademark> trademarks) {
+        log.debug("Request to save Trademarks : {}", trademarks.size());
+        return trademarkRepository.saveAll(trademarks);
+        
     } 
 
 }

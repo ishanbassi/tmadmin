@@ -19,6 +19,8 @@ logging:
     tech.jhipster: DEBUG
     org.hibernate.SQL: INFO
     com.bassi.tmapp: DEBUG
+    javax.management.remote.rmi: ERROR
+
 
 spring:
   devtools:
@@ -34,7 +36,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/tmapp
     username: tmapp
-    password:
+    password: admin
     hikari:
       poolName: Hikari
       auto-commit: false

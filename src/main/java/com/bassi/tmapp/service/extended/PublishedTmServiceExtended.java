@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
+import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.pdfService.ITextPdfReaderService;
@@ -26,16 +27,16 @@ public class PublishedTmServiceExtended {
 
     private static final Logger log = LoggerFactory.getLogger(PublishedTmServiceExtended.class);
 
-    private final PublishedTmRepository publishedTmRepository;
+    private final PublishedTmRepositoryExtended publishedTmRepositoryExtended;
 
     private final PublishedTmMapper publishedTmMapper;
     private final ITextPdfReaderService pdfReaderService;
     private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService;
     private final EntityManager em;
 
-	public PublishedTmServiceExtended(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper,
+	public PublishedTmServiceExtended(PublishedTmRepositoryExtended publishedTmRepositoryExtended, PublishedTmMapper publishedTmMapper,
 			ITextPdfReaderService pdfReaderService, PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService,EntityManager em) {
-        this.publishedTmRepository = publishedTmRepository;
+        this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
         this.publishedTmMapper = publishedTmMapper;
         this.pdfReaderService = pdfReaderService;
         this.publishedTmPhoneticsService = publishedTmPhoneticsService;
@@ -52,7 +53,7 @@ public class PublishedTmServiceExtended {
     public PublishedTmDTO save(PublishedTmDTO publishedTmDTO) {
         log.debug("Request to save PublishedTm : {}", publishedTmDTO);
         PublishedTm publishedTm = publishedTmMapper.toEntity(publishedTmDTO);
-        publishedTm = publishedTmRepository.save(publishedTm);
+        publishedTm = publishedTmRepositoryExtended.save(publishedTm);
         return publishedTmMapper.toDto(publishedTm);
     }
 
@@ -65,7 +66,7 @@ public class PublishedTmServiceExtended {
     public PublishedTmDTO update(PublishedTmDTO publishedTmDTO) {
         log.debug("Request to update PublishedTm : {}", publishedTmDTO);
         PublishedTm publishedTm = publishedTmMapper.toEntity(publishedTmDTO);
-        publishedTm = publishedTmRepository.save(publishedTm);
+        publishedTm = publishedTmRepositoryExtended.save(publishedTm);
         return publishedTmMapper.toDto(publishedTm);
     }
 
@@ -78,14 +79,14 @@ public class PublishedTmServiceExtended {
     public Optional<PublishedTmDTO> partialUpdate(PublishedTmDTO publishedTmDTO) {
         log.debug("Request to partially update PublishedTm : {}", publishedTmDTO);
 
-        return publishedTmRepository
+        return publishedTmRepositoryExtended
             .findById(publishedTmDTO.getId())
             .map(existingPublishedTm -> {
                 publishedTmMapper.partialUpdate(existingPublishedTm, publishedTmDTO);
 
                 return existingPublishedTm;
             })
-            .map(publishedTmRepository::save)
+            .map(publishedTmRepositoryExtended::save)
             .map(publishedTmMapper::toDto);
     }
 
@@ -98,7 +99,7 @@ public class PublishedTmServiceExtended {
     @Transactional(readOnly = true)
     public Optional<PublishedTmDTO> findOne(Long id) {
         log.debug("Request to get PublishedTm : {}", id);
-        return publishedTmRepository.findById(id).map(publishedTmMapper::toDto);
+        return publishedTmRepositoryExtended.findById(id).map(publishedTmMapper::toDto);
     }
 
     /**
@@ -108,7 +109,7 @@ public class PublishedTmServiceExtended {
      */
     public void delete(Long id) {
         log.debug("Request to delete PublishedTm : {}", id);
-        publishedTmRepository.deleteById(id);
+        publishedTmRepositoryExtended.deleteById(id);
     }
 
 	public void readPdfFile(int journalNo) {
@@ -116,7 +117,7 @@ public class PublishedTmServiceExtended {
 	}
 
 	public void generateMissingPhonetics(int journalNo) {
-		List<PublishedTm> trademarks = publishedTmRepository.findTrademarksWherePhoneticsMissing(journalNo);
+		List<PublishedTm> trademarks = publishedTmRepositoryExtended.findTrademarksWherePhoneticsMissing(journalNo);
 		publishedTmPhoneticsService.saveAll(trademarks);
 		
 	}
