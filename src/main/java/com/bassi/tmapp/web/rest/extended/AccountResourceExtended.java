@@ -69,12 +69,12 @@ public class AccountResourceExtended {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<TmAgent> registerAccount(@Valid @RequestBody ManagedUserVMExtended  managedUserVM) {
+    public ResponseEntity<AccountDto> registerAccount(@Valid @RequestBody ManagedUserVMExtended  managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
-        TmAgent agent = userServiceExtended.registerUser(managedUserVM, managedUserVM.getPassword());
-        return ResponseEntity.status(HttpStatus.CREATED).body(agent);
+        AccountDto account = userServiceExtended.registerUser(managedUserVM, managedUserVM.getPassword());
+        return ResponseEntity.status(HttpStatus.CREATED).body(account);
     }
 
    

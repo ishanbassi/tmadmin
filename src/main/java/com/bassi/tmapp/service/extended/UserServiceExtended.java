@@ -15,6 +15,7 @@ import com.bassi.tmapp.service.UsernameAlreadyUsedException;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.TmAgentDTO;
 import com.bassi.tmapp.service.dto.UserDTO;
+import com.bassi.tmapp.service.extended.dto.AccountDto;
 import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
 
 import java.time.Instant;
@@ -104,7 +105,7 @@ public class UserServiceExtended {
             });
     }
 
-    public TmAgent registerUser(ApplicationUserDto userDTO, String password) {
+    public AccountDto registerUser(ApplicationUserDto userDTO, String password) {
         userRepository
             .findOneByLogin(userDTO.getLogin().toLowerCase())
             .ifPresent(existingUser -> {
@@ -137,10 +138,16 @@ public class UserServiceExtended {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        userRepository.save(newUser);
+        newUser = userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
-        return registerAgent(userDTO);
+        TmAgent agent =  registerAgent(userDTO);
+        
+        AccountDto account = new AccountDto();
+        account.setTmAgent(agent);
+        AdminUserDTO userDto=  new AdminUserDTO(newUser);
+        account.setUser(userDto);
+        return account;
     }
 
     private TmAgent registerAgent(ApplicationUserDto userDTO) {
@@ -150,6 +157,7 @@ public class UserServiceExtended {
 		agent.setCompanyName(userDTO.getCompanyName());
 		agent.setAddress(userDTO.getAddress());
 		agent.setAgentCode(userDTO.getAgentCode());
+		agent.setEmail(userDTO.getEmail());
 		
 		return tmAgentRepository.save(agent);
 	}

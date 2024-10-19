@@ -135,6 +135,6 @@ export class PublishedTmService {
   download(req?: any): Observable<HttpResponse<Blob>> {
     const options = createRequestOption(req);
     return this.http
-      .get<Blob>(this.exportUrl+"/download/2174", { observe: 'response', responseType: 'blob' as 'json' });
+      .get<Blob>(this.exportUrl+"/download/2176", { observe: 'response', responseType: 'blob' as 'json' });
   }
 }

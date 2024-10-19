@@ -23,7 +23,6 @@ public class ApplicationUserDto implements Serializable {
 
     private String agentCode;
 
-
     private String address;
 
     private ZonedDateTime modifiedDate;
@@ -31,8 +30,7 @@ public class ApplicationUserDto implements Serializable {
     private Boolean deleted;
 
     private String companyName;
-    
-    
+        
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
