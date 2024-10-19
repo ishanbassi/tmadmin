@@ -1,0 +1,46 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (userProfile()) {
+      <div>
+        <h2 data-cy="userProfileDetailsHeading"><span>User Profile</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ userProfile()!.id }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ userProfile()!.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ userProfile()!.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ userProfile()!.deleted }}</span>
+          </dd>
+          <dt><span>User</span></dt>
+          <dd>
+            <span>{{ userProfile()!.user?.id }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/user-profile', userProfile()!.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

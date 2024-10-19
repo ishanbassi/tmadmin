@@ -95,6 +95,15 @@ entity TmAgent{
     
 }
 
+entity UserProfile{
+	
+	createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
+    deleted Boolean
+    
+}
+
+
 enum HeadOffice {
 	DELHI,
 	MUMBAI,
@@ -117,6 +126,10 @@ relationship ManyToOne{
     PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
     Trademark { tmAgent } to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent{trademarks}
     
+}
+
+relationship OneToOne{
+	UserProfile { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") User with builtInEntity
 }
 
 filter Trademark
