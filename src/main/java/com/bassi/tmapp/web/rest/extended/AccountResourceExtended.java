@@ -86,7 +86,7 @@ public class AccountResourceExtended {
      */
     @GetMapping("/account")
     public AccountDto getAccount() {
-    	AccountDto account = accountServiceExtended.getAgent();
+    	AccountDto account = new AccountDto();
 		AdminUserDTO user=  userServiceExtended
 	    .getUserWithAuthorities()
 	    .map(AdminUserDTO::new)

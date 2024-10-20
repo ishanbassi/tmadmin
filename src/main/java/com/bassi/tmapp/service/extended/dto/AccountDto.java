@@ -4,15 +4,8 @@ import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 
 public class AccountDto {
-	private TmAgent tmAgent;
 	private AdminUserDTO user;
 	
-	public TmAgent getTmAgent() {
-		return tmAgent;
-	}
-	public void setTmAgent(TmAgent tmAgent) {
-		this.tmAgent = tmAgent;
-	}
 	public AdminUserDTO getUser() {
 		return user;
 	}
@@ -21,7 +14,7 @@ public class AccountDto {
 	}
 	@Override
 	public String toString() {
-		return "AccountDto [tmAgent=" + tmAgent + ", user=" + user + "]";
+		return "AccountDto [user=" + user + "]";
 	}
 	
 	

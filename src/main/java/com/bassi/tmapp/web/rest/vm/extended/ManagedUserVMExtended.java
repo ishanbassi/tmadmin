@@ -5,9 +5,7 @@ import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
 
 import jakarta.validation.constraints.Size;
 
-/**
- * View Model extending the AdminUserDTO, which is meant to be used in the user management UI.
- */
+
 public class ManagedUserVMExtended extends ApplicationUserDto {
 
     public static final int PASSWORD_MIN_LENGTH = 4;

@@ -2,8 +2,6 @@ package com.bassi.tmapp.service.extended.pdfService;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,33 +10,23 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bassi.tmapp.domain.PublishedTm;
-import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.PublishedTmRepository;
-import com.bassi.tmapp.service.PhoneticsService;
-import com.bassi.tmapp.service.PublishedTmPhoneticsService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
-import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
-import com.bassi.tmapp.service.extended.PdfReaderService;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
@@ -46,18 +34,10 @@ import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.itextpdf.kernel.geom.Rectangle;
-import com.itextpdf.kernel.geom.Vector;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
-import com.itextpdf.kernel.pdf.canvas.parser.EventType;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
-import com.itextpdf.kernel.pdf.canvas.parser.data.IEventData;
-import com.itextpdf.kernel.pdf.canvas.parser.data.TextRenderInfo;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.IEventListener;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.LocationTextExtractionStrategy;
-import com.itextpdf.kernel.pdf.canvas.parser.listener.TextChunk;
 
 @Service
 @Transactional
@@ -123,7 +103,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
             PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
             processor.processPageContent(pdfDoc.getPage(i));
             
-            // check if internation tm begins
+            // check if international tm begins
             String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
             if(pageContent.contains("International Registration designating India")) {
         		pdfDoc.close();
@@ -466,12 +446,6 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 			}
 
 	}
-
-
-
-	
-
-
 
 	private void writeErrorsToJson(List<PublishedTmDTO> errors) {
 		log.info("{} trademarks with missing information are going to be stored in the json file.", errors.size());

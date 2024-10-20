@@ -21,15 +21,6 @@ public class ApplicationUserDto implements Serializable {
 
     private Long id;
 
-    private String agentCode;
-
-    private String address;
-
-    private ZonedDateTime modifiedDate;
-
-    private Boolean deleted;
-
-    private String companyName;
         
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
@@ -149,13 +140,6 @@ public class ApplicationUserDto implements Serializable {
         this.id = id;
     }
 
-    public String getAgentCode() {
-        return agentCode;
-    }
-
-    public void setAgentCode(String agentCode) {
-        this.agentCode = agentCode;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -173,14 +157,6 @@ public class ApplicationUserDto implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public ZonedDateTime getCreatedDate() {
         return createdDate;
     }
@@ -189,29 +165,6 @@ public class ApplicationUserDto implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public ZonedDateTime getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(ZonedDateTime modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
-    public Boolean getDeleted() {
-        return deleted;
-    }
-
-    public void setDeleted(Boolean deleted) {
-        this.deleted = deleted;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -239,14 +192,9 @@ public class ApplicationUserDto implements Serializable {
     public String toString() {
         return "TmAgentDTO{" +
             "id=" + getId() +
-            ", agentCode='" + getAgentCode() + "'" +
             ", firstName='" + getFirstName() + "'" +
             ", lastName='" + getLastName() + "'" +
-            ", address='" + getAddress() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
-            ", modifiedDate='" + getModifiedDate() + "'" +
-            ", deleted='" + getDeleted() + "'" +
-            ", companyName='" + getCompanyName() + "'" +
             "}";
     }
 }

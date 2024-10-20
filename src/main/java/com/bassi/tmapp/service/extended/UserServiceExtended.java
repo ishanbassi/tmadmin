@@ -131,6 +131,7 @@ public class UserServiceExtended {
         if (userDTO.getEmail() != null) {
             newUser.setEmail(userDTO.getEmail().toLowerCase());
         }
+        newUser.setCreatedBy(Constants.MEMBER_PORTAL);
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
         newUser.setActivated(true);
@@ -141,26 +142,12 @@ public class UserServiceExtended {
         newUser = userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
-        TmAgent agent =  registerAgent(userDTO);
         
         AccountDto account = new AccountDto();
-        account.setTmAgent(agent);
         AdminUserDTO userDto=  new AdminUserDTO(newUser);
         account.setUser(userDto);
         return account;
     }
-
-    private TmAgent registerAgent(ApplicationUserDto userDTO) {
-		TmAgent agent = new TmAgent();
-		agent.setFirstName(userDTO.getFirstName());
-		agent.setLastName(userDTO.getLastName());
-		agent.setCompanyName(userDTO.getCompanyName());
-		agent.setAddress(userDTO.getAddress());
-		agent.setAgentCode(userDTO.getAgentCode());
-		agent.setEmail(userDTO.getEmail());
-		
-		return tmAgentRepository.save(agent);
-	}
 
 	private boolean removeNonActivatedUser(User existingUser) {
         if (existingUser.isActivated()) {

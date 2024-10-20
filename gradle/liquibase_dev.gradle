@@ -23,7 +23,7 @@ liquibase {
       driver "org.postgresql.Driver"
       url "jdbc:postgresql://localhost:5432/tmapp"
       username "tmapp"
-      password ""
+      password "admin"
       changelogFile "src/main/resources/config/liquibase/master.xml"
       logLevel "debug"
       classpath "src/main/resources/"

@@ -20,19 +20,5 @@ public class AccountServiceExtended {
 		this.agentRepositoryExtended = agentRepositoryExtended;
 	}
 	
-	public AccountDto getAgent() {
-		String email = SecurityUtils.getCurrentUserLogin()
-				.orElseThrow(() -> new InternalServerAlertException("User could not be found"));
-		
-		TmAgent agent = agentRepositoryExtended.findByEmail(email).orElseThrow(
-				() -> new InternalServerAlertException("Currently no agent is linked with the email : " + email));;
-		
-		AccountDto account = new AccountDto();
-		account.setTmAgent(agent);
-		return account;
-		
-		
-		
-	}
 
 }

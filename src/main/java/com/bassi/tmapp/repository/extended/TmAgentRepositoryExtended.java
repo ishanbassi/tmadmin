@@ -14,4 +14,6 @@ public interface TmAgentRepositoryExtended extends JpaRepository<TmAgent, Long> 
 	
 	public Optional<TmAgent> findByEmail(String email);
 	
+	public Optional<TmAgent> findByNameAnd
+	
 }
