@@ -26,11 +26,8 @@ public class TmAgent implements Serializable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "full_name")
+    private String fullName;
 
     @Column(name = "address")
     private String address;
@@ -73,30 +70,17 @@ public class TmAgent implements Serializable {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return this.firstName;
+    public String getFullName() {
+        return this.fullName;
     }
 
-    public TmAgent firstName(String firstName) {
-        this.setFirstName(firstName);
+    public TmAgent fullName(String fullName) {
+        this.setFullName(fullName);
         return this;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public TmAgent lastName(String lastName) {
-        this.setLastName(lastName);
-        return this;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getAddress() {
@@ -244,8 +228,7 @@ public class TmAgent implements Serializable {
     public String toString() {
         return "TmAgent{" +
             "id=" + getId() +
-            ", firstName='" + getFirstName() + "'" +
-            ", lastName='" + getLastName() + "'" +
+            ", fullName='" + getFullName() + "'" +
             ", address='" + getAddress() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +

@@ -21,4 +21,8 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'TmAgent',
     route: '/tm-agent',
   },
+  {
+    name: 'UserProfile',
+    route: '/user-profile',
+  },
 ];

@@ -83,8 +83,7 @@ entity PublishedTm{
 }
 
 entity TmAgent{
-	firstName String
-	lastName String
+	fullName String
 	address String
 	createdDate ZonedDateTime
     modifiedDate ZonedDateTime

@@ -3,29 +3,27 @@ import dayjs from 'dayjs/esm';
 import { ITmAgent, NewTmAgent } from './tm-agent.model';
 
 export const sampleWithRequiredData: ITmAgent = {
-  id: 31571,
+  id: 17792,
 };
 
 export const sampleWithPartialData: ITmAgent = {
-  id: 4816,
-  firstName: 'Stephanie',
-  lastName: 'Stroman',
-  modifiedDate: dayjs('2024-06-02T13:35'),
-  deleted: false,
-  agentCode: 'ram',
+  id: 13664,
+  address: 'if ram',
+  createdDate: dayjs('2024-06-01T21:56'),
+  companyName: 'opine questionably repeat',
+  agentCode: 'evenly an successfully',
 };
 
 export const sampleWithFullData: ITmAgent = {
-  id: 25297,
-  firstName: 'Vanessa',
-  lastName: 'Boyle',
-  address: 'weakly',
-  createdDate: dayjs('2024-06-01T23:25'),
-  modifiedDate: dayjs('2024-06-01T17:57'),
+  id: 2836,
+  fullName: 'buoyant whenever self-esteem',
+  address: 'definite furthermore bad',
+  createdDate: dayjs('2024-06-01T22:34'),
+  modifiedDate: dayjs('2024-06-02T01:20'),
   deleted: true,
-  companyName: 'repeat burial',
-  agentCode: 'an',
-  email: 'Maurice78@yahoo.com',
+  companyName: 'concerning',
+  agentCode: 'afore yowza politely',
+  email: 'Adalberto37@yahoo.com',
 };
 
 export const sampleWithNewData: NewTmAgent = {

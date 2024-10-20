@@ -30,9 +30,8 @@ liquibase {
     }
     diffLog {
       driver "org.postgresql.Driver"
-      url "jdbc:postgresql://localhost:5432/tmadmin"
-      username "tmadmin"
-      password "admin"
+      url "jdbc:postgresql://localhost:5432/tmapp"
+      username "tmapp"
       changelogFile project.ext.diffChangelogFile
       referenceUrl "hibernate:spring:com.bassi.tmapp.domain?dialect=org.hibernate.dialect.PostgreSQLDialect&hibernate.physical_naming_strategy=org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy&hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy"
       logLevel "debug"

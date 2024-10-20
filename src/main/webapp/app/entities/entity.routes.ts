@@ -31,6 +31,11 @@ const routes: Routes = [
     data: { pageTitle: 'TmAgents' },
     loadChildren: () => import('./tm-agent/tm-agent.routes'),
   },
+  {
+    path: 'user-profile',
+    data: { pageTitle: 'UserProfiles' },
+    loadChildren: () => import('./user-profile/user-profile.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

@@ -58,11 +58,8 @@ public class TmAgentService {
         return tmAgentRepository
             .findById(tmAgent.getId())
             .map(existingTmAgent -> {
-                if (tmAgent.getFirstName() != null) {
-                    existingTmAgent.setFirstName(tmAgent.getFirstName());
-                }
-                if (tmAgent.getLastName() != null) {
-                    existingTmAgent.setLastName(tmAgent.getLastName());
+                if (tmAgent.getFullName() != null) {
+                    existingTmAgent.setFullName(tmAgent.getFullName());
                 }
                 if (tmAgent.getAddress() != null) {
                     existingTmAgent.setAddress(tmAgent.getAddress());

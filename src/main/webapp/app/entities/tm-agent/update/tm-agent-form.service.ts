@@ -32,8 +32,7 @@ type TmAgentFormDefaults = Pick<NewTmAgent, 'id' | 'createdDate' | 'modifiedDate
 
 type TmAgentFormGroupContent = {
   id: FormControl<TmAgentFormRawValue['id'] | NewTmAgent['id']>;
-  firstName: FormControl<TmAgentFormRawValue['firstName']>;
-  lastName: FormControl<TmAgentFormRawValue['lastName']>;
+  fullName: FormControl<TmAgentFormRawValue['fullName']>;
   address: FormControl<TmAgentFormRawValue['address']>;
   createdDate: FormControl<TmAgentFormRawValue['createdDate']>;
   modifiedDate: FormControl<TmAgentFormRawValue['modifiedDate']>;
@@ -60,8 +59,7 @@ export class TmAgentFormService {
           validators: [Validators.required],
         },
       ),
-      firstName: new FormControl(tmAgentRawValue.firstName),
-      lastName: new FormControl(tmAgentRawValue.lastName),
+      fullName: new FormControl(tmAgentRawValue.fullName),
       address: new FormControl(tmAgentRawValue.address),
       createdDate: new FormControl(tmAgentRawValue.createdDate),
       modifiedDate: new FormControl(tmAgentRawValue.modifiedDate),

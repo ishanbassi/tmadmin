@@ -42,16 +42,9 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="firstName">
+            <th scope="col" jhiSortBy="fullName">
               <div class="d-flex">
-                <span>First Name</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="lastName">
-              <div class="d-flex">
-                <span>Last Name</span>
+                <span>Full Name</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -114,8 +107,7 @@
               <td>
                 <a [routerLink]="['/tm-agent', tmAgent.id, 'view']">{{ tmAgent.id }}</a>
               </td>
-              <td>{{ tmAgent.firstName }}</td>
-              <td>{{ tmAgent.lastName }}</td>
+              <td>{{ tmAgent.fullName }}</td>
               <td>{{ tmAgent.address }}</td>
               <td>{{ tmAgent.createdDate | formatMediumDatetime }}</td>
               <td>{{ tmAgent.modifiedDate | formatMediumDatetime }}</td>

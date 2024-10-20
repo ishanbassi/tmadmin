@@ -20,8 +20,7 @@ describe('TmAgent Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            firstName: expect.any(Object),
-            lastName: expect.any(Object),
+            fullName: expect.any(Object),
             address: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
@@ -39,8 +38,7 @@ describe('TmAgent Form Service', () => {
         expect(formGroup.controls).toEqual(
           expect.objectContaining({
             id: expect.any(Object),
-            firstName: expect.any(Object),
-            lastName: expect.any(Object),
+            fullName: expect.any(Object),
             address: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),

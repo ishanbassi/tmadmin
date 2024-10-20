@@ -48,8 +48,7 @@ public class TmAgentAsserts {
     public static void assertTmAgentUpdatableFieldsEquals(TmAgent expected, TmAgent actual) {
         assertThat(expected)
             .as("Verify TmAgent relevant properties")
-            .satisfies(e -> assertThat(e.getFirstName()).as("check firstName").isEqualTo(actual.getFirstName()))
-            .satisfies(e -> assertThat(e.getLastName()).as("check lastName").isEqualTo(actual.getLastName()))
+            .satisfies(e -> assertThat(e.getFullName()).as("check fullName").isEqualTo(actual.getFullName()))
             .satisfies(e -> assertThat(e.getAddress()).as("check address").isEqualTo(actual.getAddress()))
             .satisfies(
                 e ->

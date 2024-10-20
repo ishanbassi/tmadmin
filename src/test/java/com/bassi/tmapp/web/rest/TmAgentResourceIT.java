@@ -37,11 +37,8 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class TmAgentResourceIT {
 
-    private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
-
-    private static final String DEFAULT_LAST_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_LAST_NAME = "BBBBBBBBBB";
+    private static final String DEFAULT_FULL_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_FULL_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_ADDRESS = "BBBBBBBBBB";
@@ -94,8 +91,7 @@ class TmAgentResourceIT {
      */
     public static TmAgent createEntity(EntityManager em) {
         TmAgent tmAgent = new TmAgent()
-            .firstName(DEFAULT_FIRST_NAME)
-            .lastName(DEFAULT_LAST_NAME)
+            .fullName(DEFAULT_FULL_NAME)
             .address(DEFAULT_ADDRESS)
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
@@ -114,8 +110,7 @@ class TmAgentResourceIT {
      */
     public static TmAgent createUpdatedEntity(EntityManager em) {
         TmAgent tmAgent = new TmAgent()
-            .firstName(UPDATED_FIRST_NAME)
-            .lastName(UPDATED_LAST_NAME)
+            .fullName(UPDATED_FULL_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
@@ -190,8 +185,7 @@ class TmAgentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(tmAgent.getId().intValue())))
-            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
-            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
+            .andExpect(jsonPath("$.[*].fullName").value(hasItem(DEFAULT_FULL_NAME)))
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
@@ -213,8 +207,7 @@ class TmAgentResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(tmAgent.getId().intValue()))
-            .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
-            .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
+            .andExpect(jsonPath("$.fullName").value(DEFAULT_FULL_NAME))
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
@@ -244,8 +237,7 @@ class TmAgentResourceIT {
         // Disconnect from session so that the updates on updatedTmAgent are not directly saved in db
         em.detach(updatedTmAgent);
         updatedTmAgent
-            .firstName(UPDATED_FIRST_NAME)
-            .lastName(UPDATED_LAST_NAME)
+            .fullName(UPDATED_FULL_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
@@ -328,7 +320,7 @@ class TmAgentResourceIT {
         TmAgent partialUpdatedTmAgent = new TmAgent();
         partialUpdatedTmAgent.setId(tmAgent.getId());
 
-        partialUpdatedTmAgent.createdDate(UPDATED_CREATED_DATE);
+        partialUpdatedTmAgent.modifiedDate(UPDATED_MODIFIED_DATE);
 
         restTmAgentMockMvc
             .perform(
@@ -357,8 +349,7 @@ class TmAgentResourceIT {
         partialUpdatedTmAgent.setId(tmAgent.getId());
 
         partialUpdatedTmAgent
-            .firstName(UPDATED_FIRST_NAME)
-            .lastName(UPDATED_LAST_NAME)
+            .fullName(UPDATED_FULL_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
