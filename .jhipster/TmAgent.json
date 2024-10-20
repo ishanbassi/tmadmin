@@ -5,11 +5,7 @@
   "applications": ["tmapp"],
   "fields": [
     {
-      "fieldName": "firstName",
-      "fieldType": "String"
-    },
-    {
-      "fieldName": "lastName",
+      "fieldName": "fullName",
       "fieldType": "String"
     },
     {

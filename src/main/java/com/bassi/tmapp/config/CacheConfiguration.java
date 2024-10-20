@@ -56,6 +56,7 @@ public class CacheConfiguration {
             createCache(cm, com.bassi.tmapp.domain.PublishedTm.class.getName());
             createCache(cm, com.bassi.tmapp.domain.TmAgent.class.getName());
             createCache(cm, com.bassi.tmapp.domain.TmAgent.class.getName() + ".trademarks");
+            createCache(cm, com.bassi.tmapp.domain.UserProfile.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

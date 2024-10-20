@@ -14,10 +14,7 @@
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="first_name" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-            <column name="last_name" type="varchar(255)">
+            <column name="full_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="address" type="varchar(255)">
@@ -64,8 +61,7 @@
                   tableName="tm_agent"
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
-            <column name="first_name" type="string"/>
-            <column name="last_name" type="string"/>
+            <column name="full_name" type="string"/>
             <column name="address" type="string"/>
             <column name="created_date" type="date"/>
             <column name="modified_date" type="date"/>

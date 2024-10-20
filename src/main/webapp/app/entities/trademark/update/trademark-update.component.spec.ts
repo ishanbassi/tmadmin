@@ -49,10 +49,10 @@ describe('Trademark Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call TmAgent query and add missing value', () => {
       const trademark: ITrademark = { id: 456 };
-      const tmAgent: ITmAgent = { id: 18240 };
+      const tmAgent: ITmAgent = { id: 23051 };
       trademark.tmAgent = tmAgent;
 
-      const tmAgentCollection: ITmAgent[] = [{ id: 31982 }];
+      const tmAgentCollection: ITmAgent[] = [{ id: 18240 }];
       jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
       const additionalTmAgents = [tmAgent];
       const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
@@ -71,7 +71,7 @@ describe('Trademark Management Update Component', () => {
 
     it('Should update editForm', () => {
       const trademark: ITrademark = { id: 456 };
-      const tmAgent: ITmAgent = { id: 17792 };
+      const tmAgent: ITmAgent = { id: 31982 };
       trademark.tmAgent = tmAgent;
 
       activatedRoute.data = of({ trademark });

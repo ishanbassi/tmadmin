@@ -12,8 +12,7 @@ public class TmAgentTestSamples {
     public static TmAgent getTmAgentSample1() {
         return new TmAgent()
             .id(1L)
-            .firstName("firstName1")
-            .lastName("lastName1")
+            .fullName("fullName1")
             .address("address1")
             .companyName("companyName1")
             .agentCode("agentCode1")
@@ -23,8 +22,7 @@ public class TmAgentTestSamples {
     public static TmAgent getTmAgentSample2() {
         return new TmAgent()
             .id(2L)
-            .firstName("firstName2")
-            .lastName("lastName2")
+            .fullName("fullName2")
             .address("address2")
             .companyName("companyName2")
             .agentCode("agentCode2")
@@ -34,8 +32,7 @@ public class TmAgentTestSamples {
     public static TmAgent getTmAgentRandomSampleGenerator() {
         return new TmAgent()
             .id(longCount.incrementAndGet())
-            .firstName(UUID.randomUUID().toString())
-            .lastName(UUID.randomUUID().toString())
+            .fullName(UUID.randomUUID().toString())
             .address(UUID.randomUUID().toString())
             .companyName(UUID.randomUUID().toString())
             .agentCode(UUID.randomUUID().toString())
