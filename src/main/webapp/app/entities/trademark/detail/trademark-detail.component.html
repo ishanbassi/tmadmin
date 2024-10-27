@@ -81,18 +81,7 @@
           </dd>
           <dt><span>Trademark Status</span></dt>
           <dd>
-            <span>{{
-              {
-                null: '',
-                REGISTERED: 'REGISTERED',
-                OPPOSED: 'OPPOSED',
-                WITHDRAWN: 'WITHDRAWN',
-                REJECTED: 'REJECTED',
-                HEARING: 'HEARING',
-                PUBLISHED: 'PUBLISHED',
-                PROVISIONAL: 'PROVISIONAL',
-              }[trademark()!.trademarkStatus ?? 'null']
-            }}</span>
+            <span>{{ trademark()!.trademarkStatus }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>

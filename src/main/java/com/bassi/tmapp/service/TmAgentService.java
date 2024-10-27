@@ -2,7 +2,6 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
-import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,17 +85,6 @@ public class TmAgentService {
                 return existingTmAgent;
             })
             .map(tmAgentRepository::save);
-    }
-
-    /**
-     * Get all the tmAgents.
-     *
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public List<TmAgent> findAll() {
-        log.debug("Request to get all TmAgents");
-        return tmAgentRepository.findAll();
     }
 
     /**

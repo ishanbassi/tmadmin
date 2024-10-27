@@ -1,7 +1,6 @@
 import dayjs from 'dayjs/esm';
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
-import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 
 export interface ITrademark {
   id: number;
@@ -20,7 +19,7 @@ export interface ITrademark {
   deleted?: boolean | null;
   usage?: string | null;
   associatedTms?: string | null;
-  trademarkStatus?: keyof typeof TrademarkStatus | null;
+  trademarkStatus?: string | null;
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
   tmAgent?: ITmAgent | null;

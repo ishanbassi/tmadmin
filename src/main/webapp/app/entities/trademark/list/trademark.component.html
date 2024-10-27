@@ -204,20 +204,7 @@
               <td>{{ trademark.deleted }}</td>
               <td>{{ trademark.usage }}</td>
               <td>{{ trademark.associatedTms }}</td>
-              <td>
-                {{
-                  {
-                    null: '',
-                    REGISTERED: 'REGISTERED',
-                    OPPOSED: 'OPPOSED',
-                    WITHDRAWN: 'WITHDRAWN',
-                    REJECTED: 'REJECTED',
-                    HEARING: 'HEARING',
-                    PUBLISHED: 'PUBLISHED',
-                    PROVISIONAL: 'PROVISIONAL',
-                  }[trademark.trademarkStatus ?? 'null']
-                }}
-              </td>
+              <td>{{ trademark.trademarkStatus }}</td>
               <td>{{ trademark.createdDate | formatMediumDatetime }}</td>
               <td>{{ trademark.modifiedDate | formatMediumDatetime }}</td>
               <td>

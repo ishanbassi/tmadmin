@@ -1,7 +1,6 @@
 package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -73,9 +72,8 @@ public class Trademark implements Serializable {
     @Column(name = "associated_tms")
     private String associatedTms;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
-    private TrademarkStatus trademarkStatus;
+    private String trademarkStatus;
 
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
@@ -297,16 +295,16 @@ public class Trademark implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public TrademarkStatus getTrademarkStatus() {
+    public String getTrademarkStatus() {
         return this.trademarkStatus;
     }
 
-    public Trademark trademarkStatus(TrademarkStatus trademarkStatus) {
+    public Trademark trademarkStatus(String trademarkStatus) {
         this.setTrademarkStatus(trademarkStatus);
         return this;
     }
 
-    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
+    public void setTrademarkStatus(String trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
 

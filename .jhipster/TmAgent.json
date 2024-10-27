@@ -37,7 +37,9 @@
       "fieldType": "String"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "TmAgent",
+  "pagination": "infinite-scroll",
   "relationships": [
     {
       "otherEntityName": "trademark",

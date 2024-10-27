@@ -44,7 +44,7 @@ entity Trademark{
     deleted Boolean
     usage String
     associatedTms String
-    trademarkStatus TrademarkStatus
+    trademarkStatus String
     createdDate ZonedDateTime
     modifiedDate ZonedDateTime
 }
@@ -133,8 +133,12 @@ relationship OneToOne{
 
 filter Trademark
 filter PublishedTm
+filter TmAgent
 
-paginate Trademark , PublishedTm with infinite-scroll
+
+
+paginate Trademark , PublishedTm , TmAgent with infinite-scroll
+
 
 
 // Use Data Transfer Objects (DTO)
