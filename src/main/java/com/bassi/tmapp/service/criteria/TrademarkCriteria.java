@@ -1,7 +1,6 @@
 package com.bassi.tmapp.service.criteria;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,23 +35,6 @@ public class TrademarkCriteria implements Serializable, Criteria {
         @Override
         public HeadOfficeFilter copy() {
             return new HeadOfficeFilter(this);
-        }
-    }
-
-    /**
-     * Class for filtering TrademarkStatus
-     */
-    public static class TrademarkStatusFilter extends Filter<TrademarkStatus> {
-
-        public TrademarkStatusFilter() {}
-
-        public TrademarkStatusFilter(TrademarkStatusFilter filter) {
-            super(filter);
-        }
-
-        @Override
-        public TrademarkStatusFilter copy() {
-            return new TrademarkStatusFilter(this);
         }
     }
 

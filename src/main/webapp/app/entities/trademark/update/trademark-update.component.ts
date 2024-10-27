@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
-import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormService, TrademarkFormGroup } from './trademark-form.service';
@@ -25,7 +24,6 @@ export class TrademarkUpdateComponent implements OnInit {
   isSaving = false;
   trademark: ITrademark | null = null;
   headOfficeValues = Object.keys(HeadOffice);
-  trademarkStatusValues = Object.keys(TrademarkStatus);
 
   tmAgentsSharedCollection: ITmAgent[] = [];
 
