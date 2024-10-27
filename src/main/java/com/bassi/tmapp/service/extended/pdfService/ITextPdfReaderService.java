@@ -29,6 +29,7 @@ import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
+import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
@@ -54,6 +55,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	private PublishedTmRepository publishedTmRepository;
 	private PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
 	private WordSanitizationService wordSanitizationService;
+	private TmAgentServiceExtended agentServiceExtended;
 	
 	private List<PublishedTmDTO> errors = new ArrayList<>();
 	
@@ -73,13 +75,15 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 			PublishedTmRepository publishedTmRepository,
 			PublishedTmMapper publishedTmMapper,
 			PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
-			WordSanitizationService wordSanitizationService
+			WordSanitizationService wordSanitizationService,
+			TmAgentServiceExtended agentServiceExtended
 			) {
 		this.phoneticsServiceExtended = phoneticsServiceExtended;
 		this.publishedTmRepository = publishedTmRepository;
 		this.publishedTmMapper = publishedTmMapper;
 		this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
 		this.wordSanitizationService = wordSanitizationService;
+		this.agentServiceExtended  = agentServiceExtended;
 	}
 	
 
@@ -146,7 +150,6 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
         }
         
 		pdfDoc.close();
-		
 		return publishedTrademarks;
 	}
 	
@@ -413,8 +416,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
 				.forEach(path -> {
 						List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
+						
 						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
 						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
+						agentServiceExtended.saveTmAgents(publishedTrademarksDto);
 						
 				});
 		

@@ -13,3 +13,10 @@ CREATE TABLE user_profile(
 	CONSTRAINT fk_user_profile__user_id FOREIGN KEY (user_id)
         REFERENCES public.jhi_user (id)
 );
+
+
+ALTER TABLE tm_agent ADD COLUMN full_name VARCHAR(255);
+ALTER TABLE trademark ALTER COLUMN details  TYPE text;
+ALTER TABLE trademark ALTER COLUMN agent_name   TYPE VARCHAR(1000);
+ALTER TABLE trademark ALTER COLUMN agent_address   TYPE text;
+ALTER TABLE trademark ALTER COLUMN proprietor_address   TYPE text;

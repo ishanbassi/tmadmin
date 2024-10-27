@@ -11,11 +11,14 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring")
 public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
-    @Mapping(target = "tmAgent", source = "tmAgent", qualifiedByName = "tmAgentId")
-    TrademarkDTO toDto(Trademark s);
-
-    @Named("tmAgentId")
+	
+	@Named("tmAgentId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     TmAgentDTO toDtoTmAgentId(TmAgent tmAgent);
+	
+    @Mapping(target = "tmAgent", source = "tmAgent", qualifiedByName = "tmAgentId")
+    TrademarkDTO toDto(Trademark s);
+
+    
 }

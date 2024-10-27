@@ -1,5 +1,7 @@
 package com.bassi.tmapp.service.dto;
 
+import com.bassi.tmapp.domain.TmAgent;
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
@@ -13,6 +15,29 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class TrademarkDTO implements Serializable {
+	
+	public TrademarkDTO() {
+		
+	}
+	
+	public TrademarkDTO(PublishedTmDTO other)  {
+		this.name = other.getName();
+		this.details = other.getDetails();
+		this.applicationNo = other.getApplicationNo();
+		this.applicationDate = other.getApplicationDate();
+		this.agentName = other.getAgentName();
+		this.agentAddress = other.getAgentAddress();
+		this.proprietorName = other.getProprietorName();
+		this.proprietorAddress = other.getProprietorAddress();
+		this.headOffice = other.getHeadOffice();
+		this.imgUrl = other.getImgUrl();
+		this.tmClass = other.getTmClass();
+		this.journalNo = other.getJournalNo();
+		this.usage = other.getUsage();
+		this.associatedTms = other.getAssociatedTms();
+		this.trademarkStatus = other.getTrademarkStatus();
+		
+	}
 
     private Long id;
 
@@ -46,7 +71,7 @@ public class TrademarkDTO implements Serializable {
 
     private String associatedTms;
 
-    private TrademarkStatus trademarkStatus;
+    private String trademarkStatus;
 
     private ZonedDateTime createdDate;
 
@@ -185,11 +210,11 @@ public class TrademarkDTO implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public TrademarkStatus getTrademarkStatus() {
+    public String getTrademarkStatus() {
         return trademarkStatus;
     }
 
-    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
+    public void setTrademarkStatus(String trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
 
@@ -276,4 +301,5 @@ public class TrademarkDTO implements Serializable {
             ", tmAgent=" + getTmAgent() +
             "}";
     }
+
 }

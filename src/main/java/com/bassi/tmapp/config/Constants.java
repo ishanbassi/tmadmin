@@ -12,6 +12,8 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "en";
 
 	public static final String MEMBER_PORTAL = "Member Portal";
+	public static final String AGENT_MISSING = "Agent Missing";
+	
 
     private Constants() {}
 }

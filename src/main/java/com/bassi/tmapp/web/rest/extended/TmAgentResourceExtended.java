@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.service.TmAgentService;
 import com.bassi.tmapp.service.dto.TmAgentDTO;
+import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -32,13 +33,16 @@ public class TmAgentResourceExtended {
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
 
+    private final TmAgentServiceExtended tmAgentServiceExtended;
     private final TmAgentService tmAgentService;
 
     private final TmAgentRepository tmAgentRepository;
 
-    public TmAgentResourceExtended(TmAgentService tmAgentService, TmAgentRepository tmAgentRepository) {
+    
+    public TmAgentResourceExtended(TmAgentService tmAgentService, TmAgentRepository tmAgentRepository,TmAgentServiceExtended tmAgentServiceExtended) {
         this.tmAgentService = tmAgentService;
         this.tmAgentRepository = tmAgentRepository;
+        this.tmAgentServiceExtended  = tmAgentServiceExtended;
     }
 
     /**
@@ -166,5 +170,11 @@ public class TmAgentResourceExtended {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+    
+    @GetMapping("/migrate")
+    public ResponseEntity<String> migrateAgentsFromExistingTrademark() {
+    	tmAgentServiceExtended.migrateAgentsFromExistingTrademarks();
+    	return ResponseEntity.ok("All trademarks have been processed and agnets have been migrated");
     }
 }

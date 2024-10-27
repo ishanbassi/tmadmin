@@ -35,8 +35,7 @@ public class Trademark implements  Serializable {
     @Column(name = "name")
     private String name;
 
-    @Size(max=3000)
-    @Column(name = "details" , length=3000)
+    @Column(name = "details")
     private String details;
 
     @Column(name = "application_no")
@@ -79,9 +78,8 @@ public class Trademark implements  Serializable {
     @Column(name = "associated_tms")
     private String associatedTms;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
-    private TrademarkStatus trademarkStatus;
+    private String trademarkStatus;
 
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
@@ -304,16 +302,16 @@ public class Trademark implements  Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public TrademarkStatus getTrademarkStatus() {
+    public String getTrademarkStatus() {
         return this.trademarkStatus;
     }
 
-    public Trademark trademarkStatus(TrademarkStatus trademarkStatus) {
+    public Trademark trademarkStatus(String trademarkStatus) {
         this.setTrademarkStatus(trademarkStatus);
         return this;
     }
 
-    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
+    public void setTrademarkStatus(String trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
 
