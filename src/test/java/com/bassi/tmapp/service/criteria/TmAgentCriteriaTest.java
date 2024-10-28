@@ -83,6 +83,7 @@ class TmAgentCriteriaTest {
         tmAgentCriteria.companyName();
         tmAgentCriteria.agentCode();
         tmAgentCriteria.email();
+        tmAgentCriteria.trademarksId();
         tmAgentCriteria.distinct();
     }
 
@@ -98,6 +99,7 @@ class TmAgentCriteriaTest {
                 condition.apply(criteria.getCompanyName()) &&
                 condition.apply(criteria.getAgentCode()) &&
                 condition.apply(criteria.getEmail()) &&
+                condition.apply(criteria.getTrademarksId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -115,6 +117,7 @@ class TmAgentCriteriaTest {
                 condition.apply(criteria.getCompanyName(), copy.getCompanyName()) &&
                 condition.apply(criteria.getAgentCode(), copy.getAgentCode()) &&
                 condition.apply(criteria.getEmail(), copy.getEmail()) &&
+                condition.apply(criteria.getTrademarksId(), copy.getTrademarksId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

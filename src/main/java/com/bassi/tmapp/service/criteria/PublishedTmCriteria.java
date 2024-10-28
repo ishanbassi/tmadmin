@@ -96,8 +96,6 @@ public class PublishedTmCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter modifiedDate;
 
-    private LongFilter tmAgentId;
-
     private Boolean distinct;
 
     public PublishedTmCriteria() {}
@@ -122,7 +120,6 @@ public class PublishedTmCriteria implements Serializable, Criteria {
         this.trademarkStatus = other.optionalTrademarkStatus().map(TrademarkStatusFilter::copy).orElse(null);
         this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
-        this.tmAgentId = other.optionalTmAgentId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -492,25 +489,6 @@ public class PublishedTmCriteria implements Serializable, Criteria {
         this.modifiedDate = modifiedDate;
     }
 
-    public LongFilter getTmAgentId() {
-        return tmAgentId;
-    }
-
-    public Optional<LongFilter> optionalTmAgentId() {
-        return Optional.ofNullable(tmAgentId);
-    }
-
-    public LongFilter tmAgentId() {
-        if (tmAgentId == null) {
-            setTmAgentId(new LongFilter());
-        }
-        return tmAgentId;
-    }
-
-    public void setTmAgentId(LongFilter tmAgentId) {
-        this.tmAgentId = tmAgentId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -559,7 +537,6 @@ public class PublishedTmCriteria implements Serializable, Criteria {
             Objects.equals(trademarkStatus, that.trademarkStatus) &&
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(modifiedDate, that.modifiedDate) &&
-            Objects.equals(tmAgentId, that.tmAgentId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -586,7 +563,6 @@ public class PublishedTmCriteria implements Serializable, Criteria {
             trademarkStatus,
             createdDate,
             modifiedDate,
-            tmAgentId,
             distinct
         );
     }
@@ -614,7 +590,6 @@ public class PublishedTmCriteria implements Serializable, Criteria {
             optionalTrademarkStatus().map(f -> "trademarkStatus=" + f + ", ").orElse("") +
             optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
             optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
-            optionalTmAgentId().map(f -> "tmAgentId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

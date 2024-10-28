@@ -17,7 +17,7 @@ describe('PublishedTmPhonetics Management Detail Component', () => {
           [
             {
               path: '**',
-              loadComponent: () => import('./published-tm-phonetics-detail.component').then(m => m.PublishedTmPhoneticsDetailComponent),
+              component: PublishedTmPhoneticsDetailComponent,
               resolve: { publishedTmPhonetics: () => of({ id: 123 }) },
             },
           ],

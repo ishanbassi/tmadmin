@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithNewData, sampleWithRequiredData } from '../user-profile.test-samples';
+import { sampleWithRequiredData, sampleWithNewData } from '../user-profile.test-samples';
 
 import { UserProfileFormService } from './user-profile-form.service';
 

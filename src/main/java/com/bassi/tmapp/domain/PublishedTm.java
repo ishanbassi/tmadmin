@@ -82,9 +82,6 @@ public class PublishedTm implements Serializable {
     @Column(name = "modified_date")
     private ZonedDateTime modifiedDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private TmAgent tmAgent;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -332,19 +329,6 @@ public class PublishedTm implements Serializable {
 
     public void setModifiedDate(ZonedDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
-    }
-
-    public TmAgent getTmAgent() {
-        return this.tmAgent;
-    }
-
-    public void setTmAgent(TmAgent tmAgent) {
-        this.tmAgent = tmAgent;
-    }
-
-    public PublishedTm tmAgent(TmAgent tmAgent) {
-        this.setTmAgent(tmAgent);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

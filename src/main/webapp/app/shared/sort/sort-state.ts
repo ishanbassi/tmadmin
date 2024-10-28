@@ -1,4 +1,4 @@
-import { Signal, WritableSignal, signal } from '@angular/core';
+import { signal, Signal, WritableSignal } from '@angular/core';
 
 export type SortOrder = 'asc' | 'desc';
 

@@ -64,17 +64,19 @@ public class TrademarkAsserts {
             .satisfies(e -> assertThat(e.getUsage()).as("check usage").isEqualTo(actual.getUsage()))
             .satisfies(e -> assertThat(e.getAssociatedTms()).as("check associatedTms").isEqualTo(actual.getAssociatedTms()))
             .satisfies(e -> assertThat(e.getTrademarkStatus()).as("check trademarkStatus").isEqualTo(actual.getTrademarkStatus()))
-            .satisfies(e ->
-                assertThat(e.getCreatedDate())
-                    .as("check createdDate")
-                    .usingComparator(zonedDataTimeSameInstant)
-                    .isEqualTo(actual.getCreatedDate())
+            .satisfies(
+                e ->
+                    assertThat(e.getCreatedDate())
+                        .as("check createdDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(e ->
-                assertThat(e.getModifiedDate())
-                    .as("check modifiedDate")
-                    .usingComparator(zonedDataTimeSameInstant)
-                    .isEqualTo(actual.getModifiedDate())
+            .satisfies(
+                e ->
+                    assertThat(e.getModifiedDate())
+                        .as("check modifiedDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getModifiedDate())
             );
     }
 
@@ -87,6 +89,6 @@ public class TrademarkAsserts {
     public static void assertTrademarkUpdatableRelationshipsEquals(Trademark expected, Trademark actual) {
         assertThat(expected)
             .as("Verify Trademark relationships")
-            .satisfies(e -> assertThat(e.getUserProfile()).as("check userProfile").isEqualTo(actual.getUserProfile()));
+            .satisfies(e -> assertThat(e.getTmAgent()).as("check tmAgent").isEqualTo(actual.getTmAgent()));
     }
 }

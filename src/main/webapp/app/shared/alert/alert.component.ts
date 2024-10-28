@@ -1,8 +1,8 @@
-import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { Alert, AlertService } from 'app/core/util/alert.service';
+import { AlertService, Alert } from 'app/core/util/alert.service';
 
 @Component({
   standalone: true,
@@ -19,7 +19,7 @@ export class AlertComponent implements OnInit, OnDestroy {
     this.alerts.set(this.alertService.get());
   }
 
-  setClasses(alert: Alert): Record<string, boolean> {
+  setClasses(alert: Alert): { [key: string]: boolean } {
     const classes = { 'jhi-toast': Boolean(alert.toast) };
     if (alert.position) {
       return { ...classes, [alert.position]: true };

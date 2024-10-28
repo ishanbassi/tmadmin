@@ -82,8 +82,8 @@ public class Trademark implements Serializable {
     private ZonedDateTime modifiedDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
-    private UserProfile userProfile;
+    @JsonIgnoreProperties(value = { "trademarks" }, allowSetters = true)
+    private TmAgent tmAgent;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -334,16 +334,16 @@ public class Trademark implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
-    public UserProfile getUserProfile() {
-        return this.userProfile;
+    public TmAgent getTmAgent() {
+        return this.tmAgent;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
+    public void setTmAgent(TmAgent tmAgent) {
+        this.tmAgent = tmAgent;
     }
 
-    public Trademark userProfile(UserProfile userProfile) {
-        this.setUserProfile(userProfile);
+    public Trademark tmAgent(TmAgent tmAgent) {
+        this.setTmAgent(tmAgent);
         return this;
     }
 

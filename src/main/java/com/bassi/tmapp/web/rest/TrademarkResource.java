@@ -31,7 +31,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/trademarks")
 public class TrademarkResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TrademarkResource.class);
+    private static final Logger log = LoggerFactory.getLogger(TrademarkResource.class);
 
     private static final String ENTITY_NAME = "trademark";
 
@@ -63,7 +63,7 @@ public class TrademarkResource {
      */
     @PostMapping("")
     public ResponseEntity<Trademark> createTrademark(@RequestBody Trademark trademark) throws URISyntaxException {
-        LOG.debug("REST request to save Trademark : {}", trademark);
+        log.debug("REST request to save Trademark : {}", trademark);
         if (trademark.getId() != null) {
             throw new BadRequestAlertException("A new trademark cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -88,7 +88,7 @@ public class TrademarkResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Trademark trademark
     ) throws URISyntaxException {
-        LOG.debug("REST request to update Trademark : {}, {}", id, trademark);
+        log.debug("REST request to update Trademark : {}, {}", id, trademark);
         if (trademark.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -122,7 +122,7 @@ public class TrademarkResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Trademark trademark
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Trademark partially : {}, {}", id, trademark);
+        log.debug("REST request to partial update Trademark partially : {}, {}", id, trademark);
         if (trademark.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -154,7 +154,7 @@ public class TrademarkResource {
         TrademarkCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
-        LOG.debug("REST request to get Trademarks by criteria: {}", criteria);
+        log.debug("REST request to get Trademarks by criteria: {}", criteria);
 
         Page<Trademark> page = trademarkQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -169,7 +169,7 @@ public class TrademarkResource {
      */
     @GetMapping("/count")
     public ResponseEntity<Long> countTrademarks(TrademarkCriteria criteria) {
-        LOG.debug("REST request to count Trademarks by criteria: {}", criteria);
+        log.debug("REST request to count Trademarks by criteria: {}", criteria);
         return ResponseEntity.ok().body(trademarkQueryService.countByCriteria(criteria));
     }
 
@@ -181,7 +181,7 @@ public class TrademarkResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Trademark> getTrademark(@PathVariable("id") Long id) {
-        LOG.debug("REST request to get Trademark : {}", id);
+        log.debug("REST request to get Trademark : {}", id);
         Optional<Trademark> trademark = trademarkService.findOne(id);
         return ResponseUtil.wrapOrNotFound(trademark);
     }
@@ -194,7 +194,7 @@ public class TrademarkResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTrademark(@PathVariable("id") Long id) {
-        LOG.debug("REST request to delete Trademark : {}", id);
+        log.debug("REST request to delete Trademark : {}", id);
         trademarkService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

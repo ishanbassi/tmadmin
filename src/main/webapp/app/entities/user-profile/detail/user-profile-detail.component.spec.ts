@@ -17,7 +17,7 @@ describe('UserProfile Management Detail Component', () => {
           [
             {
               path: '**',
-              loadComponent: () => import('./user-profile-detail.component').then(m => m.UserProfileDetailComponent),
+              component: UserProfileDetailComponent,
               resolve: { userProfile: () => of({ id: 123 }) },
             },
           ],

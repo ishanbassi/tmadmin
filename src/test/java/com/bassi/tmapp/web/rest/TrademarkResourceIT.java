@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -128,8 +128,8 @@ class TrademarkResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Trademark createEntity() {
-        return new Trademark()
+    public static Trademark createEntity(EntityManager em) {
+        Trademark trademark = new Trademark()
             .name(DEFAULT_NAME)
             .details(DEFAULT_DETAILS)
             .applicationNo(DEFAULT_APPLICATION_NO)
@@ -148,6 +148,7 @@ class TrademarkResourceIT {
             .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE);
+        return trademark;
     }
 
     /**
@@ -156,8 +157,8 @@ class TrademarkResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Trademark createUpdatedEntity() {
-        return new Trademark()
+    public static Trademark createUpdatedEntity(EntityManager em) {
+        Trademark trademark = new Trademark()
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
@@ -176,11 +177,12 @@ class TrademarkResourceIT {
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE);
+        return trademark;
     }
 
     @BeforeEach
     public void initTest() {
-        trademark = createEntity();
+        trademark = createEntity(em);
     }
 
     @AfterEach
@@ -1390,24 +1392,24 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
-    void getAllTrademarksByUserProfileIsEqualToSomething() throws Exception {
-        UserProfile userProfile;
-        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
+    void getAllTrademarksByTmAgentIsEqualToSomething() throws Exception {
+        TmAgent tmAgent;
+        if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
             trademarkRepository.saveAndFlush(trademark);
-            userProfile = UserProfileResourceIT.createEntity();
+            tmAgent = TmAgentResourceIT.createEntity(em);
         } else {
-            userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
+            tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
         }
-        em.persist(userProfile);
+        em.persist(tmAgent);
         em.flush();
-        trademark.setUserProfile(userProfile);
+        trademark.setTmAgent(tmAgent);
         trademarkRepository.saveAndFlush(trademark);
-        Long userProfileId = userProfile.getId();
-        // Get all the trademarkList where userProfile equals to userProfileId
-        defaultTrademarkShouldBeFound("userProfileId.equals=" + userProfileId);
+        Long tmAgentId = tmAgent.getId();
+        // Get all the trademarkList where tmAgent equals to tmAgentId
+        defaultTrademarkShouldBeFound("tmAgentId.equals=" + tmAgentId);
 
-        // Get all the trademarkList where userProfile equals to (userProfileId + 1)
-        defaultTrademarkShouldNotBeFound("userProfileId.equals=" + (userProfileId + 1));
+        // Get all the trademarkList where tmAgent equals to (tmAgentId + 1)
+        defaultTrademarkShouldNotBeFound("tmAgentId.equals=" + (tmAgentId + 1));
     }
 
     private void defaultTrademarkFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

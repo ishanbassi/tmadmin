@@ -15,7 +15,7 @@ export class MetricsCacheComponent {
   /**
    * object containing all cache related metrics
    */
-  cacheMetrics = input<Record<string, CacheMetrics>>();
+  cacheMetrics = input<{ [key: string]: CacheMetrics }>();
 
   /**
    * boolean field saying if the metrics are in the process of being updated

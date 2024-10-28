@@ -31,7 +31,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/published-tms")
 public class PublishedTmResource {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmResource.class);
+    private static final Logger log = LoggerFactory.getLogger(PublishedTmResource.class);
 
     private static final String ENTITY_NAME = "publishedTm";
 
@@ -63,7 +63,7 @@ public class PublishedTmResource {
      */
     @PostMapping("")
     public ResponseEntity<PublishedTm> createPublishedTm(@RequestBody PublishedTm publishedTm) throws URISyntaxException {
-        LOG.debug("REST request to save PublishedTm : {}", publishedTm);
+        log.debug("REST request to save PublishedTm : {}", publishedTm);
         if (publishedTm.getId() != null) {
             throw new BadRequestAlertException("A new publishedTm cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -88,7 +88,7 @@ public class PublishedTmResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody PublishedTm publishedTm
     ) throws URISyntaxException {
-        LOG.debug("REST request to update PublishedTm : {}, {}", id, publishedTm);
+        log.debug("REST request to update PublishedTm : {}, {}", id, publishedTm);
         if (publishedTm.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -122,7 +122,7 @@ public class PublishedTmResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody PublishedTm publishedTm
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update PublishedTm partially : {}, {}", id, publishedTm);
+        log.debug("REST request to partial update PublishedTm partially : {}, {}", id, publishedTm);
         if (publishedTm.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -154,7 +154,7 @@ public class PublishedTmResource {
         PublishedTmCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
-        LOG.debug("REST request to get PublishedTms by criteria: {}", criteria);
+        log.debug("REST request to get PublishedTms by criteria: {}", criteria);
 
         Page<PublishedTm> page = publishedTmQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -169,7 +169,7 @@ public class PublishedTmResource {
      */
     @GetMapping("/count")
     public ResponseEntity<Long> countPublishedTms(PublishedTmCriteria criteria) {
-        LOG.debug("REST request to count PublishedTms by criteria: {}", criteria);
+        log.debug("REST request to count PublishedTms by criteria: {}", criteria);
         return ResponseEntity.ok().body(publishedTmQueryService.countByCriteria(criteria));
     }
 
@@ -181,7 +181,7 @@ public class PublishedTmResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PublishedTm> getPublishedTm(@PathVariable("id") Long id) {
-        LOG.debug("REST request to get PublishedTm : {}", id);
+        log.debug("REST request to get PublishedTm : {}", id);
         Optional<PublishedTm> publishedTm = publishedTmService.findOne(id);
         return ResponseUtil.wrapOrNotFound(publishedTm);
     }
@@ -194,7 +194,7 @@ public class PublishedTmResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePublishedTm(@PathVariable("id") Long id) {
-        LOG.debug("REST request to delete PublishedTm : {}", id);
+        log.debug("REST request to delete PublishedTm : {}", id);
         publishedTmService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

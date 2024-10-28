@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithNewData, sampleWithRequiredData } from '../published-tm-phonetics.test-samples';
+import { sampleWithRequiredData, sampleWithNewData } from '../published-tm-phonetics.test-samples';
 
 import { PublishedTmPhoneticsFormService } from './published-tm-phonetics-form.service';
 

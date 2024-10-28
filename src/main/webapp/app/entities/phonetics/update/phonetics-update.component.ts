@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { ITrademark } from 'app/entities/trademark/trademark.model';
 import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
 import { IPhonetics } from '../phonetics.model';
 import { PhoneticsService } from '../service/phonetics.service';
-import { PhoneticsFormGroup, PhoneticsFormService } from './phonetics-form.service';
+import { PhoneticsFormService, PhoneticsFormGroup } from './phonetics-form.service';
 
 @Component({
   standalone: true,

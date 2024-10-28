@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PhoneticsService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PhoneticsService.class);
+    private static final Logger log = LoggerFactory.getLogger(PhoneticsService.class);
 
     private final PhoneticsRepository phoneticsRepository;
 
@@ -31,7 +31,7 @@ public class PhoneticsService {
      * @return the persisted entity.
      */
     public Phonetics save(Phonetics phonetics) {
-        LOG.debug("Request to save Phonetics : {}", phonetics);
+        log.debug("Request to save Phonetics : {}", phonetics);
         return phoneticsRepository.save(phonetics);
     }
 
@@ -42,7 +42,7 @@ public class PhoneticsService {
      * @return the persisted entity.
      */
     public Phonetics update(Phonetics phonetics) {
-        LOG.debug("Request to update Phonetics : {}", phonetics);
+        log.debug("Request to update Phonetics : {}", phonetics);
         return phoneticsRepository.save(phonetics);
     }
 
@@ -53,7 +53,7 @@ public class PhoneticsService {
      * @return the persisted entity.
      */
     public Optional<Phonetics> partialUpdate(Phonetics phonetics) {
-        LOG.debug("Request to partially update Phonetics : {}", phonetics);
+        log.debug("Request to partially update Phonetics : {}", phonetics);
 
         return phoneticsRepository
             .findById(phonetics.getId())
@@ -83,7 +83,7 @@ public class PhoneticsService {
      */
     @Transactional(readOnly = true)
     public List<Phonetics> findAll() {
-        LOG.debug("Request to get all Phonetics");
+        log.debug("Request to get all Phonetics");
         return phoneticsRepository.findAll();
     }
 
@@ -95,7 +95,7 @@ public class PhoneticsService {
      */
     @Transactional(readOnly = true)
     public Optional<Phonetics> findOne(Long id) {
-        LOG.debug("Request to get Phonetics : {}", id);
+        log.debug("Request to get Phonetics : {}", id);
         return phoneticsRepository.findById(id);
     }
 
@@ -105,7 +105,7 @@ public class PhoneticsService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        LOG.debug("Request to delete Phonetics : {}", id);
+        log.debug("Request to delete Phonetics : {}", id);
         phoneticsRepository.deleteById(id);
     }
 }

@@ -1,7 +1,7 @@
 package com.bassi.tmapp.domain;
 
+import static com.bassi.tmapp.domain.TmAgentTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
-import static com.bassi.tmapp.domain.UserProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bassi.tmapp.web.rest.TestUtil;
@@ -24,14 +24,14 @@ class TrademarkTest {
     }
 
     @Test
-    void userProfileTest() {
+    void tmAgentTest() {
         Trademark trademark = getTrademarkRandomSampleGenerator();
-        UserProfile userProfileBack = getUserProfileRandomSampleGenerator();
+        TmAgent tmAgentBack = getTmAgentRandomSampleGenerator();
 
-        trademark.setUserProfile(userProfileBack);
-        assertThat(trademark.getUserProfile()).isEqualTo(userProfileBack);
+        trademark.setTmAgent(tmAgentBack);
+        assertThat(trademark.getTmAgent()).isEqualTo(tmAgentBack);
 
-        trademark.userProfile(null);
-        assertThat(trademark.getUserProfile()).isNull();
+        trademark.tmAgent(null);
+        assertThat(trademark.getTmAgent()).isNull();
     }
 }

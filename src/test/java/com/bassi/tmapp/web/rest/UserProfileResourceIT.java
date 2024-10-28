@@ -78,8 +78,12 @@ class UserProfileResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static UserProfile createEntity() {
-        return new UserProfile().createdDate(DEFAULT_CREATED_DATE).modifiedDate(DEFAULT_MODIFIED_DATE).deleted(DEFAULT_DELETED);
+    public static UserProfile createEntity(EntityManager em) {
+        UserProfile userProfile = new UserProfile()
+            .createdDate(DEFAULT_CREATED_DATE)
+            .modifiedDate(DEFAULT_MODIFIED_DATE)
+            .deleted(DEFAULT_DELETED);
+        return userProfile;
     }
 
     /**
@@ -88,13 +92,17 @@ class UserProfileResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static UserProfile createUpdatedEntity() {
-        return new UserProfile().createdDate(UPDATED_CREATED_DATE).modifiedDate(UPDATED_MODIFIED_DATE).deleted(UPDATED_DELETED);
+    public static UserProfile createUpdatedEntity(EntityManager em) {
+        UserProfile userProfile = new UserProfile()
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED);
+        return userProfile;
     }
 
     @BeforeEach
     public void initTest() {
-        userProfile = createEntity();
+        userProfile = createEntity(em);
     }
 
     @AfterEach

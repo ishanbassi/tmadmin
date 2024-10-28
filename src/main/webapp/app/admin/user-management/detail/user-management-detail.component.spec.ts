@@ -16,7 +16,7 @@ describe('User Management Detail Component', () => {
           [
             {
               path: '**',
-              loadComponent: () => import('./user-management-detail.component'),
+              component: UserManagementDetailComponent,
               resolve: {
                 user: () =>
                   of({

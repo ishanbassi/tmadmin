@@ -91,8 +91,8 @@ class TmAgentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static TmAgent createEntity() {
-        return new TmAgent()
+    public static TmAgent createEntity(EntityManager em) {
+        TmAgent tmAgent = new TmAgent()
             .fullName(DEFAULT_FULL_NAME)
             .address(DEFAULT_ADDRESS)
             .createdDate(DEFAULT_CREATED_DATE)
@@ -101,6 +101,7 @@ class TmAgentResourceIT {
             .companyName(DEFAULT_COMPANY_NAME)
             .agentCode(DEFAULT_AGENT_CODE)
             .email(DEFAULT_EMAIL);
+        return tmAgent;
     }
 
     /**
@@ -109,8 +110,8 @@ class TmAgentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static TmAgent createUpdatedEntity() {
-        return new TmAgent()
+    public static TmAgent createUpdatedEntity(EntityManager em) {
+        TmAgent tmAgent = new TmAgent()
             .fullName(UPDATED_FULL_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
@@ -119,11 +120,12 @@ class TmAgentResourceIT {
             .companyName(UPDATED_COMPANY_NAME)
             .agentCode(UPDATED_AGENT_CODE)
             .email(UPDATED_EMAIL);
+        return tmAgent;
     }
 
     @BeforeEach
     public void initTest() {
-        tmAgent = createEntity();
+        tmAgent = createEntity(em);
     }
 
     @AfterEach

@@ -72,12 +72,13 @@ class PublishedTmPhoneticsResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTmPhonetics createEntity() {
-        return new PublishedTmPhonetics()
+    public static PublishedTmPhonetics createEntity(EntityManager em) {
+        PublishedTmPhonetics publishedTmPhonetics = new PublishedTmPhonetics()
             .sanitizedTm(DEFAULT_SANITIZED_TM)
             .phoneticPk(DEFAULT_PHONETIC_PK)
             .phoneticSk(DEFAULT_PHONETIC_SK)
             .complete(DEFAULT_COMPLETE);
+        return publishedTmPhonetics;
     }
 
     /**
@@ -86,17 +87,18 @@ class PublishedTmPhoneticsResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTmPhonetics createUpdatedEntity() {
-        return new PublishedTmPhonetics()
+    public static PublishedTmPhonetics createUpdatedEntity(EntityManager em) {
+        PublishedTmPhonetics publishedTmPhonetics = new PublishedTmPhonetics()
             .sanitizedTm(UPDATED_SANITIZED_TM)
             .phoneticPk(UPDATED_PHONETIC_PK)
             .phoneticSk(UPDATED_PHONETIC_SK)
             .complete(UPDATED_COMPLETE);
+        return publishedTmPhonetics;
     }
 
     @BeforeEach
     public void initTest() {
-        publishedTmPhonetics = createEntity();
+        publishedTmPhonetics = createEntity(em);
     }
 
     @AfterEach

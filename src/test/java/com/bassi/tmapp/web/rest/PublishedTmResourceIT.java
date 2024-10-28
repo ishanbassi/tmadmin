@@ -10,7 +10,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.PublishedTm;
-import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.repository.PublishedTmRepository;
@@ -129,8 +128,8 @@ class PublishedTmResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTm createEntity() {
-        return new PublishedTm()
+    public static PublishedTm createEntity(EntityManager em) {
+        PublishedTm publishedTm = new PublishedTm()
             .name(DEFAULT_NAME)
             .details(DEFAULT_DETAILS)
             .applicationNo(DEFAULT_APPLICATION_NO)
@@ -149,6 +148,7 @@ class PublishedTmResourceIT {
             .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE);
+        return publishedTm;
     }
 
     /**
@@ -157,8 +157,8 @@ class PublishedTmResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTm createUpdatedEntity() {
-        return new PublishedTm()
+    public static PublishedTm createUpdatedEntity(EntityManager em) {
+        PublishedTm publishedTm = new PublishedTm()
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
@@ -177,11 +177,12 @@ class PublishedTmResourceIT {
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE);
+        return publishedTm;
     }
 
     @BeforeEach
     public void initTest() {
-        publishedTm = createEntity();
+        publishedTm = createEntity(em);
     }
 
     @AfterEach
@@ -1364,28 +1365,6 @@ class PublishedTmResourceIT {
             "modifiedDate.greaterThan=" + SMALLER_MODIFIED_DATE,
             "modifiedDate.greaterThan=" + DEFAULT_MODIFIED_DATE
         );
-    }
-
-    @Test
-    @Transactional
-    void getAllPublishedTmsByTmAgentIsEqualToSomething() throws Exception {
-        TmAgent tmAgent;
-        if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
-            publishedTmRepository.saveAndFlush(publishedTm);
-            tmAgent = TmAgentResourceIT.createEntity();
-        } else {
-            tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
-        }
-        em.persist(tmAgent);
-        em.flush();
-        publishedTm.setTmAgent(tmAgent);
-        publishedTmRepository.saveAndFlush(publishedTm);
-        Long tmAgentId = tmAgent.getId();
-        // Get all the publishedTmList where tmAgent equals to tmAgentId
-        defaultPublishedTmShouldBeFound("tmAgentId.equals=" + tmAgentId);
-
-        // Get all the publishedTmList where tmAgent equals to (tmAgentId + 1)
-        defaultPublishedTmShouldNotBeFound("tmAgentId.equals=" + (tmAgentId + 1));
     }
 
     private void defaultPublishedTmFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

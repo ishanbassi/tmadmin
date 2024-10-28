@@ -10,7 +10,7 @@ export class ParseLinks {
   /**
    * Method to parse the links
    */
-  parseAll(header: string): Record<string, Record<string, string | undefined> | undefined> {
+  parseAll(header: string): { [key: string]: { [key: string]: string | undefined } | undefined } {
     if (header.length === 0) {
       throw new Error('input must not be of zero length');
     }
@@ -28,7 +28,7 @@ export class ParseLinks {
         }
 
         const url: string = section[0].replace(/<(.*)>/, '$1').trim(); // NOSONAR
-        const queryString: Record<string, string> = {};
+        const queryString: { [key: string]: string } = {};
 
         url.replace(/([^?=&]+)(=([^&]*))?/g, (_$0: string, $1: string | undefined, _$2: string | undefined, $3: string | undefined) => {
           if ($1 !== undefined && $3 !== undefined) {
@@ -46,9 +46,9 @@ export class ParseLinks {
   /**
    * Method to parse the links
    */
-  parse(header: string): Record<string, number> {
+  parse(header: string): { [key: string]: number } {
     const sections = this.parseAll(header);
-    const links: Record<string, number> = {};
+    const links: { [key: string]: number } = {};
     for (const [name, queryParams] of Object.entries(sections)) {
       if (queryParams?.page !== undefined) {
         links[name] = parseInt(queryParams.page, 10);

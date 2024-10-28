@@ -189,18 +189,18 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="field_userProfile">User Profile</label>
+          <label class="form-label" for="field_tmAgent">Tm Agent</label>
           <select
             class="form-control"
-            id="field_userProfile"
-            data-cy="userProfile"
-            name="userProfile"
-            formControlName="userProfile"
-            [compareWith]="compareUserProfile"
+            id="field_tmAgent"
+            data-cy="tmAgent"
+            name="tmAgent"
+            formControlName="tmAgent"
+            [compareWith]="compareTmAgent"
           >
             <option [ngValue]="null"></option>
-            @for (userProfileOption of userProfilesSharedCollection; track $index) {
-              <option [ngValue]="userProfileOption">{{ userProfileOption.id }}</option>
+            @for (tmAgentOption of tmAgentsSharedCollection; track $index) {
+              <option [ngValue]="tmAgentOption">{{ tmAgentOption.id }}</option>
             }
           </select>
         </div>

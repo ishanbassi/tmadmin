@@ -87,8 +87,9 @@
         "onDelete": "CASCADE",
         "onUpdate": "CASCADE"
       },
-      "otherEntityName": "userProfile",
-      "relationshipName": "userProfile",
+      "otherEntityName": "tmAgent",
+      "otherEntityRelationshipName": "trademarks",
+      "relationshipName": "tmAgent",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

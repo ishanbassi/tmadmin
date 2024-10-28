@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { IUser } from 'app/entities/user/user.model';
 import { UserService } from 'app/entities/user/service/user.service';
 import { IUserProfile } from '../user-profile.model';
 import { UserProfileService } from '../service/user-profile.service';
-import { UserProfileFormGroup, UserProfileFormService } from './user-profile-form.service';
+import { UserProfileFormService, UserProfileFormGroup } from './user-profile-form.service';
 
 @Component({
   standalone: true,

@@ -24,7 +24,7 @@ import tech.jhipster.service.QueryService;
 @Transactional(readOnly = true)
 public class TrademarkQueryService extends QueryService<Trademark> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TrademarkQueryService.class);
+    private static final Logger log = LoggerFactory.getLogger(TrademarkQueryService.class);
 
     private final TrademarkRepository trademarkRepository;
 
@@ -40,7 +40,7 @@ public class TrademarkQueryService extends QueryService<Trademark> {
      */
     @Transactional(readOnly = true)
     public Page<Trademark> findByCriteria(TrademarkCriteria criteria, Pageable page) {
-        LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        log.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Trademark> specification = createSpecification(criteria);
         return trademarkRepository.findAll(specification, page);
     }
@@ -52,7 +52,7 @@ public class TrademarkQueryService extends QueryService<Trademark> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(TrademarkCriteria criteria) {
-        LOG.debug("count by criteria : {}", criteria);
+        log.debug("count by criteria : {}", criteria);
         final Specification<Trademark> specification = createSpecification(criteria);
         return trademarkRepository.count(specification);
     }
@@ -126,11 +126,9 @@ public class TrademarkQueryService extends QueryService<Trademark> {
             if (criteria.getModifiedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), Trademark_.modifiedDate));
             }
-            if (criteria.getUserProfileId() != null) {
+            if (criteria.getTmAgentId() != null) {
                 specification = specification.and(
-                    buildSpecification(criteria.getUserProfileId(), root ->
-                        root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
-                    )
+                    buildSpecification(criteria.getTmAgentId(), root -> root.join(Trademark_.tmAgent, JoinType.LEFT).get(TmAgent_.id))
                 );
             }
         }

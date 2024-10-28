@@ -48,17 +48,19 @@ public class UserProfileAsserts {
     public static void assertUserProfileUpdatableFieldsEquals(UserProfile expected, UserProfile actual) {
         assertThat(expected)
             .as("Verify UserProfile relevant properties")
-            .satisfies(e ->
-                assertThat(e.getCreatedDate())
-                    .as("check createdDate")
-                    .usingComparator(zonedDataTimeSameInstant)
-                    .isEqualTo(actual.getCreatedDate())
+            .satisfies(
+                e ->
+                    assertThat(e.getCreatedDate())
+                        .as("check createdDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(e ->
-                assertThat(e.getModifiedDate())
-                    .as("check modifiedDate")
-                    .usingComparator(zonedDataTimeSameInstant)
-                    .isEqualTo(actual.getModifiedDate())
+            .satisfies(
+                e ->
+                    assertThat(e.getModifiedDate())
+                        .as("check modifiedDate")
+                        .usingComparator(zonedDataTimeSameInstant)
+                        .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()));
     }
@@ -69,7 +71,5 @@ public class UserProfileAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertUserProfileUpdatableRelationshipsEquals(UserProfile expected, UserProfile actual) {
-        // empty method
-    }
+    public static void assertUserProfileUpdatableRelationshipsEquals(UserProfile expected, UserProfile actual) {}
 }

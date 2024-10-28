@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (publishedTmPhonetics(); as publishedTmPhoneticsRef) {
+    @if (publishedTmPhonetics()) {
       <div>
         <h2 data-cy="publishedTmPhoneticsDetailsHeading"><span>Published Tm Phonetics</span></h2>
 
@@ -13,30 +13,30 @@
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ publishedTmPhoneticsRef.id }}</span>
+            <span>{{ publishedTmPhonetics()!.id }}</span>
           </dd>
           <dt><span>Sanitized Tm</span></dt>
           <dd>
-            <span>{{ publishedTmPhoneticsRef.sanitizedTm }}</span>
+            <span>{{ publishedTmPhonetics()!.sanitizedTm }}</span>
           </dd>
           <dt><span>Phonetic Pk</span></dt>
           <dd>
-            <span>{{ publishedTmPhoneticsRef.phoneticPk }}</span>
+            <span>{{ publishedTmPhonetics()!.phoneticPk }}</span>
           </dd>
           <dt><span>Phonetic Sk</span></dt>
           <dd>
-            <span>{{ publishedTmPhoneticsRef.phoneticSk }}</span>
+            <span>{{ publishedTmPhonetics()!.phoneticSk }}</span>
           </dd>
           <dt><span>Complete</span></dt>
           <dd>
-            <span>{{ publishedTmPhoneticsRef.complete }}</span>
+            <span>{{ publishedTmPhonetics()!.complete }}</span>
           </dd>
           <dt><span>Published Tm</span></dt>
           <dd>
             @if (publishedTmPhonetics()!.publishedTm) {
               <div>
                 <a [routerLink]="['/published-tm', publishedTmPhonetics()!.publishedTm?.id, 'view']">{{
-                  publishedTmPhoneticsRef.publishedTm?.id
+                  publishedTmPhonetics()!.publishedTm?.id
                 }}</a>
               </div>
             }
@@ -47,7 +47,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/published-tm-phonetics', publishedTmPhoneticsRef.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/published-tm-phonetics', publishedTmPhonetics()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>

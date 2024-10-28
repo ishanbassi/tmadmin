@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithNewData, sampleWithRequiredData } from '../tm-agent.test-samples';
+import { sampleWithRequiredData, sampleWithNewData } from '../tm-agent.test-samples';
 
 import { TmAgentFormService } from './tm-agent-form.service';
 

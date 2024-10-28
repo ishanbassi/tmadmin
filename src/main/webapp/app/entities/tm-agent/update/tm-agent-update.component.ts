@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -9,7 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ITmAgent } from '../tm-agent.model';
 import { TmAgentService } from '../service/tm-agent.service';
-import { TmAgentFormGroup, TmAgentFormService } from './tm-agent-form.service';
+import { TmAgentFormService, TmAgentFormGroup } from './tm-agent-form.service';
 
 @Component({
   standalone: true,

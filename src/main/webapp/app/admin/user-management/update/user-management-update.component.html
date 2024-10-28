@@ -14,18 +14,17 @@
         <label class="form-label" for="field_login">Login</label>
         <input type="text" id="field_login" class="form-control" name="login" formControlName="login" />
 
-        @let loginRef = editForm.get('login')!;
-        @if (loginRef.invalid && (loginRef.dirty || loginRef.touched)) {
+        @if (editForm.get('login')!.invalid && (editForm.get('login')!.dirty || editForm.get('login')!.touched)) {
           <div>
-            @if (loginRef?.errors?.required) {
+            @if (editForm.get('login')?.errors?.required) {
               <small class="form-text text-danger">This field is required.</small>
             }
 
-            @if (loginRef?.errors?.maxlength) {
+            @if (editForm.get('login')?.errors?.maxlength) {
               <small class="form-text text-danger">This field cannot be longer than 50 characters.</small>
             }
 
-            @if (loginRef?.errors?.pattern) {
+            @if (editForm.get('login')?.errors?.pattern) {
               <small class="form-text text-danger">This field can only contain letters, digits and e-mail addresses.</small>
             }
           </div>
@@ -36,10 +35,9 @@
         <label class="form-label" for="field_firstName">First name</label>
         <input type="text" id="field_firstName" class="form-control" name="firstName" formControlName="firstName" />
 
-        @let firstNameRef = editForm.get('firstName')!;
-        @if (firstNameRef.invalid && (firstNameRef.dirty || firstNameRef.touched)) {
+        @if (editForm.get('firstName')!.invalid && (editForm.get('firstName')!.dirty || editForm.get('firstName')!.touched)) {
           <div>
-            @if (firstNameRef?.errors?.maxlength) {
+            @if (editForm.get('firstName')?.errors?.maxlength) {
               <small class="form-text text-danger">This field cannot be longer than 50 characters.</small>
             }
           </div>
@@ -50,10 +48,9 @@
         <label class="form-label" for="field_lastName">Last name</label>
         <input type="text" id="field_lastName" class="form-control" name="lastName" formControlName="lastName" />
 
-        @let lastNameRef = editForm.get('lastName')!;
-        @if (lastNameRef.invalid && (lastNameRef.dirty || lastNameRef.touched)) {
+        @if (editForm.get('lastName')!.invalid && (editForm.get('lastName')!.dirty || editForm.get('lastName')!.touched)) {
           <div>
-            @if (lastNameRef?.errors?.maxlength) {
+            @if (editForm.get('lastName')?.errors?.maxlength) {
               <small class="form-text text-danger">This field cannot be longer than 50 characters.</small>
             }
           </div>
@@ -64,22 +61,21 @@
         <label class="form-label" for="field_email">Email</label>
         <input type="email" id="field_email" class="form-control" name="email" formControlName="email" />
 
-        @let emailRef = editForm.get('email')!;
-        @if (emailRef.invalid && (emailRef.dirty || emailRef.touched)) {
+        @if (editForm.get('email')!.invalid && (editForm.get('email')!.dirty || editForm.get('email')!.touched)) {
           <div>
-            @if (emailRef?.errors?.required) {
+            @if (editForm.get('email')?.errors?.required) {
               <small class="form-text text-danger">This field is required.</small>
             }
 
-            @if (emailRef?.errors?.maxlength) {
+            @if (editForm.get('email')?.errors?.maxlength) {
               <small class="form-text text-danger">This field cannot be longer than 100 characters.</small>
             }
 
-            @if (emailRef?.errors?.minlength) {
+            @if (editForm.get('email')?.errors?.minlength) {
               <small class="form-text text-danger">This field is required to be at least 5 characters.</small>
             }
 
-            @if (emailRef?.errors?.email) {
+            @if (editForm.get('email')?.errors?.email) {
               <small class="form-text text-danger">Your email is invalid.</small>
             }
           </div>

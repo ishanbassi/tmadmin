@@ -2,20 +2,23 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
+import { PhoneticsComponent } from './list/phonetics.component';
+import { PhoneticsDetailComponent } from './detail/phonetics-detail.component';
+import { PhoneticsUpdateComponent } from './update/phonetics-update.component';
 import PhoneticsResolve from './route/phonetics-routing-resolve.service';
 
 const phoneticsRoute: Routes = [
   {
     path: '',
-    loadComponent: () => import('./list/phonetics.component').then(m => m.PhoneticsComponent),
+    component: PhoneticsComponent,
     data: {
-      defaultSort: `id,${ASC}`,
+      defaultSort: 'id,' + ASC,
     },
     canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',
-    loadComponent: () => import('./detail/phonetics-detail.component').then(m => m.PhoneticsDetailComponent),
+    component: PhoneticsDetailComponent,
     resolve: {
       phonetics: PhoneticsResolve,
     },
@@ -23,7 +26,7 @@ const phoneticsRoute: Routes = [
   },
   {
     path: 'new',
-    loadComponent: () => import('./update/phonetics-update.component').then(m => m.PhoneticsUpdateComponent),
+    component: PhoneticsUpdateComponent,
     resolve: {
       phonetics: PhoneticsResolve,
     },
@@ -31,7 +34,7 @@ const phoneticsRoute: Routes = [
   },
   {
     path: ':id/edit',
-    loadComponent: () => import('./update/phonetics-update.component').then(m => m.PhoneticsUpdateComponent),
+    component: PhoneticsUpdateComponent,
     resolve: {
       phonetics: PhoneticsResolve,
     },

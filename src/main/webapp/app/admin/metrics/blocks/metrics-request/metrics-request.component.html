@@ -1,7 +1,6 @@
 <h3 id="requestMetrics">HTTP requests (time in millisecond)</h3>
 
-@let requestMetricsRef = requestMetrics();
-@if (!updating() && requestMetricsRef) {
+@if (!updating() && requestMetrics()) {
   <table class="table table-striped" aria-describedby="requestMetrics">
     <thead>
       <tr>
@@ -12,12 +11,12 @@
       </tr>
     </thead>
     <tbody>
-      @for (entry of requestMetricsRef['percode'] | keyvalue; track entry.key) {
+      @for (entry of requestMetrics()!['percode'] | keyvalue; track entry.key) {
         <tr>
           <td>{{ entry.key }}</td>
           <td>
             <ngb-progressbar
-              [max]="requestMetricsRef['all'].count"
+              [max]="requestMetrics()!['all'].count"
               [value]="entry.value.count"
               [striped]="true"
               [animated]="false"

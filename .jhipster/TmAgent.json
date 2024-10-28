@@ -40,7 +40,15 @@
   "jpaMetamodelFiltering": true,
   "name": "TmAgent",
   "pagination": "infinite-scroll",
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "trademark",
+      "otherEntityRelationshipName": "tmAgent",
+      "relationshipName": "trademarks",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceClass"
 }

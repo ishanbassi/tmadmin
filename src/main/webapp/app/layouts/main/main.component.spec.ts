@@ -1,6 +1,6 @@
 jest.mock('app/core/auth/account.service');
 
-import { ComponentFixture, TestBed, fakeAsync, tick, waitForAsync } from '@angular/core/testing';
+import { waitForAsync, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router, TitleStrategy } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
@@ -21,8 +21,6 @@ describe('MainComponent', () => {
   const routerState: any = { snapshot: { root: { data: {} } } };
   let router: Router;
   let document: Document;
-
-  const navigateByUrlFn = (url: string) => () => router.navigateByUrl(url);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -59,7 +57,7 @@ describe('MainComponent', () => {
     describe('navigation end', () => {
       it('should set page title to default title if pageTitle is missing on routes', fakeAsync(() => {
         // WHEN
-        ngZone.run(navigateByUrlFn(''));
+        ngZone.run(() => router.navigateByUrl(''));
         tick();
 
         // THEN
@@ -71,7 +69,7 @@ describe('MainComponent', () => {
         router.resetConfig([{ path: '', title: parentRoutePageTitle, component: BlankComponent }]);
 
         // WHEN
-        ngZone.run(navigateByUrlFn(''));
+        ngZone.run(() => router.navigateByUrl(''));
         tick();
 
         // THEN
@@ -89,7 +87,7 @@ describe('MainComponent', () => {
         ]);
 
         // WHEN
-        ngZone.run(navigateByUrlFn('home'));
+        ngZone.run(() => router.navigateByUrl('home'));
         tick();
 
         // THEN
@@ -107,7 +105,7 @@ describe('MainComponent', () => {
         ]);
 
         // WHEN
-        ngZone.run(navigateByUrlFn('home'));
+        ngZone.run(() => router.navigateByUrl('home'));
         tick();
 
         // THEN

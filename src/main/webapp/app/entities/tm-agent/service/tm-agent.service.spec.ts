@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { ITmAgent } from '../tm-agent.model';
-import { sampleWithFullData, sampleWithNewData, sampleWithPartialData, sampleWithRequiredData } from '../tm-agent.test-samples';
+import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../tm-agent.test-samples';
 
-import { RestTmAgent, TmAgentService } from './tm-agent.service';
+import { TmAgentService, RestTmAgent } from './tm-agent.service';
 
 const requireRestSample: RestTmAgent = {
   ...sampleWithRequiredData,

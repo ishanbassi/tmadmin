@@ -194,21 +194,20 @@
           routerLinkActive="active"
           [routerLinkActiveOptions]="{ exact: true }"
         >
-          @let accountRef = account();
           <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu" data-cy="accountMenu">
-            @if (!accountRef?.imageUrl) {
+            @if (!account()?.imageUrl) {
               <span>
                 <fa-icon icon="user"></fa-icon>
                 <span>Account</span>
               </span>
             } @else {
               <span>
-                <img [src]="accountRef!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
+                <img [src]="account()!.imageUrl" class="profile-image rounded-circle" alt="Avatar" />
               </span>
             }
           </a>
           <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
-            @if (accountRef !== null) {
+            @if (account() !== null) {
               <li>
                 <a
                   class="dropdown-item"

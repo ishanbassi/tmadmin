@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (trademark(); as trademarkRef) {
+    @if (trademark()) {
       <div>
         <h2 data-cy="trademarkDetailsHeading"><span>Trademark</span></h2>
 
@@ -13,89 +13,89 @@
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ trademarkRef.id }}</span>
+            <span>{{ trademark()!.id }}</span>
           </dd>
           <dt><span>Name</span></dt>
           <dd>
-            <span>{{ trademarkRef.name }}</span>
+            <span>{{ trademark()!.name }}</span>
           </dd>
           <dt><span>Details</span></dt>
           <dd>
-            <span>{{ trademarkRef.details }}</span>
+            <span>{{ trademark()!.details }}</span>
           </dd>
           <dt><span>Application No</span></dt>
           <dd>
-            <span>{{ trademarkRef.applicationNo }}</span>
+            <span>{{ trademark()!.applicationNo }}</span>
           </dd>
           <dt><span>Application Date</span></dt>
           <dd>
-            <span>{{ trademarkRef.applicationDate | formatMediumDate }}</span>
+            <span>{{ trademark()!.applicationDate | formatMediumDate }}</span>
           </dd>
           <dt><span>Agent Name</span></dt>
           <dd>
-            <span>{{ trademarkRef.agentName }}</span>
+            <span>{{ trademark()!.agentName }}</span>
           </dd>
           <dt><span>Agent Address</span></dt>
           <dd>
-            <span>{{ trademarkRef.agentAddress }}</span>
+            <span>{{ trademark()!.agentAddress }}</span>
           </dd>
           <dt><span>Proprietor Name</span></dt>
           <dd>
-            <span>{{ trademarkRef.proprietorName }}</span>
+            <span>{{ trademark()!.proprietorName }}</span>
           </dd>
           <dt><span>Proprietor Address</span></dt>
           <dd>
-            <span>{{ trademarkRef.proprietorAddress }}</span>
+            <span>{{ trademark()!.proprietorAddress }}</span>
           </dd>
           <dt><span>Head Office</span></dt>
           <dd>
             <span>{{
               { null: '', DELHI: 'DELHI', MUMBAI: 'MUMBAI', AHMEDABAD: 'AHMEDABAD', KOLKATA: 'KOLKATA', CHENNAI: 'CHENNAI' }[
-                trademarkRef.headOffice ?? 'null'
+                trademark()!.headOffice ?? 'null'
               ]
             }}</span>
           </dd>
           <dt><span>Img Url</span></dt>
           <dd>
-            <span>{{ trademarkRef.imgUrl }}</span>
+            <span>{{ trademark()!.imgUrl }}</span>
           </dd>
           <dt><span>Tm Class</span></dt>
           <dd>
-            <span>{{ trademarkRef.tmClass }}</span>
+            <span>{{ trademark()!.tmClass }}</span>
           </dd>
           <dt><span>Journal No</span></dt>
           <dd>
-            <span>{{ trademarkRef.journalNo }}</span>
+            <span>{{ trademark()!.journalNo }}</span>
           </dd>
           <dt><span>Deleted</span></dt>
           <dd>
-            <span>{{ trademarkRef.deleted }}</span>
+            <span>{{ trademark()!.deleted }}</span>
           </dd>
           <dt><span>Usage</span></dt>
           <dd>
-            <span>{{ trademarkRef.usage }}</span>
+            <span>{{ trademark()!.usage }}</span>
           </dd>
           <dt><span>Associated Tms</span></dt>
           <dd>
-            <span>{{ trademarkRef.associatedTms }}</span>
+            <span>{{ trademark()!.associatedTms }}</span>
           </dd>
           <dt><span>Trademark Status</span></dt>
           <dd>
-            <span>{{ trademarkRef.trademarkStatus }}</span>
+            <span>{{ trademark()!.trademarkStatus }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>
-            <span>{{ trademarkRef.createdDate | formatMediumDatetime }}</span>
+            <span>{{ trademark()!.createdDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Modified Date</span></dt>
           <dd>
-            <span>{{ trademarkRef.modifiedDate | formatMediumDatetime }}</span>
+            <span>{{ trademark()!.modifiedDate | formatMediumDatetime }}</span>
           </dd>
-          <dt><span>User Profile</span></dt>
+          <dt><span>Tm Agent</span></dt>
           <dd>
-            @if (trademark()!.userProfile) {
+            @if (trademark()!.tmAgent) {
               <div>
-                <a [routerLink]="['/user-profile', trademark()!.userProfile?.id, 'view']">{{ trademarkRef.userProfile?.id }}</a>
+                <a [routerLink]="['/tm-agent', trademark()!.tmAgent?.id, 'view']">{{ trademark()!.tmAgent?.id }}</a>
               </div>
             }
           </dd>
@@ -105,7 +105,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/trademark', trademarkRef.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/trademark', trademark()!.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>

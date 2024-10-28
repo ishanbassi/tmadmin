@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
-import { HealthDetails, HealthKey } from '../health.model';
+import { HealthKey, HealthDetails } from '../health.model';
 
 @Component({
   standalone: true,

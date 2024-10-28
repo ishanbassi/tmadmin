@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithNewData, sampleWithRequiredData } from '../authority.test-samples';
+import { sampleWithRequiredData, sampleWithNewData } from '../authority.test-samples';
 
 import { AuthorityFormService } from './authority-form.service';
 

@@ -3,7 +3,6 @@ plugins {
 }
 
 jib {
-    configurationName = "productionRuntimeClasspath"
     from {
         image = "eclipse-temurin:17-jre-focal"
         platforms {

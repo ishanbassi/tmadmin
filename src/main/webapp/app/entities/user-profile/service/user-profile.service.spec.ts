@@ -1,11 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { IUserProfile } from '../user-profile.model';
-import { sampleWithFullData, sampleWithNewData, sampleWithPartialData, sampleWithRequiredData } from '../user-profile.test-samples';
+import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../user-profile.test-samples';
 
-import { RestUserProfile, UserProfileService } from './user-profile.service';
+import { UserProfileService, RestUserProfile } from './user-profile.service';
 
 const requireRestSample: RestUserProfile = {
   ...sampleWithRequiredData,

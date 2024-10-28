@@ -82,18 +82,7 @@
   "jpaMetamodelFiltering": true,
   "name": "PublishedTm",
   "pagination": "infinite-scroll",
-  "relationships": [
-    {
-      "options": {
-        "onDelete": "CASCADE",
-        "onUpdate": "CASCADE"
-      },
-      "otherEntityName": "tmAgent",
-      "relationshipName": "tmAgent",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    }
-  ],
+  "relationships": [],
   "searchEngine": "no",
   "service": "serviceClass"
 }

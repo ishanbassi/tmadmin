@@ -72,12 +72,13 @@ class PhoneticsResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Phonetics createEntity() {
-        return new Phonetics()
+    public static Phonetics createEntity(EntityManager em) {
+        Phonetics phonetics = new Phonetics()
             .sanitizedTm(DEFAULT_SANITIZED_TM)
             .phoneticPk(DEFAULT_PHONETIC_PK)
             .phoneticSk(DEFAULT_PHONETIC_SK)
             .complete(DEFAULT_COMPLETE);
+        return phonetics;
     }
 
     /**
@@ -86,17 +87,18 @@ class PhoneticsResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Phonetics createUpdatedEntity() {
-        return new Phonetics()
+    public static Phonetics createUpdatedEntity(EntityManager em) {
+        Phonetics phonetics = new Phonetics()
             .sanitizedTm(UPDATED_SANITIZED_TM)
             .phoneticPk(UPDATED_PHONETIC_PK)
             .phoneticSk(UPDATED_PHONETIC_SK)
             .complete(UPDATED_COMPLETE);
+        return phonetics;
     }
 
     @BeforeEach
     public void initTest() {
-        phonetics = createEntity();
+        phonetics = createEntity(em);
     }
 
     @AfterEach
