@@ -86,5 +86,9 @@ public class PublishedTmAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertPublishedTmUpdatableRelationshipsEquals(PublishedTm expected, PublishedTm actual) {}
+    public static void assertPublishedTmUpdatableRelationshipsEquals(PublishedTm expected, PublishedTm actual) {
+        assertThat(expected)
+            .as("Verify PublishedTm relationships")
+            .satisfies(e -> assertThat(e.getTmAgent()).as("check tmAgent").isEqualTo(actual.getTmAgent()));
+    }
 }

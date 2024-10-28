@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
-import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -1392,24 +1392,24 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
-    void getAllTrademarksByTmAgentIsEqualToSomething() throws Exception {
-        TmAgent tmAgent;
-        if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
+    void getAllTrademarksByUserProfileIsEqualToSomething() throws Exception {
+        UserProfile userProfile;
+        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
             trademarkRepository.saveAndFlush(trademark);
-            tmAgent = TmAgentResourceIT.createEntity(em);
+            userProfile = UserProfileResourceIT.createEntity(em);
         } else {
-            tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
+            userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
         }
-        em.persist(tmAgent);
+        em.persist(userProfile);
         em.flush();
-        trademark.setTmAgent(tmAgent);
+        trademark.setUserProfile(userProfile);
         trademarkRepository.saveAndFlush(trademark);
-        Long tmAgentId = tmAgent.getId();
-        // Get all the trademarkList where tmAgent equals to tmAgentId
-        defaultTrademarkShouldBeFound("tmAgentId.equals=" + tmAgentId);
+        Long userProfileId = userProfile.getId();
+        // Get all the trademarkList where userProfile equals to userProfileId
+        defaultTrademarkShouldBeFound("userProfileId.equals=" + userProfileId);
 
-        // Get all the trademarkList where tmAgent equals to (tmAgentId + 1)
-        defaultTrademarkShouldNotBeFound("tmAgentId.equals=" + (tmAgentId + 1));
+        // Get all the trademarkList where userProfile equals to (userProfileId + 1)
+        defaultTrademarkShouldNotBeFound("userProfileId.equals=" + (userProfileId + 1));
     }
 
     private void defaultTrademarkFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

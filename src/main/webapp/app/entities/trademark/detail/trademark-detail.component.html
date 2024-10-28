@@ -91,11 +91,11 @@
           <dd>
             <span>{{ trademark()!.modifiedDate | formatMediumDatetime }}</span>
           </dd>
-          <dt><span>Tm Agent</span></dt>
+          <dt><span>User Profile</span></dt>
           <dd>
-            @if (trademark()!.tmAgent) {
+            @if (trademark()!.userProfile) {
               <div>
-                <a [routerLink]="['/tm-agent', trademark()!.tmAgent?.id, 'view']">{{ trademark()!.tmAgent?.id }}</a>
+                <a [routerLink]="['/user-profile', trademark()!.userProfile?.id, 'view']">{{ trademark()!.userProfile?.id }}</a>
               </div>
             }
           </dd>

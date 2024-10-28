@@ -4,7 +4,6 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.service.criteria.TmAgentCriteria;
-import jakarta.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -95,11 +94,6 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
             }
             if (criteria.getEmail() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getEmail(), TmAgent_.email));
-            }
-            if (criteria.getTrademarksId() != null) {
-                specification = specification.and(
-                    buildSpecification(criteria.getTrademarksId(), root -> root.join(TmAgent_.trademarks, JoinType.LEFT).get(Trademark_.id))
-                );
             }
         }
         return specification;

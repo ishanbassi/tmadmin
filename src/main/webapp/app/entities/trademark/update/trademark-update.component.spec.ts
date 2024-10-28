@@ -4,8 +4,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { of, Subject, from } from 'rxjs';
 
-import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
-import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
+import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormService } from './trademark-form.service';
@@ -18,7 +18,7 @@ describe('Trademark Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let trademarkFormService: TrademarkFormService;
   let trademarkService: TrademarkService;
-  let tmAgentService: TmAgentService;
+  let userProfileService: UserProfileService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -41,43 +41,43 @@ describe('Trademark Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     trademarkFormService = TestBed.inject(TrademarkFormService);
     trademarkService = TestBed.inject(TrademarkService);
-    tmAgentService = TestBed.inject(TmAgentService);
+    userProfileService = TestBed.inject(UserProfileService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should call TmAgent query and add missing value', () => {
+    it('Should call UserProfile query and add missing value', () => {
       const trademark: ITrademark = { id: 456 };
-      const tmAgent: ITmAgent = { id: 23051 };
-      trademark.tmAgent = tmAgent;
+      const userProfile: IUserProfile = { id: 8030 };
+      trademark.userProfile = userProfile;
 
-      const tmAgentCollection: ITmAgent[] = [{ id: 18240 }];
-      jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
-      const additionalTmAgents = [tmAgent];
-      const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
-      jest.spyOn(tmAgentService, 'addTmAgentToCollectionIfMissing').mockReturnValue(expectedCollection);
+      const userProfileCollection: IUserProfile[] = [{ id: 9415 }];
+      jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
+      const additionalUserProfiles = [userProfile];
+      const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
+      jest.spyOn(userProfileService, 'addUserProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
-      expect(tmAgentService.query).toHaveBeenCalled();
-      expect(tmAgentService.addTmAgentToCollectionIfMissing).toHaveBeenCalledWith(
-        tmAgentCollection,
-        ...additionalTmAgents.map(expect.objectContaining),
+      expect(userProfileService.query).toHaveBeenCalled();
+      expect(userProfileService.addUserProfileToCollectionIfMissing).toHaveBeenCalledWith(
+        userProfileCollection,
+        ...additionalUserProfiles.map(expect.objectContaining),
       );
-      expect(comp.tmAgentsSharedCollection).toEqual(expectedCollection);
+      expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
     });
 
     it('Should update editForm', () => {
       const trademark: ITrademark = { id: 456 };
-      const tmAgent: ITmAgent = { id: 31982 };
-      trademark.tmAgent = tmAgent;
+      const userProfile: IUserProfile = { id: 3892 };
+      trademark.userProfile = userProfile;
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
-      expect(comp.tmAgentsSharedCollection).toContain(tmAgent);
+      expect(comp.userProfilesSharedCollection).toContain(userProfile);
       expect(comp.trademark).toEqual(trademark);
     });
   });
@@ -151,13 +151,13 @@ describe('Trademark Management Update Component', () => {
   });
 
   describe('Compare relationships', () => {
-    describe('compareTmAgent', () => {
-      it('Should forward to tmAgentService', () => {
+    describe('compareUserProfile', () => {
+      it('Should forward to userProfileService', () => {
         const entity = { id: 123 };
         const entity2 = { id: 456 };
-        jest.spyOn(tmAgentService, 'compareTmAgent');
-        comp.compareTmAgent(entity, entity2);
-        expect(tmAgentService.compareTmAgent).toHaveBeenCalledWith(entity, entity2);
+        jest.spyOn(userProfileService, 'compareUserProfile');
+        comp.compareUserProfile(entity, entity2);
+        expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

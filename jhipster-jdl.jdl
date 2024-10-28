@@ -123,13 +123,14 @@ enum TrademarkStatus{
 relationship ManyToOne{
 	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
     PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
-    Trademark { tmAgent } to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent{trademarks}
-    
+    Trademark { userProfile } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
+    PublishedTm { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
 }
 
 relationship OneToOne{
 	UserProfile { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") User with builtInEntity
 }
+
 
 filter Trademark
 filter PublishedTm

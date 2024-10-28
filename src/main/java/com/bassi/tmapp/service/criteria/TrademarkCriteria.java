@@ -78,7 +78,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter modifiedDate;
 
-    private LongFilter tmAgentId;
+    private LongFilter userProfileId;
 
     private Boolean distinct;
 
@@ -104,7 +104,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.trademarkStatus = other.optionalTrademarkStatus().map(StringFilter::copy).orElse(null);
         this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
-        this.tmAgentId = other.optionalTmAgentId().map(LongFilter::copy).orElse(null);
+        this.userProfileId = other.optionalUserProfileId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -474,23 +474,23 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.modifiedDate = modifiedDate;
     }
 
-    public LongFilter getTmAgentId() {
-        return tmAgentId;
+    public LongFilter getUserProfileId() {
+        return userProfileId;
     }
 
-    public Optional<LongFilter> optionalTmAgentId() {
-        return Optional.ofNullable(tmAgentId);
+    public Optional<LongFilter> optionalUserProfileId() {
+        return Optional.ofNullable(userProfileId);
     }
 
-    public LongFilter tmAgentId() {
-        if (tmAgentId == null) {
-            setTmAgentId(new LongFilter());
+    public LongFilter userProfileId() {
+        if (userProfileId == null) {
+            setUserProfileId(new LongFilter());
         }
-        return tmAgentId;
+        return userProfileId;
     }
 
-    public void setTmAgentId(LongFilter tmAgentId) {
-        this.tmAgentId = tmAgentId;
+    public void setUserProfileId(LongFilter userProfileId) {
+        this.userProfileId = userProfileId;
     }
 
     public Boolean getDistinct() {
@@ -541,7 +541,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(trademarkStatus, that.trademarkStatus) &&
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(modifiedDate, that.modifiedDate) &&
-            Objects.equals(tmAgentId, that.tmAgentId) &&
+            Objects.equals(userProfileId, that.userProfileId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -568,7 +568,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             trademarkStatus,
             createdDate,
             modifiedDate,
-            tmAgentId,
+            userProfileId,
             distinct
         );
     }
@@ -596,7 +596,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalTrademarkStatus().map(f -> "trademarkStatus=" + f + ", ").orElse("") +
             optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
             optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
-            optionalTmAgentId().map(f -> "tmAgentId=" + f + ", ").orElse("") +
+            optionalUserProfileId().map(f -> "userProfileId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

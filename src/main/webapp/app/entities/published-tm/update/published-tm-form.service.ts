@@ -50,6 +50,7 @@ type PublishedTmFormGroupContent = {
   trademarkStatus: FormControl<PublishedTmFormRawValue['trademarkStatus']>;
   createdDate: FormControl<PublishedTmFormRawValue['createdDate']>;
   modifiedDate: FormControl<PublishedTmFormRawValue['modifiedDate']>;
+  tmAgent: FormControl<PublishedTmFormRawValue['tmAgent']>;
 };
 
 export type PublishedTmFormGroup = FormGroup<PublishedTmFormGroupContent>;
@@ -87,6 +88,7 @@ export class PublishedTmFormService {
       trademarkStatus: new FormControl(publishedTmRawValue.trademarkStatus),
       createdDate: new FormControl(publishedTmRawValue.createdDate),
       modifiedDate: new FormControl(publishedTmRawValue.modifiedDate),
+      tmAgent: new FormControl(publishedTmRawValue.tmAgent),
     });
   }
 
