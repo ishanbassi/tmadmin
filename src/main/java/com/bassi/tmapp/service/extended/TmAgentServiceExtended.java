@@ -2,6 +2,7 @@ package com.bassi.tmapp.service.extended;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -85,6 +86,7 @@ public class TmAgentServiceExtended {
 		agents.addAll(newAgents);
 		
 //		saveTrademarks(trademarkByAgentName, agents);
+		assignAgentsToPublishedTrademarks(trademarkByAgentName,agents);
 	}
 
 
@@ -107,9 +109,25 @@ public class TmAgentServiceExtended {
 		List<Trademark> trademarks = trademarkMapper.toEntity(trademarkDtos);
 		trademarkRepository.saveAll(trademarks);
 		
-		
-		
-		
+	}
+	
+	private void assignAgentsToPublishedTrademarks(Map<String, List<PublishedTmDTO>> trademarkByAgentName,
+			List<TmAgent> agents) {
+		for (TmAgent agent : agents) {
+			if (trademarkByAgentName.containsKey(agent.getFullName())) {
+				for (PublishedTmDTO tm : trademarkByAgentName.get(agent.getFullName())) {
+					tm.setAgent(agent);
+				}
+				
+				List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(trademarkByAgentName.get(agent.getFullName()));
+				publishedTmRepositoryExtended.saveAll(publishedTrademarks);
+				return;
+				
+			}
+			log.info("No published trademark found that matches with the agent: {}", agent);
+			
+		}
+
 	}
 	
 	public void migrateAgentsFromExistingTrademarks() {

@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.dto;
 
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import java.io.Serializable;
@@ -46,6 +47,7 @@ public class PublishedTmDTO implements Serializable {
 	    this.createdDate = other.createdDate;
 	    this.modifiedDate = other.modifiedDate;
 	    this.pageNo = other.pageNo;
+	    this.agent = other.agent;
 	}
 	
 
@@ -88,6 +90,8 @@ public class PublishedTmDTO implements Serializable {
     private ZonedDateTime modifiedDate;
     
     private short pageNo;
+    
+    private TmAgent agent;
     
     
     public Map<String,Integer> getTextIndexMap() {
@@ -318,7 +322,19 @@ public class PublishedTmDTO implements Serializable {
 	public void setPageNo(short pageNo) {
 		this.pageNo = pageNo;
 	}
+	
+	
+	
+	
 
+
+	public TmAgent getAgent() {
+		return agent;
+	}
+
+	public void setAgent(TmAgent agent) {
+		this.agent = agent;
+	}
 
 	@Override
     public boolean equals(Object o) {
@@ -343,29 +359,14 @@ public class PublishedTmDTO implements Serializable {
    
 
 
-	// prettier-ignore
-    @Override
-    public String toString() {
-        return "PublishedTmDTO{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", details='" + getDetails() + "'" +
-            ", applicationNo=" + getApplicationNo() +
-            ", applicationDate='" + getApplicationDate() + "'" +
-            ", agentName='" + getAgentName() + "'" +
-            ", agentAddress='" + getAgentAddress() + "'" +
-            ", proprietorName='" + getProprietorName() + "'" +
-            ", proprietorAddress='" + getProprietorAddress() + "'" +
-            ", headOffice='" + getHeadOffice() + "'" +
-            ", imgUrl='" + getImgUrl() + "'" +
-            ", tmClass=" + getTmClass() +
-            ", journalNo=" + getJournalNo() +
-            ", deleted='" + getDeleted() + "'" +
-            ", usage='" + getUsage() + "'" +
-            ", associatedTms='" + getAssociatedTms() + "'" +
-            ", trademarkStatus='" + getTrademarkStatus() + "'" +
-            ", createdDate='" + getCreatedDate()+ "'"+
-            ", modifiedDate='" + getModifiedDate()+ "'"+
-            "}";
-    }
+	@Override
+	public String toString() {
+		return "PublishedTmDTO [textIndexes=" + textIndexes + ", id=" + id + ", name=" + name + ", details=" + details
+				+ ", applicationNo=" + applicationNo + ", applicationDate=" + applicationDate + ", agentName="
+				+ agentName + ", agentAddress=" + agentAddress + ", proprietorName=" + proprietorName
+				+ ", proprietorAddress=" + proprietorAddress + ", headOffice=" + headOffice + ", imgUrl=" + imgUrl
+				+ ", tmClass=" + tmClass + ", journalNo=" + journalNo + ", deleted=" + deleted + ", usage=" + usage
+				+ ", associatedTms=" + associatedTms + ", trademarkStatus=" + trademarkStatus + ", createdDate="
+				+ createdDate + ", modifiedDate=" + modifiedDate + ", pageNo=" + pageNo + ", agent=" + agent + "]";
+	}
 }
