@@ -19,7 +19,7 @@
     "enableTranslation": false,
     "entities": ["Trademark", "Phonetics", "PublishedTmPhonetics", "PublishedTm", "TmAgent", "UserProfile"],
     "feignClient": null,
-    "jhipsterVersion": "8.6.0",
+    "jhipsterVersion": "8.7.0",
     "jwtSecretKey": "NmJmMGNmN2MxODlhOGQ1Y2E4YzQxYWRmNWFhOTQ3ZTEzM2E3MTE4MzRmYjkwYmQyYWY5ZTNhM2NkOWYxOTZkNDMxZWE2MDNiOTcyNDVmYzU2MjEwNmU5MDI2NDA4Nzg2YjBiOWI2YTlmNzA0NjBiNzdlMGE5MjI4YmE3N2I5ZDc=",
     "languages": ["en"],
     "lastLiquibaseTimestamp": 1729336095000,

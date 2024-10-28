@@ -17,7 +17,7 @@ describe('PublishedTm Management Detail Component', () => {
           [
             {
               path: '**',
-              component: PublishedTmDetailComponent,
+              loadComponent: () => import('./published-tm-detail.component').then(m => m.PublishedTmDetailComponent),
               resolve: { publishedTm: () => of({ id: 123 }) },
             },
           ],

@@ -17,7 +17,7 @@ describe('TmAgent Management Detail Component', () => {
           [
             {
               path: '**',
-              component: TmAgentDetailComponent,
+              loadComponent: () => import('./tm-agent-detail.component').then(m => m.TmAgentDetailComponent),
               resolve: { tmAgent: () => of({ id: 123 }) },
             },
           ],

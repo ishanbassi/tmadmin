@@ -31,7 +31,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/tm-agents")
 public class TmAgentResource {
 
-    private static final Logger log = LoggerFactory.getLogger(TmAgentResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TmAgentResource.class);
 
     private static final String ENTITY_NAME = "tmAgent";
 
@@ -59,7 +59,7 @@ public class TmAgentResource {
      */
     @PostMapping("")
     public ResponseEntity<TmAgent> createTmAgent(@RequestBody TmAgent tmAgent) throws URISyntaxException {
-        log.debug("REST request to save TmAgent : {}", tmAgent);
+        LOG.debug("REST request to save TmAgent : {}", tmAgent);
         if (tmAgent.getId() != null) {
             throw new BadRequestAlertException("A new tmAgent cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -82,7 +82,7 @@ public class TmAgentResource {
     @PutMapping("/{id}")
     public ResponseEntity<TmAgent> updateTmAgent(@PathVariable(value = "id", required = false) final Long id, @RequestBody TmAgent tmAgent)
         throws URISyntaxException {
-        log.debug("REST request to update TmAgent : {}, {}", id, tmAgent);
+        LOG.debug("REST request to update TmAgent : {}, {}", id, tmAgent);
         if (tmAgent.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -116,7 +116,7 @@ public class TmAgentResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody TmAgent tmAgent
     ) throws URISyntaxException {
-        log.debug("REST request to partial update TmAgent partially : {}, {}", id, tmAgent);
+        LOG.debug("REST request to partial update TmAgent partially : {}, {}", id, tmAgent);
         if (tmAgent.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -148,7 +148,7 @@ public class TmAgentResource {
         TmAgentCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
-        log.debug("REST request to get TmAgents by criteria: {}", criteria);
+        LOG.debug("REST request to get TmAgents by criteria: {}", criteria);
 
         Page<TmAgent> page = tmAgentQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -163,7 +163,7 @@ public class TmAgentResource {
      */
     @GetMapping("/count")
     public ResponseEntity<Long> countTmAgents(TmAgentCriteria criteria) {
-        log.debug("REST request to count TmAgents by criteria: {}", criteria);
+        LOG.debug("REST request to count TmAgents by criteria: {}", criteria);
         return ResponseEntity.ok().body(tmAgentQueryService.countByCriteria(criteria));
     }
 
@@ -175,7 +175,7 @@ public class TmAgentResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<TmAgent> getTmAgent(@PathVariable("id") Long id) {
-        log.debug("REST request to get TmAgent : {}", id);
+        LOG.debug("REST request to get TmAgent : {}", id);
         Optional<TmAgent> tmAgent = tmAgentService.findOne(id);
         return ResponseUtil.wrapOrNotFound(tmAgent);
     }
@@ -188,7 +188,7 @@ public class TmAgentResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTmAgent(@PathVariable("id") Long id) {
-        log.debug("REST request to delete TmAgent : {}", id);
+        LOG.debug("REST request to delete TmAgent : {}", id);
         tmAgentService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient, HttpResponse } from '@angular/common/http';
+import { HttpResponse, provideHttpClient } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, from } from 'rxjs';
+import { Subject, from, of } from 'rxjs';
 
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
+import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { PublishedTmService } from '../service/published-tm.service';
 import { IPublishedTm } from '../published-tm.model';
 import { PublishedTmFormService } from './published-tm-form.service';
@@ -16,6 +18,7 @@ describe('PublishedTm Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let publishedTmFormService: PublishedTmFormService;
   let publishedTmService: PublishedTmService;
+  let tmAgentService: TmAgentService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('PublishedTm Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     publishedTmFormService = TestBed.inject(PublishedTmFormService);
     publishedTmService = TestBed.inject(PublishedTmService);
+    tmAgentService = TestBed.inject(TmAgentService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
+    it('Should call TmAgent query and add missing value', () => {
       const publishedTm: IPublishedTm = { id: 456 };
+      const tmAgent: ITmAgent = { id: 23051 };
+      publishedTm.tmAgent = tmAgent;
+
+      const tmAgentCollection: ITmAgent[] = [{ id: 18240 }];
+      jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
+      const additionalTmAgents = [tmAgent];
+      const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
+      jest.spyOn(tmAgentService, 'addTmAgentToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ publishedTm });
       comp.ngOnInit();
 
+      expect(tmAgentService.query).toHaveBeenCalled();
+      expect(tmAgentService.addTmAgentToCollectionIfMissing).toHaveBeenCalledWith(
+        tmAgentCollection,
+        ...additionalTmAgents.map(expect.objectContaining),
+      );
+      expect(comp.tmAgentsSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('Should update editForm', () => {
+      const publishedTm: IPublishedTm = { id: 456 };
+      const tmAgent: ITmAgent = { id: 31982 };
+      publishedTm.tmAgent = tmAgent;
+
+      activatedRoute.data = of({ publishedTm });
+      comp.ngOnInit();
+
+      expect(comp.tmAgentsSharedCollection).toContain(tmAgent);
       expect(comp.publishedTm).toEqual(publishedTm);
     });
   });
@@ -118,6 +147,18 @@ describe('PublishedTm Management Update Component', () => {
       expect(publishedTmService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareTmAgent', () => {
+      it('Should forward to tmAgentService', () => {
+        const entity = { id: 123 };
+        const entity2 = { id: 456 };
+        jest.spyOn(tmAgentService, 'compareTmAgent');
+        comp.compareTmAgent(entity, entity2);
+        expect(tmAgentService.compareTmAgent).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

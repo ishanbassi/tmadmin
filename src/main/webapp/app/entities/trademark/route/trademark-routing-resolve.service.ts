@@ -1,14 +1,14 @@
 import { inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
-import { of, EMPTY, Observable } from 'rxjs';
+import { EMPTY, Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 
 import { ITrademark } from '../trademark.model';
 import { TrademarkService } from '../service/trademark.service';
 
 const trademarkResolve = (route: ActivatedRouteSnapshot): Observable<null | ITrademark> => {
-  const id = route.params['id'];
+  const id = route.params.id;
   if (id) {
     return inject(TrademarkService)
       .find(id)
@@ -16,10 +16,9 @@ const trademarkResolve = (route: ActivatedRouteSnapshot): Observable<null | ITra
         mergeMap((trademark: HttpResponse<ITrademark>) => {
           if (trademark.body) {
             return of(trademark.body);
-          } else {
-            inject(Router).navigate(['404']);
-            return EMPTY;
           }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

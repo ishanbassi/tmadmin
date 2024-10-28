@@ -6,15 +6,15 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
     <!--
-        Added the constraints for entity Trademark.
+        Added the constraints for entity PublishedTm.
     -->
-    <changeSet id="20240522160735-2" author="jhipster">
+    <changeSet id="20240522160738-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="user_profile_id"
-                                 baseTableName="trademark"
-                                 constraintName="fk_trademark__user_profile_id"
+        <addForeignKeyConstraint baseColumnNames="tm_agent_id"
+                                 baseTableName="published_tm"
+                                 constraintName="fk_published_tm__tm_agent_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="user_profile"
+                                 referencedTableName="tm_agent"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  />

@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
+import jakarta.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ import tech.jhipster.service.QueryService;
 @Transactional(readOnly = true)
 public class PublishedTmQueryService extends QueryService<PublishedTm> {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmQueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmQueryService.class);
 
     private final PublishedTmRepository publishedTmRepository;
 
@@ -39,7 +40,7 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
      */
     @Transactional(readOnly = true)
     public Page<PublishedTm> findByCriteria(PublishedTmCriteria criteria, Pageable page) {
-        log.debug("find by criteria : {}, page: {}", criteria, page);
+        LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<PublishedTm> specification = createSpecification(criteria);
         return publishedTmRepository.findAll(specification, page);
     }
@@ -51,7 +52,7 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(PublishedTmCriteria criteria) {
-        log.debug("count by criteria : {}", criteria);
+        LOG.debug("count by criteria : {}", criteria);
         final Specification<PublishedTm> specification = createSpecification(criteria);
         return publishedTmRepository.count(specification);
     }
@@ -126,6 +127,11 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
             }
             if (criteria.getModifiedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), PublishedTm_.modifiedDate));
+            }
+            if (criteria.getTmAgentId() != null) {
+                specification = specification.and(
+                    buildSpecification(criteria.getTmAgentId(), root -> root.join(PublishedTm_.tmAgent, JoinType.LEFT).get(TmAgent_.id))
+                );
             }
         }
         return specification;

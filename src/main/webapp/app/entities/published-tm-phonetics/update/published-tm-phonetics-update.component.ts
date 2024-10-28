@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { IPublishedTm } from 'app/entities/published-tm/published-tm.model';
 import { PublishedTmService } from 'app/entities/published-tm/service/published-tm.service';
 import { IPublishedTmPhonetics } from '../published-tm-phonetics.model';
 import { PublishedTmPhoneticsService } from '../service/published-tm-phonetics.service';
-import { PublishedTmPhoneticsFormService, PublishedTmPhoneticsFormGroup } from './published-tm-phonetics-form.service';
+import { PublishedTmPhoneticsFormGroup, PublishedTmPhoneticsFormService } from './published-tm-phonetics-form.service';
 
 @Component({
   standalone: true,

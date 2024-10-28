@@ -4,7 +4,6 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.service.criteria.TmAgentCriteria;
-import jakarta.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -24,7 +23,7 @@ import tech.jhipster.service.QueryService;
 @Transactional(readOnly = true)
 public class TmAgentQueryService extends QueryService<TmAgent> {
 
-    private static final Logger log = LoggerFactory.getLogger(TmAgentQueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TmAgentQueryService.class);
 
     private final TmAgentRepository tmAgentRepository;
 
@@ -40,7 +39,7 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
      */
     @Transactional(readOnly = true)
     public Page<TmAgent> findByCriteria(TmAgentCriteria criteria, Pageable page) {
-        log.debug("find by criteria : {}, page: {}", criteria, page);
+        LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<TmAgent> specification = createSpecification(criteria);
         return tmAgentRepository.findAll(specification, page);
     }
@@ -52,7 +51,7 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(TmAgentCriteria criteria) {
-        log.debug("count by criteria : {}", criteria);
+        LOG.debug("count by criteria : {}", criteria);
         final Specification<TmAgent> specification = createSpecification(criteria);
         return tmAgentRepository.count(specification);
     }
@@ -95,11 +94,6 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
             }
             if (criteria.getEmail() != null) {
                 specification = specification.and(buildStringSpecification(criteria.getEmail(), TmAgent_.email));
-            }
-            if (criteria.getTrademarksId() != null) {
-                specification = specification.and(
-                    buildSpecification(criteria.getTrademarksId(), root -> root.join(TmAgent_.trademarks, JoinType.LEFT).get(Trademark_.id))
-                );
             }
         }
         return specification;

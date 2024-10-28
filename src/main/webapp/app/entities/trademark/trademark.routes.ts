@@ -2,23 +2,20 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
-import { TrademarkComponent } from './list/trademark.component';
-import { TrademarkDetailComponent } from './detail/trademark-detail.component';
-import { TrademarkUpdateComponent } from './update/trademark-update.component';
 import TrademarkResolve from './route/trademark-routing-resolve.service';
 
 const trademarkRoute: Routes = [
   {
     path: '',
-    component: TrademarkComponent,
+    loadComponent: () => import('./list/trademark.component').then(m => m.TrademarkComponent),
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',
-    component: TrademarkDetailComponent,
+    loadComponent: () => import('./detail/trademark-detail.component').then(m => m.TrademarkDetailComponent),
     resolve: {
       trademark: TrademarkResolve,
     },
@@ -26,7 +23,7 @@ const trademarkRoute: Routes = [
   },
   {
     path: 'new',
-    component: TrademarkUpdateComponent,
+    loadComponent: () => import('./update/trademark-update.component').then(m => m.TrademarkUpdateComponent),
     resolve: {
       trademark: TrademarkResolve,
     },
@@ -34,7 +31,7 @@ const trademarkRoute: Routes = [
   },
   {
     path: ':id/edit',
-    component: TrademarkUpdateComponent,
+    loadComponent: () => import('./update/trademark-update.component').then(m => m.TrademarkUpdateComponent),
     resolve: {
       trademark: TrademarkResolve,
     },

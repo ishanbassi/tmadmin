@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -7,12 +7,12 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
-import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
+import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
-import { TrademarkFormService, TrademarkFormGroup } from './trademark-form.service';
+import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.service';
 
 @Component({
   standalone: true,
@@ -25,17 +25,17 @@ export class TrademarkUpdateComponent implements OnInit {
   trademark: ITrademark | null = null;
   headOfficeValues = Object.keys(HeadOffice);
 
-  tmAgentsSharedCollection: ITmAgent[] = [];
+  userProfilesSharedCollection: IUserProfile[] = [];
 
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);
-  protected tmAgentService = inject(TmAgentService);
+  protected userProfileService = inject(UserProfileService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: TrademarkFormGroup = this.trademarkFormService.createTrademarkFormGroup();
 
-  compareTmAgent = (o1: ITmAgent | null, o2: ITmAgent | null): boolean => this.tmAgentService.compareTmAgent(o1, o2);
+  compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ trademark }) => {
@@ -85,17 +85,21 @@ export class TrademarkUpdateComponent implements OnInit {
     this.trademark = trademark;
     this.trademarkFormService.resetForm(this.editForm, trademark);
 
-    this.tmAgentsSharedCollection = this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(
-      this.tmAgentsSharedCollection,
-      trademark.tmAgent,
+    this.userProfilesSharedCollection = this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(
+      this.userProfilesSharedCollection,
+      trademark.userProfile,
     );
   }
 
   protected loadRelationshipsOptions(): void {
-    this.tmAgentService
+    this.userProfileService
       .query()
-      .pipe(map((res: HttpResponse<ITmAgent[]>) => res.body ?? []))
-      .pipe(map((tmAgents: ITmAgent[]) => this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(tmAgents, this.trademark?.tmAgent)))
-      .subscribe((tmAgents: ITmAgent[]) => (this.tmAgentsSharedCollection = tmAgents));
+      .pipe(map((res: HttpResponse<IUserProfile[]>) => res.body ?? []))
+      .pipe(
+        map((userProfiles: IUserProfile[]) =>
+          this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(userProfiles, this.trademark?.userProfile),
+        ),
+      )
+      .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
   }
 }

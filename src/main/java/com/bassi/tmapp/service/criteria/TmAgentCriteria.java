@@ -40,8 +40,6 @@ public class TmAgentCriteria implements Serializable, Criteria {
 
     private StringFilter email;
 
-    private LongFilter trademarksId;
-
     private Boolean distinct;
 
     public TmAgentCriteria() {}
@@ -56,7 +54,6 @@ public class TmAgentCriteria implements Serializable, Criteria {
         this.companyName = other.optionalCompanyName().map(StringFilter::copy).orElse(null);
         this.agentCode = other.optionalAgentCode().map(StringFilter::copy).orElse(null);
         this.email = other.optionalEmail().map(StringFilter::copy).orElse(null);
-        this.trademarksId = other.optionalTrademarksId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -236,25 +233,6 @@ public class TmAgentCriteria implements Serializable, Criteria {
         this.email = email;
     }
 
-    public LongFilter getTrademarksId() {
-        return trademarksId;
-    }
-
-    public Optional<LongFilter> optionalTrademarksId() {
-        return Optional.ofNullable(trademarksId);
-    }
-
-    public LongFilter trademarksId() {
-        if (trademarksId == null) {
-            setTrademarksId(new LongFilter());
-        }
-        return trademarksId;
-    }
-
-    public void setTrademarksId(LongFilter trademarksId) {
-        this.trademarksId = trademarksId;
-    }
-
     public Boolean getDistinct() {
         return distinct;
     }
@@ -293,26 +271,13 @@ public class TmAgentCriteria implements Serializable, Criteria {
             Objects.equals(companyName, that.companyName) &&
             Objects.equals(agentCode, that.agentCode) &&
             Objects.equals(email, that.email) &&
-            Objects.equals(trademarksId, that.trademarksId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            id,
-            fullName,
-            address,
-            createdDate,
-            modifiedDate,
-            deleted,
-            companyName,
-            agentCode,
-            email,
-            trademarksId,
-            distinct
-        );
+        return Objects.hash(id, fullName, address, createdDate, modifiedDate, deleted, companyName, agentCode, email, distinct);
     }
 
     // prettier-ignore
@@ -328,7 +293,6 @@ public class TmAgentCriteria implements Serializable, Criteria {
             optionalCompanyName().map(f -> "companyName=" + f + ", ").orElse("") +
             optionalAgentCode().map(f -> "agentCode=" + f + ", ").orElse("") +
             optionalEmail().map(f -> "email=" + f + ", ").orElse("") +
-            optionalTrademarksId().map(f -> "trademarksId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

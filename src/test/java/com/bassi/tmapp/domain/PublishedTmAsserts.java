@@ -64,19 +64,17 @@ public class PublishedTmAsserts {
             .satisfies(e -> assertThat(e.getUsage()).as("check usage").isEqualTo(actual.getUsage()))
             .satisfies(e -> assertThat(e.getAssociatedTms()).as("check associatedTms").isEqualTo(actual.getAssociatedTms()))
             .satisfies(e -> assertThat(e.getTrademarkStatus()).as("check trademarkStatus").isEqualTo(actual.getTrademarkStatus()))
-            .satisfies(
-                e ->
-                    assertThat(e.getCreatedDate())
-                        .as("check createdDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getCreatedDate())
+            .satisfies(e ->
+                assertThat(e.getCreatedDate())
+                    .as("check createdDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(
-                e ->
-                    assertThat(e.getModifiedDate())
-                        .as("check modifiedDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getModifiedDate())
+            .satisfies(e ->
+                assertThat(e.getModifiedDate())
+                    .as("check modifiedDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getModifiedDate())
             );
     }
 
@@ -86,5 +84,9 @@ public class PublishedTmAsserts {
      * @param expected the expected entity
      * @param actual the actual entity
      */
-    public static void assertPublishedTmUpdatableRelationshipsEquals(PublishedTm expected, PublishedTm actual) {}
+    public static void assertPublishedTmUpdatableRelationshipsEquals(PublishedTm expected, PublishedTm actual) {
+        assertThat(expected)
+            .as("Verify PublishedTm relationships")
+            .satisfies(e -> assertThat(e.getTmAgent()).as("check tmAgent").isEqualTo(actual.getTmAgent()));
+    }
 }

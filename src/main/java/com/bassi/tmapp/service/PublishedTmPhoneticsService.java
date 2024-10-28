@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PublishedTmPhoneticsService {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmPhoneticsService.class);
 
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
 
@@ -31,7 +31,7 @@ public class PublishedTmPhoneticsService {
      * @return the persisted entity.
      */
     public PublishedTmPhonetics save(PublishedTmPhonetics publishedTmPhonetics) {
-        log.debug("Request to save PublishedTmPhonetics : {}", publishedTmPhonetics);
+        LOG.debug("Request to save PublishedTmPhonetics : {}", publishedTmPhonetics);
         return publishedTmPhoneticsRepository.save(publishedTmPhonetics);
     }
 
@@ -42,7 +42,7 @@ public class PublishedTmPhoneticsService {
      * @return the persisted entity.
      */
     public PublishedTmPhonetics update(PublishedTmPhonetics publishedTmPhonetics) {
-        log.debug("Request to update PublishedTmPhonetics : {}", publishedTmPhonetics);
+        LOG.debug("Request to update PublishedTmPhonetics : {}", publishedTmPhonetics);
         return publishedTmPhoneticsRepository.save(publishedTmPhonetics);
     }
 
@@ -53,7 +53,7 @@ public class PublishedTmPhoneticsService {
      * @return the persisted entity.
      */
     public Optional<PublishedTmPhonetics> partialUpdate(PublishedTmPhonetics publishedTmPhonetics) {
-        log.debug("Request to partially update PublishedTmPhonetics : {}", publishedTmPhonetics);
+        LOG.debug("Request to partially update PublishedTmPhonetics : {}", publishedTmPhonetics);
 
         return publishedTmPhoneticsRepository
             .findById(publishedTmPhonetics.getId())
@@ -83,7 +83,7 @@ public class PublishedTmPhoneticsService {
      */
     @Transactional(readOnly = true)
     public List<PublishedTmPhonetics> findAll() {
-        log.debug("Request to get all PublishedTmPhonetics");
+        LOG.debug("Request to get all PublishedTmPhonetics");
         return publishedTmPhoneticsRepository.findAll();
     }
 
@@ -95,7 +95,7 @@ public class PublishedTmPhoneticsService {
      */
     @Transactional(readOnly = true)
     public Optional<PublishedTmPhonetics> findOne(Long id) {
-        log.debug("Request to get PublishedTmPhonetics : {}", id);
+        LOG.debug("Request to get PublishedTmPhonetics : {}", id);
         return publishedTmPhoneticsRepository.findById(id);
     }
 
@@ -105,7 +105,7 @@ public class PublishedTmPhoneticsService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete PublishedTmPhonetics : {}", id);
+        LOG.debug("Request to delete PublishedTmPhonetics : {}", id);
         publishedTmPhoneticsRepository.deleteById(id);
     }
 }

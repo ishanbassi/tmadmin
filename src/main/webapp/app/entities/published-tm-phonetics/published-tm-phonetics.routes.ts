@@ -2,23 +2,20 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
-import { PublishedTmPhoneticsComponent } from './list/published-tm-phonetics.component';
-import { PublishedTmPhoneticsDetailComponent } from './detail/published-tm-phonetics-detail.component';
-import { PublishedTmPhoneticsUpdateComponent } from './update/published-tm-phonetics-update.component';
 import PublishedTmPhoneticsResolve from './route/published-tm-phonetics-routing-resolve.service';
 
 const publishedTmPhoneticsRoute: Routes = [
   {
     path: '',
-    component: PublishedTmPhoneticsComponent,
+    loadComponent: () => import('./list/published-tm-phonetics.component').then(m => m.PublishedTmPhoneticsComponent),
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',
-    component: PublishedTmPhoneticsDetailComponent,
+    loadComponent: () => import('./detail/published-tm-phonetics-detail.component').then(m => m.PublishedTmPhoneticsDetailComponent),
     resolve: {
       publishedTmPhonetics: PublishedTmPhoneticsResolve,
     },
@@ -26,7 +23,7 @@ const publishedTmPhoneticsRoute: Routes = [
   },
   {
     path: 'new',
-    component: PublishedTmPhoneticsUpdateComponent,
+    loadComponent: () => import('./update/published-tm-phonetics-update.component').then(m => m.PublishedTmPhoneticsUpdateComponent),
     resolve: {
       publishedTmPhonetics: PublishedTmPhoneticsResolve,
     },
@@ -34,7 +31,7 @@ const publishedTmPhoneticsRoute: Routes = [
   },
   {
     path: ':id/edit',
-    component: PublishedTmPhoneticsUpdateComponent,
+    loadComponent: () => import('./update/published-tm-phonetics-update.component').then(m => m.PublishedTmPhoneticsUpdateComponent),
     resolve: {
       publishedTmPhonetics: PublishedTmPhoneticsResolve,
     },

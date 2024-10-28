@@ -1,17 +1,19 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
+import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
-import { IPublishedTm } from '../published-tm.model';
 import { PublishedTmService } from '../service/published-tm.service';
-import { PublishedTmFormService, PublishedTmFormGroup } from './published-tm-form.service';
+import { IPublishedTm } from '../published-tm.model';
+import { PublishedTmFormGroup, PublishedTmFormService } from './published-tm-form.service';
 
 @Component({
   standalone: true,
@@ -25,12 +27,17 @@ export class PublishedTmUpdateComponent implements OnInit {
   headOfficeValues = Object.keys(HeadOffice);
   trademarkStatusValues = Object.keys(TrademarkStatus);
 
+  tmAgentsSharedCollection: ITmAgent[] = [];
+
   protected publishedTmService = inject(PublishedTmService);
   protected publishedTmFormService = inject(PublishedTmFormService);
+  protected tmAgentService = inject(TmAgentService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: PublishedTmFormGroup = this.publishedTmFormService.createPublishedTmFormGroup();
+
+  compareTmAgent = (o1: ITmAgent | null, o2: ITmAgent | null): boolean => this.tmAgentService.compareTmAgent(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ publishedTm }) => {
@@ -38,6 +45,8 @@ export class PublishedTmUpdateComponent implements OnInit {
       if (publishedTm) {
         this.updateForm(publishedTm);
       }
+
+      this.loadRelationshipsOptions();
     });
   }
 
@@ -77,5 +86,20 @@ export class PublishedTmUpdateComponent implements OnInit {
   protected updateForm(publishedTm: IPublishedTm): void {
     this.publishedTm = publishedTm;
     this.publishedTmFormService.resetForm(this.editForm, publishedTm);
+
+    this.tmAgentsSharedCollection = this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(
+      this.tmAgentsSharedCollection,
+      publishedTm.tmAgent,
+    );
+  }
+
+  protected loadRelationshipsOptions(): void {
+    this.tmAgentService
+      .query()
+      .pipe(map((res: HttpResponse<ITmAgent[]>) => res.body ?? []))
+      .pipe(
+        map((tmAgents: ITmAgent[]) => this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(tmAgents, this.publishedTm?.tmAgent)),
+      )
+      .subscribe((tmAgents: ITmAgent[]) => (this.tmAgentsSharedCollection = tmAgents));
   }
 }

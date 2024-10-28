@@ -17,7 +17,7 @@ describe('Phonetics Management Detail Component', () => {
           [
             {
               path: '**',
-              component: PhoneticsDetailComponent,
+              loadComponent: () => import('./phonetics-detail.component').then(m => m.PhoneticsDetailComponent),
               resolve: { phonetics: () => of({ id: 123 }) },
             },
           ],

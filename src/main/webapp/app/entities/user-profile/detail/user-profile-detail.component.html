@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (userProfile()) {
+    @if (userProfile(); as userProfileRef) {
       <div>
         <h2 data-cy="userProfileDetailsHeading"><span>User Profile</span></h2>
 
@@ -13,23 +13,23 @@
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ userProfile()!.id }}</span>
+            <span>{{ userProfileRef.id }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>
-            <span>{{ userProfile()!.createdDate | formatMediumDatetime }}</span>
+            <span>{{ userProfileRef.createdDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Modified Date</span></dt>
           <dd>
-            <span>{{ userProfile()!.modifiedDate | formatMediumDatetime }}</span>
+            <span>{{ userProfileRef.modifiedDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Deleted</span></dt>
           <dd>
-            <span>{{ userProfile()!.deleted }}</span>
+            <span>{{ userProfileRef.deleted }}</span>
           </dd>
           <dt><span>User</span></dt>
           <dd>
-            <span>{{ userProfile()!.user?.id }}</span>
+            <span>{{ userProfileRef.user?.id }}</span>
           </dd>
         </dl>
 
@@ -37,7 +37,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/user-profile', userProfile()!.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/user-profile', userProfileRef.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>
