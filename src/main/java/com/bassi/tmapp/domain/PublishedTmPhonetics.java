@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import org.hibernate.annotations.Cache;
@@ -35,6 +36,7 @@ public class PublishedTmPhonetics implements Serializable {
     private Boolean complete;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "tmAgent" }, allowSetters = true)
     private PublishedTm publishedTm;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

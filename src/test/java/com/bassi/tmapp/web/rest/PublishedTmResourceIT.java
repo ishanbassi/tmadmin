@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.repository.PublishedTmRepository;
@@ -1365,6 +1366,28 @@ class PublishedTmResourceIT {
             "modifiedDate.greaterThan=" + SMALLER_MODIFIED_DATE,
             "modifiedDate.greaterThan=" + DEFAULT_MODIFIED_DATE
         );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTmAgentIsEqualToSomething() throws Exception {
+        TmAgent tmAgent;
+        if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
+            publishedTmRepository.saveAndFlush(publishedTm);
+            tmAgent = TmAgentResourceIT.createEntity(em);
+        } else {
+            tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
+        }
+        em.persist(tmAgent);
+        em.flush();
+        publishedTm.setTmAgent(tmAgent);
+        publishedTmRepository.saveAndFlush(publishedTm);
+        Long tmAgentId = tmAgent.getId();
+        // Get all the publishedTmList where tmAgent equals to tmAgentId
+        defaultPublishedTmShouldBeFound("tmAgentId.equals=" + tmAgentId);
+
+        // Get all the publishedTmList where tmAgent equals to (tmAgentId + 1)
+        defaultPublishedTmShouldNotBeFound("tmAgentId.equals=" + (tmAgentId + 1));
     }
 
     private void defaultPublishedTmFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

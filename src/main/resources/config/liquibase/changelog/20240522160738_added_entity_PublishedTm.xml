@@ -68,6 +68,9 @@
             <column name="modified_date" type="${datetimeType}">
                 <constraints nullable="true" />
             </column>
+            <column name="tm_agent_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
         <dropDefaultValue tableName="published_tm" columnName="created_date" columnDataType="${datetimeType}"/>

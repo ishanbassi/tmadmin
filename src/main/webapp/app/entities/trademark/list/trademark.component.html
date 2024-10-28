@@ -168,9 +168,9 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="tmAgent.id">
+            <th scope="col" jhiSortBy="userProfile.id">
               <div class="d-flex">
-                <span>Tm Agent</span>
+                <span>User Profile</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -208,9 +208,9 @@
               <td>{{ trademark.createdDate | formatMediumDatetime }}</td>
               <td>{{ trademark.modifiedDate | formatMediumDatetime }}</td>
               <td>
-                @if (trademark.tmAgent) {
+                @if (trademark.userProfile) {
                   <div>
-                    <a [routerLink]="['/tm-agent', trademark.tmAgent.id, 'view']">{{ trademark.tmAgent.id }}</a>
+                    <a [routerLink]="['/user-profile', trademark.userProfile.id, 'view']">{{ trademark.userProfile.id }}</a>
                   </div>
                 }
               </td>

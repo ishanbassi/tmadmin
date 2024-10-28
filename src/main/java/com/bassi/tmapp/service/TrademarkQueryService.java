@@ -126,9 +126,12 @@ public class TrademarkQueryService extends QueryService<Trademark> {
             if (criteria.getModifiedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), Trademark_.modifiedDate));
             }
-            if (criteria.getTmAgentId() != null) {
+            if (criteria.getUserProfileId() != null) {
                 specification = specification.and(
-                    buildSpecification(criteria.getTmAgentId(), root -> root.join(Trademark_.tmAgent, JoinType.LEFT).get(TmAgent_.id))
+                    buildSpecification(
+                        criteria.getUserProfileId(),
+                        root -> root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
+                    )
                 );
             }
         }

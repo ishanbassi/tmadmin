@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
+import jakarta.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -126,6 +127,11 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
             }
             if (criteria.getModifiedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), PublishedTm_.modifiedDate));
+            }
+            if (criteria.getTmAgentId() != null) {
+                specification = specification.and(
+                    buildSpecification(criteria.getTmAgentId(), root -> root.join(PublishedTm_.tmAgent, JoinType.LEFT).get(TmAgent_.id))
+                );
             }
         }
         return specification;

@@ -1,11 +1,8 @@
 package com.bassi.tmapp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -49,11 +46,6 @@ public class TmAgent implements Serializable {
 
     @Column(name = "email")
     private String email;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tmAgent")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "tmAgent" }, allowSetters = true)
-    private Set<Trademark> trademarks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -172,37 +164,6 @@ public class TmAgent implements Serializable {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Set<Trademark> getTrademarks() {
-        return this.trademarks;
-    }
-
-    public void setTrademarks(Set<Trademark> trademarks) {
-        if (this.trademarks != null) {
-            this.trademarks.forEach(i -> i.setTmAgent(null));
-        }
-        if (trademarks != null) {
-            trademarks.forEach(i -> i.setTmAgent(this));
-        }
-        this.trademarks = trademarks;
-    }
-
-    public TmAgent trademarks(Set<Trademark> trademarks) {
-        this.setTrademarks(trademarks);
-        return this;
-    }
-
-    public TmAgent addTrademarks(Trademark trademark) {
-        this.trademarks.add(trademark);
-        trademark.setTmAgent(this);
-        return this;
-    }
-
-    public TmAgent removeTrademarks(Trademark trademark) {
-        this.trademarks.remove(trademark);
-        trademark.setTmAgent(null);
-        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

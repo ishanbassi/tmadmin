@@ -1,6 +1,7 @@
 package com.bassi.tmapp.domain;
 
 import static com.bassi.tmapp.domain.PublishedTmTestSamples.*;
+import static com.bassi.tmapp.domain.TmAgentTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bassi.tmapp.web.rest.TestUtil;
@@ -20,5 +21,17 @@ class PublishedTmTest {
 
         publishedTm2 = getPublishedTmSample2();
         assertThat(publishedTm1).isNotEqualTo(publishedTm2);
+    }
+
+    @Test
+    void tmAgentTest() {
+        PublishedTm publishedTm = getPublishedTmRandomSampleGenerator();
+        TmAgent tmAgentBack = getTmAgentRandomSampleGenerator();
+
+        publishedTm.setTmAgent(tmAgentBack);
+        assertThat(publishedTm.getTmAgent()).isEqualTo(tmAgentBack);
+
+        publishedTm.tmAgent(null);
+        assertThat(publishedTm.getTmAgent()).isNull();
     }
 }

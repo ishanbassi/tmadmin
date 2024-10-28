@@ -89,6 +89,6 @@ public class TrademarkAsserts {
     public static void assertTrademarkUpdatableRelationshipsEquals(Trademark expected, Trademark actual) {
         assertThat(expected)
             .as("Verify Trademark relationships")
-            .satisfies(e -> assertThat(e.getTmAgent()).as("check tmAgent").isEqualTo(actual.getTmAgent()));
+            .satisfies(e -> assertThat(e.getUserProfile()).as("check userProfile").isEqualTo(actual.getUserProfile()));
     }
 }
