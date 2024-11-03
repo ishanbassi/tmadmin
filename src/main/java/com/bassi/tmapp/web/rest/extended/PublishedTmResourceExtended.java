@@ -216,5 +216,19 @@ public class PublishedTmResourceExtended {
 		return "Phonetics generated for missing trademarks";
 	}
 	
+	@DeleteMapping("/soft-delete/{journalNo}")
+	public ResponseEntity<Void> softDeletePublishedTrademarksByJournalNo(@PathVariable("journalNo") int journalNo) {
+			publishedTmServiceExtended.softDeleteByJournalNo(journalNo);
+			return ResponseEntity.noContent()
+		            .build();
+	}
+	
+	@DeleteMapping("/delete")
+	public ResponseEntity<Void> deletePublishedTrademarksByJournalNo(PublishedTmCriteria criteria) {
+			publishedTmServiceExtended.deleteByJournalNo(criteria);
+			return ResponseEntity.noContent()
+		            .build();
+	}
+	
 	
 }

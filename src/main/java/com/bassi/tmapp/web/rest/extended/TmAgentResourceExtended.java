@@ -133,16 +133,6 @@ public class TmAgentResourceExtended {
         );
     }
 
-    /**
-     * {@code GET  /tm-agents} : get all the tmAgents.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tmAgents in body.
-     */
-    @GetMapping("")
-    public List<TmAgent> getAllTmAgents() {
-        log.debug("REST request to get all TmAgents");
-        return tmAgentService.findAll();
-    }
 
     /**
      * {@code GET  /tm-agents/:id} : get the "id" tmAgent.

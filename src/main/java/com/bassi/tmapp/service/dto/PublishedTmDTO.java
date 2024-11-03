@@ -91,7 +91,7 @@ public class PublishedTmDTO implements Serializable {
     
     private short pageNo;
     
-    private TmAgent agent;
+    private TmAgentDTO agent;
     
     
     public Map<String,Integer> getTextIndexMap() {
@@ -328,11 +328,11 @@ public class PublishedTmDTO implements Serializable {
 	
 
 
-	public TmAgent getAgent() {
+	public TmAgentDTO getAgent() {
 		return agent;
 	}
 
-	public void setAgent(TmAgent agent) {
+	public void setAgent(TmAgentDTO agent) {
 		this.agent = agent;
 	}
 

@@ -419,6 +419,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 						
 						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
 						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
+						publishedTrademarksDto = publishedTmMapper.toDto(publishedTrademarks);
 						agentServiceExtended.saveTmAgents(publishedTrademarksDto);
 						
 				});

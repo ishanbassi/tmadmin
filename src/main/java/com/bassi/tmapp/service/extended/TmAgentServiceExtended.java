@@ -85,49 +85,43 @@ public class TmAgentServiceExtended {
 		log.info("Found {} new agents", newAgents.size());
 		agents.addAll(newAgents);
 		
-//		saveTrademarks(trademarkByAgentName, agents);
 		assignAgentsToPublishedTrademarks(trademarkByAgentName,agents);
 	}
 
 
-	private void saveTrademarks(Map<String, List<PublishedTmDTO>> trademarkByAgentName, List<TmAgent> newAgents) {
-		log.info("Going to extract trademarks from published trademark");
-		List<TrademarkDTO> trademarkDtos =  trademarkByAgentName.values()
-				.stream()
-				.flatMap(List::stream)
-				.map(tm -> {
-					TrademarkDTO dto  = new TrademarkDTO(tm);
-					TmAgentDTO agentDto = newAgents.stream()
-							.filter(newAgent -> newAgent.getFullName().equalsIgnoreCase(tm.getAgentName())).findFirst()
-							.map(newAgent -> tmAgentMapper.toDto(newAgent))
-							.orElse(null);
-					dto.setTmAgent(agentDto);
-					return dto;
-				})
-				.toList();
-		
-		List<Trademark> trademarks = trademarkMapper.toEntity(trademarkDtos);
-		trademarkRepository.saveAll(trademarks);
-		
-	}
+//	private void saveTrademarks(Map<String, List<PublishedTmDTO>> trademarkByAgentName, List<TmAgent> newAgents) {
+//		log.info("Going to extract trademarks from published trademark");
+//		List<TrademarkDTO> trademarkDtos =  trademarkByAgentName.values()
+//				.stream()
+//				.flatMap(List::stream)
+//				.map(tm -> {
+//					TrademarkDTO dto  = new TrademarkDTO(tm);
+//					TmAgentDTO agentDto = newAgents.stream()
+//							.filter(newAgent -> newAgent.getFullName().equalsIgnoreCase(tm.getAgentName())).findFirst()
+//							.map(newAgent -> tmAgentMapper.toDto(newAgent))
+//							.orElse(null);
+//					dto.setTmAgent(agentDto);
+//					return dto;
+//				})
+//				.toList();
+//		
+//		List<Trademark> trademarks = trademarkMapper.toEntity(trademarkDtos);
+//		trademarkRepository.saveAll(trademarks);
+//		
+//	}
 	
 	private void assignAgentsToPublishedTrademarks(Map<String, List<PublishedTmDTO>> trademarkByAgentName,
 			List<TmAgent> agents) {
-		for (TmAgent agent : agents) {
-			if (trademarkByAgentName.containsKey(agent.getFullName())) {
-				for (PublishedTmDTO tm : trademarkByAgentName.get(agent.getFullName())) {
-					tm.setAgent(agent);
-				}
-				
-				List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(trademarkByAgentName.get(agent.getFullName()));
-				publishedTmRepositoryExtended.saveAll(publishedTrademarks);
-				return;
-				
-			}
-			log.info("No published trademark found that matches with the agent: {}", agent);
+		List<PublishedTm> publishedTrademarks = new ArrayList<>();
+		trademarkByAgentName.forEach((agentName, trademarks) -> {
+			TmAgent agent = agents.stream().filter(a -> a.getFullName().equalsIgnoreCase(agentName)).findFirst().orElse(null);
 			
-		}
-
+			publishedTrademarks.addAll(publishedTmMapper.toEntity(trademarks).stream().map(tm -> {
+				tm.setTmAgent(agent);
+				return tm;
+			}).toList());
+		});
+		publishedTmRepositoryExtended.saveAll(publishedTrademarks);
 	}
 	
 	public void migrateAgentsFromExistingTrademarks() {

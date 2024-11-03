@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +35,18 @@ public interface PublishedTmRepositoryExtended extends JpaRepository<PublishedTm
 	@Query(value="select tm.* FROM published_tm tm where name is not  null and journal_no = ?1 "
 			+ "and tm.id NOT IN (SELECT published_tm_id FROM published_tm_phonetics)", nativeQuery=true)
 	List<PublishedTm> findTrademarksWherePhoneticsMissing(int journalNo);
+
+	
+	@Modifying
+	@Query(value="UPDATE PublishedTm tm SET tm.deleted=true WHERE tm.journalNo = ?1")
+	void softDeleteByJournalNo(Integer journalNo);
+	
+	@Modifying
+	@Query(value="DELETE FROM PublishedTm tm  WHERE tm.journalNo = ?1")
+	void deleteByJournalNo(Integer journalNo);
+
+	
+	
 	
 	
 

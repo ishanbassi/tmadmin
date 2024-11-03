@@ -14,10 +14,6 @@ public class TmAgentDTO implements Serializable {
 
     private String agentCode;
 
-    private String firstName;
-
-    private String lastName;
-
     private String address;
 
     private ZonedDateTime createdDate;
@@ -27,8 +23,21 @@ public class TmAgentDTO implements Serializable {
     private Boolean deleted;
 
     private String companyName;
+    
+    private String fullName;
+    
+    
 
-    public Long getId() {
+
+    public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -42,22 +51,6 @@ public class TmAgentDTO implements Serializable {
 
     public void setAgentCode(String agentCode) {
         this.agentCode = agentCode;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getAddress() {
@@ -121,19 +114,10 @@ public class TmAgentDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    // prettier-ignore
     @Override
-    public String toString() {
-        return "TmAgentDTO{" +
-            "id=" + getId() +
-            ", agentCode='" + getAgentCode() + "'" +
-            ", firstName='" + getFirstName() + "'" +
-            ", lastName='" + getLastName() + "'" +
-            ", address='" + getAddress() + "'" +
-            ", createdDate='" + getCreatedDate() + "'" +
-            ", modifiedDate='" + getModifiedDate() + "'" +
-            ", deleted='" + getDeleted() + "'" +
-            ", companyName='" + getCompanyName() + "'" +
-            "}";
-    }
+	public String toString() {
+		return "TmAgentDTO [id=" + id + ", agentCode=" + agentCode + ", address=" + address + ", createdDate="
+				+ createdDate + ", modifiedDate=" + modifiedDate + ", deleted=" + deleted + ", companyName="
+				+ companyName + ", fullName=" + fullName + "]";
+	}
 }

@@ -20,3 +20,12 @@ ALTER TABLE trademark ALTER COLUMN details  TYPE text;
 ALTER TABLE trademark ALTER COLUMN agent_name   TYPE VARCHAR(1000);
 ALTER TABLE trademark ALTER COLUMN agent_address   TYPE text;
 ALTER TABLE trademark ALTER COLUMN proprietor_address   TYPE text;
+
+
+ALTER TABLE published_tm ADD COLUMN tm_agent_id BIGINT;
+ALTER TABLE published_tm ADD CONSTRAINT fk_tm_agent FOREIGN KEY (tm_agent_id) REFERENCES tm_agent(id);
+ALTER TABLE trademark ADD COLUMN tm_agent_id BIGINT;
+ALTER TABLE trademark ADD CONSTRAINT fk_user_creation FOREIGN KEY (user_profile_id) REFERENCES user_profile(id);
+ALTER TABLE trademark DROP CONSTRAINT fk_trademark__tm_agent_id;
+
+

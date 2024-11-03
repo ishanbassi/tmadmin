@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
  * Service Implementation for managing {@link com.bassi.tmapp.domain.PublishedTmPhonetics}.
  */
 @Service
-@Transactional
 public class PublishedTmPhoneticsServiceExtended {
 
     private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsServiceExtended.class);
