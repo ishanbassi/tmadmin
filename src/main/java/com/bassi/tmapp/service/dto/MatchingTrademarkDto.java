@@ -14,6 +14,7 @@ public class MatchingTrademarkDto {
 	 private  String proprietorAddress;
 	 private  String agentName;
 	 private String agentAddress;
+	 private Integer distance;
 	
 
     public MatchingTrademarkDto(String matchingTrademark, String registeredTrademark, Integer tmClass, 
@@ -110,5 +111,14 @@ public class MatchingTrademarkDto {
 	public void setProprietorAddress(String proprietorAddress) {
 		this.proprietorAddress = proprietorAddress;
 	}
+
+	public Integer getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Integer distance) {
+		this.distance = distance;
+	}
+	
 
 }

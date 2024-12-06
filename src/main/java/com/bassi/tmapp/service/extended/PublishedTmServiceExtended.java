@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -151,8 +152,14 @@ public class PublishedTmServiceExtended {
 				+ "tm.application_no as applicationNo, tm.details , tm.journal_no as journalNo , tm.proprietor_name as proprietorName ,tm.proprietor_address as proprietorAddress, "
 				+ "tm.agent_name as agentName , tm.agent_address as agentAddress "
 				+ "FROM published tm "
-				+ "  INNER JOIN registered t on tm.phonetic_pk = t.phonetic_pk and  tm.tm_class = t.tm_class ORDER BY tm.tm_class" ;
+				+ "  INNER JOIN registered t on tm.phonetic_pk = t.phonetic_pk or "
+				+ " (tm.name ILIKE '%' || t.name || '%'  or t.name ILIKE '%' || tm.name || '%')"
+				+ " and  tm.tm_class = t.tm_class ORDER BY tm.tm_class" ;
 		List<MatchingTrademarkDto> trademarks = em.createNativeQuery(sqlQuery, MatchingTrademarkDto.class).getResultList();
+		for(MatchingTrademarkDto trademark:trademarks) {
+			Integer distance = calculateLevenshteinDistance(trademark.getMatchingTrademark(), trademark.getRegisteredTrademark());
+			trademark.setDistance(distance);
+		}
 		return trademarks;
 	}
 	
@@ -199,6 +206,11 @@ public class PublishedTmServiceExtended {
 		}
 		
 		
+	}
+	
+	public Integer calculateLevenshteinDistance(String name1, String name2) {
+		LevenshteinDistance distance = new LevenshteinDistance();
+		return distance.apply(name1,name2);
 	}
 	
 	
