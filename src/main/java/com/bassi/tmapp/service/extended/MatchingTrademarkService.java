@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.repository.PublishedTmRepository;
+import com.bassi.tmapp.repository.extended.PublishedTmPhoneticsRepositoryExtended;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.PublishedTmService;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
@@ -19,16 +21,19 @@ public class MatchingTrademarkService {
 
 	
 	private PublishedTmRepositoryExtended publishedTmRepositoryExtended;
-	private PublishedTmServiceExtended publishedTmServiceExtended;
+	private PublishedTmServiceExtended publishedTmServiceExtended; 
+	private PublishedTmPhoneticsRepositoryExtended publishedTmPhoneticsRepositoryExtended;
 	
-	MatchingTrademarkService ( PublishedTmRepositoryExtended publishedTmRepositoryExtended ,PublishedTmServiceExtended publishedTmServiceExtended) {
+	MatchingTrademarkService ( PublishedTmRepositoryExtended publishedTmRepositoryExtended ,PublishedTmServiceExtended publishedTmServiceExtended, PublishedTmPhoneticsRepositoryExtended publishedTmPhoneticsRepositoryExtended) {
 		this.publishedTmRepositoryExtended  =  publishedTmRepositoryExtended ;
 		this.publishedTmServiceExtended = publishedTmServiceExtended;
+		this.publishedTmPhoneticsRepositoryExtended = publishedTmPhoneticsRepositoryExtended;
 	}
 	
 	public byte[] exportTrademarks(Integer journalNo) {
 		MatchingTmExportService fileExportedExportService = new MatchingTmExportService("Trademark Journal");
 		 List<MatchingTrademarkDto> matchingTrademarkExportDtoList = publishedTmServiceExtended.findMatchingTrademarkByJournal(journalNo); 
+		 List<PublishedTmPhonetics> test = publishedTmPhoneticsRepositoryExtended.findMatchingTrademarks(journalNo);
         if (matchingTrademarkExportDtoList.isEmpty()) {
             return fileExportedExportService.export().toByteArray();
         }

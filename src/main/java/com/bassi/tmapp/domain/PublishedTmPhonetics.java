@@ -16,7 +16,6 @@ import org.hibernate.annotations.Formula;
 @Table(name = "published_tm_phonetics")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-@Where
 public class PublishedTmPhonetics implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -43,7 +42,7 @@ public class PublishedTmPhonetics implements Serializable {
     @JsonIgnoreProperties(value = { "tmAgent" }, allowSetters = true)
     private PublishedTm publishedTm;
     
-    @Formula(value = "SELECT * FROM phonetics p WHERE p.phonetic_pk = phonetic_pk")
+    @Formula(value = "SELECT * FROM phonetics p WHERE p.phonetic_pk = phonetic_pk ORDER BY levenshtein(p.sanitized_tm, sanitized_tm)")
     private List<Phonetics> registeredTmPhonetics;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
