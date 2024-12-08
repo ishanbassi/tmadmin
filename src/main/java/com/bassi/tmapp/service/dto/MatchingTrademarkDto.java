@@ -19,7 +19,7 @@ public class MatchingTrademarkDto {
 
     public MatchingTrademarkDto(String matchingTrademark, String registeredTrademark, Integer tmClass, 
     		Long applicationNo, String details, Integer journalNo, String proprietorName, 
-                                String proprietorAddress, String agentName, String agentAddress) {
+                                String proprietorAddress, String agentName, String agentAddress, Integer distance) {
         this.matchingTrademark = matchingTrademark;
         this.registeredTrademark = registeredTrademark;
         this.tmClass = tmClass;
@@ -30,6 +30,7 @@ public class MatchingTrademarkDto {
         this.proprietorAddress = proprietorAddress;
         this.agentName = agentName;
         this.agentAddress = agentAddress;
+        this.distance  = distance;
     }
 	
 	public String getAgentName() {
@@ -119,6 +120,17 @@ public class MatchingTrademarkDto {
 	public void setDistance(Integer distance) {
 		this.distance = distance;
 	}
+
+	@Override
+	public String toString() {
+		return "MatchingTrademarkDto [matchingTrademark=" + matchingTrademark + ", registeredTrademark="
+				+ registeredTrademark + ", tmClass=" + tmClass + ", applicationNo=" + applicationNo + ", details="
+				+ details + ", journalNo=" + journalNo + ", proprietorName=" + proprietorName + ", proprietorAddress="
+				+ proprietorAddress + ", agentName=" + agentName + ", agentAddress=" + agentAddress + ", distance="
+				+ distance + "]";
+	}
+	
+	
 	
 
 }

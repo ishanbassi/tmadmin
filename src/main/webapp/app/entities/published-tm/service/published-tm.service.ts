@@ -34,7 +34,7 @@ export class PublishedTmService {
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/published-tms');
-  protected exportUrl = this.applicationConfigService.getEndpointFor('api/matching/trademarks');
+  protected exportUrl = this.applicationConfigService.getEndpointFor('api/extended/matching/trademarks');
 
   create(publishedTm: NewPublishedTm): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(publishedTm);
@@ -135,6 +135,6 @@ export class PublishedTmService {
   download(req?: any): Observable<HttpResponse<Blob>> {
     const options = createRequestOption(req);
     return this.http
-      .get<Blob>(this.exportUrl+"/download/2176", { observe: 'response', responseType: 'blob' as 'json' });
+      .get<Blob>(this.exportUrl+"/download/2180", { observe: 'response', responseType: 'blob' as 'json' });
   }
 }

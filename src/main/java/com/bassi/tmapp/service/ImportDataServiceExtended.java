@@ -87,10 +87,10 @@ public class ImportDataServiceExtended {
 	private Trademark createTrademarkFromCsvLine(String[] line,Map<Integer,String> errors, int row ) {
 		try {
 			Trademark trademark = new Trademark();
-			trademark.setName(line[0]);
-			Long applicationNo = Long.valueOf(line[1]);
-			trademark.setApplicationNo(applicationNo);
-			Integer tmClass = Integer.valueOf(line[2]);
+			trademark.setName(line[2]);
+//			Long applicationNo = Long.valueOf(line[1]);
+//			trademark.setApplicationNo(applicationNo);
+			Integer tmClass = Integer.valueOf(line[1]);
 			trademark.setTmClass(tmClass);
 			return trademark;
 		}

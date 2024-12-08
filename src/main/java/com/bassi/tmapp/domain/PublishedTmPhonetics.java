@@ -3,8 +3,11 @@ package com.bassi.tmapp.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.List;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Formula;
 
 /**
  * A PublishedTmPhonetics.
@@ -13,6 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "published_tm_phonetics")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
+@Where
 public class PublishedTmPhonetics implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -38,6 +42,9 @@ public class PublishedTmPhonetics implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "tmAgent" }, allowSetters = true)
     private PublishedTm publishedTm;
+    
+    @Formula(value = "SELECT * FROM phonetics p WHERE p.phonetic_pk = phonetic_pk")
+    private List<Phonetics> registeredTmPhonetics;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

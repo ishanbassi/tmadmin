@@ -143,23 +143,18 @@ public class PublishedTmServiceExtended {
 	 
 	public List<MatchingTrademarkDto> findMatchingTrademarkByJournal(Integer journalNo) {
 		String sqlQuery = "WITH published AS "
-				+ "(SELECT tm.*, ph.phonetic_pk FROM published_tm tm "
+				+ "(SELECT tm.*, ph.phonetic_pk , ph.sanitized_tm as pub_sanintized_tm FROM published_tm tm "
 				+ " INNER JOIN published_tm_phonetics ph on tm.id = ph.published_tm_id WHERE journal_no =" + journalNo + " AND ph.complete=true), "
 				+ "registered AS "
-				+ "(SELECT tm.name, tm.tm_class, ph.phonetic_pk, ph.complete FROM trademark tm "
+				+ "(SELECT tm.name, tm.tm_class, ph.phonetic_pk, ph.sanitized_tm as reg_sanintized_tm, ph.complete FROM trademark tm "
 				+ " INNER JOIN phonetics ph on tm.id = ph.trademark_id WHERE ph.complete=true) "
 				+ "SELECT tm.name as matchingTrademark, t.name as  registeredTrademark , tm.tm_class as tmClass, "
 				+ "tm.application_no as applicationNo, tm.details , tm.journal_no as journalNo , tm.proprietor_name as proprietorName ,tm.proprietor_address as proprietorAddress, "
-				+ "tm.agent_name as agentName , tm.agent_address as agentAddress "
+				+ "tm.agent_name as agentName , tm.agent_address as agentAddress, levenshtein(pub_sanintized_tm,reg_sanintized_tm) as distance "
 				+ "FROM published tm "
-				+ "  INNER JOIN registered t on tm.phonetic_pk = t.phonetic_pk or "
-				+ " (tm.name ILIKE '%' || t.name || '%'  or t.name ILIKE '%' || tm.name || '%')"
-				+ " and  tm.tm_class = t.tm_class ORDER BY tm.tm_class" ;
+				+ "  INNER JOIN registered t on tm.phonetic_pk = t.phonetic_pk and  tm.tm_class = t.tm_class"
+				+ " ORDER BY tm.tm_class" ;
 		List<MatchingTrademarkDto> trademarks = em.createNativeQuery(sqlQuery, MatchingTrademarkDto.class).getResultList();
-		for(MatchingTrademarkDto trademark:trademarks) {
-			Integer distance = calculateLevenshteinDistance(trademark.getMatchingTrademark(), trademark.getRegisteredTrademark());
-			trademark.setDistance(distance);
-		}
 		return trademarks;
 	}
 	
