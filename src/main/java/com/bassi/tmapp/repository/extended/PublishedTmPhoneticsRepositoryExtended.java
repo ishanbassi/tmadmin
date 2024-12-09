@@ -13,6 +13,4 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface PublishedTmPhoneticsRepositoryExtended extends JpaRepository<PublishedTmPhonetics, Long> {
-	@Query(value ="SELECT ph FROM PublishedTmPhonetics ph where ph.publishedTm.journalNo = ?1 ORDER BY ph.publishedTm.tmClass")
-	List<PublishedTmPhonetics> findMatchingTrademarks(Integer journalNo);
 }

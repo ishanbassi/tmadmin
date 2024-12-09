@@ -153,7 +153,7 @@ public class PublishedTmServiceExtended {
 				+ "tm.agent_name as agentName , tm.agent_address as agentAddress, levenshtein(pub_sanintized_tm,reg_sanintized_tm) as distance "
 				+ "FROM published tm "
 				+ "  INNER JOIN registered t on tm.phonetic_pk = t.phonetic_pk and  tm.tm_class = t.tm_class"
-				+ " ORDER BY tm.tm_class" ;
+				+ " ORDER BY tm.tm_class,distance" ;
 		List<MatchingTrademarkDto> trademarks = em.createNativeQuery(sqlQuery, MatchingTrademarkDto.class).getResultList();
 		return trademarks;
 	}

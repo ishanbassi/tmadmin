@@ -41,9 +41,6 @@ public class PublishedTmPhonetics implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "tmAgent" }, allowSetters = true)
     private PublishedTm publishedTm;
-    
-    @Formula(value = "SELECT * FROM phonetics p WHERE p.phonetic_pk = phonetic_pk ORDER BY levenshtein(p.sanitized_tm, sanitized_tm)")
-    private List<Phonetics> registeredTmPhonetics;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 

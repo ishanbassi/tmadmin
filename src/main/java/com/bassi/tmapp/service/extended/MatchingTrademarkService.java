@@ -32,8 +32,7 @@ public class MatchingTrademarkService {
 	
 	public byte[] exportTrademarks(Integer journalNo) {
 		MatchingTmExportService fileExportedExportService = new MatchingTmExportService("Trademark Journal");
-		 List<MatchingTrademarkDto> matchingTrademarkExportDtoList = publishedTmServiceExtended.findMatchingTrademarkByJournal(journalNo); 
-		 List<PublishedTmPhonetics> test = publishedTmPhoneticsRepositoryExtended.findMatchingTrademarks(journalNo);
+		 List<MatchingTrademarkDto> matchingTrademarkExportDtoList = publishedTmServiceExtended.findMatchingTrademarkByJournal(journalNo); 	
         if (matchingTrademarkExportDtoList.isEmpty()) {
             return fileExportedExportService.export().toByteArray();
         }
