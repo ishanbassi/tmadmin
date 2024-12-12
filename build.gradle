@@ -182,10 +182,7 @@ dependencies {
   	implementation group: 'org.apache.poi', name: 'poi', version: '3.9'
   	implementation("org.apache.commons:commons-csv:1.10.0")
   	implementation 'com.opencsv:opencsv:5.9'
-  	
-  	
-    
-    
+  	implementation 'org.jsoup:jsoup:1.18.3'
 	
 
     
