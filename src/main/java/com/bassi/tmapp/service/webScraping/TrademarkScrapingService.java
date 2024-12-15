@@ -17,7 +17,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -132,11 +134,12 @@ public class TrademarkScrapingService {
     public void scrape() {
     	List<PublishedTm> applNumberArr = new ArrayList<>();
     	PublishedTm test  = new PublishedTm();
-    	test.setApplicationNo(Long.valueOf(2340394));
+    	test.setApplicationNo(Long.valueOf(6391419));
     	applNumberArr.add(test);
         WebDriver driver = setupDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-
+        
+        
         try {
             for (int i = 0; i < applNumberArr.size(); i++) {
             	PublishedTm applNumber = applNumberArr.get(i);
@@ -148,22 +151,15 @@ public class TrademarkScrapingService {
                      WebElement radioButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("rdb_0")));
                     radioButton.click();
 
-                    // Navigate
-                    driver.navigate().refresh();
+                    
 
                     // Enter application number
                     WebElement applNumberInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("applNumber")));
                     applNumberInput.sendKeys(String.valueOf(applNumber.getApplicationNo()));
-
-                    // Click search button and wait for navigation
-                    WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnView")));
-                    searchButton.click();
-
-                    // Handle captcha (replace with actual solution logic)
-                    String captchaText = solveCaptcha(driver);
-                    WebElement captchaInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("captcha1")));
-                    captchaInput.sendKeys(captchaText);
-                    captchaInput.submit();
+                     
+                    // solve captcha and handle alert
+                    solveCaptchaAndHandleAlert(wait,driver);
+  
 
                     // Wait for the result
                     wait.until(ExpectedConditions.presenceOfElementLocated(By.id("SearchWMDatagrid_ctl03_lnkbtnappNumber1")));
@@ -192,33 +188,68 @@ public class TrademarkScrapingService {
         }
     }
 
-    private WebDriver setupDriver() {
-        // Set up ChromeDriver
-//        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
-//        ChromeOptions options = new ChromeOptions();
-//        options.addArguments("--headless");
+    private void solveCaptchaAndHandleAlert(WebDriverWait wait,WebDriver driver) {
+        String captchaText = solveCaptcha();
+        WebElement captchaInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("captcha1")));
+        captchaInput.sendKeys(captchaText);
+
+        // Click search button and wait for navigation
+        WebElement searchButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnView")));
+        searchButton.click();	
+        
+        if(ExpectedConditions.alertIsPresent() != null){
+            driver.switchTo().alert().accept();
+            solveCaptchaAndHandleAlert(wait,driver);
+
+        }
+
+
+		
+	}
+	private WebDriver setupDriver() {
         return new ChromeDriver();
     }
 
-    private String solveCaptcha(WebDriver driver) {
-        // Implement captcha-solving logic here (e.g., using OCR)
-        return "dummyCaptcha";
+    private String solveCaptcha() {
+        RestTemplate restTemplate = new RestTemplate();
+        CaptchaBody captchaBody = new CaptchaBody();
+        captchaBody.setApikey("Gm0iz1chYVbJ1En2QzG8");
+        captchaBody.setUserid("ishanbassi23@gmail.com");
+        HttpEntity<CaptchaBody> entity = new HttpEntity<CaptchaBody>(captchaBody);
+        ResponseEntity<String> result  = restTemplate.postForEntity("https://api.apitruecaptcha.org/one/gettext", entity,String.class);
+        return result.getBody();
+        
     }
 
     private void dataUpdate(long applicationNo, String trademark, Object o, String tmStatus) {
         // Implement your database update logic here
     }
 
-    public static class Application {
-        private long applicationNo;
-
-        public long getApplicationNo() {
-            return applicationNo;
-        }
-
-        public void setApplicationNo(long applicationNo) {
-            this.applicationNo = applicationNo;
-        }
+    public static class CaptchaBody{
+    	private String userid;
+    	private String apikey;
+    	private String data;
+		public String getUserid() {
+			return userid;
+		}
+		public void setUserid(String userid) {
+			this.userid = userid;
+		}
+		public String getApikey() {
+			return apikey;
+		}
+		public void setApikey(String apikey) {
+			this.apikey = apikey;
+		}
+		public String getData() {
+			return data;
+		}
+		public void setData(String data) {
+			this.data = data;
+		}
+    	
+    	
+    	
     }
 	
 	

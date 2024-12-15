@@ -105,9 +105,14 @@ jhipster:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-# application:
+application:
+  captcha:
+    url: ishanbassi23@gmail.com
+    userId: Gm0iz1chYVbJ1En2QzG8
+    apiKey: https://api.apitruecaptcha.org/one/gettext
 
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/
 errors-file-base-path: /opt/application/staging/errors/ 
+
 
