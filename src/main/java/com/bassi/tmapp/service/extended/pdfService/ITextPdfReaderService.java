@@ -86,6 +86,26 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		this.agentServiceExtended  = agentServiceExtended;
 	}
 	
+	public void readPdfFilesFromFileSystem(int journalNo) {
+		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
+		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
+				.forEach(path -> {
+						List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
+						
+						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
+						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
+						publishedTrademarksDto = publishedTmMapper.toDto(publishedTrademarks);
+						agentServiceExtended.saveTmAgents(publishedTrademarksDto);
+						
+				});
+		
+		// save the missing trademark information in the json file
+		if(!errors.isEmpty()) {
+			writeErrorsToJson(errors);
+		}
+	}
+
+	
 
 	
 	public List<PublishedTmDTO>  readPdf(String pdfFilePath){
@@ -410,26 +430,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		return subWords.stream().map(word -> phoneticsServiceExtended.generatePhonetics(word)).toList();
 	}
 	
-	
-	public void readPdfFilesFromFileSystem(int journalNo) {
-		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
-		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
-				.forEach(path -> {
-						List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
-						
-						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
-						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
-						publishedTrademarksDto = publishedTmMapper.toDto(publishedTrademarks);
-						agentServiceExtended.saveTmAgents(publishedTrademarksDto);
-						
-				});
-		
-		// save the missing trademark information in the json file
-		if(!errors.isEmpty()) {
-			writeErrorsToJson(errors);
-		}
-	}
-	
+
 	private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
 		publishedTrademarks =  publishedTmRepository.saveAll(publishedTrademarks);
 		publishedTmPhoneticsServiceExtended.saveAll(publishedTrademarks); 

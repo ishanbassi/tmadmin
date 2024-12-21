@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.bassi.tmapp.domain.PublishedTm;
 
@@ -44,6 +46,14 @@ public interface PublishedTmRepositoryExtended extends JpaRepository<PublishedTm
 	@Modifying
 	@Query(value="DELETE FROM PublishedTm tm  WHERE tm.journalNo = ?1")
 	void deleteByJournalNo(Integer journalNo);
+	
+	@Query(value="SELECT tm FROM PublishedTm tm WHERE tm.name IS NULL AND tm.journalNo = ?1")
+	List<PublishedTm> findTrademarksWhereNameIsNull(Integer journalNo);
+	
+	@Modifying
+	@Query(value="UPDATE PublishedTm tm SET tm.name = ?1, tm.trademarkStatus = ?2  WHERE tm.id = ?3 or tm.applicationNo = ?4")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+	void updateNameAndTrademarkStatusByIdOrApplicationNo(String name, String trademarkStatus, Long id, Long applicationNo );
 
 	
 	

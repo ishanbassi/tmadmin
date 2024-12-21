@@ -230,5 +230,17 @@ public class PublishedTmResourceExtended {
 		            .build();
 	}
 	
+	@PostMapping("/process/trademark-extraction")
+	public String processTrademarkExtraction() {
+		publishedTmServiceExtended.processTrademarkExtraction();
+		return "Trademarks extraction has been initialized";
+	}
+	
+	@PostMapping("/scrape/journal/{journalNo}")
+	public String scapeJournalTrademarks(@PathVariable("journalNo") int journalNo) {
+		publishedTmServiceExtended.scrapeJournalTrademarks(journalNo);
+		return "Trademarks scraping has been initialized";
+	}
+	
 	
 }

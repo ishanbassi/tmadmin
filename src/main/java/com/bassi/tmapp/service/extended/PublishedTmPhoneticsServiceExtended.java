@@ -22,6 +22,7 @@ import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -140,32 +141,16 @@ public class PublishedTmPhoneticsServiceExtended {
 	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
 		List<PublishedTmPhonetics> publishedTmPhoneticsList =  publishedTrademarks.stream()
 				.filter(tm -> tm.getName() != null && !tm.getName().isBlank())
-				.map(tm -> {
-					String sanitizedTrademark  = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
-					List<String> subWords = Arrays
-							.asList(sanitizedTrademark.split(" "))
-							;
-					
-					List<PublishedTmPhoneticsDTO> phoneticDtoList = new ArrayList<>();
-					
-					if(subWords.size() == 1) {
-						phoneticDtoList.add(generateDto(sanitizedTrademark,tm, true));
-						return  publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
-					}
-					phoneticDtoList = subWords
-							.stream()
-							.map(x -> generateDto(x,tm,false))
-							.toList();
-					
-					List<PublishedTmPhoneticsDTO> modifiableDtoList = new ArrayList<>(phoneticDtoList);
-					
-					modifiableDtoList.add(generateDto(sanitizedTrademark,tm,true)); 
-					return  publishedTmPhoneticsMapper.toEntity(modifiableDtoList);
-				})
+				.map(this::generatePublishedTmPhonetics)
 				.flatMap(List::stream)
 				.toList();
 				
 		return publishedTmPhoneticsRepository.saveAll(publishedTmPhoneticsList);
+	}
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public List<PublishedTmPhonetics> savePhoneticsFromPublishedTm(PublishedTm tm){
+		List<PublishedTmPhonetics> publishedTmPhoneticsList = generatePublishedTmPhonetics(tm);
+		return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
 	}
 	
     public String generatePhonetics(String val) {
@@ -179,6 +164,27 @@ public class PublishedTmPhoneticsServiceExtended {
     	String phonetics = generatePhonetics(name);
 		PublishedTmDTO publishedTmDto = publishedTmMapper.toDto(tm);
 		return  new PublishedTmPhoneticsDTO(name,phonetics,completed,publishedTmDto);
+    }
+    private List<PublishedTmPhonetics> generatePublishedTmPhonetics(PublishedTm tm) {
+		String sanitizedTrademark  = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
+		List<String> subWords = Arrays
+				.asList(sanitizedTrademark.split(" "));
+		
+		List<PublishedTmPhoneticsDTO> phoneticDtoList = new ArrayList<>();
+		
+		if(subWords.size() == 1) {
+			phoneticDtoList.add(generateDto(sanitizedTrademark,tm, true));
+			return  publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
+		}
+		phoneticDtoList = subWords
+				.stream()
+				.map(x -> generateDto(x,tm,false))
+				.toList();
+		
+		List<PublishedTmPhoneticsDTO> modifiableDtoList = new ArrayList<>(phoneticDtoList);
+		
+		modifiableDtoList.add(generateDto(sanitizedTrademark,tm,true)); 
+		return  publishedTmPhoneticsMapper.toEntity(modifiableDtoList);
     }
     
     

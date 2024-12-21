@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bassi.tmapp.domain.PublishedTm;
@@ -26,6 +27,8 @@ import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.pdfService.ITextPdfReaderService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
+import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
+import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 
 import jakarta.persistence.EntityManager;
 import tech.jhipster.service.Criteria;
@@ -46,18 +49,22 @@ public class PublishedTmServiceExtended {
     private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService;
     private final EntityManager em;
     private final PublishedTmQueryService publishedTmQueryService;
+    private final TrademarkScrapingService trademarkScrapingService;
     
     @Value("${file-upload-base-path}")
     private String baseUploadDirectory;
 
-	public PublishedTmServiceExtended(PublishedTmRepositoryExtended publishedTmRepositoryExtended, PublishedTmMapper publishedTmMapper,
-			ITextPdfReaderService pdfReaderService, PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService,EntityManager em,PublishedTmQueryService publishedTmQueryService) {
+	public PublishedTmServiceExtended(PublishedTmRepositoryExtended publishedTmRepositoryExtended,
+			PublishedTmMapper publishedTmMapper, ITextPdfReaderService pdfReaderService,
+			PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService, EntityManager em,
+			PublishedTmQueryService publishedTmQueryService, TrademarkScrapingService trademarkScrapingService) {
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
         this.publishedTmMapper = publishedTmMapper;
         this.pdfReaderService = pdfReaderService;
         this.publishedTmPhoneticsService = publishedTmPhoneticsService;
         this.em = em;
         this.publishedTmQueryService = publishedTmQueryService;
+        this.trademarkScrapingService = trademarkScrapingService;
         
         
         
@@ -129,6 +136,23 @@ public class PublishedTmServiceExtended {
     public void delete(Long id) {
         log.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepositoryExtended.deleteById(id);
+    }
+    public void processTrademarkExtraction() {
+    	// download latest pdf files based on journal
+    	Integer journalNo = trademarkScrapingService.downloadPdf();
+    	if(journalNo == null) {
+    		throw new InternalServerAlertException("Process is aborted because journal No is null");
+    	}
+    	//read pdf files based on journal
+    	readPdfFile(journalNo);
+    	
+		// scrape journal trademarks
+    	scrapeJournalTrademarks(journalNo);
+    }
+    public void scrapeJournalTrademarks(Integer journalNo) {
+		List<PublishedTm> publishedTms = publishedTmRepositoryExtended.findTrademarksWhereNameIsNull(journalNo);    	
+    	trademarkScrapingService.scrape(publishedTms);
+
     }
 
 	public void readPdfFile(int journalNo) {
@@ -207,6 +231,7 @@ public class PublishedTmServiceExtended {
 		LevenshteinDistance distance = new LevenshteinDistance();
 		return distance.apply(name1,name2);
 	}
+
 	
 	
 }
