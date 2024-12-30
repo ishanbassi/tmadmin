@@ -28,6 +28,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,8 +129,10 @@ public class TrademarkScrapingService {
 
 		
 	}
-    public void scrape(List<PublishedTm> publishedTmArr) {
-        WebDriver driver = setupDriver();
+    
+	@Async
+	public void scrape(List<PublishedTm> publishedTmArr) {
+        WebDriver driver =  new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
         
         
@@ -221,9 +224,6 @@ public class TrademarkScrapingService {
 
         }
 	}
-	private WebDriver setupDriver() {
-        return new ChromeDriver();
-    }
 
     private CaptchaResponseBody solveCaptcha(String base64ImageData) {
         CaptchaRequestBody captchaRequestBody = new CaptchaRequestBody();

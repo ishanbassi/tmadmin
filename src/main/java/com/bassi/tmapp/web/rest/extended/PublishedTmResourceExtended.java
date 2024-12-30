@@ -242,5 +242,17 @@ public class PublishedTmResourceExtended {
 		return "Trademarks scraping has been initialized";
 	}
 	
+	@PostMapping("/extract-scrape/{journalNo}")
+	public String extractPublishedTmAndSrcapeImageMarks(@PathVariable("journalNo") int journalNo) {
+		publishedTmServiceExtended.readAndscrapeJournalTrademarks(journalNo);
+		return "Trademarks scraping has been initialized";
+	}
+	
+	@PostMapping("/extract/specific")
+	public String extractPublishedTm(@RequestParam("journalNo") String journalNo ,@RequestParam("filePath") String filePath) {
+		publishedTmServiceExtended.readPdfFileByPath(filePath,journalNo);
+		return "Trademarks extraction has been initialized";
+	}
+	
 	
 }

@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.extended;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,6 +54,9 @@ public class PublishedTmServiceExtended {
     
     @Value("${file-upload-base-path}")
     private String baseUploadDirectory;
+    
+    @Value("${pdf-file-base-path}")
+    private String basePdfDirectory;
 
 	public PublishedTmServiceExtended(PublishedTmRepositoryExtended publishedTmRepositoryExtended,
 			PublishedTmMapper publishedTmMapper, ITextPdfReaderService pdfReaderService,
@@ -230,6 +234,23 @@ public class PublishedTmServiceExtended {
 	public Integer calculateLevenshteinDistance(String name1, String name2) {
 		LevenshteinDistance distance = new LevenshteinDistance();
 		return distance.apply(name1,name2);
+	}
+
+	public void readAndscrapeJournalTrademarks(int journalNo) {
+		Long count = publishedTmRepositoryExtended.countByJournalNo(journalNo);
+		if(count > 0) {
+			throw new InternalServerAlertException("Trademarks already exists for the journal No. Make sure that journal No is correct");
+		}
+
+		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
+		scrapeJournalTrademarks(journalNo);
+	}
+
+	public void readPdfFileByPath(String filePath,String journalNo) {
+		File baseDirectory = new File(Paths.get(basePdfDirectory,journalNo, filePath).toAbsolutePath().toString());
+		pdfReaderService.readPdf(baseDirectory.getAbsolutePath());
+
+		
 	}
 
 	

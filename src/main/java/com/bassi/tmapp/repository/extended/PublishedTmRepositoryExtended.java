@@ -54,6 +54,8 @@ public interface PublishedTmRepositoryExtended extends JpaRepository<PublishedTm
 	@Query(value="UPDATE PublishedTm tm SET tm.name = ?1, tm.trademarkStatus = ?2  WHERE tm.id = ?3 or tm.applicationNo = ?4")
     @Transactional(propagation = Propagation.REQUIRES_NEW)
 	void updateNameAndTrademarkStatusByIdOrApplicationNo(String name, String trademarkStatus, Long id, Long applicationNo );
+	
+	long countByJournalNo(int journalNo);
 
 	
 	

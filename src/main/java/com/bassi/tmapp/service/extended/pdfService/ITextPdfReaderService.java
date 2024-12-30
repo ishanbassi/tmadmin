@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bassi.tmapp.domain.PublishedTm;
@@ -86,6 +87,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		this.agentServiceExtended  = agentServiceExtended;
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void readPdfFilesFromFileSystem(int journalNo) {
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
 		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
@@ -358,6 +360,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 			for (LineInfo line : subLine) {
 				String words = line.getAllWordsFromSameLineWithInfo();
 				if(words != null) {
+					if (words.contains("mark u/s 71(1)")) {
+						log.info("Skipping the line because it is not name of the trademark");
+						continue;
+					}
 					String trademark = currentPublishedTmDto.getName();
 					if (trademark != null) {
 						currentPublishedTmDto.setName(trademark.concat(words));
@@ -396,8 +402,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		byte[] content = pdfImage.getImageContent(); 
 		String extensionType = pdfImage.getImageType();
 		String applicationNumber = currentPublishedTmDto.getApplicationNo().toString();
+		String tmClass = currentPublishedTmDto.getTmClass().toString();
+		String journalNo = currentPublishedTmDto.getJournalNo().toString();
 		String resourcesDir = Paths.get(baseUploadDirectory).toAbsolutePath().toString();		
-		String filePath  = new Date().getTime() + "-"+ applicationNumber +  "." + extensionType;
+		String filePath  =  journalNo + "-"+ tmClass + "-"+  applicationNumber +  "." + extensionType;
 		Path newFile = Paths.get(resourcesDir , filePath);
 		log.info("Going to write image in the file system at: {}" ,newFile);
 		try {
