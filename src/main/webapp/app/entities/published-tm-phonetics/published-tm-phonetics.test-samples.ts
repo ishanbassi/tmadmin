@@ -1,20 +1,20 @@
 import { IPublishedTmPhonetics, NewPublishedTmPhonetics } from './published-tm-phonetics.model';
 
 export const sampleWithRequiredData: IPublishedTmPhonetics = {
-  id: 22249,
+  id: 25657,
 };
 
 export const sampleWithPartialData: IPublishedTmPhonetics = {
-  id: 13990,
-  sanitizedTm: 'sheepishly scrawl',
-  phoneticSk: 'beloved',
+  id: 19077,
+  sanitizedTm: 'which',
+  complete: true,
 };
 
 export const sampleWithFullData: IPublishedTmPhonetics = {
-  id: 3615,
-  sanitizedTm: 'consequently front badge',
-  phoneticPk: 'thoroughly showy',
-  phoneticSk: 'chill gee',
+  id: 47,
+  sanitizedTm: 'step-mother lest',
+  phoneticPk: 'regulate hurtful gleefully',
+  phoneticSk: 'scornful urgently cram',
   complete: false,
 };
 

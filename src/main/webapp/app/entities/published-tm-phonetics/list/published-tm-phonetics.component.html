@@ -80,7 +80,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (publishedTmPhonetics of publishedTmPhonetics; track trackId) {
+          @for (publishedTmPhonetics of publishedTmPhonetics; track trackId(publishedTmPhonetics)) {
             <tr data-cy="entityTable">
               <td>
                 <a [routerLink]="['/published-tm-phonetics', publishedTmPhonetics.id, 'view']">{{ publishedTmPhonetics.id }}</a>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,9 +10,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
+import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
-import { TrademarkFormService, TrademarkFormGroup } from './trademark-form.service';
+import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.service';
 
 @Component({
   standalone: true,
@@ -24,6 +25,7 @@ export class TrademarkUpdateComponent implements OnInit {
   isSaving = false;
   trademark: ITrademark | null = null;
   headOfficeValues = Object.keys(HeadOffice);
+  trademarkTypeValues = Object.keys(TrademarkType);
 
   userProfilesSharedCollection: IUserProfile[] = [];
 

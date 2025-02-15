@@ -1,6 +1,6 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (tmAgent()) {
+    @if (tmAgent(); as tmAgentRef) {
       <div>
         <h2 data-cy="tmAgentDetailsHeading"><span>Tm Agent</span></h2>
 
@@ -13,39 +13,39 @@
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ tmAgent()!.id }}</span>
+            <span>{{ tmAgentRef.id }}</span>
           </dd>
           <dt><span>Full Name</span></dt>
           <dd>
-            <span>{{ tmAgent()!.fullName }}</span>
+            <span>{{ tmAgentRef.fullName }}</span>
           </dd>
           <dt><span>Address</span></dt>
           <dd>
-            <span>{{ tmAgent()!.address }}</span>
+            <span>{{ tmAgentRef.address }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>
-            <span>{{ tmAgent()!.createdDate | formatMediumDatetime }}</span>
+            <span>{{ tmAgentRef.createdDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Modified Date</span></dt>
           <dd>
-            <span>{{ tmAgent()!.modifiedDate | formatMediumDatetime }}</span>
+            <span>{{ tmAgentRef.modifiedDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Deleted</span></dt>
           <dd>
-            <span>{{ tmAgent()!.deleted }}</span>
+            <span>{{ tmAgentRef.deleted }}</span>
           </dd>
           <dt><span>Company Name</span></dt>
           <dd>
-            <span>{{ tmAgent()!.companyName }}</span>
+            <span>{{ tmAgentRef.companyName }}</span>
           </dd>
           <dt><span>Agent Code</span></dt>
           <dd>
-            <span>{{ tmAgent()!.agentCode }}</span>
+            <span>{{ tmAgentRef.agentCode }}</span>
           </dd>
           <dt><span>Email</span></dt>
           <dd>
-            <span>{{ tmAgent()!.email }}</span>
+            <span>{{ tmAgentRef.email }}</span>
           </dd>
         </dl>
 
@@ -53,7 +53,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/tm-agent', tmAgent()!.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/tm-agent', tmAgentRef.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>

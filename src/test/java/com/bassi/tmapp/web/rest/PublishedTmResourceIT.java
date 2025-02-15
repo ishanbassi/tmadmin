@@ -13,6 +13,7 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -101,6 +102,13 @@ class PublishedTmResourceIT {
     private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
+    private static final LocalDate DEFAULT_RENEWAL_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_RENEWAL_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate SMALLER_RENEWAL_DATE = LocalDate.ofEpochDay(-1L);
+
+    private static final TrademarkType DEFAULT_TYPE = TrademarkType.IMAGEMARK;
+    private static final TrademarkType UPDATED_TYPE = TrademarkType.TRADEMARK;
+
     private static final String ENTITY_API_URL = "/api/published-tms";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -129,8 +137,8 @@ class PublishedTmResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTm createEntity(EntityManager em) {
-        PublishedTm publishedTm = new PublishedTm()
+    public static PublishedTm createEntity() {
+        return new PublishedTm()
             .name(DEFAULT_NAME)
             .details(DEFAULT_DETAILS)
             .applicationNo(DEFAULT_APPLICATION_NO)
@@ -146,10 +154,11 @@ class PublishedTmResourceIT {
             .deleted(DEFAULT_DELETED)
             .usage(DEFAULT_USAGE)
             .associatedTms(DEFAULT_ASSOCIATED_TMS)
-            .trademarkStatus("")
+            .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
             .createdDate(DEFAULT_CREATED_DATE)
-            .modifiedDate(DEFAULT_MODIFIED_DATE);
-        return publishedTm;
+            .modifiedDate(DEFAULT_MODIFIED_DATE)
+            .renewalDate(DEFAULT_RENEWAL_DATE)
+            .type(DEFAULT_TYPE);
     }
 
     /**
@@ -158,8 +167,8 @@ class PublishedTmResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTm createUpdatedEntity(EntityManager em) {
-        PublishedTm publishedTm = new PublishedTm()
+    public static PublishedTm createUpdatedEntity() {
+        return new PublishedTm()
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
@@ -175,15 +184,16 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus("")
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
-        return publishedTm;
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
     }
 
     @BeforeEach
     public void initTest() {
-        publishedTm = createEntity(em);
+        publishedTm = createEntity();
     }
 
     @AfterEach
@@ -262,7 +272,9 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
 
     @Test
@@ -294,7 +306,9 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
             .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
-            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
+            .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
 
     @Test
@@ -1370,11 +1384,120 @@ class PublishedTmResourceIT {
 
     @Test
     @Transactional
+    void getAllPublishedTmsByRenewalDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate equals to
+        defaultPublishedTmFiltering("renewalDate.equals=" + DEFAULT_RENEWAL_DATE, "renewalDate.equals=" + UPDATED_RENEWAL_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByRenewalDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate in
+        defaultPublishedTmFiltering(
+            "renewalDate.in=" + DEFAULT_RENEWAL_DATE + "," + UPDATED_RENEWAL_DATE,
+            "renewalDate.in=" + UPDATED_RENEWAL_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByRenewalDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate is not null
+        defaultPublishedTmFiltering("renewalDate.specified=true", "renewalDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByRenewalDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate is greater than or equal to
+        defaultPublishedTmFiltering(
+            "renewalDate.greaterThanOrEqual=" + DEFAULT_RENEWAL_DATE,
+            "renewalDate.greaterThanOrEqual=" + UPDATED_RENEWAL_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByRenewalDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate is less than or equal to
+        defaultPublishedTmFiltering(
+            "renewalDate.lessThanOrEqual=" + DEFAULT_RENEWAL_DATE,
+            "renewalDate.lessThanOrEqual=" + SMALLER_RENEWAL_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByRenewalDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate is less than
+        defaultPublishedTmFiltering("renewalDate.lessThan=" + UPDATED_RENEWAL_DATE, "renewalDate.lessThan=" + DEFAULT_RENEWAL_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByRenewalDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where renewalDate is greater than
+        defaultPublishedTmFiltering("renewalDate.greaterThan=" + SMALLER_RENEWAL_DATE, "renewalDate.greaterThan=" + DEFAULT_RENEWAL_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where type equals to
+        defaultPublishedTmFiltering("type.equals=" + DEFAULT_TYPE, "type.equals=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where type in
+        defaultPublishedTmFiltering("type.in=" + DEFAULT_TYPE + "," + UPDATED_TYPE, "type.in=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where type is not null
+        defaultPublishedTmFiltering("type.specified=true", "type.specified=false");
+    }
+
+    @Test
+    @Transactional
     void getAllPublishedTmsByTmAgentIsEqualToSomething() throws Exception {
         TmAgent tmAgent;
         if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
             publishedTmRepository.saveAndFlush(publishedTm);
-            tmAgent = TmAgentResourceIT.createEntity(em);
+            tmAgent = TmAgentResourceIT.createEntity();
         } else {
             tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
         }
@@ -1421,7 +1544,9 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
 
         // Check, that the count call also returns 1
         restPublishedTmMockMvc
@@ -1485,9 +1610,11 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus("")
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
 
         restPublishedTmMockMvc
             .perform(
@@ -1572,16 +1699,16 @@ class PublishedTmResourceIT {
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
             .applicationDate(UPDATED_APPLICATION_DATE)
-            .agentName(UPDATED_AGENT_NAME)
             .agentAddress(UPDATED_AGENT_ADDRESS)
             .proprietorName(UPDATED_PROPRIETOR_NAME)
             .proprietorAddress(UPDATED_PROPRIETOR_ADDRESS)
+            .headOffice(UPDATED_HEAD_OFFICE)
+            .imgUrl(UPDATED_IMG_URL)
             .tmClass(UPDATED_TM_CLASS)
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
-            .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus("")
-            .createdDate(UPDATED_CREATED_DATE);
+            .usage(UPDATED_USAGE)
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
 
         restPublishedTmMockMvc
             .perform(
@@ -1628,9 +1755,11 @@ class PublishedTmResourceIT {
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
             .associatedTms(UPDATED_ASSOCIATED_TMS)
-            .trademarkStatus("")
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
 
         restPublishedTmMockMvc
             .perform(

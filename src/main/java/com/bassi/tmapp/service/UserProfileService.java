@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserProfileService {
 
-    private static final Logger log = LoggerFactory.getLogger(UserProfileService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserProfileService.class);
 
     private final UserProfileRepository userProfileRepository;
 
@@ -31,7 +31,7 @@ public class UserProfileService {
      * @return the persisted entity.
      */
     public UserProfile save(UserProfile userProfile) {
-        log.debug("Request to save UserProfile : {}", userProfile);
+        LOG.debug("Request to save UserProfile : {}", userProfile);
         return userProfileRepository.save(userProfile);
     }
 
@@ -42,7 +42,7 @@ public class UserProfileService {
      * @return the persisted entity.
      */
     public UserProfile update(UserProfile userProfile) {
-        log.debug("Request to update UserProfile : {}", userProfile);
+        LOG.debug("Request to update UserProfile : {}", userProfile);
         return userProfileRepository.save(userProfile);
     }
 
@@ -53,7 +53,7 @@ public class UserProfileService {
      * @return the persisted entity.
      */
     public Optional<UserProfile> partialUpdate(UserProfile userProfile) {
-        log.debug("Request to partially update UserProfile : {}", userProfile);
+        LOG.debug("Request to partially update UserProfile : {}", userProfile);
 
         return userProfileRepository
             .findById(userProfile.getId())
@@ -80,7 +80,7 @@ public class UserProfileService {
      */
     @Transactional(readOnly = true)
     public List<UserProfile> findAll() {
-        log.debug("Request to get all UserProfiles");
+        LOG.debug("Request to get all UserProfiles");
         return userProfileRepository.findAll();
     }
 
@@ -92,7 +92,7 @@ public class UserProfileService {
      */
     @Transactional(readOnly = true)
     public Optional<UserProfile> findOne(Long id) {
-        log.debug("Request to get UserProfile : {}", id);
+        LOG.debug("Request to get UserProfile : {}", id);
         return userProfileRepository.findById(id);
     }
 
@@ -102,7 +102,7 @@ public class UserProfileService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete UserProfile : {}", id);
+        LOG.debug("Request to delete UserProfile : {}", id);
         userProfileRepository.deleteById(id);
     }
 }

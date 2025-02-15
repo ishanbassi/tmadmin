@@ -3,19 +3,20 @@ import dayjs from 'dayjs/esm';
 import { IUserProfile, NewUserProfile } from './user-profile.model';
 
 export const sampleWithRequiredData: IUserProfile = {
-  id: 12176,
+  id: 24440,
 };
 
 export const sampleWithPartialData: IUserProfile = {
-  id: 17574,
-  createdDate: dayjs('2024-10-18T16:03'),
-  modifiedDate: dayjs('2024-10-18T17:14'),
+  id: 11619,
+  createdDate: dayjs('2024-10-18T17:08'),
+  modifiedDate: dayjs('2024-10-19T01:26'),
+  deleted: false,
 };
 
 export const sampleWithFullData: IUserProfile = {
-  id: 22792,
-  createdDate: dayjs('2024-10-19T00:09'),
-  modifiedDate: dayjs('2024-10-19T03:39'),
+  id: 11682,
+  createdDate: dayjs('2024-10-18T12:18'),
+  modifiedDate: dayjs('2024-10-18T16:21'),
   deleted: true,
 };
 

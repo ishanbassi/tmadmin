@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient, HttpResponse } from '@angular/common/http';
+import { HttpResponse, provideHttpClient } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, from } from 'rxjs';
+import { Subject, from, of } from 'rxjs';
 
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
@@ -49,10 +49,10 @@ describe('Trademark Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call UserProfile query and add missing value', () => {
       const trademark: ITrademark = { id: 456 };
-      const userProfile: IUserProfile = { id: 8030 };
+      const userProfile: IUserProfile = { id: 12176 };
       trademark.userProfile = userProfile;
 
-      const userProfileCollection: IUserProfile[] = [{ id: 9415 }];
+      const userProfileCollection: IUserProfile[] = [{ id: 14308 }];
       jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
       const additionalUserProfiles = [userProfile];
       const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
@@ -71,7 +71,7 @@ describe('Trademark Management Update Component', () => {
 
     it('Should update editForm', () => {
       const trademark: ITrademark = { id: 456 };
-      const userProfile: IUserProfile = { id: 3892 };
+      const userProfile: IUserProfile = { id: 17574 };
       trademark.userProfile = userProfile;
 
       activatedRoute.data = of({ trademark });

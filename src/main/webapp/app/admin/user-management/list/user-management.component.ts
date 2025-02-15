@@ -1,11 +1,11 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterModule, ActivatedRoute, Router } from '@angular/router';
-import { HttpResponse, HttpHeaders } from '@angular/common/http';
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { combineLatest } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
-import { SortDirective, SortByDirective, sortStateSignal, SortService, SortState } from 'app/shared/sort';
+import { SortByDirective, SortDirective, SortService, SortState, sortStateSignal } from 'app/shared/sort';
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
 import { SORT } from 'app/config/navigation.constants';
 import { ItemCountComponent } from 'app/shared/pagination';
@@ -43,7 +43,7 @@ export default class UserManagementComponent implements OnInit {
     this.userService.update({ ...user, activated: isActivated }).subscribe(() => this.loadAll());
   }
 
-  trackIdentity(_index: number, item: User): number {
+  trackIdentity(item: User): number {
     return item.id!;
   }
 
@@ -89,7 +89,7 @@ export default class UserManagementComponent implements OnInit {
     combineLatest([this.activatedRoute.data, this.activatedRoute.queryParamMap]).subscribe(([data, params]) => {
       const page = params.get('page');
       this.page = +(page ?? 1);
-      this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data['defaultSort']));
+      this.sortState.set(this.sortService.parseSortParam(params.get(SORT) ?? data.defaultSort));
       this.loadAll();
     });
   }

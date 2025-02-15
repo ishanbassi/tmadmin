@@ -2,19 +2,11 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
-import com.bassi.tmapp.service.dto.TrademarkDTO;
-
-import java.util.List;
 import java.util.Optional;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * Service Implementation for managing {@link com.bassi.tmapp.domain.Trademark}.
@@ -23,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 public class TrademarkService {
 
-    private static final Logger log = LoggerFactory.getLogger(TrademarkService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TrademarkService.class);
 
     private final TrademarkRepository trademarkRepository;
 
@@ -38,7 +30,7 @@ public class TrademarkService {
      * @return the persisted entity.
      */
     public Trademark save(Trademark trademark) {
-        log.debug("Request to save Trademark : {}", trademark);
+        LOG.debug("Request to save Trademark : {}", trademark);
         return trademarkRepository.save(trademark);
     }
 
@@ -49,7 +41,7 @@ public class TrademarkService {
      * @return the persisted entity.
      */
     public Trademark update(Trademark trademark) {
-        log.debug("Request to update Trademark : {}", trademark);
+        LOG.debug("Request to update Trademark : {}", trademark);
         return trademarkRepository.save(trademark);
     }
 
@@ -60,7 +52,7 @@ public class TrademarkService {
      * @return the persisted entity.
      */
     public Optional<Trademark> partialUpdate(Trademark trademark) {
-        log.debug("Request to partially update Trademark : {}", trademark);
+        LOG.debug("Request to partially update Trademark : {}", trademark);
 
         return trademarkRepository
             .findById(trademark.getId())
@@ -119,6 +111,12 @@ public class TrademarkService {
                 if (trademark.getModifiedDate() != null) {
                     existingTrademark.setModifiedDate(trademark.getModifiedDate());
                 }
+                if (trademark.getRenewalDate() != null) {
+                    existingTrademark.setRenewalDate(trademark.getRenewalDate());
+                }
+                if (trademark.getType() != null) {
+                    existingTrademark.setType(trademark.getType());
+                }
 
                 return existingTrademark;
             })
@@ -133,7 +131,7 @@ public class TrademarkService {
      */
     @Transactional(readOnly = true)
     public Optional<Trademark> findOne(Long id) {
-        log.debug("Request to get Trademark : {}", id);
+        LOG.debug("Request to get Trademark : {}", id);
         return trademarkRepository.findById(id);
     }
 
@@ -143,14 +141,7 @@ public class TrademarkService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Trademark : {}", id);
+        LOG.debug("Request to delete Trademark : {}", id);
         trademarkRepository.deleteById(id);
     }
-    
-    public List<Trademark> saveAll(List<Trademark> trademarks) {
-        log.debug("Request to save Trademarks : {}", trademarks.size());
-        return trademarkRepository.saveAll(trademarks);
-        
-    } 
-
 }

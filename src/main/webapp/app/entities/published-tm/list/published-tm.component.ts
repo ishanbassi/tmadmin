@@ -1,25 +1,21 @@
-import { Component, computed, NgZone, inject, OnInit, signal, WritableSignal } from '@angular/core';
-import { HttpHeaders, HttpResponse } from '@angular/common/http';
+import { Component, NgZone, OnInit, WritableSignal, computed, inject, signal } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
-import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
+import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
+import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
+import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
 import { ParseLinks } from 'app/core/util/parse-links.service';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { EntityArrayResponseType, PublishedTmService } from '../service/published-tm.service';
 import { PublishedTmDeleteDialogComponent } from '../delete/published-tm-delete-dialog.component';
 import { IPublishedTm } from '../published-tm.model';
-import FilterComponent from '../../../shared/filter/filter.component';
-import { FilterOption, FilterOptions } from '../../../shared/filter/filter.model';
-import { saveAs } from 'file-saver';
-
 
 @Component({
   standalone: true,
@@ -35,20 +31,17 @@ import { saveAs } from 'file-saver';
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     InfiniteScrollDirective,
-    FilterComponent
   ],
 })
 export class PublishedTmComponent implements OnInit {
-
   subscription: Subscription | null = null;
   publishedTms?: IPublishedTm[];
   isLoading = false;
-  filters = new FilterOptions()
 
   sortState = sortStateSignal({});
 
   itemsPerPage = ITEMS_PER_PAGE;
-  links: WritableSignal<{ [key: string]: undefined | { [key: string]: string | undefined } }> = signal({});
+  links: WritableSignal<Record<string, undefined | Record<string, string | undefined>>> = signal({});
   hasMorePage = computed(() => !!this.links().next);
   isFirstFetch = computed(() => Object.keys(this.links()).length === 0);
 
@@ -60,7 +53,7 @@ export class PublishedTmComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IPublishedTm): number => this.publishedTmService.getPublishedTmIdentifier(item);
+  trackId = (item: IPublishedTm): number => this.publishedTmService.getPublishedTmIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -120,7 +113,7 @@ export class PublishedTmComponent implements OnInit {
       const publishedTmsNew = this.publishedTms ?? [];
       if (data) {
         for (const d of data) {
-          if (publishedTmsNew.map(op => op.id).indexOf(d.id) === -1) {
+          if (publishedTmsNew.some(op => op.id === d.id)) {
             publishedTmsNew.push(d);
           }
         }
@@ -166,25 +159,5 @@ export class PublishedTmComponent implements OnInit {
         queryParams: queryParamsObj,
       });
     });
-  }
-
-  download() {
-    this.downloadBackend().subscribe({
-      next: (res: any) => {
-        let fileName: any = res.headers.get('content-disposition');
-        fileName = fileName.replace('form-data; name="attachment"; filename="', '');
-        fileName = fileName.split('"').join("");
-        saveAs(res.body, fileName);
-      },
-      error: (error) => {
-        
-      }
-    })
-  }
-
-  protected downloadBackend(): Observable<HttpResponse<Blob>> {
-    this.isLoading = true;
-
-    return this.publishedTmService.download().pipe(tap(() => (this.isLoading = false)));
   }
 }

@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
 
@@ -12,10 +12,11 @@ import { ITrademark, NewTrademark } from '../trademark.model';
 
 export type PartialUpdateTrademark = Partial<ITrademark> & Pick<ITrademark, 'id'>;
 
-type RestOf<T extends ITrademark | NewTrademark> = Omit<T, 'applicationDate' | 'createdDate' | 'modifiedDate'> & {
+type RestOf<T extends ITrademark | NewTrademark> = Omit<T, 'applicationDate' | 'createdDate' | 'modifiedDate' | 'renewalDate'> & {
   applicationDate?: string | null;
   createdDate?: string | null;
   modifiedDate?: string | null;
+  renewalDate?: string | null;
 };
 
 export type RestTrademark = RestOf<ITrademark>;
@@ -106,6 +107,7 @@ export class TrademarkService {
       applicationDate: trademark.applicationDate?.format(DATE_FORMAT) ?? null,
       createdDate: trademark.createdDate?.toJSON() ?? null,
       modifiedDate: trademark.modifiedDate?.toJSON() ?? null,
+      renewalDate: trademark.renewalDate?.format(DATE_FORMAT) ?? null,
     };
   }
 
@@ -115,6 +117,7 @@ export class TrademarkService {
       applicationDate: restTrademark.applicationDate ? dayjs(restTrademark.applicationDate) : undefined,
       createdDate: restTrademark.createdDate ? dayjs(restTrademark.createdDate) : undefined,
       modifiedDate: restTrademark.modifiedDate ? dayjs(restTrademark.modifiedDate) : undefined,
+      renewalDate: restTrademark.renewalDate ? dayjs(restTrademark.renewalDate) : undefined,
     };
   }
 

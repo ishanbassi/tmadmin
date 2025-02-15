@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient, HttpResponse } from '@angular/common/http';
+import { HttpResponse, provideHttpClient } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, from } from 'rxjs';
+import { Subject, from, of } from 'rxjs';
 
 import { IPublishedTm } from 'app/entities/published-tm/published-tm.model';
 import { PublishedTmService } from 'app/entities/published-tm/service/published-tm.service';
@@ -49,10 +49,10 @@ describe('PublishedTmPhonetics Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call PublishedTm query and add missing value', () => {
       const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 14832 };
+      const publishedTm: IPublishedTm = { id: 2076 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
-      const publishedTmCollection: IPublishedTm[] = [{ id: 19875 }];
+      const publishedTmCollection: IPublishedTm[] = [{ id: 11686 }];
       jest.spyOn(publishedTmService, 'query').mockReturnValue(of(new HttpResponse({ body: publishedTmCollection })));
       const additionalPublishedTms = [publishedTm];
       const expectedCollection: IPublishedTm[] = [...additionalPublishedTms, ...publishedTmCollection];
@@ -71,7 +71,7 @@ describe('PublishedTmPhonetics Management Update Component', () => {
 
     it('Should update editForm', () => {
       const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 9934 };
+      const publishedTm: IPublishedTm = { id: 13536 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
       activatedRoute.data = of({ publishedTmPhonetics });

@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideHttpClient, HttpResponse } from '@angular/common/http';
+import { HttpResponse, provideHttpClient } from '@angular/common/http';
 import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject, from } from 'rxjs';
+import { Subject, from, of } from 'rxjs';
 
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
@@ -49,10 +49,10 @@ describe('PublishedTm Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call TmAgent query and add missing value', () => {
       const publishedTm: IPublishedTm = { id: 456 };
-      const tmAgent: ITmAgent = { id: 23051 };
+      const tmAgent: ITmAgent = { id: 23711 };
       publishedTm.tmAgent = tmAgent;
 
-      const tmAgentCollection: ITmAgent[] = [{ id: 18240 }];
+      const tmAgentCollection: ITmAgent[] = [{ id: 747 }];
       jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
       const additionalTmAgents = [tmAgent];
       const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
@@ -71,7 +71,7 @@ describe('PublishedTm Management Update Component', () => {
 
     it('Should update editForm', () => {
       const publishedTm: IPublishedTm = { id: 456 };
-      const tmAgent: ITmAgent = { id: 31982 };
+      const tmAgent: ITmAgent = { id: 13664 };
       publishedTm.tmAgent = tmAgent;
 
       activatedRoute.data = of({ publishedTm });

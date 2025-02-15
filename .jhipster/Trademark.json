@@ -76,6 +76,15 @@
     {
       "fieldName": "modifiedDate",
       "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "renewalDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "TrademarkType",
+      "fieldValues": "IMAGEMARK,TRADEMARK,SOUNDMARK"
     }
   ],
   "jpaMetamodelFiltering": true,

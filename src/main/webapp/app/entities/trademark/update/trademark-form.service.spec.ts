@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithRequiredData, sampleWithNewData } from '../trademark.test-samples';
+import { sampleWithNewData, sampleWithRequiredData } from '../trademark.test-samples';
 
 import { TrademarkFormService } from './trademark-form.service';
 
@@ -38,6 +38,8 @@ describe('Trademark Form Service', () => {
             trademarkStatus: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
+            renewalDate: expect.any(Object),
+            type: expect.any(Object),
             userProfile: expect.any(Object),
           }),
         );
@@ -67,6 +69,8 @@ describe('Trademark Form Service', () => {
             trademarkStatus: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
+            renewalDate: expect.any(Object),
+            type: expect.any(Object),
             userProfile: expect.any(Object),
           }),
         );

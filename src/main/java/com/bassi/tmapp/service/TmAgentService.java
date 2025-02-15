@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TmAgentService {
 
-    private static final Logger log = LoggerFactory.getLogger(TmAgentService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TmAgentService.class);
 
     private final TmAgentRepository tmAgentRepository;
 
@@ -30,7 +30,7 @@ public class TmAgentService {
      * @return the persisted entity.
      */
     public TmAgent save(TmAgent tmAgent) {
-        log.debug("Request to save TmAgent : {}", tmAgent);
+        LOG.debug("Request to save TmAgent : {}", tmAgent);
         return tmAgentRepository.save(tmAgent);
     }
 
@@ -41,7 +41,7 @@ public class TmAgentService {
      * @return the persisted entity.
      */
     public TmAgent update(TmAgent tmAgent) {
-        log.debug("Request to update TmAgent : {}", tmAgent);
+        LOG.debug("Request to update TmAgent : {}", tmAgent);
         return tmAgentRepository.save(tmAgent);
     }
 
@@ -52,7 +52,7 @@ public class TmAgentService {
      * @return the persisted entity.
      */
     public Optional<TmAgent> partialUpdate(TmAgent tmAgent) {
-        log.debug("Request to partially update TmAgent : {}", tmAgent);
+        LOG.debug("Request to partially update TmAgent : {}", tmAgent);
 
         return tmAgentRepository
             .findById(tmAgent.getId())
@@ -95,7 +95,7 @@ public class TmAgentService {
      */
     @Transactional(readOnly = true)
     public Optional<TmAgent> findOne(Long id) {
-        log.debug("Request to get TmAgent : {}", id);
+        LOG.debug("Request to get TmAgent : {}", id);
         return tmAgentRepository.findById(id);
     }
 
@@ -105,7 +105,7 @@ public class TmAgentService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete TmAgent : {}", id);
+        LOG.debug("Request to delete TmAgent : {}", id);
         tmAgentRepository.deleteById(id);
     }
 }

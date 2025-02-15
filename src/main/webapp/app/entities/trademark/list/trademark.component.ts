@@ -1,16 +1,16 @@
-import { Component, computed, NgZone, inject, OnInit, signal, WritableSignal } from '@angular/core';
+import { Component, NgZone, OnInit, WritableSignal, computed, inject, signal } from '@angular/core';
 import { HttpHeaders } from '@angular/common/http';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
-import { combineLatest, filter, Observable, Subscription, tap } from 'rxjs';
+import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
-import { sortStateSignal, SortDirective, SortByDirective, type SortState, SortService } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatetimePipe, FormatMediumDatePipe } from 'app/shared/date';
+import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
+import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
-import { SORT, ITEM_DELETED_EVENT, DEFAULT_SORT_DATA } from 'app/config/navigation.constants';
+import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
 import { ParseLinks } from 'app/core/util/parse-links.service';
 import { InfiniteScrollDirective } from 'ngx-infinite-scroll';
 import { EntityArrayResponseType, TrademarkService } from '../service/trademark.service';
@@ -41,7 +41,7 @@ export class TrademarkComponent implements OnInit {
   sortState = sortStateSignal({});
 
   itemsPerPage = ITEMS_PER_PAGE;
-  links: WritableSignal<{ [key: string]: undefined | { [key: string]: string | undefined } }> = signal({});
+  links: WritableSignal<Record<string, undefined | Record<string, string | undefined>>> = signal({});
   hasMorePage = computed(() => !!this.links().next);
   isFirstFetch = computed(() => Object.keys(this.links()).length === 0);
 
@@ -53,7 +53,7 @@ export class TrademarkComponent implements OnInit {
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: ITrademark): number => this.trademarkService.getTrademarkIdentifier(item);
+  trackId = (item: ITrademark): number => this.trademarkService.getTrademarkIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -113,7 +113,7 @@ export class TrademarkComponent implements OnInit {
       const trademarksNew = this.trademarks ?? [];
       if (data) {
         for (const d of data) {
-          if (trademarksNew.map(op => op.id).indexOf(d.id) === -1) {
+          if (trademarksNew.some(op => op.id === d.id)) {
             trademarksNew.push(d);
           }
         }

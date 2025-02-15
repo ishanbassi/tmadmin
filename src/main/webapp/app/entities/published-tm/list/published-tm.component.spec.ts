@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, inject, tick } from '@angular/core/testing';
-import { provideHttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpResponse, provideHttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { of, Subject } from 'rxjs';
+import { Subject, of } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { sampleWithRequiredData } from '../published-tm.test-samples';
@@ -93,7 +93,7 @@ describe('PublishedTm Management Component', () => {
     it('Should forward to publishedTmService', () => {
       const entity = { id: 123 };
       jest.spyOn(service, 'getPublishedTmIdentifier');
-      const id = comp.trackId(0, entity);
+      const id = comp.trackId(entity);
       expect(service.getPublishedTmIdentifier).toHaveBeenCalledWith(entity);
       expect(id).toBe(entity.id);
     });

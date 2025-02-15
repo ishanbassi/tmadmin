@@ -47,6 +47,9 @@ entity Trademark{
     trademarkStatus String
     createdDate ZonedDateTime
     modifiedDate ZonedDateTime
+    renewalDate LocalDate
+    type TrademarkType
+    
 }
 
 entity Phonetics{
@@ -80,6 +83,8 @@ entity PublishedTm{
     trademarkStatus TrademarkStatus
     createdDate ZonedDateTime
     modifiedDate ZonedDateTime
+    renewalDate LocalDate
+    type TrademarkType
 }
 
 entity TmAgent{
@@ -118,6 +123,12 @@ enum TrademarkStatus{
 	HEARING,
 	PUBLISHED,
 	PROVISIONAL
+}
+
+enum TrademarkType{
+	IMAGEMARK,
+	TRADEMARK,
+	SOUNDMARK
 }
 
 relationship ManyToOne{

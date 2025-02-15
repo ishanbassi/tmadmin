@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 import dayjs from 'dayjs/esm';
 import { DATE_TIME_FORMAT } from 'app/config/input.constants';
@@ -50,6 +50,8 @@ type PublishedTmFormGroupContent = {
   trademarkStatus: FormControl<PublishedTmFormRawValue['trademarkStatus']>;
   createdDate: FormControl<PublishedTmFormRawValue['createdDate']>;
   modifiedDate: FormControl<PublishedTmFormRawValue['modifiedDate']>;
+  renewalDate: FormControl<PublishedTmFormRawValue['renewalDate']>;
+  type: FormControl<PublishedTmFormRawValue['type']>;
   tmAgent: FormControl<PublishedTmFormRawValue['tmAgent']>;
 };
 
@@ -88,6 +90,8 @@ export class PublishedTmFormService {
       trademarkStatus: new FormControl(publishedTmRawValue.trademarkStatus),
       createdDate: new FormControl(publishedTmRawValue.createdDate),
       modifiedDate: new FormControl(publishedTmRawValue.modifiedDate),
+      renewalDate: new FormControl(publishedTmRawValue.renewalDate),
+      type: new FormControl(publishedTmRawValue.type),
       tmAgent: new FormControl(publishedTmRawValue.tmAgent),
     });
   }

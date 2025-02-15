@@ -3,20 +3,10 @@ package com.bassi.tmapp.service;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.bassi.tmapp.domain.PublishedTm;
-import com.bassi.tmapp.repository.PublishedTmRepository;
-import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
-import com.bassi.tmapp.service.dto.PublishedTmDTO;
-import com.bassi.tmapp.service.extended.pdfService.ITextPdfReaderService;
-import com.bassi.tmapp.service.mapper.PublishedTmMapper;
-
-import jakarta.persistence.EntityManager;
 
 /**
  * Service Implementation for managing {@link com.bassi.tmapp.domain.PublishedTm}.
@@ -25,7 +15,7 @@ import jakarta.persistence.EntityManager;
 @Transactional
 public class PublishedTmService {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmService.class);
 
     private final PublishedTmRepository publishedTmRepository;
 
@@ -40,7 +30,7 @@ public class PublishedTmService {
      * @return the persisted entity.
      */
     public PublishedTm save(PublishedTm publishedTm) {
-        log.debug("Request to save PublishedTm : {}", publishedTm);
+        LOG.debug("Request to save PublishedTm : {}", publishedTm);
         return publishedTmRepository.save(publishedTm);
     }
 
@@ -51,7 +41,7 @@ public class PublishedTmService {
      * @return the persisted entity.
      */
     public PublishedTm update(PublishedTm publishedTm) {
-        log.debug("Request to update PublishedTm : {}", publishedTm);
+        LOG.debug("Request to update PublishedTm : {}", publishedTm);
         return publishedTmRepository.save(publishedTm);
     }
 
@@ -62,7 +52,7 @@ public class PublishedTmService {
      * @return the persisted entity.
      */
     public Optional<PublishedTm> partialUpdate(PublishedTm publishedTm) {
-        log.debug("Request to partially update PublishedTm : {}", publishedTm);
+        LOG.debug("Request to partially update PublishedTm : {}", publishedTm);
 
         return publishedTmRepository
             .findById(publishedTm.getId())
@@ -121,6 +111,12 @@ public class PublishedTmService {
                 if (publishedTm.getModifiedDate() != null) {
                     existingPublishedTm.setModifiedDate(publishedTm.getModifiedDate());
                 }
+                if (publishedTm.getRenewalDate() != null) {
+                    existingPublishedTm.setRenewalDate(publishedTm.getRenewalDate());
+                }
+                if (publishedTm.getType() != null) {
+                    existingPublishedTm.setType(publishedTm.getType());
+                }
 
                 return existingPublishedTm;
             })
@@ -135,7 +131,7 @@ public class PublishedTmService {
      */
     @Transactional(readOnly = true)
     public Optional<PublishedTm> findOne(Long id) {
-        log.debug("Request to get PublishedTm : {}", id);
+        LOG.debug("Request to get PublishedTm : {}", id);
         return publishedTmRepository.findById(id);
     }
 
@@ -145,7 +141,7 @@ public class PublishedTmService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete PublishedTm : {}", id);
+        LOG.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepository.deleteById(id);
     }
 }

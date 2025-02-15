@@ -13,8 +13,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 @Table(name = "tm_agent")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-
 public class TmAgent implements Serializable {
+
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -181,6 +181,7 @@ public class TmAgent implements Serializable {
 
     @Override
     public int hashCode() {
+        // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
         return getClass().hashCode();
     }
 
@@ -198,16 +199,5 @@ public class TmAgent implements Serializable {
             ", agentCode='" + getAgentCode() + "'" +
             ", email='" + getEmail() + "'" +
             "}";
-    }
-    
-    @PrePersist
-    private void beforeSave() {
-        this.createdDate = ZonedDateTime.now();
-        this.modifiedDate = ZonedDateTime.now();
-    }
-
-    @PreUpdate
-    private void beforeUpdate() {
-        this.modifiedDate = ZonedDateTime.now();
     }
 }

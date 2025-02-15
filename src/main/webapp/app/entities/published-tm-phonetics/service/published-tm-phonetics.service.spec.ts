@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { IPublishedTmPhonetics } from '../published-tm-phonetics.model';
 import {
-  sampleWithRequiredData,
+  sampleWithFullData,
   sampleWithNewData,
   sampleWithPartialData,
-  sampleWithFullData,
+  sampleWithRequiredData,
 } from '../published-tm-phonetics.test-samples';
 
 import { PublishedTmPhoneticsService } from './published-tm-phonetics.service';

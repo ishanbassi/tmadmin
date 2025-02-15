@@ -12,6 +12,7 @@ import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
@@ -100,6 +101,13 @@ class TrademarkResourceIT {
     private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
+    private static final LocalDate DEFAULT_RENEWAL_DATE = LocalDate.ofEpochDay(0L);
+    private static final LocalDate UPDATED_RENEWAL_DATE = LocalDate.now(ZoneId.systemDefault());
+    private static final LocalDate SMALLER_RENEWAL_DATE = LocalDate.ofEpochDay(-1L);
+
+    private static final TrademarkType DEFAULT_TYPE = TrademarkType.IMAGEMARK;
+    private static final TrademarkType UPDATED_TYPE = TrademarkType.TRADEMARK;
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -128,8 +136,8 @@ class TrademarkResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Trademark createEntity(EntityManager em) {
-        Trademark trademark = new Trademark()
+    public static Trademark createEntity() {
+        return new Trademark()
             .name(DEFAULT_NAME)
             .details(DEFAULT_DETAILS)
             .applicationNo(DEFAULT_APPLICATION_NO)
@@ -147,8 +155,9 @@ class TrademarkResourceIT {
             .associatedTms(DEFAULT_ASSOCIATED_TMS)
             .trademarkStatus(DEFAULT_TRADEMARK_STATUS)
             .createdDate(DEFAULT_CREATED_DATE)
-            .modifiedDate(DEFAULT_MODIFIED_DATE);
-        return trademark;
+            .modifiedDate(DEFAULT_MODIFIED_DATE)
+            .renewalDate(DEFAULT_RENEWAL_DATE)
+            .type(DEFAULT_TYPE);
     }
 
     /**
@@ -157,8 +166,8 @@ class TrademarkResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Trademark createUpdatedEntity(EntityManager em) {
-        Trademark trademark = new Trademark()
+    public static Trademark createUpdatedEntity() {
+        return new Trademark()
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
@@ -176,13 +185,14 @@ class TrademarkResourceIT {
             .associatedTms(UPDATED_ASSOCIATED_TMS)
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
-        return trademark;
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
     }
 
     @BeforeEach
     public void initTest() {
-        trademark = createEntity(em);
+        trademark = createEntity();
     }
 
     @AfterEach
@@ -261,7 +271,9 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
 
     @Test
@@ -293,7 +305,9 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
             .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
-            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
+            .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
 
     @Test
@@ -1392,11 +1406,120 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByRenewalDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate equals to
+        defaultTrademarkFiltering("renewalDate.equals=" + DEFAULT_RENEWAL_DATE, "renewalDate.equals=" + UPDATED_RENEWAL_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByRenewalDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate in
+        defaultTrademarkFiltering(
+            "renewalDate.in=" + DEFAULT_RENEWAL_DATE + "," + UPDATED_RENEWAL_DATE,
+            "renewalDate.in=" + UPDATED_RENEWAL_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByRenewalDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate is not null
+        defaultTrademarkFiltering("renewalDate.specified=true", "renewalDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByRenewalDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate is greater than or equal to
+        defaultTrademarkFiltering(
+            "renewalDate.greaterThanOrEqual=" + DEFAULT_RENEWAL_DATE,
+            "renewalDate.greaterThanOrEqual=" + UPDATED_RENEWAL_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByRenewalDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate is less than or equal to
+        defaultTrademarkFiltering(
+            "renewalDate.lessThanOrEqual=" + DEFAULT_RENEWAL_DATE,
+            "renewalDate.lessThanOrEqual=" + SMALLER_RENEWAL_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByRenewalDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate is less than
+        defaultTrademarkFiltering("renewalDate.lessThan=" + UPDATED_RENEWAL_DATE, "renewalDate.lessThan=" + DEFAULT_RENEWAL_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByRenewalDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where renewalDate is greater than
+        defaultTrademarkFiltering("renewalDate.greaterThan=" + SMALLER_RENEWAL_DATE, "renewalDate.greaterThan=" + DEFAULT_RENEWAL_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where type equals to
+        defaultTrademarkFiltering("type.equals=" + DEFAULT_TYPE, "type.equals=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where type in
+        defaultTrademarkFiltering("type.in=" + DEFAULT_TYPE + "," + UPDATED_TYPE, "type.in=" + UPDATED_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where type is not null
+        defaultTrademarkFiltering("type.specified=true", "type.specified=false");
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByUserProfileIsEqualToSomething() throws Exception {
         UserProfile userProfile;
         if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
             trademarkRepository.saveAndFlush(trademark);
-            userProfile = UserProfileResourceIT.createEntity(em);
+            userProfile = UserProfileResourceIT.createEntity();
         } else {
             userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
         }
@@ -1443,7 +1566,9 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -1509,7 +1634,9 @@ class TrademarkResourceIT {
             .associatedTms(UPDATED_ASSOCIATED_TMS)
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
 
         restTrademarkMockMvc
             .perform(
@@ -1590,13 +1717,18 @@ class TrademarkResourceIT {
         partialUpdatedTrademark
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
-            .applicationNo(UPDATED_APPLICATION_NO)
+            .applicationDate(UPDATED_APPLICATION_DATE)
+            .agentName(UPDATED_AGENT_NAME)
             .agentAddress(UPDATED_AGENT_ADDRESS)
-            .proprietorName(UPDATED_PROPRIETOR_NAME)
             .headOffice(UPDATED_HEAD_OFFICE)
-            .tmClass(UPDATED_TM_CLASS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
-            .createdDate(UPDATED_CREATED_DATE);
+            .imgUrl(UPDATED_IMG_URL)
+            .deleted(UPDATED_DELETED)
+            .usage(UPDATED_USAGE)
+            .associatedTms(UPDATED_ASSOCIATED_TMS)
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
 
         restTrademarkMockMvc
             .perform(
@@ -1645,7 +1777,9 @@ class TrademarkResourceIT {
             .associatedTms(UPDATED_ASSOCIATED_TMS)
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
             .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE);
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .renewalDate(UPDATED_RENEWAL_DATE)
+            .type(UPDATED_TYPE);
 
         restTrademarkMockMvc
             .perform(

@@ -1,6 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 
 import dayjs from 'dayjs/esm';
 
@@ -12,10 +12,11 @@ import { IPublishedTm, NewPublishedTm } from '../published-tm.model';
 
 export type PartialUpdatePublishedTm = Partial<IPublishedTm> & Pick<IPublishedTm, 'id'>;
 
-type RestOf<T extends IPublishedTm | NewPublishedTm> = Omit<T, 'applicationDate' | 'createdDate' | 'modifiedDate'> & {
+type RestOf<T extends IPublishedTm | NewPublishedTm> = Omit<T, 'applicationDate' | 'createdDate' | 'modifiedDate' | 'renewalDate'> & {
   applicationDate?: string | null;
   createdDate?: string | null;
   modifiedDate?: string | null;
+  renewalDate?: string | null;
 };
 
 export type RestPublishedTm = RestOf<IPublishedTm>;
@@ -29,12 +30,10 @@ export type EntityArrayResponseType = HttpResponse<IPublishedTm[]>;
 
 @Injectable({ providedIn: 'root' })
 export class PublishedTmService {
-  
   protected http = inject(HttpClient);
   protected applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/published-tms');
-  protected exportUrl = this.applicationConfigService.getEndpointFor('api/extended/matching/trademarks');
 
   create(publishedTm: NewPublishedTm): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(publishedTm);
@@ -108,6 +107,7 @@ export class PublishedTmService {
       applicationDate: publishedTm.applicationDate?.format(DATE_FORMAT) ?? null,
       createdDate: publishedTm.createdDate?.toJSON() ?? null,
       modifiedDate: publishedTm.modifiedDate?.toJSON() ?? null,
+      renewalDate: publishedTm.renewalDate?.format(DATE_FORMAT) ?? null,
     };
   }
 
@@ -117,6 +117,7 @@ export class PublishedTmService {
       applicationDate: restPublishedTm.applicationDate ? dayjs(restPublishedTm.applicationDate) : undefined,
       createdDate: restPublishedTm.createdDate ? dayjs(restPublishedTm.createdDate) : undefined,
       modifiedDate: restPublishedTm.modifiedDate ? dayjs(restPublishedTm.modifiedDate) : undefined,
+      renewalDate: restPublishedTm.renewalDate ? dayjs(restPublishedTm.renewalDate) : undefined,
     };
   }
 
@@ -130,11 +131,5 @@ export class PublishedTmService {
     return res.clone({
       body: res.body ? res.body.map(item => this.convertDateFromServer(item)) : null,
     });
-  }
-
-  download(req?: any): Observable<HttpResponse<Blob>> {
-    const options = createRequestOption(req);
-    return this.http
-      .get<Blob>(this.exportUrl+"/download/2180", { observe: 'response', responseType: 'blob' as 'json' });
   }
 }

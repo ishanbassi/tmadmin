@@ -17,7 +17,7 @@ describe('Trademark Management Detail Component', () => {
           [
             {
               path: '**',
-              component: TrademarkDetailComponent,
+              loadComponent: () => import('./trademark-detail.component').then(m => m.TrademarkDetailComponent),
               resolve: { trademark: () => of({ id: 123 }) },
             },
           ],

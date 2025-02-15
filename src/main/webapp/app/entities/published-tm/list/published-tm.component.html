@@ -1,7 +1,4 @@
 <div>
-  <jhi-filter></jhi-filter>
-</div>
-<div>
   <h2 id="page-heading" data-cy="PublishedTmHeading">
     <span>Published Tms</span>
 
@@ -14,17 +11,12 @@
       <button
         id="jh-create-entity"
         data-cy="entityCreateButton"
-        class="btn btn-primary jh-create-entity create-published-tm me-2"
+        class="btn btn-primary jh-create-entity create-published-tm"
         [routerLink]="['/published-tm/new']"
       >
         <fa-icon icon="plus"></fa-icon>
         <span>Create a new Published Tm</span>
       </button>
-      <button id="jh-create-entity" data-cy="entityCreateButton"
-          class="btn btn-primary jh-create-entity ml-1" (click)="download()">
-          <fa-icon icon="download"></fa-icon>
-          <span>Export</span>
-        </button>
     </div>
   </h2>
 
@@ -57,7 +49,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
+            <th scope="col" jhiSortBy="details">
+              <div class="d-flex">
+                <span>Details</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="applicationNo">
               <div class="d-flex">
                 <span>Application No</span>
@@ -79,7 +77,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
+            <th scope="col" jhiSortBy="agentAddress">
+              <div class="d-flex">
+                <span>Agent Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="proprietorName">
               <div class="d-flex">
                 <span>Proprietor Name</span>
@@ -87,8 +91,27 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
-            
+            <th scope="col" jhiSortBy="proprietorAddress">
+              <div class="d-flex">
+                <span>Proprietor Address</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="headOffice">
+              <div class="d-flex">
+                <span>Head Office</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="imgUrl">
+              <div class="d-flex">
+                <span>Img Url</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="tmClass">
               <div class="d-flex">
                 <span>Tm Class</span>
@@ -103,7 +126,27 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
+            <th scope="col" jhiSortBy="deleted">
+              <div class="d-flex">
+                <span>Deleted</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="usage">
+              <div class="d-flex">
+                <span>Usage</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="associatedTms">
+              <div class="d-flex">
+                <span>Associated Tms</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="trademarkStatus">
               <div class="d-flex">
                 <span>Trademark Status</span>
@@ -111,28 +154,97 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
+            <th scope="col" jhiSortBy="createdDate">
+              <div class="d-flex">
+                <span>Created Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifiedDate">
+              <div class="d-flex">
+                <span>Modified Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="renewalDate">
+              <div class="d-flex">
+                <span>Renewal Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span>Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tmAgent.id">
+              <div class="d-flex">
+                <span>Tm Agent</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
-          @for (publishedTm of publishedTms; track trackId) {
+          @for (publishedTm of publishedTms; track trackId(publishedTm)) {
             <tr data-cy="entityTable">
               <td>
                 <a [routerLink]="['/published-tm', publishedTm.id, 'view']">{{ publishedTm.id }}</a>
               </td>
               <td>{{ publishedTm.name }}</td>
+              <td>{{ publishedTm.details }}</td>
               <td>{{ publishedTm.applicationNo }}</td>
               <td>{{ publishedTm.applicationDate | formatMediumDate }}</td>
               <td>{{ publishedTm.agentName }}</td>
+              <td>{{ publishedTm.agentAddress }}</td>
               <td>{{ publishedTm.proprietorName }}</td>
-              
+              <td>{{ publishedTm.proprietorAddress }}</td>
+              <td>
+                {{
+                  { null: '', DELHI: 'DELHI', MUMBAI: 'MUMBAI', AHMEDABAD: 'AHMEDABAD', KOLKATA: 'KOLKATA', CHENNAI: 'CHENNAI' }[
+                    publishedTm.headOffice ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ publishedTm.imgUrl }}</td>
               <td>{{ publishedTm.tmClass }}</td>
               <td>{{ publishedTm.journalNo }}</td>
-
-                <td>{{ publishedTm.trademarkStatus }}</td>
-
-            
+              <td>{{ publishedTm.deleted }}</td>
+              <td>{{ publishedTm.usage }}</td>
+              <td>{{ publishedTm.associatedTms }}</td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    REGISTERED: 'REGISTERED',
+                    OPPOSED: 'OPPOSED',
+                    WITHDRAWN: 'WITHDRAWN',
+                    REJECTED: 'REJECTED',
+                    HEARING: 'HEARING',
+                    PUBLISHED: 'PUBLISHED',
+                    PROVISIONAL: 'PROVISIONAL',
+                  }[publishedTm.trademarkStatus ?? 'null']
+                }}
+              </td>
+              <td>{{ publishedTm.createdDate | formatMediumDatetime }}</td>
+              <td>{{ publishedTm.modifiedDate | formatMediumDatetime }}</td>
+              <td>{{ publishedTm.renewalDate | formatMediumDate }}</td>
+              <td>
+                {{ { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[publishedTm.type ?? 'null'] }}
+              </td>
+              <td>
+                @if (publishedTm.tmAgent) {
+                  <div>
+                    <a [routerLink]="['/tm-agent', publishedTm.tmAgent.id, 'view']">{{ publishedTm.tmAgent.id }}</a>
+                  </div>
+                }
+              </td>
               <td class="text-end">
                 <div class="btn-group">
                   <a [routerLink]="['/published-tm', publishedTm.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">

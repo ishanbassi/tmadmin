@@ -2,6 +2,7 @@ package com.bassi.tmapp.config;
 
 import java.util.concurrent.Executor;
 import javax.sql.DataSource;
+import liquibase.integration.spring.SpringLiquibase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
@@ -13,16 +14,13 @@ import org.springframework.boot.autoconfigure.liquibase.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
-
-import liquibase.integration.spring.SpringLiquibase;
 import tech.jhipster.config.JHipsterConstants;
 import tech.jhipster.config.liquibase.SpringLiquibaseUtil;
 
 @Configuration
 public class LiquibaseConfiguration {
 
-    private static final Logger log = LoggerFactory.getLogger(LiquibaseConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LiquibaseConfiguration.class);
 
     private final Environment env;
 
@@ -71,11 +69,11 @@ public class LiquibaseConfiguration {
         liquibase.setChangeLogParameters(liquibaseProperties.getParameters());
         liquibase.setRollbackFile(liquibaseProperties.getRollbackFile());
         liquibase.setTestRollbackOnUpdate(liquibaseProperties.isTestRollbackOnUpdate());
-        if (env.acceptsProfiles(Profiles.of(JHipsterConstants.SPRING_PROFILE_NO_LIQUIBASE))) {
+        if (env.matchesProfiles(JHipsterConstants.SPRING_PROFILE_NO_LIQUIBASE)) {
             liquibase.setShouldRun(false);
         } else {
             liquibase.setShouldRun(liquibaseProperties.isEnabled());
-            log.debug("Configuring Liquibase");
+            LOG.debug("Configuring Liquibase");
         }
         return liquibase;
     }

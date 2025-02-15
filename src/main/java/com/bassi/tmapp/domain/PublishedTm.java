@@ -2,18 +2,13 @@ package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
 
 /**
  * A PublishedTm.
@@ -35,8 +30,7 @@ public class PublishedTm implements Serializable {
     @Column(name = "name")
     private String name;
 
-    
-    @Column(name = "details" , columnDefinition="text")
+    @Column(name = "details")
     private String details;
 
     @Column(name = "application_no")
@@ -48,13 +42,13 @@ public class PublishedTm implements Serializable {
     @Column(name = "agent_name")
     private String agentName;
 
-    @Column(name = "agent_address", columnDefinition="text")
+    @Column(name = "agent_address")
     private String agentAddress;
 
     @Column(name = "proprietor_name")
     private String proprietorName;
 
-    @Column(name = "proprietor_address", columnDefinition="text")
+    @Column(name = "proprietor_address")
     private String proprietorAddress;
 
     @Enumerated(EnumType.STRING)
@@ -79,20 +73,22 @@ public class PublishedTm implements Serializable {
     @Column(name = "associated_tms")
     private String associatedTms;
 
-//    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)
     @Column(name = "trademark_status")
-    private String trademarkStatus;
-    
+    private TrademarkStatus trademarkStatus;
 
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
     @Column(name = "modified_date")
     private ZonedDateTime modifiedDate;
-    
-    @Column(name="page_no", columnDefinition="SMALLINT")
-    private short pageNo;
-    
+
+    @Column(name = "renewal_date")
+    private LocalDate renewalDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private TrademarkType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private TmAgent tmAgent;
@@ -307,20 +303,18 @@ public class PublishedTm implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public String getTrademarkStatus() {
+    public TrademarkStatus getTrademarkStatus() {
         return this.trademarkStatus;
     }
 
-    public PublishedTm trademarkStatus(String trademarkStatus) {
+    public PublishedTm trademarkStatus(TrademarkStatus trademarkStatus) {
         this.setTrademarkStatus(trademarkStatus);
         return this;
     }
 
-    public void setTrademarkStatus(String trademarkStatus) {
+    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
-    
-    
 
     public ZonedDateTime getCreatedDate() {
         return this.createdDate;
@@ -347,8 +341,32 @@ public class PublishedTm implements Serializable {
     public void setModifiedDate(ZonedDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
-    
-    
+
+    public LocalDate getRenewalDate() {
+        return this.renewalDate;
+    }
+
+    public PublishedTm renewalDate(LocalDate renewalDate) {
+        this.setRenewalDate(renewalDate);
+        return this;
+    }
+
+    public void setRenewalDate(LocalDate renewalDate) {
+        this.renewalDate = renewalDate;
+    }
+
+    public TrademarkType getType() {
+        return this.type;
+    }
+
+    public PublishedTm type(TrademarkType type) {
+        this.setType(type);
+        return this;
+    }
+
+    public void setType(TrademarkType type) {
+        this.type = type;
+    }
 
     public TmAgent getTmAgent() {
         return this.tmAgent;
@@ -365,16 +383,7 @@ public class PublishedTm implements Serializable {
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-
-	public short getPageNo() {
-		return pageNo;
-	}
-
-	public void setPageNo(short pageNo) {
-		this.pageNo = pageNo;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -414,17 +423,8 @@ public class PublishedTm implements Serializable {
             ", trademarkStatus='" + getTrademarkStatus() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
+            ", renewalDate='" + getRenewalDate() + "'" +
+            ", type='" + getType() + "'" +
             "}";
     }
-    
-    @PrePersist
-    private void beforeSave() {
-        this.createdDate = ZonedDateTime.now();
-        this.modifiedDate = ZonedDateTime.now();
-    }
-
-    @PreUpdate
-    private void beforeUpdate() {
-        this.modifiedDate = ZonedDateTime.now();
-    }    
 }

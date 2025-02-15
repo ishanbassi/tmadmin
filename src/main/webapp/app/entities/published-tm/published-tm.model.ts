@@ -2,6 +2,7 @@ import dayjs from 'dayjs/esm';
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
+import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 
 export interface IPublishedTm {
   id: number;
@@ -23,6 +24,8 @@ export interface IPublishedTm {
   trademarkStatus?: keyof typeof TrademarkStatus | null;
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
+  renewalDate?: dayjs.Dayjs | null;
+  type?: keyof typeof TrademarkType | null;
   tmAgent?: ITmAgent | null;
 }
 

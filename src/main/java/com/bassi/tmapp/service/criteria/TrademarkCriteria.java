@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.criteria;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,6 +36,23 @@ public class TrademarkCriteria implements Serializable, Criteria {
         @Override
         public HeadOfficeFilter copy() {
             return new HeadOfficeFilter(this);
+        }
+    }
+
+    /**
+     * Class for filtering TrademarkType
+     */
+    public static class TrademarkTypeFilter extends Filter<TrademarkType> {
+
+        public TrademarkTypeFilter() {}
+
+        public TrademarkTypeFilter(TrademarkTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public TrademarkTypeFilter copy() {
+            return new TrademarkTypeFilter(this);
         }
     }
 
@@ -78,6 +96,10 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter modifiedDate;
 
+    private LocalDateFilter renewalDate;
+
+    private TrademarkTypeFilter type;
+
     private LongFilter userProfileId;
 
     private Boolean distinct;
@@ -104,6 +126,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.trademarkStatus = other.optionalTrademarkStatus().map(StringFilter::copy).orElse(null);
         this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
+        this.renewalDate = other.optionalRenewalDate().map(LocalDateFilter::copy).orElse(null);
+        this.type = other.optionalType().map(TrademarkTypeFilter::copy).orElse(null);
         this.userProfileId = other.optionalUserProfileId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
@@ -474,6 +498,44 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.modifiedDate = modifiedDate;
     }
 
+    public LocalDateFilter getRenewalDate() {
+        return renewalDate;
+    }
+
+    public Optional<LocalDateFilter> optionalRenewalDate() {
+        return Optional.ofNullable(renewalDate);
+    }
+
+    public LocalDateFilter renewalDate() {
+        if (renewalDate == null) {
+            setRenewalDate(new LocalDateFilter());
+        }
+        return renewalDate;
+    }
+
+    public void setRenewalDate(LocalDateFilter renewalDate) {
+        this.renewalDate = renewalDate;
+    }
+
+    public TrademarkTypeFilter getType() {
+        return type;
+    }
+
+    public Optional<TrademarkTypeFilter> optionalType() {
+        return Optional.ofNullable(type);
+    }
+
+    public TrademarkTypeFilter type() {
+        if (type == null) {
+            setType(new TrademarkTypeFilter());
+        }
+        return type;
+    }
+
+    public void setType(TrademarkTypeFilter type) {
+        this.type = type;
+    }
+
     public LongFilter getUserProfileId() {
         return userProfileId;
     }
@@ -541,6 +603,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(trademarkStatus, that.trademarkStatus) &&
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(modifiedDate, that.modifiedDate) &&
+            Objects.equals(renewalDate, that.renewalDate) &&
+            Objects.equals(type, that.type) &&
             Objects.equals(userProfileId, that.userProfileId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -568,6 +632,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
             trademarkStatus,
             createdDate,
             modifiedDate,
+            renewalDate,
+            type,
             userProfileId,
             distinct
         );
@@ -596,6 +662,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalTrademarkStatus().map(f -> "trademarkStatus=" + f + ", ").orElse("") +
             optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
             optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
+            optionalRenewalDate().map(f -> "renewalDate=" + f + ", ").orElse("") +
+            optionalType().map(f -> "type=" + f + ", ").orElse("") +
             optionalUserProfileId().map(f -> "userProfileId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";

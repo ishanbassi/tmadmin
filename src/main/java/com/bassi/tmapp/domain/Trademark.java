@@ -1,18 +1,14 @@
 package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
-
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 /**
  * A Trademark.
@@ -21,7 +17,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 @Table(name = "trademark")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @SuppressWarnings("common-java:DuplicatedBlocks")
-public class Trademark implements  Serializable {
+public class Trademark implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -85,6 +81,13 @@ public class Trademark implements  Serializable {
 
     @Column(name = "modified_date")
     private ZonedDateTime modifiedDate;
+
+    @Column(name = "renewal_date")
+    private LocalDate renewalDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type")
+    private TrademarkType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
@@ -339,6 +342,32 @@ public class Trademark implements  Serializable {
         this.modifiedDate = modifiedDate;
     }
 
+    public LocalDate getRenewalDate() {
+        return this.renewalDate;
+    }
+
+    public Trademark renewalDate(LocalDate renewalDate) {
+        this.setRenewalDate(renewalDate);
+        return this;
+    }
+
+    public void setRenewalDate(LocalDate renewalDate) {
+        this.renewalDate = renewalDate;
+    }
+
+    public TrademarkType getType() {
+        return this.type;
+    }
+
+    public Trademark type(TrademarkType type) {
+        this.setType(type);
+        return this;
+    }
+
+    public void setType(TrademarkType type) {
+        this.type = type;
+    }
+
     public UserProfile getUserProfile() {
         return this.userProfile;
     }
@@ -351,13 +380,10 @@ public class Trademark implements  Serializable {
         this.setUserProfile(userProfile);
         return this;
     }
-    
-    
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -397,17 +423,8 @@ public class Trademark implements  Serializable {
             ", trademarkStatus='" + getTrademarkStatus() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
+            ", renewalDate='" + getRenewalDate() + "'" +
+            ", type='" + getType() + "'" +
             "}";
-    }
-    
-    @PrePersist
-    private void beforeSave() {
-        this.createdDate = ZonedDateTime.now();
-        this.modifiedDate = ZonedDateTime.now();
-    }
-
-    @PreUpdate
-    private void beforeUpdate() {
-        this.modifiedDate = ZonedDateTime.now();
     }
 }

@@ -1,10 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { IPublishedTm } from '../published-tm.model';
-import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../published-tm.test-samples';
+import { sampleWithFullData, sampleWithNewData, sampleWithPartialData, sampleWithRequiredData } from '../published-tm.test-samples';
 
 import { PublishedTmService, RestPublishedTm } from './published-tm.service';
 
@@ -13,6 +13,7 @@ const requireRestSample: RestPublishedTm = {
   applicationDate: sampleWithRequiredData.applicationDate?.format(DATE_FORMAT),
   createdDate: sampleWithRequiredData.createdDate?.toJSON(),
   modifiedDate: sampleWithRequiredData.modifiedDate?.toJSON(),
+  renewalDate: sampleWithRequiredData.renewalDate?.format(DATE_FORMAT),
 };
 
 describe('PublishedTm Service', () => {

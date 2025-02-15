@@ -1,6 +1,7 @@
 import dayjs from 'dayjs/esm';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
+import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 
 export interface ITrademark {
   id: number;
@@ -22,6 +23,8 @@ export interface ITrademark {
   trademarkStatus?: string | null;
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
+  renewalDate?: dayjs.Dayjs | null;
+  type?: keyof typeof TrademarkType | null;
   userProfile?: IUserProfile | null;
 }
 

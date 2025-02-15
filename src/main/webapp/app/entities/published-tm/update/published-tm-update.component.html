@@ -206,6 +206,37 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" for="field_renewalDate">Renewal Date</label>
+          <div class="input-group">
+            <input
+              id="field_renewalDate"
+              data-cy="renewalDate"
+              type="text"
+              class="form-control"
+              name="renewalDate"
+              ngbDatepicker
+              #renewalDateDp="ngbDatepicker"
+              formControlName="renewalDate"
+            />
+            <button type="button" class="btn btn-secondary" (click)="renewalDateDp.toggle()">
+              <fa-icon icon="calendar-alt"></fa-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_type">Type</label>
+          <select class="form-control" name="type" formControlName="type" id="field_type" data-cy="type">
+            <option [ngValue]="null"></option>
+            @for (trademarkType of trademarkTypeValues; track $index) {
+              <option [value]="trademarkType">
+                {{ { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[trademarkType] }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="field_tmAgent">Tm Agent</label>
           <select
             class="form-control"

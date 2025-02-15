@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithRequiredData, sampleWithNewData } from '../published-tm.test-samples';
+import { sampleWithNewData, sampleWithRequiredData } from '../published-tm.test-samples';
 
 import { PublishedTmFormService } from './published-tm-form.service';
 
@@ -38,6 +38,8 @@ describe('PublishedTm Form Service', () => {
             trademarkStatus: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
+            renewalDate: expect.any(Object),
+            type: expect.any(Object),
             tmAgent: expect.any(Object),
           }),
         );
@@ -67,6 +69,8 @@ describe('PublishedTm Form Service', () => {
             trademarkStatus: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
+            renewalDate: expect.any(Object),
+            type: expect.any(Object),
             tmAgent: expect.any(Object),
           }),
         );

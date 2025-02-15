@@ -102,7 +102,7 @@
           </tr>
         </thead>
         <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
-          @for (tmAgent of tmAgents; track trackId) {
+          @for (tmAgent of tmAgents; track trackId(tmAgent)) {
             <tr data-cy="entityTable">
               <td>
                 <a [routerLink]="['/tm-agent', tmAgent.id, 'view']">{{ tmAgent.id }}</a>
