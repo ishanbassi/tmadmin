@@ -148,6 +148,10 @@ public class PublishedTmServiceExtended {
     		throw new InternalServerAlertException("Process is aborted because journal No is null");
     	}
     	//read pdf files based on journal
+    	Long count = publishedTmRepositoryExtended.countByJournalNo(journalNo);
+		if(count > 0) {
+			throw new InternalServerAlertException("Trademarks already exists for the journal No. Make sure that journal No is correct");
+		}
     	readPdfFile(journalNo);
     	
 		// scrape journal trademarks

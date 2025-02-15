@@ -145,7 +145,7 @@ public class PublishedTmPhoneticsServiceExtended {
 				.flatMap(List::stream)
 				.toList();
 				
-		return publishedTmPhoneticsRepository.saveAll(publishedTmPhoneticsList);
+		return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
 	}
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<PublishedTmPhonetics> savePhoneticsFromPublishedTm(PublishedTm tm){

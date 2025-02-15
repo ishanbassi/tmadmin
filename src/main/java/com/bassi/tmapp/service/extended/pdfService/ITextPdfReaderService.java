@@ -15,11 +15,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +37,7 @@ import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor;
@@ -57,8 +59,12 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	private PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
 	private WordSanitizationService wordSanitizationService;
 	private TmAgentServiceExtended agentServiceExtended;
+   
+	@Autowired
+	@Lazy
+	private  ITextPdfReaderService self;
+
 	
-	private List<PublishedTmDTO> errors = new ArrayList<>();
 	
 	@Value("${file-upload-base-path}")
     private String baseUploadDirectory;
@@ -87,24 +93,36 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		this.agentServiceExtended  = agentServiceExtended;
 	}
 	
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void readPdfFilesFromFileSystem(int journalNo) {
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
-		Stream.of(baseDirectory.listFiles()).map(File::getAbsolutePath)
-				.forEach(path -> {
-						List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
-						
-						List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
-						savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
-						publishedTrademarksDto = publishedTmMapper.toDto(publishedTrademarks);
-						agentServiceExtended.saveTmAgents(publishedTrademarksDto);
-						
-				});
 		
-		// save the missing trademark information in the json file
-		if(!errors.isEmpty()) {
-			writeErrorsToJson(errors);
-		}
+	    processDirectory(baseDirectory);
+
+	
+	}
+	private void processDirectory(File directory) {
+	    if (directory == null || !directory.exists()) return;
+
+	    File[] files = directory.listFiles();
+	    if (files == null) return;
+
+	    for (File file : files) {
+	        if (file.isDirectory()) {
+	            processDirectory(file); // Recursively process subdirectories
+	        } else if (file.getName().toLowerCase().endsWith(".pdf")) {
+	        	self.readPdfAndSaveDetails(file.getAbsolutePath()); // Process the PDF
+	        }
+	    }
+	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public void readPdfAndSaveDetails(String path) {
+		List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
+		List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
+		savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
+		publishedTrademarksDto = publishedTmMapper.toDto(publishedTrademarks);
+		agentServiceExtended.saveTmAgents(publishedTrademarksDto);
+		
 	}
 
 	
@@ -113,7 +131,9 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	public List<PublishedTmDTO>  readPdf(String pdfFilePath){
 		log.info("Going to read pdf file: {}" , pdfFilePath);
 		List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
+		List<PublishedTmDTO> errors = new ArrayList<>();
 		PdfDocument pdfDoc;
+		
 		try {
 			pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));	
 		}
@@ -121,57 +141,74 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 			throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath +  " Reason: " + e.getLocalizedMessage());
 		}
         for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
-        	log.info("Going to process page number {}", i);
-        	currentPublishedTmDto =  new PublishedTmDTO();
-        	currentPublishedTmDto.setPageNo((short) i);
-        	
-        	CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
-            PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
-            processor.processPageContent(pdfDoc.getPage(i));
-            
-            // check if international tm begins
-            String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
-            if(pageContent.contains("International Registration designating India")) {
-        		pdfDoc.close();
-            	return publishedTrademarks;
-            }
-            
-            //extract text 
-            List<LineInfo> lines = strategy.getLines();
-            extractPublishedTrademark(lines);
-            
-            // extract images
-            PdfImage pdfImage = strategy.getImage();
-            if(pdfImage != null && currentPublishedTmDto.getApplicationNo() != null) {
-            	String path = saveToFileSystem(pdfImage);
-            	currentPublishedTmDto.setImgUrl(path);
+        	try {
+        		log.info("Going to process page number {}", i);
+            	currentPublishedTmDto =  new PublishedTmDTO();
+            	currentPublishedTmDto.setPageNo((short) i);
             	
-            }
-            
-            // if both image and trademark	 is present, remove the trademark
- 			if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
- 				currentPublishedTmDto.setName(null);
- 			}
- 			
-            // check if trademark is multi class
-			if (currentPublishedTmDto.getTmClass() != null && currentPublishedTmDto.getTmClass() == 99
-					&& currentPublishedTmDto.getDetails() != null) {
-            	List<PublishedTmDTO> class99Trademarks = processTmClass99(currentPublishedTmDto)
-            	.stream()
-            	.map(this::checkAnyMissingInformation)
-            	.filter(x -> x != null)
-            	.toList();
-            	publishedTrademarks.addAll(class99Trademarks);
-            }
-            else {
-            	currentPublishedTmDto = checkAnyMissingInformation(currentPublishedTmDto);
-     			if(currentPublishedTmDto != null) {
-     				publishedTrademarks.add(currentPublishedTmDto);
-     			}	
-            }
+            	CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
+                PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
+                processor.processPageContent(pdfDoc.getPage(i));
+                
+                // check if international tm begins
+                String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
+                if(pageContent.contains("International Registration designating India")) {
+            		pdfDoc.close();
+                	return publishedTrademarks;
+                }
+                
+                //extract text 
+                List<LineInfo> lines = strategy.getLines();
+                extractPublishedTrademark(lines);
+                
+                if(isInfoMissing(currentPublishedTmDto)) {
+    				if(currentPublishedTmDto != null && currentPublishedTmDto.getImgUrl() !=null) {
+    					deleteTmImg(currentPublishedTmDto.getImgUrl());
+    				}
+    				if(currentPublishedTmDto != null) {
+        				currentPublishedTmDto.setFilePath(pdfFilePath);
+    				}
+                	errors.add(currentPublishedTmDto);
+                	continue;
+                }
+                // extract images
+                PdfImage pdfImage = strategy.getImage();
+                if(pdfImage != null) {
+                	String path = saveToFileSystem(pdfImage);
+                	currentPublishedTmDto.setImgUrl(path);
+                	
+                }
+                
+                // if both image and trademark	 is present, remove the trademark
+     			if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
+     				currentPublishedTmDto.setName(null);
+     			}
+     			
+                // check if trademark is multi class
+    			if (currentPublishedTmDto.getTmClass() != null && currentPublishedTmDto.getTmClass() == 99
+    					&& currentPublishedTmDto.getDetails() != null) {
+                	List<PublishedTmDTO> class99Trademarks = processTmClass99(currentPublishedTmDto)
+                	.stream()
+                	.filter((x) -> !isInfoMissing(x))
+                	.toList();
+                	publishedTrademarks.addAll(class99Trademarks);
+                }
+ 				publishedTrademarks.add(currentPublishedTmDto);
+
+        	}
+        	catch(Exception e) {
+				log.error("Unable to process pdf file, page No : {} , Trademark Details: {}, Reason: {}", i,
+						currentPublishedTmDto, e.getMessage());
+	
+        	}
+        	
         }
         
 		pdfDoc.close();
+		// save the missing trademark information in the json file
+		if(!errors.isEmpty()) {
+			writeErrorsToJson(errors);
+		}
 		return publishedTrademarks;
 	}
 	
@@ -398,6 +435,10 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	
 	private String saveToFileSystem(PdfImage pdfImage) { 
+		if(currentPublishedTmDto.getApplicationNo() == null || currentPublishedTmDto.getTmClass() == null || currentPublishedTmDto.getJournalNo() == null) {
+			log.info("Skipping because information is missing");
+			return null;
+		}
 		log.info("Going to save image : in the file system"  );
 		byte[] content = pdfImage.getImageContent(); 
 		String extensionType = pdfImage.getImageType();
@@ -440,31 +481,27 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 
 	private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
-		publishedTrademarks =  publishedTmRepository.saveAll(publishedTrademarks);
+		publishedTrademarks =  publishedTmRepository.saveAllAndFlush(publishedTrademarks);
 		publishedTmPhoneticsServiceExtended.saveAll(publishedTrademarks); 
 	}
 
+	
+	private boolean isInfoMissing(PublishedTmDTO tm) {
+	
+		return !(tm != null && tm.getTmClass() != null && tm.getApplicationNo() != null && tm.getApplicationDate() != null
+				&& tm.getHeadOffice() != null && tm.getJournalNo() != null
+				&& (tm.getName() != null || tm.getImgUrl() != null));
 
-
-	private PublishedTmDTO checkAnyMissingInformation(PublishedTmDTO tm) {
-		
-			if(tm != null && tm.getTmClass() != null && tm.getApplicationNo() != null
-					&& tm.getApplicationDate() != null && tm.getHeadOffice() != null && tm.getJournalNo() != null
-					&& (tm.getName() != null || tm.getImgUrl() != null)) {
-				return tm;
-			}else {
-				errors.add(tm);
-				if(tm != null && tm.getImgUrl() !=null) {
-					deleteTmImg(tm.getImgUrl());
-				}
-				return null;
-			}
-
+}
+	private String trimExtraLetters(String word) {
+		if(word == null) return word;
+		return word.length() < 250 ? word: word.substring(0,250);
 	}
 
 	private void writeErrorsToJson(List<PublishedTmDTO> errors) {
 		log.info("{} trademarks with missing information are going to be stored in the json file.", errors.size());
 		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
 		mapper.enable(SerializationFeature.INDENT_OUTPUT);
 		String jsonDir = Paths.get(baseErrorsDirectory).toAbsolutePath().toString();
 		String fileName  = new Date().getTime() + "-errors.json";

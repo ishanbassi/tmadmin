@@ -19,6 +19,7 @@ import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
@@ -63,6 +64,10 @@ public class TrademarkScrapingService {
 	
 	@Value("${pdf-file-base-path}")
     private String basePdfDirectory;
+	
+	public Integer downloadLatestPdf() {
+		
+	}
 	
 	public Integer downloadPdf() {
 		Integer journalNo = null;
@@ -132,7 +137,9 @@ public class TrademarkScrapingService {
     
 	@Async
 	public void scrape(List<PublishedTm> publishedTmArr) {
-        WebDriver driver =  new ChromeDriver();
+		ChromeOptions chromeOptions = new ChromeOptions();
+				chromeOptions.addArguments("--headless");
+        WebDriver driver =  new ChromeDriver(chromeOptions);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
         
         

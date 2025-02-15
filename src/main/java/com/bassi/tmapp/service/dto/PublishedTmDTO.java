@@ -93,8 +93,18 @@ public class PublishedTmDTO implements Serializable {
     
     private TmAgentDTO agent;
     
+    private String filePath;
     
-    public Map<String,Integer> getTextIndexMap() {
+    
+    public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
+	public Map<String,Integer> getTextIndexMap() {
     	return this.textIndexes;
     }
     
