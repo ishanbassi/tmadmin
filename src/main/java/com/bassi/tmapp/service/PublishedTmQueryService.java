@@ -120,7 +120,7 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
                 specification = specification.and(buildStringSpecification(criteria.getAssociatedTms(), PublishedTm_.associatedTms));
             }
             if (criteria.getTrademarkStatus() != null) {
-                specification = specification.and(buildSpecification(criteria.getTrademarkStatus(), PublishedTm_.trademarkStatus));
+                specification = specification.and(buildStringSpecification(criteria.getTrademarkStatus(), PublishedTm_.trademarkStatus));
             }
             if (criteria.getCreatedDate() != null) {
                 specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), PublishedTm_.createdDate));

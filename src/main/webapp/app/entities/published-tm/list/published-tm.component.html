@@ -218,20 +218,7 @@
               <td>{{ publishedTm.deleted }}</td>
               <td>{{ publishedTm.usage }}</td>
               <td>{{ publishedTm.associatedTms }}</td>
-              <td>
-                {{
-                  {
-                    null: '',
-                    REGISTERED: 'REGISTERED',
-                    OPPOSED: 'OPPOSED',
-                    WITHDRAWN: 'WITHDRAWN',
-                    REJECTED: 'REJECTED',
-                    HEARING: 'HEARING',
-                    PUBLISHED: 'PUBLISHED',
-                    PROVISIONAL: 'PROVISIONAL',
-                  }[publishedTm.trademarkStatus ?? 'null']
-                }}
-              </td>
+              <td>{{ publishedTm.trademarkStatus }}</td>
               <td>{{ publishedTm.createdDate | formatMediumDatetime }}</td>
               <td>{{ publishedTm.modifiedDate | formatMediumDatetime }}</td>
               <td>{{ publishedTm.renewalDate | formatMediumDate }}</td>

@@ -37,11 +37,11 @@ export const sampleWithFullData: IPublishedTm = {
   deleted: true,
   usage: 'zowie',
   associatedTms: 'impact vanadyl',
-  trademarkStatus: 'HEARING',
-  createdDate: dayjs('2024-05-21T21:54'),
-  modifiedDate: dayjs('2024-05-22T10:32'),
+  trademarkStatus: 'duh suspiciously forsaken',
+  createdDate: dayjs('2024-05-22T14:27'),
+  modifiedDate: dayjs('2024-05-21T17:52'),
   renewalDate: dayjs('2024-05-22'),
-  type: 'IMAGEMARK',
+  type: 'SOUNDMARK',
 };
 
 export const sampleWithNewData: NewPublishedTm = {

@@ -10,7 +10,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
-import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { PublishedTmService } from '../service/published-tm.service';
 import { IPublishedTm } from '../published-tm.model';
@@ -26,7 +25,6 @@ export class PublishedTmUpdateComponent implements OnInit {
   isSaving = false;
   publishedTm: IPublishedTm | null = null;
   headOfficeValues = Object.keys(HeadOffice);
-  trademarkStatusValues = Object.keys(TrademarkStatus);
   trademarkTypeValues = Object.keys(TrademarkType);
 
   tmAgentsSharedCollection: ITmAgent[] = [];

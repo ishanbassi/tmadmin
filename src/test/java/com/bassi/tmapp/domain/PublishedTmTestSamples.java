@@ -25,7 +25,8 @@ public class PublishedTmTestSamples {
             .tmClass(1)
             .journalNo(1)
             .usage("usage1")
-            .associatedTms("associatedTms1");
+            .associatedTms("associatedTms1")
+            .trademarkStatus("trademarkStatus1");
     }
 
     public static PublishedTm getPublishedTmSample2() {
@@ -42,7 +43,8 @@ public class PublishedTmTestSamples {
             .tmClass(2)
             .journalNo(2)
             .usage("usage2")
-            .associatedTms("associatedTms2");
+            .associatedTms("associatedTms2")
+            .trademarkStatus("trademarkStatus2");
     }
 
     public static PublishedTm getPublishedTmRandomSampleGenerator() {
@@ -59,6 +61,7 @@ public class PublishedTmTestSamples {
             .tmClass(intCount.incrementAndGet())
             .journalNo(intCount.incrementAndGet())
             .usage(UUID.randomUUID().toString())
-            .associatedTms(UUID.randomUUID().toString());
+            .associatedTms(UUID.randomUUID().toString())
+            .trademarkStatus(UUID.randomUUID().toString());
     }
 }

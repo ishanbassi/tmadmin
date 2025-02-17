@@ -12,7 +12,6 @@ import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -91,8 +90,8 @@ class PublishedTmResourceIT {
     private static final String DEFAULT_ASSOCIATED_TMS = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_TMS = "BBBBBBBBBB";
 
-    private static final TrademarkStatus DEFAULT_TRADEMARK_STATUS = TrademarkStatus.REGISTERED;
-    private static final TrademarkStatus UPDATED_TRADEMARK_STATUS = TrademarkStatus.OPPOSED;
+    private static final String DEFAULT_TRADEMARK_STATUS = "AAAAAAAAAA";
+    private static final String UPDATED_TRADEMARK_STATUS = "BBBBBBBBBB";
 
     private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
@@ -270,7 +269,7 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
@@ -304,7 +303,7 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
-            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()))
+            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
@@ -1223,6 +1222,32 @@ class PublishedTmResourceIT {
 
     @Test
     @Transactional
+    void getAllPublishedTmsByTrademarkStatusContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where trademarkStatus contains
+        defaultPublishedTmFiltering(
+            "trademarkStatus.contains=" + DEFAULT_TRADEMARK_STATUS,
+            "trademarkStatus.contains=" + UPDATED_TRADEMARK_STATUS
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByTrademarkStatusNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where trademarkStatus does not contain
+        defaultPublishedTmFiltering(
+            "trademarkStatus.doesNotContain=" + UPDATED_TRADEMARK_STATUS,
+            "trademarkStatus.doesNotContain=" + DEFAULT_TRADEMARK_STATUS
+        );
+    }
+
+    @Test
+    @Transactional
     void getAllPublishedTmsByCreatedDateIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
@@ -1542,7 +1567,7 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))

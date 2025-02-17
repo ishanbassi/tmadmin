@@ -80,7 +80,7 @@ entity PublishedTm{
     deleted Boolean
     usage String
     associatedTms String
-    trademarkStatus TrademarkStatus
+    trademarkStatus String
     createdDate ZonedDateTime
     modifiedDate ZonedDateTime
     renewalDate LocalDate
