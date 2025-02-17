@@ -182,6 +182,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="pageNo">
+              <div class="d-flex">
+                <span>Page No</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="tmAgent.id">
               <div class="d-flex">
                 <span>Tm Agent</span>
@@ -225,6 +232,7 @@
               <td>
                 {{ { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[publishedTm.type ?? 'null'] }}
               </td>
+              <td>{{ publishedTm.pageNo }}</td>
               <td>
                 @if (publishedTm.tmAgent) {
                   <div>

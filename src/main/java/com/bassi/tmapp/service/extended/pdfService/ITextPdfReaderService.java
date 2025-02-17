@@ -555,6 +555,32 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		return class99Trademarks;
 		
 	}
+	public void updateTrademarkStatusFromJournal(String pdfFilePath) {
+		PdfDocument pdfDoc;
+		
+		try {
+			pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));	
+		}
+		catch(IOException e) {
+			throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath +  " Reason: " + e.getLocalizedMessage());
+		}
+		for(int i=0; i< pdfDoc.getNumberOfPages(); i++) {
+			CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
+            PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
+            processor.processPageContent(pdfDoc.getPage(i));
+            
+            String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
+            if(pageContent.contains("Following Trade Marks Registration Renewed for a Period Of Ten Years")) {
+                List<LineInfo> lines = strategy.getLines();
+                pdfDoc.close();
+            }
+            
+            
+            
+            
+		}
+		
+	}
 
 }
 

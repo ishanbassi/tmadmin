@@ -52,6 +52,7 @@ type PublishedTmFormGroupContent = {
   modifiedDate: FormControl<PublishedTmFormRawValue['modifiedDate']>;
   renewalDate: FormControl<PublishedTmFormRawValue['renewalDate']>;
   type: FormControl<PublishedTmFormRawValue['type']>;
+  pageNo: FormControl<PublishedTmFormRawValue['pageNo']>;
   tmAgent: FormControl<PublishedTmFormRawValue['tmAgent']>;
 };
 
@@ -92,6 +93,7 @@ export class PublishedTmFormService {
       modifiedDate: new FormControl(publishedTmRawValue.modifiedDate),
       renewalDate: new FormControl(publishedTmRawValue.renewalDate),
       type: new FormControl(publishedTmRawValue.type),
+      pageNo: new FormControl(publishedTmRawValue.pageNo),
       tmAgent: new FormControl(publishedTmRawValue.tmAgent),
     });
   }

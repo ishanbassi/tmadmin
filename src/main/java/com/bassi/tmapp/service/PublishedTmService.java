@@ -117,6 +117,9 @@ public class PublishedTmService {
                 if (publishedTm.getType() != null) {
                     existingPublishedTm.setType(publishedTm.getType());
                 }
+                if (publishedTm.getPageNo() != null) {
+                    existingPublishedTm.setPageNo(publishedTm.getPageNo());
+                }
 
                 return existingPublishedTm;
             })

@@ -85,6 +85,10 @@
       "fieldName": "type",
       "fieldType": "TrademarkType",
       "fieldValues": "IMAGEMARK,TRADEMARK,SOUNDMARK"
+    },
+    {
+      "fieldName": "pageNo",
+      "fieldType": "Integer"
     }
   ],
   "jpaMetamodelFiltering": true,

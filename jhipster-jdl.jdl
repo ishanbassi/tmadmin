@@ -49,6 +49,8 @@ entity Trademark{
     modifiedDate ZonedDateTime
     renewalDate LocalDate
     type TrademarkType
+    pageNo Integer
+    
     
 }
 
@@ -85,6 +87,7 @@ entity PublishedTm{
     modifiedDate ZonedDateTime
     renewalDate LocalDate
     type TrademarkType
+    pageNo Integer
 }
 
 entity TmAgent{

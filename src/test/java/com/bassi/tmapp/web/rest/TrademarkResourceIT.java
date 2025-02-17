@@ -108,6 +108,10 @@ class TrademarkResourceIT {
     private static final TrademarkType DEFAULT_TYPE = TrademarkType.IMAGEMARK;
     private static final TrademarkType UPDATED_TYPE = TrademarkType.TRADEMARK;
 
+    private static final Integer DEFAULT_PAGE_NO = 1;
+    private static final Integer UPDATED_PAGE_NO = 2;
+    private static final Integer SMALLER_PAGE_NO = 1 - 1;
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -157,7 +161,8 @@ class TrademarkResourceIT {
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
             .renewalDate(DEFAULT_RENEWAL_DATE)
-            .type(DEFAULT_TYPE);
+            .type(DEFAULT_TYPE)
+            .pageNo(DEFAULT_PAGE_NO);
     }
 
     /**
@@ -187,7 +192,8 @@ class TrademarkResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .pageNo(UPDATED_PAGE_NO);
     }
 
     @BeforeEach
@@ -273,7 +279,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)));
     }
 
     @Test
@@ -307,7 +314,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
-            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
+            .andExpect(jsonPath("$.pageNo").value(DEFAULT_PAGE_NO));
     }
 
     @Test
@@ -1515,6 +1523,76 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByPageNoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo equals to
+        defaultTrademarkFiltering("pageNo.equals=" + DEFAULT_PAGE_NO, "pageNo.equals=" + UPDATED_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPageNoIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo in
+        defaultTrademarkFiltering("pageNo.in=" + DEFAULT_PAGE_NO + "," + UPDATED_PAGE_NO, "pageNo.in=" + UPDATED_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPageNoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo is not null
+        defaultTrademarkFiltering("pageNo.specified=true", "pageNo.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPageNoIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo is greater than or equal to
+        defaultTrademarkFiltering("pageNo.greaterThanOrEqual=" + DEFAULT_PAGE_NO, "pageNo.greaterThanOrEqual=" + UPDATED_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPageNoIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo is less than or equal to
+        defaultTrademarkFiltering("pageNo.lessThanOrEqual=" + DEFAULT_PAGE_NO, "pageNo.lessThanOrEqual=" + SMALLER_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPageNoIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo is less than
+        defaultTrademarkFiltering("pageNo.lessThan=" + UPDATED_PAGE_NO, "pageNo.lessThan=" + DEFAULT_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPageNoIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where pageNo is greater than
+        defaultTrademarkFiltering("pageNo.greaterThan=" + SMALLER_PAGE_NO, "pageNo.greaterThan=" + DEFAULT_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByUserProfileIsEqualToSomething() throws Exception {
         UserProfile userProfile;
         if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
@@ -1568,7 +1646,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -1636,7 +1715,8 @@ class TrademarkResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .pageNo(UPDATED_PAGE_NO);
 
         restTrademarkMockMvc
             .perform(
@@ -1779,7 +1859,8 @@ class TrademarkResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .pageNo(UPDATED_PAGE_NO);
 
         restTrademarkMockMvc
             .perform(

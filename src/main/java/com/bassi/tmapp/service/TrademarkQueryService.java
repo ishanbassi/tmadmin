@@ -132,6 +132,9 @@ public class TrademarkQueryService extends QueryService<Trademark> {
             if (criteria.getType() != null) {
                 specification = specification.and(buildSpecification(criteria.getType(), Trademark_.type));
             }
+            if (criteria.getPageNo() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getPageNo(), Trademark_.pageNo));
+            }
             if (criteria.getUserProfileId() != null) {
                 specification = specification.and(
                     buildSpecification(criteria.getUserProfileId(), root ->

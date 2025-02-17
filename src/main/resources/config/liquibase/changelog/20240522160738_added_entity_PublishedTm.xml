@@ -74,6 +74,9 @@
             <column name="type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="page_no" type="integer">
+                <constraints nullable="true" />
+            </column>
             <column name="tm_agent_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -120,6 +123,7 @@
             <column name="modified_date" type="date"/>
             <column name="renewal_date" type="date"/>
             <column name="type" type="string"/>
+            <column name="page_no" type="numeric"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

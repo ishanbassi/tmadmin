@@ -134,6 +134,9 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
             if (criteria.getType() != null) {
                 specification = specification.and(buildSpecification(criteria.getType(), PublishedTm_.type));
             }
+            if (criteria.getPageNo() != null) {
+                specification = specification.and(buildRangeSpecification(criteria.getPageNo(), PublishedTm_.pageNo));
+            }
             if (criteria.getTmAgentId() != null) {
                 specification = specification.and(
                     buildSpecification(criteria.getTmAgentId(), root -> root.join(PublishedTm_.tmAgent, JoinType.LEFT).get(TmAgent_.id))

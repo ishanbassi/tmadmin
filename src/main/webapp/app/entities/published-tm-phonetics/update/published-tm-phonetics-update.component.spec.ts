@@ -49,10 +49,10 @@ describe('PublishedTmPhonetics Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call PublishedTm query and add missing value', () => {
       const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 2076 };
+      const publishedTm: IPublishedTm = { id: 11686 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
-      const publishedTmCollection: IPublishedTm[] = [{ id: 11686 }];
+      const publishedTmCollection: IPublishedTm[] = [{ id: 13536 }];
       jest.spyOn(publishedTmService, 'query').mockReturnValue(of(new HttpResponse({ body: publishedTmCollection })));
       const additionalPublishedTms = [publishedTm];
       const expectedCollection: IPublishedTm[] = [...additionalPublishedTms, ...publishedTmCollection];
@@ -71,7 +71,7 @@ describe('PublishedTmPhonetics Management Update Component', () => {
 
     it('Should update editForm', () => {
       const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 13536 };
+      const publishedTm: IPublishedTm = { id: 16200 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
       activatedRoute.data = of({ publishedTmPhonetics });

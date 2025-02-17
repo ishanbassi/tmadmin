@@ -257,6 +257,11 @@ public class PublishedTmServiceExtended {
 		
 	}
 
+	public void updateTrademarkStatusFromJournal(int journalNo) {
+		pdfReaderService.updateTrademarkStatusFromJournal(basePdfDirectory);
+	}
+
+    
 	
 	
 }

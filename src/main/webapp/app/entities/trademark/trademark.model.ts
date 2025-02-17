@@ -25,6 +25,7 @@ export interface ITrademark {
   modifiedDate?: dayjs.Dayjs | null;
   renewalDate?: dayjs.Dayjs | null;
   type?: keyof typeof TrademarkType | null;
+  pageNo?: number | null;
   userProfile?: IUserProfile | null;
 }
 

@@ -77,7 +77,8 @@ public class PublishedTmAsserts {
                     .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getRenewalDate()).as("check renewalDate").isEqualTo(actual.getRenewalDate()))
-            .satisfies(e -> assertThat(e.getType()).as("check type").isEqualTo(actual.getType()));
+            .satisfies(e -> assertThat(e.getType()).as("check type").isEqualTo(actual.getType()))
+            .satisfies(e -> assertThat(e.getPageNo()).as("check pageNo").isEqualTo(actual.getPageNo()));
     }
 
     /**

@@ -254,5 +254,11 @@ public class PublishedTmResourceExtended {
 		return "Trademarks extraction has been initialized";
 	}
 	
+	@PostMapping("/update-status/journal")
+	public String updateTrademarkStatusFromJournal(@PathVariable("journalNo") int journalNo) {
+		publishedTmServiceExtended.updateTrademarkStatusFromJournal(journalNo);
+		return "Trademark Status Updation has completed";
+	}
+	
 	
 }

@@ -88,6 +88,9 @@ public class PublishedTm implements Serializable {
     @Column(name = "type")
     private TrademarkType type;
 
+    @Column(name = "page_no")
+    private Integer pageNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private TmAgent tmAgent;
 
@@ -366,6 +369,19 @@ public class PublishedTm implements Serializable {
         this.type = type;
     }
 
+    public Integer getPageNo() {
+        return this.pageNo;
+    }
+
+    public PublishedTm pageNo(Integer pageNo) {
+        this.setPageNo(pageNo);
+        return this;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
     public TmAgent getTmAgent() {
         return this.tmAgent;
     }
@@ -423,6 +439,7 @@ public class PublishedTm implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", renewalDate='" + getRenewalDate() + "'" +
             ", type='" + getType() + "'" +
+            ", pageNo=" + getPageNo() +
             "}";
     }
 }

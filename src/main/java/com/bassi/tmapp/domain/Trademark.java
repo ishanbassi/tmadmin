@@ -89,6 +89,9 @@ public class Trademark implements Serializable {
     @Column(name = "type")
     private TrademarkType type;
 
+    @Column(name = "page_no")
+    private Integer pageNo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
     private UserProfile userProfile;
@@ -368,6 +371,19 @@ public class Trademark implements Serializable {
         this.type = type;
     }
 
+    public Integer getPageNo() {
+        return this.pageNo;
+    }
+
+    public Trademark pageNo(Integer pageNo) {
+        this.setPageNo(pageNo);
+        return this;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
     public UserProfile getUserProfile() {
         return this.userProfile;
     }
@@ -425,6 +441,7 @@ public class Trademark implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", renewalDate='" + getRenewalDate() + "'" +
             ", type='" + getType() + "'" +
+            ", pageNo=" + getPageNo() +
             "}";
     }
 }

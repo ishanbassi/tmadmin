@@ -101,6 +101,10 @@
               { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[trademarkRef.type ?? 'null']
             }}</span>
           </dd>
+          <dt><span>Page No</span></dt>
+          <dd>
+            <span>{{ trademarkRef.pageNo }}</span>
+          </dd>
           <dt><span>User Profile</span></dt>
           <dd>
             @if (trademark()!.userProfile) {

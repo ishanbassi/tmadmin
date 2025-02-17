@@ -108,6 +108,10 @@ class PublishedTmResourceIT {
     private static final TrademarkType DEFAULT_TYPE = TrademarkType.IMAGEMARK;
     private static final TrademarkType UPDATED_TYPE = TrademarkType.TRADEMARK;
 
+    private static final Integer DEFAULT_PAGE_NO = 1;
+    private static final Integer UPDATED_PAGE_NO = 2;
+    private static final Integer SMALLER_PAGE_NO = 1 - 1;
+
     private static final String ENTITY_API_URL = "/api/published-tms";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -157,7 +161,8 @@ class PublishedTmResourceIT {
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
             .renewalDate(DEFAULT_RENEWAL_DATE)
-            .type(DEFAULT_TYPE);
+            .type(DEFAULT_TYPE)
+            .pageNo(DEFAULT_PAGE_NO);
     }
 
     /**
@@ -187,7 +192,8 @@ class PublishedTmResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .pageNo(UPDATED_PAGE_NO);
     }
 
     @BeforeEach
@@ -273,7 +279,8 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)));
     }
 
     @Test
@@ -307,7 +314,8 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
-            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
+            .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
+            .andExpect(jsonPath("$.pageNo").value(DEFAULT_PAGE_NO));
     }
 
     @Test
@@ -1518,6 +1526,76 @@ class PublishedTmResourceIT {
 
     @Test
     @Transactional
+    void getAllPublishedTmsByPageNoIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo equals to
+        defaultPublishedTmFiltering("pageNo.equals=" + DEFAULT_PAGE_NO, "pageNo.equals=" + UPDATED_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByPageNoIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo in
+        defaultPublishedTmFiltering("pageNo.in=" + DEFAULT_PAGE_NO + "," + UPDATED_PAGE_NO, "pageNo.in=" + UPDATED_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByPageNoIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo is not null
+        defaultPublishedTmFiltering("pageNo.specified=true", "pageNo.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByPageNoIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo is greater than or equal to
+        defaultPublishedTmFiltering("pageNo.greaterThanOrEqual=" + DEFAULT_PAGE_NO, "pageNo.greaterThanOrEqual=" + UPDATED_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByPageNoIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo is less than or equal to
+        defaultPublishedTmFiltering("pageNo.lessThanOrEqual=" + DEFAULT_PAGE_NO, "pageNo.lessThanOrEqual=" + SMALLER_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByPageNoIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo is less than
+        defaultPublishedTmFiltering("pageNo.lessThan=" + UPDATED_PAGE_NO, "pageNo.lessThan=" + DEFAULT_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
+    void getAllPublishedTmsByPageNoIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedPublishedTm = publishedTmRepository.saveAndFlush(publishedTm);
+
+        // Get all the publishedTmList where pageNo is greater than
+        defaultPublishedTmFiltering("pageNo.greaterThan=" + SMALLER_PAGE_NO, "pageNo.greaterThan=" + DEFAULT_PAGE_NO);
+    }
+
+    @Test
+    @Transactional
     void getAllPublishedTmsByTmAgentIsEqualToSomething() throws Exception {
         TmAgent tmAgent;
         if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
@@ -1571,7 +1649,8 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)));
 
         // Check, that the count call also returns 1
         restPublishedTmMockMvc
@@ -1639,7 +1718,8 @@ class PublishedTmResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .pageNo(UPDATED_PAGE_NO);
 
         restPublishedTmMockMvc
             .perform(
@@ -1733,7 +1813,8 @@ class PublishedTmResourceIT {
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
             .usage(UPDATED_USAGE)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS);
+            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .pageNo(UPDATED_PAGE_NO);
 
         restPublishedTmMockMvc
             .perform(
@@ -1784,7 +1865,8 @@ class PublishedTmResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .pageNo(UPDATED_PAGE_NO);
 
         restPublishedTmMockMvc
             .perform(

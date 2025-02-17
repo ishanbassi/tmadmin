@@ -65,9 +65,7 @@ public class TrademarkScrapingService {
 	@Value("${pdf-file-base-path}")
     private String basePdfDirectory;
 	
-	public Integer downloadLatestPdf() {
-		
-	}
+	
 	
 	public Integer downloadPdf() {
 		Integer journalNo = null;

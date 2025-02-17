@@ -101,6 +101,10 @@
               { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[publishedTmRef.type ?? 'null']
             }}</span>
           </dd>
+          <dt><span>Page No</span></dt>
+          <dd>
+            <span>{{ publishedTmRef.pageNo }}</span>
+          </dd>
           <dt><span>Tm Agent</span></dt>
           <dd>
             @if (publishedTm()!.tmAgent) {

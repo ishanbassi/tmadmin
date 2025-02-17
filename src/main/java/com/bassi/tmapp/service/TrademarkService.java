@@ -117,6 +117,9 @@ public class TrademarkService {
                 if (trademark.getType() != null) {
                     existingTrademark.setType(trademark.getType());
                 }
+                if (trademark.getPageNo() != null) {
+                    existingTrademark.setPageNo(trademark.getPageNo());
+                }
 
                 return existingTrademark;
             })

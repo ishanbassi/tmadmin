@@ -100,6 +100,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private TrademarkTypeFilter type;
 
+    private IntegerFilter pageNo;
+
     private LongFilter userProfileId;
 
     private Boolean distinct;
@@ -128,6 +130,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.renewalDate = other.optionalRenewalDate().map(LocalDateFilter::copy).orElse(null);
         this.type = other.optionalType().map(TrademarkTypeFilter::copy).orElse(null);
+        this.pageNo = other.optionalPageNo().map(IntegerFilter::copy).orElse(null);
         this.userProfileId = other.optionalUserProfileId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
@@ -536,6 +539,25 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.type = type;
     }
 
+    public IntegerFilter getPageNo() {
+        return pageNo;
+    }
+
+    public Optional<IntegerFilter> optionalPageNo() {
+        return Optional.ofNullable(pageNo);
+    }
+
+    public IntegerFilter pageNo() {
+        if (pageNo == null) {
+            setPageNo(new IntegerFilter());
+        }
+        return pageNo;
+    }
+
+    public void setPageNo(IntegerFilter pageNo) {
+        this.pageNo = pageNo;
+    }
+
     public LongFilter getUserProfileId() {
         return userProfileId;
     }
@@ -605,6 +627,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(modifiedDate, that.modifiedDate) &&
             Objects.equals(renewalDate, that.renewalDate) &&
             Objects.equals(type, that.type) &&
+            Objects.equals(pageNo, that.pageNo) &&
             Objects.equals(userProfileId, that.userProfileId) &&
             Objects.equals(distinct, that.distinct)
         );
@@ -634,6 +657,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             modifiedDate,
             renewalDate,
             type,
+            pageNo,
             userProfileId,
             distinct
         );
@@ -664,6 +688,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
             optionalRenewalDate().map(f -> "renewalDate=" + f + ", ").orElse("") +
             optionalType().map(f -> "type=" + f + ", ").orElse("") +
+            optionalPageNo().map(f -> "pageNo=" + f + ", ").orElse("") +
             optionalUserProfileId().map(f -> "userProfileId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";

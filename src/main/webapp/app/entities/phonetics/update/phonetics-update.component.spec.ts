@@ -49,10 +49,10 @@ describe('Phonetics Management Update Component', () => {
   describe('ngOnInit', () => {
     it('Should call Trademark query and add missing value', () => {
       const phonetics: IPhonetics = { id: 456 };
-      const trademark: ITrademark = { id: 5453 };
+      const trademark: ITrademark = { id: 20476 };
       phonetics.trademark = trademark;
 
-      const trademarkCollection: ITrademark[] = [{ id: 16898 }];
+      const trademarkCollection: ITrademark[] = [{ id: 21152 }];
       jest.spyOn(trademarkService, 'query').mockReturnValue(of(new HttpResponse({ body: trademarkCollection })));
       const additionalTrademarks = [trademark];
       const expectedCollection: ITrademark[] = [...additionalTrademarks, ...trademarkCollection];
@@ -71,7 +71,7 @@ describe('Phonetics Management Update Component', () => {
 
     it('Should update editForm', () => {
       const phonetics: IPhonetics = { id: 456 };
-      const trademark: ITrademark = { id: 11332 };
+      const trademark: ITrademark = { id: 16799 };
       phonetics.trademark = trademark;
 
       activatedRoute.data = of({ phonetics });
