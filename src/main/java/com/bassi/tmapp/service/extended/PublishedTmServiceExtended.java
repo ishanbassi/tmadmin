@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -141,9 +142,9 @@ public class PublishedTmServiceExtended {
         log.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepositoryExtended.deleteById(id);
     }
-    public void processTrademarkExtraction() {
+    public void processTrademarkExtraction() throws IOException {
     	// download latest pdf files based on journal
-    	Integer journalNo = trademarkScrapingService.downloadPdf();
+    	Integer journalNo = trademarkScrapingService.downloadLatestPdf();
     	if(journalNo == null) {
     		throw new InternalServerAlertException("Process is aborted because journal No is null");
     	}
@@ -152,18 +153,18 @@ public class PublishedTmServiceExtended {
 		if(count > 0) {
 			throw new InternalServerAlertException("Trademarks already exists for the journal No. Make sure that journal No is correct");
 		}
-    	readPdfFile(journalNo);
+    	readPdfFile(String.valueOf(journalNo));
     	
 		// scrape journal trademarks
     	scrapeJournalTrademarks(journalNo);
     }
     public void scrapeJournalTrademarks(Integer journalNo) {
 		List<PublishedTm> publishedTms = publishedTmRepositoryExtended.findTrademarksWhereNameIsNull(journalNo);    	
-    	trademarkScrapingService.scrape(publishedTms);
+    	trademarkScrapingService.scrapeAndSetNameAndStatus(publishedTms);
 
     }
 
-	public void readPdfFile(int journalNo) {
+	public void readPdfFile(String journalNo) {
 		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
 	}
 
@@ -240,13 +241,13 @@ public class PublishedTmServiceExtended {
 		return distance.apply(name1,name2);
 	}
 
-	public void readAndscrapeJournalTrademarks(int journalNo) {
+	public void readAndscrapeJournalTrademarks(Integer journalNo) {
 		Long count = publishedTmRepositoryExtended.countByJournalNo(journalNo);
 		if(count > 0) {
 			throw new InternalServerAlertException("Trademarks already exists for the journal No. Make sure that journal No is correct");
 		}
 
-		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
+		pdfReaderService.readPdfFilesFromFileSystem(String.valueOf(journalNo));
 		scrapeJournalTrademarks(journalNo);
 	}
 
@@ -257,10 +258,16 @@ public class PublishedTmServiceExtended {
 		
 	}
 
-	public void updateTrademarkStatusFromJournal(int journalNo) {
-		pdfReaderService.updateTrademarkStatusFromJournal(basePdfDirectory);
+	public void updateTrademarkStatusFromJournal(String journalNo) {
+		pdfReaderService.readPdfFilesFromFileSystem(journalNo);
 	}
-
+	@Async	
+	 public void downloadJournalPdfs(int start, int end){
+	    	List<Integer> journalNo = trademarkScrapingService.downloadAllPdfs(start,end);
+	    	if(journalNo == null) {
+	    		throw new InternalServerAlertException("Process is aborted because journal No is null");
+	    	}
+	    }
     
 	
 	

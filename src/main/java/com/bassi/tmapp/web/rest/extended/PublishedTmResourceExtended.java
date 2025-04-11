@@ -3,11 +3,12 @@ package com.bassi.tmapp.web.rest.extended;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
 import com.bassi.tmapp.service.PublishedTmQueryService;
-import com.bassi.tmapp.service.PublishedTmService;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.PublishedTmServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -203,35 +204,35 @@ public class PublishedTmResourceExtended {
             .build();
     }
     
-	@PostMapping("/extract/{journalNo}")
-	public String extractPublishedTm(@PathVariable("journalNo") int journalNo) {
-		publishedTmServiceExtended.readPdfFile(journalNo);
-		return "Trademarks extraction has been initialized";
-	}
-	
-	
-	@PostMapping("/generate-phonetics/{journalNo}")
-	public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
-		publishedTmServiceExtended.generateMissingPhonetics(journalNo);
-		return "Phonetics generated for missing trademarks";
-	}
-	
-	@DeleteMapping("/soft-delete/{journalNo}")
-	public ResponseEntity<Void> softDeletePublishedTrademarksByJournalNo(@PathVariable("journalNo") int journalNo) {
-			publishedTmServiceExtended.softDeleteByJournalNo(journalNo);
-			return ResponseEntity.noContent()
-		            .build();
-	}
-	
-	@DeleteMapping("/delete")
-	public ResponseEntity<Void> deletePublishedTrademarksByJournalNo(PublishedTmCriteria criteria) {
-			publishedTmServiceExtended.deleteByJournalNo(criteria);
-			return ResponseEntity.noContent()
-		            .build();
-	}
-	
-	@PostMapping("/process/trademark-extraction")
-	public String processTrademarkExtraction() {
+    @PostMapping("/extract/{journalNo}")
+    public String extractPublishedTm(@PathVariable("journalNo") String journalNo) {
+        publishedTmServiceExtended.readPdfFile(journalNo);
+        return "Trademarks extraction has been initialized";
+    }
+    
+    
+    @PostMapping("/generate-phonetics/{journalNo}")
+    public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
+        publishedTmServiceExtended.generateMissingPhonetics(journalNo);
+        return "Phonetics generated for missing trademarks";
+    }
+    
+    @DeleteMapping("/soft-delete/{journalNo}")
+    public ResponseEntity<Void> softDeletePublishedTrademarksByJournalNo(@PathVariable("journalNo") int journalNo) {
+            publishedTmServiceExtended.softDeleteByJournalNo(journalNo);
+            return ResponseEntity.noContent()
+                    .build();
+    }
+    
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deletePublishedTrademarksByJournalNo(PublishedTmCriteria criteria) {
+            publishedTmServiceExtended.deleteByJournalNo(criteria);
+            return ResponseEntity.noContent()
+                    .build();
+    }
+    
+    @PostMapping("/process/trademark-extraction")
+    public String processTrademarkExtraction() throws IOException {
 		publishedTmServiceExtended.processTrademarkExtraction();
 		return "Trademarks extraction has been initialized";
 	}
@@ -254,10 +255,16 @@ public class PublishedTmResourceExtended {
 		return "Trademarks extraction has been initialized";
 	}
 	
-	@PostMapping("/update-status/journal")
-	public String updateTrademarkStatusFromJournal(@PathVariable("journalNo") int journalNo) {
+	@PostMapping("/update-status/journal/{journalNo}")
+	public String updateTrademarkStatusFromJournal(@PathVariable("journalNo") String journalNo) {
 		publishedTmServiceExtended.updateTrademarkStatusFromJournal(journalNo);
 		return "Trademark Status Updation has completed";
+	}
+	
+	@PostMapping("/download/pdfs")
+	public String downloadJournalPdfs(@RequestParam("start") Integer start, @RequestParam("end") Integer end){
+		publishedTmServiceExtended.downloadJournalPdfs(start,end);
+		return "Trademarks extraction has been initialized";
 	}
 	
 	

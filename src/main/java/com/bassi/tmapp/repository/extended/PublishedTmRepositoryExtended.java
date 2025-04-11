@@ -56,7 +56,13 @@ public interface PublishedTmRepositoryExtended extends JpaRepository<PublishedTm
 	void updateNameAndTrademarkStatusByIdOrApplicationNo(String name, String trademarkStatus, Long id, Long applicationNo );
 	
 	long countByJournalNo(int journalNo);
-
+	
+	@Query(value="SELECT tm FROM PublishedTm tm WHERE tm.applicationNo = ?1")
+	List<PublishedTm> findTrademarksByApplicationNo(Long applicationNo);
+	
+	@Query(value="SELECT * FROM published_tm  WHERE application_no = ?1 AND tm_class = ?2 AND journal_no = ?3 LIMIT 1", nativeQuery=true)
+	PublishedTm findTrademarksByApplicationNoAndClassAndJournalNo(Long applicationNo, Integer tmClass, Integer journalNo);
+	
 	
 	
 	

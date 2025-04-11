@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,9 +68,8 @@ public class TrademarkScrapingService {
 	
 	
 	
-	public Integer downloadPdf() {
-		Integer journalNo = null;
-        try {
+	
+	public Integer downloadLatestPdf() throws IOException {
 			Document doc = Jsoup.connect(TrademarkJournalBaseURL + "Trademark")
 					.timeout(60000)
 					.get();
@@ -77,64 +77,18 @@ public class TrademarkScrapingService {
 			
 			// We will download only the first journal
 			Element firstTr = journalElement.select("tbody tr").first();
-			journalNo = Integer.valueOf(firstTr.select("td").get(1).text());
+			Integer journalNo = Integer.valueOf(firstTr.select("td").get(1).text());
 
 			log.info("Going to download pdfs for the journalNo : {}", journalNo);
 
-			Elements fileNameInput = firstTr.select("input[name=FileName]");
-			log.info("Found {} pdf files to download", fileNameInput.size());
+			downloadPdfsForJournal(journalElement, journalNo);
+			return journalNo;
 			
-			Path journalDirectory  = Files.createDirectories(Paths.get(basePdfDirectory + "/" + journalNo ));
-			
-
-			
-			 for (Element input : fileNameInput) {
-		            String pdfFileName = input.attr("value");
-		            String completeUrl = TrademarkJournalBaseURL + "ViewJournal";
-		            
-		            // extract last part of the file name
-		            String sanitizedPdfFileName;
-		            String regex = "[^\\\\]+$"; 
-
-		            Pattern pattern = Pattern.compile(regex);
-		            Matcher matcher = pattern.matcher(pdfFileName);
-		            if (matcher.find()) {
-		            	sanitizedPdfFileName = matcher.group();
-		            } else {
-		            	sanitizedPdfFileName = "";
-		            }
-		            Path pdfFilePath =  Paths.get(journalDirectory.toString() , sanitizedPdfFileName);
-		            if(pdfFilePath.toFile().exists()) {
-		            	log.info("Skipping downloading the pdf file: {} because it already exists", sanitizedPdfFileName);
-		            	continue;
-		            }
-		            
-		            HttpHeaders headers = new HttpHeaders();
-		            headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-		            MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-		            formData.add("FileName", pdfFileName);
-
-		            
-		            log.info("Going to download {} using the url: {}", sanitizedPdfFileName, completeUrl);
-		            
-		            HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(formData,headers);
-		            ResponseEntity<byte[]> result  = restTemplate.postForEntity(completeUrl, entity,byte[].class);
-		            byte[] bytes = result.getBody();
-		            
-		            Files.write(pdfFilePath, bytes);
-		        }
-			
-		} catch (IOException e) {
-		
-			e.printStackTrace();
-		}
-        return journalNo;
-
-		
+				
 	}
     
 	@Async
-	public void scrape(List<PublishedTm> publishedTmArr) {
+	public void scrapeAndSetNameAndStatus(List<PublishedTm> publishedTmArr) {
 		ChromeOptions chromeOptions = new ChromeOptions();
 				chromeOptions.addArguments("--headless");
         WebDriver driver =  new ChromeDriver(chromeOptions);
@@ -266,6 +220,87 @@ public class TrademarkScrapingService {
     	
     	
     }
+	public List<Integer> downloadAllPdfs(int start ,int end) {
+		List<Integer> journalNumbers = new ArrayList<>();
+		try {
+			Document doc = Jsoup.connect(TrademarkJournalBaseURL + "Trademark")
+					.timeout(60000)
+					.get();
+			Element journalElement = doc.getElementById("Journal");
+			
+			Elements allTrs = journalElement.select("tbody tr");
+			log.info("Found {} journals to process", allTrs.size());
+	
+			for (Element tr : allTrs) {
+				Integer journalNo;
+				try {
+					journalNo = Integer.valueOf(tr.select("td").get(1).text());
+				}
+				catch (NumberFormatException exception) {
+					log.error("Skipping the journal because journal no cannot be extracted: {}",tr.select("td").get(1).text());
+					continue;
+				}
+				journalNo = Integer.valueOf(tr.select("td").get(1).text());
+
+				if(!(journalNo >= start && journalNo <= end)) {
+					log.info("Skipping the journal no : {} because it outside of the range ", journalNo);
+					continue;
+				}
+				journalNumbers.add(journalNo);
+				log.info("Processing journal number: {}", journalNo);
+				downloadPdfsForJournal(tr, journalNo);
+			}
+		} catch (IOException e) {
+			log.error("Error downloading PDFs", e);
+			e.printStackTrace();
+		}
+		return journalNumbers;
+	}
+	private void downloadPdfsForJournal(Element journalRow, Integer journalNo) throws IOException {
+		Path journalDirectory = Files.createDirectories(Paths.get(basePdfDirectory + "/" + journalNo));
+		Elements fileNameInput = journalRow.select("input[name=FileName]");
+		log.info("Found {} pdf files to download", fileNameInput.size());
+		
+		for (Element input : fileNameInput) {
+			String pdfFileName = input.attr("value");
+			String completeUrl = TrademarkJournalBaseURL + "ViewJournal";
+			
+			// extract last part of the file name
+			String sanitizedPdfFileName = sanitizeFileName(pdfFileName);
+			Path pdfFilePath = Paths.get(journalDirectory.toString(), sanitizedPdfFileName);
+			
+			if (pdfFilePath.toFile().exists()) {
+				log.info("Skipping downloading the pdf file: {} because it already exists", sanitizedPdfFileName);
+				continue;
+			}
+			try {
+				downloadPdfFile(completeUrl, pdfFileName, pdfFilePath, sanitizedPdfFileName);
+			} catch (IOException e) {
+				log.error("Error downloading PDF file: {}", e.getMessage());
+				e.printStackTrace();
+			}
+		}
+	}
+	private String sanitizeFileName(String pdfFileName) {
+		String regex = "[^\\\\/]+$";
+		Pattern pattern = Pattern.compile(regex);
+		Matcher matcher = pattern.matcher(pdfFileName);
+		return matcher.find() ? matcher.group() : "";
+	}
+	private void downloadPdfFile(String completeUrl, String pdfFileName, Path pdfFilePath, String sanitizedPdfFileName) throws IOException {
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.MULTIPART_FORM_DATA);
+		MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
+		formData.add("FileName", pdfFileName);
+		
+		log.info("Going to download {} using the url: {}", sanitizedPdfFileName, completeUrl);
+		
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(formData, headers);
+		ResponseEntity<byte[]> result = restTemplate.postForEntity(completeUrl, entity, byte[].class);
+		byte[] bytes = result.getBody();
+		
+		Files.write(pdfFilePath, bytes);
+	}
 	
 	
     @JsonIgnoreProperties(ignoreUnknown = true)

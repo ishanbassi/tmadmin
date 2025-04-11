@@ -3,6 +3,8 @@ package com.bassi.tmapp.service.dto;
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -94,6 +96,10 @@ public class PublishedTmDTO implements Serializable {
     private TmAgentDTO agent;
     
     private String filePath;
+    
+    private String renewalDate;
+    
+    private TrademarkType trademarkType;
     
     
     public String getFilePath() {
@@ -366,8 +372,23 @@ public class PublishedTmDTO implements Serializable {
     public int hashCode() {
         return Objects.hash(this.id);
     }
-   
+    
 
+	public String getRenewalDate() {
+		return renewalDate;
+	}
+
+	public void setRenewalDate(String renewalDate) {
+		this.renewalDate = renewalDate;
+	}
+
+	public TrademarkType getTrademarkType() {
+		return trademarkType;
+	}
+
+	public void setTrademarkType(TrademarkType trademarkType) {
+		this.trademarkType = trademarkType;
+	}
 
 	@Override
 	public String toString() {

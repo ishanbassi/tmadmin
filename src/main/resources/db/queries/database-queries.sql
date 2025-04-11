@@ -27,5 +27,8 @@ ALTER TABLE published_tm ADD CONSTRAINT fk_tm_agent FOREIGN KEY (tm_agent_id) RE
 ALTER TABLE trademark ADD COLUMN tm_agent_id BIGINT;
 ALTER TABLE trademark ADD CONSTRAINT fk_user_creation FOREIGN KEY (user_profile_id) REFERENCES user_profile(id);
 ALTER TABLE trademark DROP CONSTRAINT fk_trademark__tm_agent_id;
+ALTER TABLE published_tm ADD COLUMN renewal_date date ;
+ALTER TABLE published_tm ADD COLUMN type VARCHAR(255) ;
+
 
 

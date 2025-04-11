@@ -21,6 +21,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.PublishedTmRepository;
+import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
@@ -55,7 +58,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 	private PublishedTmDTO currentPublishedTmDto;
 	private  PhoneticsServiceExtended phoneticsServiceExtended;
-	private PublishedTmRepository publishedTmRepository;
+	private PublishedTmRepositoryExtended publishedTmRepositoryExtended;
 	private PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
 	private WordSanitizationService wordSanitizationService;
 	private TmAgentServiceExtended agentServiceExtended;
@@ -79,21 +82,22 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 
 	public ITextPdfReaderService(
 			PhoneticsServiceExtended phoneticsServiceExtended,
-			PublishedTmRepository publishedTmRepository,
+			PublishedTmRepositoryExtended publishedTmRepositoryExtended,
 			PublishedTmMapper publishedTmMapper,
 			PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
 			WordSanitizationService wordSanitizationService,
 			TmAgentServiceExtended agentServiceExtended
 			) {
 		this.phoneticsServiceExtended = phoneticsServiceExtended;
-		this.publishedTmRepository = publishedTmRepository;
+		this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
 		this.publishedTmMapper = publishedTmMapper;
 		this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
 		this.wordSanitizationService = wordSanitizationService;
 		this.agentServiceExtended  = agentServiceExtended;
 	}
 	
-	public void readPdfFilesFromFileSystem(int journalNo) {
+	@Async
+	public void readPdfFilesFromFileSystem(String journalNo) {
 		File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
 		
 	    processDirectory(baseDirectory);
@@ -110,7 +114,8 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	        if (file.isDirectory()) {
 	            processDirectory(file); // Recursively process subdirectories
 	        } else if (file.getName().toLowerCase().endsWith(".pdf")) {
-	        	self.readPdfAndSaveDetails(file.getAbsolutePath()); // Process the PDF
+//	        	self.readPdfAndSaveDetails(file.getAbsolutePath()); // Process the PDF
+	        	self.updateTrademarkStatusFromJournal(file.getAbsolutePath());
 	        }
 	    }
 	}
@@ -161,6 +166,15 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
                 List<LineInfo> lines = strategy.getLines();
                 extractPublishedTrademark(lines);
                 
+             // extract images
+                PdfImage pdfImage = strategy.getImage();
+                if(pdfImage != null) {
+                	String path = saveToFileSystem(pdfImage);
+                	currentPublishedTmDto.setImgUrl(path);
+                	
+                }
+                
+                
                 if(isInfoMissing(currentPublishedTmDto)) {
     				if(currentPublishedTmDto != null && currentPublishedTmDto.getImgUrl() !=null) {
     					deleteTmImg(currentPublishedTmDto.getImgUrl());
@@ -170,13 +184,6 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
     				}
                 	errors.add(currentPublishedTmDto);
                 	continue;
-                }
-                // extract images
-                PdfImage pdfImage = strategy.getImage();
-                if(pdfImage != null) {
-                	String path = saveToFileSystem(pdfImage);
-                	currentPublishedTmDto.setImgUrl(path);
-                	
                 }
                 
                 // if both image and trademark	 is present, remove the trademark
@@ -397,7 +404,7 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 			for (LineInfo line : subLine) {
 				String words = line.getAllWordsFromSameLineWithInfo();
 				if(words != null) {
-					if (words.contains("mark u/s 71(1)")) {
+					if (words.contains("mark u/s 71(1)") || words.contains("\0")) {
 						log.info("Skipping the line because it is not name of the trademark");
 						continue;
 					}
@@ -481,8 +488,18 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 	
 
 	private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
-		publishedTrademarks =  publishedTmRepository.saveAllAndFlush(publishedTrademarks);
-		publishedTmPhoneticsServiceExtended.saveAll(publishedTrademarks); 
+//		for(PublishedTm publishedTm:publishedTrademarks) {
+//				PublishedTm existingPublishedTm = publishedTmRepositoryExtended.findTrademarksByApplicationNoAndClassAndJournalNo(
+//						publishedTm.getApplicationNo(), publishedTm.getTmClass(), publishedTm.getJournalNo());
+//				if(existingPublishedTm != null) {
+//					log.info("Skipping Saving the trademark because record already exists: {}",existingPublishedTm);
+//					continue;
+//				}
+//				publishedTm = publishedTmRepositoryExtended.saveAndFlush(publishedTm);
+//				publishedTmPhoneticsServiceExtended.save(publishedTm);
+//			}
+		publishedTrademarks = publishedTmRepositoryExtended.saveAllAndFlush(publishedTrademarks);
+		publishedTmPhoneticsServiceExtended.saveAll(publishedTrademarks);
 	}
 
 	
@@ -555,34 +572,90 @@ private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.
 		return class99Trademarks;
 		
 	}
+
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void updateTrademarkStatusFromJournal(String pdfFilePath) {
 		PdfDocument pdfDoc;
-		
+
 		try {
-			pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));	
+			pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
+		} catch (IOException e) {
+			throw new InternalServerAlertException(
+					"Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
 		}
-		catch(IOException e) {
-			throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath +  " Reason: " + e.getLocalizedMessage());
-		}
-		for(int i=0; i< pdfDoc.getNumberOfPages(); i++) {
+		for (int i = 1; i < pdfDoc.getNumberOfPages(); i++) {
 			CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
-            PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);	
-            processor.processPageContent(pdfDoc.getPage(i));
-            
-            String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
-            if(pageContent.contains("Following Trade Marks Registration Renewed for a Period Of Ten Years")) {
-                List<LineInfo> lines = strategy.getLines();
-                pdfDoc.close();
-            }
-            
-            
-            
-            
+			PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
+			processor.processPageContent(pdfDoc.getPage(i));
+
+			String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
+			String registeredApplicationsExpectedPageContent = "Following Trade Mark applications have been Registered and registration certificates";
+			String renewalApplicationsExpectedPageContent = "Following Trade Marks Registration Renewed for a Period Of Ten Years";
+			if (!(pageContent.contains(renewalApplicationsExpectedPageContent)
+					|| pageContent.contains(registeredApplicationsExpectedPageContent))) {
+				log.info("Skipping the page because page does not have the expected content");
+				continue;
+			}
+
+			List<LineInfo> lines = strategy.getLines();
+			for (LineInfo line : lines) {
+				String words = line.getAllWordsFromSameLineWithInfo();
+				if (words == null) {
+					log.info("Skipping the line because there are no words");
+					continue;
+				}
+				if (pageContent.contains(renewalApplicationsExpectedPageContent)) {
+					String regex = "^(\\d{5,7})\\s+(\\d{1,2})\\s+(\\d{2}/\\d{2}/\\d{4})";
+
+					Pattern pattern = Pattern.compile(regex);
+					Matcher matcher = pattern.matcher(words);
+
+					if (matcher.find()) {
+						Long applicationNo = Long.valueOf(matcher.group(1));
+						DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+						LocalDate renewalDate = LocalDate.parse(matcher.group(3), formatter);
+
+						List<PublishedTm> publishedTms = publishedTmRepositoryExtended
+								.findTrademarksByApplicationNo(applicationNo);
+						for (PublishedTm publishedTm : publishedTms) {
+							publishedTm.setRenewalDate(renewalDate);
+							publishedTm.setTrademarkStatus("Renewed");
+							publishedTmRepositoryExtended.save(publishedTm);
+						}
+
+					}
+				} else {
+					String regex = "(\\d{5,7})";
+					Pattern pattern = Pattern.compile(regex);
+					List<String> applicationNumbers = new ArrayList<>();
+					
+					for(WordInfo word:line.getWords()) {
+						Matcher matcher = pattern.matcher(word.getText());
+						if(matcher.find()) {
+							applicationNumbers.add(matcher.group());
+						}
+
+					}
+ 					// convert the application numbers to long and then find the trademarks and
+					// update the status to registered
+					for (String applicationNumber : applicationNumbers) {
+						Long applicationNo = Long.valueOf(applicationNumber);
+						log.info("Going to fetch trademarks with application no: {}", applicationNo);
+						List<PublishedTm> publishedTms = publishedTmRepositoryExtended
+								.findTrademarksByApplicationNo(applicationNo);
+						for (PublishedTm publishedTm : publishedTms) {
+							publishedTm.setTrademarkStatus("Registered");
+							publishedTmRepositoryExtended.save(publishedTm);
+						}
+					}
+				}
+			}
+
 		}
-		
+		pdfDoc.close();
+
 	}
 
 }
-
 
 

@@ -12,6 +12,7 @@ import com.bassi.tmapp.service.mapper.PublishedTmPhoneticsMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -136,6 +137,13 @@ public class PublishedTmPhoneticsServiceExtended {
     public void delete(Long id) {
         log.debug("Request to delete PublishedTmPhonetics : {}", id);
         publishedTmPhoneticsRepository.deleteById(id);
+    }
+    public List<PublishedTmPhonetics> save(PublishedTm x) {
+    	if(x == null || x.getName() ==null || x.getName().isBlank()) {
+    		return Collections.emptyList();
+    	}
+    	List<PublishedTmPhonetics> publishedTmPhoneticsList = generatePublishedTmPhonetics(x);
+    	return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
     }
 
 	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {

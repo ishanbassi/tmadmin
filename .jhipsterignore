@@ -1,0 +1,5 @@
+/tmapp/src/main/java/com/bassi/tmapp/config/ApplicationProperties.java
+/tmapp/src/main/java/com/bassi/tmapp/config/WebConfigurer.java
+/tmapp/src/main/resources/config/application-dev.yml
+/tmapp/src/main/resources/config/application-prod.yml
+/tmapp/src/main/java/com/bassi/tmapp/config/SecurityConfiguration.java
