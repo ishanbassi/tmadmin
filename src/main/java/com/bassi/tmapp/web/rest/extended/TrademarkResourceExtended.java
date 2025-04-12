@@ -3,7 +3,6 @@ package com.bassi.tmapp.web.rest.extended;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.TrademarkQueryService;
-import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.extended.TrademarkServiceExtended;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -203,5 +201,4 @@ public class TrademarkResourceExtended {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
-    
 }

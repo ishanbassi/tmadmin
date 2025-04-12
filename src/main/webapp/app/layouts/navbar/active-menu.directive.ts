@@ -1,5 +1,5 @@
-import { Directive, OnInit, ElementRef, Renderer2, inject, Input } from '@angular/core';
-import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
+import { Directive, ElementRef, Input, OnInit, Renderer2, inject } from '@angular/core';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 @Directive({
   standalone: true,

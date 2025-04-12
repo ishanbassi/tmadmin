@@ -7,7 +7,6 @@ import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.PublishedTmServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -203,69 +202,64 @@ public class PublishedTmResourceExtended {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
-    
+
     @PostMapping("/extract/{journalNo}")
     public String extractPublishedTm(@PathVariable("journalNo") String journalNo) {
         publishedTmServiceExtended.readPdfFile(journalNo);
         return "Trademarks extraction has been initialized";
     }
-    
-    
+
     @PostMapping("/generate-phonetics/{journalNo}")
     public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
         publishedTmServiceExtended.generateMissingPhonetics(journalNo);
         return "Phonetics generated for missing trademarks";
     }
-    
+
     @DeleteMapping("/soft-delete/{journalNo}")
     public ResponseEntity<Void> softDeletePublishedTrademarksByJournalNo(@PathVariable("journalNo") int journalNo) {
-            publishedTmServiceExtended.softDeleteByJournalNo(journalNo);
-            return ResponseEntity.noContent()
-                    .build();
+        publishedTmServiceExtended.softDeleteByJournalNo(journalNo);
+        return ResponseEntity.noContent().build();
     }
-    
+
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deletePublishedTrademarksByJournalNo(PublishedTmCriteria criteria) {
-            publishedTmServiceExtended.deleteByJournalNo(criteria);
-            return ResponseEntity.noContent()
-                    .build();
+        publishedTmServiceExtended.deleteByJournalNo(criteria);
+        return ResponseEntity.noContent().build();
     }
-    
+
     @PostMapping("/process/trademark-extraction")
     public String processTrademarkExtraction() throws IOException {
-		publishedTmServiceExtended.processTrademarkExtraction();
-		return "Trademarks extraction has been initialized";
-	}
-	
-	@PostMapping("/scrape/journal/{journalNo}")
-	public String scapeJournalTrademarks(@PathVariable("journalNo") int journalNo) {
-		publishedTmServiceExtended.scrapeJournalTrademarks(journalNo);
-		return "Trademarks scraping has been initialized";
-	}
-	
-	@PostMapping("/extract-scrape/{journalNo}")
-	public String extractPublishedTmAndSrcapeImageMarks(@PathVariable("journalNo") int journalNo) {
-		publishedTmServiceExtended.readAndscrapeJournalTrademarks(journalNo);
-		return "Trademarks scraping has been initialized";
-	}
-	
-	@PostMapping("/extract/specific")
-	public String extractPublishedTm(@RequestParam("journalNo") String journalNo ,@RequestParam("filePath") String filePath) {
-		publishedTmServiceExtended.readPdfFileByPath(filePath,journalNo);
-		return "Trademarks extraction has been initialized";
-	}
-	
-	@PostMapping("/update-status/journal/{journalNo}")
-	public String updateTrademarkStatusFromJournal(@PathVariable("journalNo") String journalNo) {
-		publishedTmServiceExtended.updateTrademarkStatusFromJournal(journalNo);
-		return "Trademark Status Updation has completed";
-	}
-	
-	@PostMapping("/download/pdfs")
-	public String downloadJournalPdfs(@RequestParam("start") Integer start, @RequestParam("end") Integer end){
-		publishedTmServiceExtended.downloadJournalPdfs(start,end);
-		return "Trademarks extraction has been initialized";
-	}
-	
-	
+        publishedTmServiceExtended.processTrademarkExtraction();
+        return "Trademarks extraction has been initialized";
+    }
+
+    @PostMapping("/scrape/journal/{journalNo}")
+    public String scapeJournalTrademarks(@PathVariable("journalNo") int journalNo) {
+        publishedTmServiceExtended.scrapeJournalTrademarks(journalNo);
+        return "Trademarks scraping has been initialized";
+    }
+
+    @PostMapping("/extract-scrape/{journalNo}")
+    public String extractPublishedTmAndSrcapeImageMarks(@PathVariable("journalNo") int journalNo) {
+        publishedTmServiceExtended.readAndscrapeJournalTrademarks(journalNo);
+        return "Trademarks scraping has been initialized";
+    }
+
+    @PostMapping("/extract/specific")
+    public String extractPublishedTm(@RequestParam("journalNo") String journalNo, @RequestParam("filePath") String filePath) {
+        publishedTmServiceExtended.readPdfFileByPath(filePath, journalNo);
+        return "Trademarks extraction has been initialized";
+    }
+
+    @PostMapping("/update-status/journal/{journalNo}")
+    public String updateTrademarkStatusFromJournal(@PathVariable("journalNo") String journalNo) {
+        publishedTmServiceExtended.updateTrademarkStatusFromJournal(journalNo);
+        return "Trademark Status Updation has completed";
+    }
+
+    @PostMapping("/download/pdfs")
+    public String downloadJournalPdfs(@RequestParam("start") Integer start, @RequestParam("end") Integer end) {
+        publishedTmServiceExtended.downloadJournalPdfs(start, end);
+        return "Trademarks extraction has been initialized";
+    }
 }

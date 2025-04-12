@@ -1,29 +1,24 @@
 package com.bassi.tmapp.web.rest.extended;
 
-import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.repository.UserRepository;
 import com.bassi.tmapp.security.SecurityUtils;
 import com.bassi.tmapp.service.MailService;
-import com.bassi.tmapp.service.UserService;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.PasswordChangeDTO;
 import com.bassi.tmapp.service.extended.AccountServiceExtended;
 import com.bassi.tmapp.service.extended.UserServiceExtended;
 import com.bassi.tmapp.service.extended.dto.AccountDto;
-import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
 import com.bassi.tmapp.web.rest.errors.*;
 import com.bassi.tmapp.web.rest.vm.KeyAndPasswordVM;
 import com.bassi.tmapp.web.rest.vm.ManagedUserVM;
 import com.bassi.tmapp.web.rest.vm.extended.ManagedUserVMExtended;
-
 import jakarta.validation.Valid;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,15 +43,19 @@ public class AccountResourceExtended {
     private final UserServiceExtended userServiceExtended;
 
     private final MailService mailService;
-    
+
     private AccountServiceExtended accountServiceExtended;
 
-	public AccountResourceExtended(UserRepository userRepository, UserServiceExtended userServiceExtended,
-			MailService mailService, AccountServiceExtended accountServiceExtended) {
+    public AccountResourceExtended(
+        UserRepository userRepository,
+        UserServiceExtended userServiceExtended,
+        MailService mailService,
+        AccountServiceExtended accountServiceExtended
+    ) {
         this.userRepository = userRepository;
         this.userServiceExtended = userServiceExtended;
         this.mailService = mailService;
-        this.accountServiceExtended =accountServiceExtended;
+        this.accountServiceExtended = accountServiceExtended;
     }
 
     /**
@@ -69,7 +68,7 @@ public class AccountResourceExtended {
      */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<AccountDto> registerAccount(@Valid @RequestBody ManagedUserVMExtended  managedUserVM) {
+    public ResponseEntity<AccountDto> registerAccount(@Valid @RequestBody ManagedUserVMExtended managedUserVM) {
         if (isPasswordLengthInvalid(managedUserVM.getPassword())) {
             throw new InvalidPasswordException();
         }
@@ -77,7 +76,6 @@ public class AccountResourceExtended {
         return ResponseEntity.status(HttpStatus.CREATED).body(account);
     }
 
-   
     /**
      * {@code GET  /account} : get the current user.
      *
@@ -86,15 +84,14 @@ public class AccountResourceExtended {
      */
     @GetMapping("/account")
     public AccountDto getAccount() {
-    	AccountDto account = new AccountDto();
-		AdminUserDTO user=  userServiceExtended
-	    .getUserWithAuthorities()
-	    .map(AdminUserDTO::new)
-	    .orElseThrow(() -> new AccountResourceException("User could not be found"));
-		account.setUser(user);
-		return account;
+        AccountDto account = new AccountDto();
+        AdminUserDTO user = userServiceExtended
+            .getUserWithAuthorities()
+            .map(AdminUserDTO::new)
+            .orElseThrow(() -> new AccountResourceException("User could not be found"));
+        account.setUser(user);
+        return account;
     }
-    
 
     /**
      * {@code POST  /account} : update the current user information.

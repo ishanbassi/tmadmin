@@ -1,12 +1,7 @@
 package com.bassi.tmapp.service.dto;
 
-import com.bassi.tmapp.domain.TmAgent;
-import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.service.extended.dto.UserProfileDto;
-
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -18,29 +13,26 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class TrademarkDTO implements Serializable {
-	
-	public TrademarkDTO() {
-		
-	}
-	
-	public TrademarkDTO(PublishedTmDTO other)  {
-		this.name = other.getName();
-		this.details = other.getDetails();
-		this.applicationNo = other.getApplicationNo();
-		this.applicationDate = other.getApplicationDate();
-		this.agentName = other.getAgentName();
-		this.agentAddress = other.getAgentAddress();
-		this.proprietorName = other.getProprietorName();
-		this.proprietorAddress = other.getProprietorAddress();
-		this.headOffice = other.getHeadOffice();
-		this.imgUrl = other.getImgUrl();
-		this.tmClass = other.getTmClass();
-		this.journalNo = other.getJournalNo();
-		this.usage = other.getUsage();
-		this.associatedTms = other.getAssociatedTms();
-		this.trademarkStatus = other.getTrademarkStatus();
-		
-	}
+
+    public TrademarkDTO() {}
+
+    public TrademarkDTO(PublishedTmDTO other) {
+        this.name = other.getName();
+        this.details = other.getDetails();
+        this.applicationNo = other.getApplicationNo();
+        this.applicationDate = other.getApplicationDate();
+        this.agentName = other.getAgentName();
+        this.agentAddress = other.getAgentAddress();
+        this.proprietorName = other.getProprietorName();
+        this.proprietorAddress = other.getProprietorAddress();
+        this.headOffice = other.getHeadOffice();
+        this.imgUrl = other.getImgUrl();
+        this.tmClass = other.getTmClass();
+        this.journalNo = other.getJournalNo();
+        this.usage = other.getUsage();
+        this.associatedTms = other.getAssociatedTms();
+        this.trademarkStatus = other.getTrademarkStatus();
+    }
 
     private Long id;
 
@@ -79,20 +71,18 @@ public class TrademarkDTO implements Serializable {
     private ZonedDateTime createdDate;
 
     private ZonedDateTime modifiedDate;
-    
+
     private UserProfileDto userProfile;
-    
-    
-    
+
     public UserProfileDto getUserProfile() {
-		return userProfile;
-	}
+        return userProfile;
+    }
 
-	public void setUserProfile(UserProfileDto userProfile) {
-		this.userProfile = userProfile;
-	}
+    public void setUserProfile(UserProfileDto userProfile) {
+        this.userProfile = userProfile;
+    }
 
-	private Instant lastModifiedDate = Instant.now();
+    private Instant lastModifiedDate = Instant.now();
 
     public Long getId() {
         return id;
@@ -245,19 +235,16 @@ public class TrademarkDTO implements Serializable {
     public void setModifiedDate(ZonedDateTime modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
-    
-    
 
+    public Instant getLastModifiedDate() {
+        return lastModifiedDate;
+    }
 
-	public Instant getLastModifiedDate() {
-		return lastModifiedDate;
-	}
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
 
-	public void setLastModifiedDate(Instant lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -272,7 +259,6 @@ public class TrademarkDTO implements Serializable {
         }
         return Objects.equals(this.id, trademarkDTO.id);
     }
-    
 
     @Override
     public int hashCode() {
@@ -280,14 +266,51 @@ public class TrademarkDTO implements Serializable {
     }
 
     @Override
-	public String toString() {
-		return "TrademarkDTO [id=" + id + ", name=" + name + ", details=" + details + ", applicationNo=" + applicationNo
-				+ ", applicationDate=" + applicationDate + ", agentName=" + agentName + ", agentAddress=" + agentAddress
-				+ ", proprietorName=" + proprietorName + ", proprietorAddress=" + proprietorAddress + ", headOffice="
-				+ headOffice + ", imgUrl=" + imgUrl + ", tmClass=" + tmClass + ", journalNo=" + journalNo + ", deleted="
-				+ deleted + ", usage=" + usage + ", associatedTms=" + associatedTms + ", trademarkStatus="
-				+ trademarkStatus + ", createdDate=" + createdDate + ", modifiedDate=" + modifiedDate + ", userProfile="
-				+ userProfile + ", lastModifiedDate=" + lastModifiedDate + "]";
-	}
-
+    public String toString() {
+        return (
+            "TrademarkDTO [id=" +
+            id +
+            ", name=" +
+            name +
+            ", details=" +
+            details +
+            ", applicationNo=" +
+            applicationNo +
+            ", applicationDate=" +
+            applicationDate +
+            ", agentName=" +
+            agentName +
+            ", agentAddress=" +
+            agentAddress +
+            ", proprietorName=" +
+            proprietorName +
+            ", proprietorAddress=" +
+            proprietorAddress +
+            ", headOffice=" +
+            headOffice +
+            ", imgUrl=" +
+            imgUrl +
+            ", tmClass=" +
+            tmClass +
+            ", journalNo=" +
+            journalNo +
+            ", deleted=" +
+            deleted +
+            ", usage=" +
+            usage +
+            ", associatedTms=" +
+            associatedTms +
+            ", trademarkStatus=" +
+            trademarkStatus +
+            ", createdDate=" +
+            createdDate +
+            ", modifiedDate=" +
+            modifiedDate +
+            ", userProfile=" +
+            userProfile +
+            ", lastModifiedDate=" +
+            lastModifiedDate +
+            "]"
+        );
+    }
 }

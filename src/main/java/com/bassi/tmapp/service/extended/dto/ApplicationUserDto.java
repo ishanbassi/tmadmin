@@ -1,17 +1,14 @@
 package com.bassi.tmapp.service.extended.dto;
 
-import java.io.Serializable;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.util.Objects;
-import java.util.Set;
-
 import com.bassi.tmapp.config.Constants;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * A DTO for the {@link com.bassi.tmapp.domain.TmAgent} entity.
@@ -21,7 +18,6 @@ public class ApplicationUserDto implements Serializable {
 
     private Long id;
 
-        
     @NotBlank
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
@@ -54,92 +50,86 @@ public class ApplicationUserDto implements Serializable {
     private ZonedDateTime lastModifiedDate;
 
     private Set<String> authorities;
-    
-    
-    
 
     public ZonedDateTime getLastModifiedDate() {
-		return lastModifiedDate;
-	}
+        return lastModifiedDate;
+    }
 
-	public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-		this.lastModifiedDate = lastModifiedDate;
-	}
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
 
-	public String getLogin() {
-		return login;
-	}
+    public String getLogin() {
+        return login;
+    }
 
-	public void setLogin(String login) {
-		this.login = login;
-	}
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-	public String getImageUrl() {
-		return imageUrl;
-	}
+    public String getImageUrl() {
+        return imageUrl;
+    }
 
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
-	public boolean isActivated() {
-		return activated;
-	}
+    public boolean isActivated() {
+        return activated;
+    }
 
-	public void setActivated(boolean activated) {
-		this.activated = activated;
-	}
+    public void setActivated(boolean activated) {
+        this.activated = activated;
+    }
 
-	public String getLangKey() {
-		return langKey;
-	}
+    public String getLangKey() {
+        return langKey;
+    }
 
-	public void setLangKey(String langKey) {
-		this.langKey = langKey;
-	}
+    public void setLangKey(String langKey) {
+        this.langKey = langKey;
+    }
 
-	public String getCreatedBy() {
-		return createdBy;
-	}
+    public String getCreatedBy() {
+        return createdBy;
+    }
 
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
-	}
+    public void setCreatedBy(String createdBy) {
+        this.createdBy = createdBy;
+    }
 
-	public String getLastModifiedBy() {
-		return lastModifiedBy;
-	}
+    public String getLastModifiedBy() {
+        return lastModifiedBy;
+    }
 
-	public void setLastModifiedBy(String lastModifiedBy) {
-		this.lastModifiedBy = lastModifiedBy;
-	}
+    public void setLastModifiedBy(String lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
 
+    public Set<String> getAuthorities() {
+        return authorities;
+    }
 
-	public Set<String> getAuthorities() {
-		return authorities;
-	}
+    public void setAuthorities(Set<String> authorities) {
+        this.authorities = authorities;
+    }
 
-	public void setAuthorities(Set<String> authorities) {
-		this.authorities = authorities;
-	}
+    public String getEmail() {
+        return email;
+    }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -164,7 +154,6 @@ public class ApplicationUserDto implements Serializable {
     public void setCreatedDate(ZonedDateTime createdDate) {
         this.createdDate = createdDate;
     }
-
 
     @Override
     public boolean equals(Object o) {

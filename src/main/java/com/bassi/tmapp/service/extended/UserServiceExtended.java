@@ -2,7 +2,6 @@ package com.bassi.tmapp.service.extended;
 
 import com.bassi.tmapp.config.Constants;
 import com.bassi.tmapp.domain.Authority;
-import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.repository.AuthorityRepository;
 import com.bassi.tmapp.repository.TmAgentRepository;
@@ -13,11 +12,9 @@ import com.bassi.tmapp.service.EmailAlreadyUsedException;
 import com.bassi.tmapp.service.InvalidPasswordException;
 import com.bassi.tmapp.service.UsernameAlreadyUsedException;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
-import com.bassi.tmapp.service.dto.TmAgentDTO;
 import com.bassi.tmapp.service.dto.UserDTO;
 import com.bassi.tmapp.service.extended.dto.AccountDto;
 import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
-
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -142,14 +139,14 @@ public class UserServiceExtended {
         newUser = userRepository.save(newUser);
         this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
-        
+
         AccountDto account = new AccountDto();
-        AdminUserDTO userDto=  new AdminUserDTO(newUser);
+        AdminUserDTO userDto = new AdminUserDTO(newUser);
         account.setUser(userDto);
         return account;
     }
 
-	private boolean removeNonActivatedUser(User existingUser) {
+    private boolean removeNonActivatedUser(User existingUser) {
         if (existingUser.isActivated()) {
             return false;
         }

@@ -1,11 +1,14 @@
 package com.bassi.tmapp.web.rest.extended;
 
+import com.bassi.tmapp.repository.PhoneticsRepository;
+import com.bassi.tmapp.service.dto.PhoneticsDTO;
+import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
+import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,12 +22,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.bassi.tmapp.repository.PhoneticsRepository;
-import com.bassi.tmapp.service.dto.PhoneticsDTO;
-import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
-import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
-
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 

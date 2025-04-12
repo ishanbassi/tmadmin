@@ -4,7 +4,6 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TmAgentDTO;
-
 import org.mapstruct.*;
 
 /**
@@ -12,14 +11,9 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring")
 public interface PublishedTmMapper extends EntityMapper<PublishedTmDTO, PublishedTm> {
-	
-	
-	@Mapping(source="agent", target="tmAgent", qualifiedByName = "tmAgentId")
-	public PublishedTm toEntity(PublishedTmDTO publishedTmDTO);
-	
-	@Named("tmAgentId")
-	public TmAgent toTmAgent(TmAgentDTO agentDTO);
-	
-	
-	
+    @Mapping(source = "agent", target = "tmAgent", qualifiedByName = "tmAgentId")
+    public PublishedTm toEntity(PublishedTmDTO publishedTmDTO);
+
+    @Named("tmAgentId")
+    public TmAgent toTmAgent(TmAgentDTO agentDTO);
 }

@@ -1,10 +1,7 @@
 package com.bassi.tmapp.web.rest.vm.extended;
 
-import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
-
 import jakarta.validation.constraints.Size;
-
 
 public class ManagedUserVMExtended extends ApplicationUserDto {
 

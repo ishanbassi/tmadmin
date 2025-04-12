@@ -6,10 +6,8 @@ import com.bassi.tmapp.repository.PublishedTmPhoneticsRepository;
 import com.bassi.tmapp.service.CommonUtilService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
-import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.service.mapper.PublishedTmPhoneticsMapper;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,8 +15,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.apache.commons.codec.language.DoubleMetaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,10 +33,8 @@ public class PublishedTmPhoneticsServiceExtended {
     private final PublishedTmPhoneticsRepository publishedTmPhoneticsRepository;
     private final PublishedTmPhoneticsMapper publishedTmPhoneticsMapper;
     private final WordSanitizationService wordSanitizationService;
-	private final PublishedTmMapper publishedTmMapper;
-	private final CommonUtilService commonUtilService;
-
-    
+    private final PublishedTmMapper publishedTmMapper;
+    private final CommonUtilService commonUtilService;
 
     public PublishedTmPhoneticsServiceExtended(
         PublishedTmPhoneticsRepository publishedTmPhoneticsRepository,
@@ -53,7 +47,7 @@ public class PublishedTmPhoneticsServiceExtended {
         this.publishedTmPhoneticsMapper = publishedTmPhoneticsMapper;
         this.wordSanitizationService = wordSanitizationService;
         this.publishedTmMapper = publishedTmMapper;
-        this.commonUtilService = commonUtilService; 
+        this.commonUtilService = commonUtilService;
     }
 
     /**
@@ -138,62 +132,60 @@ public class PublishedTmPhoneticsServiceExtended {
         log.debug("Request to delete PublishedTmPhonetics : {}", id);
         publishedTmPhoneticsRepository.deleteById(id);
     }
+
     public List<PublishedTmPhonetics> save(PublishedTm x) {
-    	if(x == null || x.getName() ==null || x.getName().isBlank()) {
-    		return Collections.emptyList();
-    	}
-    	List<PublishedTmPhonetics> publishedTmPhoneticsList = generatePublishedTmPhonetics(x);
-    	return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
+        if (x == null || x.getName() == null || x.getName().isBlank()) {
+            return Collections.emptyList();
+        }
+        List<PublishedTmPhonetics> publishedTmPhoneticsList = generatePublishedTmPhonetics(x);
+        return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
     }
 
-	public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
-		List<PublishedTmPhonetics> publishedTmPhoneticsList =  publishedTrademarks.stream()
-				.filter(tm -> tm.getName() != null && !tm.getName().isBlank())
-				.map(this::generatePublishedTmPhonetics)
-				.flatMap(List::stream)
-				.toList();
-				
-		return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
-	}
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public List<PublishedTmPhonetics> savePhoneticsFromPublishedTm(PublishedTm tm){
-		List<PublishedTmPhonetics> publishedTmPhoneticsList = generatePublishedTmPhonetics(tm);
-		return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
-	}
-	
+    public List<PublishedTmPhonetics> saveAll(List<PublishedTm> publishedTrademarks) {
+        List<PublishedTmPhonetics> publishedTmPhoneticsList = publishedTrademarks
+            .stream()
+            .filter(tm -> tm.getName() != null && !tm.getName().isBlank())
+            .map(this::generatePublishedTmPhonetics)
+            .flatMap(List::stream)
+            .toList();
+
+        return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public List<PublishedTmPhonetics> savePhoneticsFromPublishedTm(PublishedTm tm) {
+        List<PublishedTmPhonetics> publishedTmPhoneticsList = generatePublishedTmPhonetics(tm);
+        return publishedTmPhoneticsRepository.saveAllAndFlush(publishedTmPhoneticsList);
+    }
+
     public String generatePhonetics(String val) {
-    	if(val == null || val.isBlank()) return null;
-    	DoubleMetaphone dm = new DoubleMetaphone();
-    	dm.setMaxCodeLen(100);
-    	return dm.doubleMetaphone(val);
+        if (val == null || val.isBlank()) return null;
+        DoubleMetaphone dm = new DoubleMetaphone();
+        dm.setMaxCodeLen(100);
+        return dm.doubleMetaphone(val);
     }
-    
-    private PublishedTmPhoneticsDTO generateDto(String name , PublishedTm tm, Boolean completed ) {
-    	String phonetics = generatePhonetics(name);
-		PublishedTmDTO publishedTmDto = publishedTmMapper.toDto(tm);
-		return  new PublishedTmPhoneticsDTO(name,phonetics,completed,publishedTmDto);
+
+    private PublishedTmPhoneticsDTO generateDto(String name, PublishedTm tm, Boolean completed) {
+        String phonetics = generatePhonetics(name);
+        PublishedTmDTO publishedTmDto = publishedTmMapper.toDto(tm);
+        return new PublishedTmPhoneticsDTO(name, phonetics, completed, publishedTmDto);
     }
+
     private List<PublishedTmPhonetics> generatePublishedTmPhonetics(PublishedTm tm) {
-		String sanitizedTrademark  = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
-		List<String> subWords = Arrays
-				.asList(sanitizedTrademark.split(" "));
-		
-		List<PublishedTmPhoneticsDTO> phoneticDtoList = new ArrayList<>();
-		
-		if(subWords.size() == 1) {
-			phoneticDtoList.add(generateDto(sanitizedTrademark,tm, true));
-			return  publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
-		}
-		phoneticDtoList = subWords
-				.stream()
-				.map(x -> generateDto(x,tm,false))
-				.toList();
-		
-		List<PublishedTmPhoneticsDTO> modifiableDtoList = new ArrayList<>(phoneticDtoList);
-		
-		modifiableDtoList.add(generateDto(sanitizedTrademark,tm,true)); 
-		return  publishedTmPhoneticsMapper.toEntity(modifiableDtoList);
+        String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
+        List<String> subWords = Arrays.asList(sanitizedTrademark.split(" "));
+
+        List<PublishedTmPhoneticsDTO> phoneticDtoList = new ArrayList<>();
+
+        if (subWords.size() == 1) {
+            phoneticDtoList.add(generateDto(sanitizedTrademark, tm, true));
+            return publishedTmPhoneticsMapper.toEntity(phoneticDtoList);
+        }
+        phoneticDtoList = subWords.stream().map(x -> generateDto(x, tm, false)).toList();
+
+        List<PublishedTmPhoneticsDTO> modifiableDtoList = new ArrayList<>(phoneticDtoList);
+
+        modifiableDtoList.add(generateDto(sanitizedTrademark, tm, true));
+        return publishedTmPhoneticsMapper.toEntity(modifiableDtoList);
     }
-    
-    
 }

@@ -1,4 +1,4 @@
-import { inject, Input, Directive, ElementRef, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnDestroy, OnInit, inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';

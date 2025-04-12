@@ -94,9 +94,9 @@ public class WebConfigurer implements ServletContextInitializer, WebServerFactor
         }
         return new CorsFilter(source);
     }
-    
+
     @Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
-	}
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }

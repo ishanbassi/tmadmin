@@ -23,21 +23,18 @@ public class TmAgentDTO implements Serializable {
     private Boolean deleted;
 
     private String companyName;
-    
-    private String fullName;
-    
-    
 
+    private String fullName;
 
     public String getFullName() {
-		return fullName;
-	}
+        return fullName;
+    }
 
-	public void setFullName(String fullName) {
-		this.fullName = fullName;
-	}
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -115,9 +112,25 @@ public class TmAgentDTO implements Serializable {
     }
 
     @Override
-	public String toString() {
-		return "TmAgentDTO [id=" + id + ", agentCode=" + agentCode + ", address=" + address + ", createdDate="
-				+ createdDate + ", modifiedDate=" + modifiedDate + ", deleted=" + deleted + ", companyName="
-				+ companyName + ", fullName=" + fullName + "]";
-	}
+    public String toString() {
+        return (
+            "TmAgentDTO [id=" +
+            id +
+            ", agentCode=" +
+            agentCode +
+            ", address=" +
+            address +
+            ", createdDate=" +
+            createdDate +
+            ", modifiedDate=" +
+            modifiedDate +
+            ", deleted=" +
+            deleted +
+            ", companyName=" +
+            companyName +
+            ", fullName=" +
+            fullName +
+            "]"
+        );
+    }
 }

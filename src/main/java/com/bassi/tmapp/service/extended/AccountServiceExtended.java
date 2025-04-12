@@ -1,24 +1,14 @@
 package com.bassi.tmapp.service.extended;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-
-import com.bassi.tmapp.domain.TmAgent;
-import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.repository.extended.TmAgentRepositoryExtended;
-import com.bassi.tmapp.security.SecurityUtils;
-import com.bassi.tmapp.service.extended.dto.AccountDto;
-import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceExtended {
-	
-	private final TmAgentRepositoryExtended agentRepositoryExtended;
-	
-	AccountServiceExtended(TmAgentRepositoryExtended agentRepositoryExtended) {
-		this.agentRepositoryExtended = agentRepositoryExtended;
-	}
-	
 
+    private final TmAgentRepositoryExtended agentRepositoryExtended;
+
+    AccountServiceExtended(TmAgentRepositoryExtended agentRepositoryExtended) {
+        this.agentRepositoryExtended = agentRepositoryExtended;
+    }
 }

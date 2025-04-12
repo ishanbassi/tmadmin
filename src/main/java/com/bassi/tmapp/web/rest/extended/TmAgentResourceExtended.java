@@ -3,12 +3,10 @@ package com.bassi.tmapp.web.rest.extended;
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.service.TmAgentService;
-import com.bassi.tmapp.service.dto.TmAgentDTO;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -38,11 +36,14 @@ public class TmAgentResourceExtended {
 
     private final TmAgentRepository tmAgentRepository;
 
-    
-    public TmAgentResourceExtended(TmAgentService tmAgentService, TmAgentRepository tmAgentRepository,TmAgentServiceExtended tmAgentServiceExtended) {
+    public TmAgentResourceExtended(
+        TmAgentService tmAgentService,
+        TmAgentRepository tmAgentRepository,
+        TmAgentServiceExtended tmAgentServiceExtended
+    ) {
         this.tmAgentService = tmAgentService;
         this.tmAgentRepository = tmAgentRepository;
-        this.tmAgentServiceExtended  = tmAgentServiceExtended;
+        this.tmAgentServiceExtended = tmAgentServiceExtended;
     }
 
     /**
@@ -75,10 +76,8 @@ public class TmAgentResourceExtended {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<TmAgent> updateTmAgent(
-        @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TmAgent tmAgent
-    ) throws URISyntaxException {
+    public ResponseEntity<TmAgent> updateTmAgent(@PathVariable(value = "id", required = false) final Long id, @RequestBody TmAgent tmAgent)
+        throws URISyntaxException {
         log.debug("REST request to update TmAgent : {}, {}", id, tmAgent);
         if (tmAgent.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -133,7 +132,6 @@ public class TmAgentResourceExtended {
         );
     }
 
-
     /**
      * {@code GET  /tm-agents/:id} : get the "id" tmAgent.
      *
@@ -161,10 +159,10 @@ public class TmAgentResourceExtended {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
-    
+
     @GetMapping("/migrate")
     public ResponseEntity<String> migrateAgentsFromExistingTrademark() {
-    	tmAgentServiceExtended.migrateAgentsFromExistingTrademarks();
-    	return ResponseEntity.ok("All trademarks have been processed and agnets have been migrated");
+        tmAgentServiceExtended.migrateAgentsFromExistingTrademarks();
+        return ResponseEntity.ok("All trademarks have been processed and agnets have been migrated");
     }
 }
