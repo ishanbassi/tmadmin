@@ -122,12 +122,12 @@ class TmAgentResourceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    void initTest() {
         tmAgent = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedTmAgent != null) {
             tmAgentRepository.delete(insertedTmAgent);
             insertedTmAgent = null;
@@ -189,7 +189,7 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)))
             .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
@@ -211,7 +211,7 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.companyName").value(DEFAULT_COMPANY_NAME))
             .andExpect(jsonPath("$.agentCode").value(DEFAULT_AGENT_CODE))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL));
@@ -691,7 +691,7 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)))
             .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));

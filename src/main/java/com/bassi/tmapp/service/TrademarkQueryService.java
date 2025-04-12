@@ -66,82 +66,34 @@ public class TrademarkQueryService extends QueryService<Trademark> {
         Specification<Trademark> specification = Specification.where(null);
         if (criteria != null) {
             // This has to be called first, because the distinct method returns null
-            if (criteria.getDistinct() != null) {
-                specification = specification.and(distinct(criteria.getDistinct()));
-            }
-            if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), Trademark_.id));
-            }
-            if (criteria.getName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getName(), Trademark_.name));
-            }
-            if (criteria.getDetails() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getDetails(), Trademark_.details));
-            }
-            if (criteria.getApplicationNo() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getApplicationNo(), Trademark_.applicationNo));
-            }
-            if (criteria.getApplicationDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getApplicationDate(), Trademark_.applicationDate));
-            }
-            if (criteria.getAgentName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAgentName(), Trademark_.agentName));
-            }
-            if (criteria.getAgentAddress() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAgentAddress(), Trademark_.agentAddress));
-            }
-            if (criteria.getProprietorName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getProprietorName(), Trademark_.proprietorName));
-            }
-            if (criteria.getProprietorAddress() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getProprietorAddress(), Trademark_.proprietorAddress));
-            }
-            if (criteria.getHeadOffice() != null) {
-                specification = specification.and(buildSpecification(criteria.getHeadOffice(), Trademark_.headOffice));
-            }
-            if (criteria.getImgUrl() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getImgUrl(), Trademark_.imgUrl));
-            }
-            if (criteria.getTmClass() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getTmClass(), Trademark_.tmClass));
-            }
-            if (criteria.getJournalNo() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getJournalNo(), Trademark_.journalNo));
-            }
-            if (criteria.getDeleted() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeleted(), Trademark_.deleted));
-            }
-            if (criteria.getUsage() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getUsage(), Trademark_.usage));
-            }
-            if (criteria.getAssociatedTms() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAssociatedTms(), Trademark_.associatedTms));
-            }
-            if (criteria.getTrademarkStatus() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getTrademarkStatus(), Trademark_.trademarkStatus));
-            }
-            if (criteria.getCreatedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), Trademark_.createdDate));
-            }
-            if (criteria.getModifiedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), Trademark_.modifiedDate));
-            }
-            if (criteria.getRenewalDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getRenewalDate(), Trademark_.renewalDate));
-            }
-            if (criteria.getType() != null) {
-                specification = specification.and(buildSpecification(criteria.getType(), Trademark_.type));
-            }
-            if (criteria.getPageNo() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getPageNo(), Trademark_.pageNo));
-            }
-            if (criteria.getUserProfileId() != null) {
-                specification = specification.and(
-                    buildSpecification(criteria.getUserProfileId(), root ->
-                        root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
-                    )
-                );
-            }
+            specification = Specification.allOf(
+                Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : null,
+                buildRangeSpecification(criteria.getId(), Trademark_.id),
+                buildStringSpecification(criteria.getName(), Trademark_.name),
+                buildStringSpecification(criteria.getDetails(), Trademark_.details),
+                buildRangeSpecification(criteria.getApplicationNo(), Trademark_.applicationNo),
+                buildRangeSpecification(criteria.getApplicationDate(), Trademark_.applicationDate),
+                buildStringSpecification(criteria.getAgentName(), Trademark_.agentName),
+                buildStringSpecification(criteria.getAgentAddress(), Trademark_.agentAddress),
+                buildStringSpecification(criteria.getProprietorName(), Trademark_.proprietorName),
+                buildStringSpecification(criteria.getProprietorAddress(), Trademark_.proprietorAddress),
+                buildSpecification(criteria.getHeadOffice(), Trademark_.headOffice),
+                buildStringSpecification(criteria.getImgUrl(), Trademark_.imgUrl),
+                buildRangeSpecification(criteria.getTmClass(), Trademark_.tmClass),
+                buildRangeSpecification(criteria.getJournalNo(), Trademark_.journalNo),
+                buildSpecification(criteria.getDeleted(), Trademark_.deleted),
+                buildStringSpecification(criteria.getUsage(), Trademark_.usage),
+                buildStringSpecification(criteria.getAssociatedTms(), Trademark_.associatedTms),
+                buildStringSpecification(criteria.getTrademarkStatus(), Trademark_.trademarkStatus),
+                buildRangeSpecification(criteria.getCreatedDate(), Trademark_.createdDate),
+                buildRangeSpecification(criteria.getModifiedDate(), Trademark_.modifiedDate),
+                buildRangeSpecification(criteria.getRenewalDate(), Trademark_.renewalDate),
+                buildSpecification(criteria.getType(), Trademark_.type),
+                buildRangeSpecification(criteria.getPageNo(), Trademark_.pageNo),
+                buildSpecification(criteria.getUserProfileId(), root ->
+                    root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
+                )
+            );
         }
         return specification;
     }

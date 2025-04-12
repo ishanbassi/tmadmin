@@ -93,12 +93,12 @@ class UserProfileResourceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    void initTest() {
         userProfile = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedUserProfile != null) {
             userProfileRepository.delete(insertedUserProfile);
             insertedUserProfile = null;
@@ -158,7 +158,7 @@ class UserProfileResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(userProfile.getId().intValue())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())));
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)));
     }
 
     @Test
@@ -175,7 +175,7 @@ class UserProfileResourceIT {
             .andExpect(jsonPath("$.id").value(userProfile.getId().intValue()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
     }
 
     @Test

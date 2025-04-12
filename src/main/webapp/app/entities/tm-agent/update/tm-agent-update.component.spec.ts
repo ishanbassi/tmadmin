@@ -43,8 +43,8 @@ describe('TmAgent Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should update editForm', () => {
-      const tmAgent: ITmAgent = { id: 456 };
+    it('should update editForm', () => {
+      const tmAgent: ITmAgent = { id: 30950 };
 
       activatedRoute.data = of({ tmAgent });
       comp.ngOnInit();
@@ -54,10 +54,10 @@ describe('TmAgent Management Update Component', () => {
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITmAgent>>();
-      const tmAgent = { id: 123 };
+      const tmAgent = { id: 9499 };
       jest.spyOn(tmAgentFormService, 'getTmAgent').mockReturnValue(tmAgent);
       jest.spyOn(tmAgentService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -77,10 +77,10 @@ describe('TmAgent Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITmAgent>>();
-      const tmAgent = { id: 123 };
+      const tmAgent = { id: 9499 };
       jest.spyOn(tmAgentFormService, 'getTmAgent').mockReturnValue({ id: null });
       jest.spyOn(tmAgentService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -100,10 +100,10 @@ describe('TmAgent Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITmAgent>>();
-      const tmAgent = { id: 123 };
+      const tmAgent = { id: 9499 };
       jest.spyOn(tmAgentService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ tmAgent });

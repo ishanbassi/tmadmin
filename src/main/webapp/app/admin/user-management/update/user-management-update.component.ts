@@ -13,7 +13,6 @@ const newUser: IUser = {
 } as IUser;
 
 @Component({
-  standalone: true,
   selector: 'jhi-user-mgmt-update',
   templateUrl: './user-management-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],
@@ -43,8 +42,8 @@ export default class UserManagementUpdateComponent implements OnInit {
     authorities: new FormControl(userTemplate.authorities, { nonNullable: true }),
   });
 
-  private userService = inject(UserManagementService);
-  private route = inject(ActivatedRoute);
+  private readonly userService = inject(UserManagementService);
+  private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     this.route.data.subscribe(({ user }) => {

@@ -61,7 +61,7 @@ describe('Lead Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 123 }],
+            body: [{ id: 32296 }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=1&size=20>; rel="next"',
             }),
@@ -71,7 +71,7 @@ describe('Lead Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 456 }],
+            body: [{ id: 6619 }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=0&size=20>; rel="prev",<http://localhost/api/foo?page=2&size=20>; rel="next"',
             }),
@@ -80,18 +80,18 @@ describe('Lead Management Component', () => {
       );
   });
 
-  it('Should call load all on init', () => {
+  it('should call load all on init', () => {
     // WHEN
     comp.ngOnInit();
 
     // THEN
     expect(service.query).toHaveBeenCalled();
-    expect(comp.leads?.[0]).toEqual(expect.objectContaining({ id: 123 }));
+    expect(comp.leads()[0]).toEqual(expect.objectContaining({ id: 32296 }));
   });
 
   describe('trackId', () => {
-    it('Should forward to leadService', () => {
-      const entity = { id: 123 };
+    it('should forward to leadService', () => {
+      const entity = { id: 32296 };
       jest.spyOn(service, 'getLeadIdentifier');
       const id = comp.trackId(entity);
       expect(service.getLeadIdentifier).toHaveBeenCalledWith(entity);

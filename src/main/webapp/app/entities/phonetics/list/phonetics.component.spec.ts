@@ -59,7 +59,7 @@ describe('Phonetics Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 123 }],
+            body: [{ id: 29047 }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=1&size=20>; rel="next"',
             }),
@@ -69,7 +69,7 @@ describe('Phonetics Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 456 }],
+            body: [{ id: 23938 }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=0&size=20>; rel="prev",<http://localhost/api/foo?page=2&size=20>; rel="next"',
             }),
@@ -78,18 +78,18 @@ describe('Phonetics Management Component', () => {
       );
   });
 
-  it('Should call load all on init', () => {
+  it('should call load all on init', () => {
     // WHEN
     comp.ngOnInit();
 
     // THEN
     expect(service.query).toHaveBeenCalled();
-    expect(comp.phonetics?.[0]).toEqual(expect.objectContaining({ id: 123 }));
+    expect(comp.phonetics()[0]).toEqual(expect.objectContaining({ id: 29047 }));
   });
 
   describe('trackId', () => {
-    it('Should forward to phoneticsService', () => {
-      const entity = { id: 123 };
+    it('should forward to phoneticsService', () => {
+      const entity = { id: 29047 };
       jest.spyOn(service, 'getPhoneticsIdentifier');
       const id = comp.trackId(entity);
       expect(service.getPhoneticsIdentifier).toHaveBeenCalledWith(entity);

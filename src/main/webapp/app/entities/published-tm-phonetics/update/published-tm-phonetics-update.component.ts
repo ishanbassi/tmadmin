@@ -14,7 +14,6 @@ import { PublishedTmPhoneticsService } from '../service/published-tm-phonetics.s
 import { PublishedTmPhoneticsFormGroup, PublishedTmPhoneticsFormService } from './published-tm-phonetics-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-published-tm-phonetics-update',
   templateUrl: './published-tm-phonetics-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

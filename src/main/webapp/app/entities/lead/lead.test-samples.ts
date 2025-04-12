@@ -3,36 +3,38 @@ import dayjs from 'dayjs/esm';
 import { ILead, NewLead } from './lead.model';
 
 export const sampleWithRequiredData: ILead = {
-  id: 4691,
+  id: 12555,
 };
 
 export const sampleWithPartialData: ILead = {
-  id: 3793,
-  email: 'Dejuan_Hudson93@gmail.com',
-  city: 'Port Tremayne',
-  selectedPackage: 'terribly finger phooey',
-  tmClass: 11484,
-  modifiedDate: dayjs('2025-04-11T13:13'),
-  status: 'CONVERTED',
-  leadSource: 'outside replicate',
+  id: 25512,
+  fullName: 'throbbing',
+  phoneNumber: 'powerful',
+  email: 'Janae_Weissnat-Runolfsson@gmail.com',
+  city: 'Kassandraborough',
+  brandName: 'newsletter',
+  selectedPackage: 'silt fatally antagonize',
+  createdDate: dayjs('2025-04-11T11:54'),
+  deleted: false,
+  leadSource: 'presell',
 };
 
 export const sampleWithFullData: ILead = {
-  id: 27075,
-  fullName: 'hospitalization catalog',
-  phoneNumber: 'meanwhile',
-  email: 'Ruben.Lesch40@gmail.com',
-  city: 'Gloverbury',
-  brandName: 'upon sinful',
-  selectedPackage: 'gee querulous utterly',
-  tmClass: 23188,
-  comments: 'slap until awkwardly',
-  contactMethod: 'CALL',
-  createdDate: dayjs('2025-04-11T21:32'),
-  modifiedDate: dayjs('2025-04-11T04:40'),
-  deleted: false,
-  status: 'LOST',
-  leadSource: 'once rust',
+  id: 26383,
+  fullName: 'worthy',
+  phoneNumber: 'crafty',
+  email: 'Betty_Klocko72@hotmail.com',
+  city: 'Blaine',
+  brandName: 'lanky',
+  selectedPackage: 'downshift',
+  tmClass: 9996,
+  comments: 'phooey suddenly monster',
+  contactMethod: 'MESSAGE',
+  createdDate: dayjs('2025-04-12T03:32'),
+  modifiedDate: dayjs('2025-04-11T20:53'),
+  deleted: true,
+  status: 'NEW',
+  leadSource: 'except with cruel',
 };
 
 export const sampleWithNewData: NewLead = {

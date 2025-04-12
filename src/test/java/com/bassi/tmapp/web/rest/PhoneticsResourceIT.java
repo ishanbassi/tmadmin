@@ -95,12 +95,12 @@ class PhoneticsResourceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    void initTest() {
         phonetics = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedPhonetics != null) {
             phoneticsRepository.delete(insertedPhonetics);
             insertedPhonetics = null;
@@ -161,7 +161,7 @@ class PhoneticsResourceIT {
             .andExpect(jsonPath("$.[*].sanitizedTm").value(hasItem(DEFAULT_SANITIZED_TM)))
             .andExpect(jsonPath("$.[*].phoneticPk").value(hasItem(DEFAULT_PHONETIC_PK)))
             .andExpect(jsonPath("$.[*].phoneticSk").value(hasItem(DEFAULT_PHONETIC_SK)))
-            .andExpect(jsonPath("$.[*].complete").value(hasItem(DEFAULT_COMPLETE.booleanValue())));
+            .andExpect(jsonPath("$.[*].complete").value(hasItem(DEFAULT_COMPLETE)));
     }
 
     @Test
@@ -179,7 +179,7 @@ class PhoneticsResourceIT {
             .andExpect(jsonPath("$.sanitizedTm").value(DEFAULT_SANITIZED_TM))
             .andExpect(jsonPath("$.phoneticPk").value(DEFAULT_PHONETIC_PK))
             .andExpect(jsonPath("$.phoneticSk").value(DEFAULT_PHONETIC_SK))
-            .andExpect(jsonPath("$.complete").value(DEFAULT_COMPLETE.booleanValue()));
+            .andExpect(jsonPath("$.complete").value(DEFAULT_COMPLETE));
     }
 
     @Test

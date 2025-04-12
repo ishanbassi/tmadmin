@@ -1,20 +1,19 @@
 import { IPublishedTmPhonetics, NewPublishedTmPhonetics } from './published-tm-phonetics.model';
 
 export const sampleWithRequiredData: IPublishedTmPhonetics = {
-  id: 25657,
+  id: 7045,
 };
 
 export const sampleWithPartialData: IPublishedTmPhonetics = {
-  id: 19077,
-  sanitizedTm: 'which',
-  complete: true,
+  id: 16201,
+  complete: false,
 };
 
 export const sampleWithFullData: IPublishedTmPhonetics = {
-  id: 47,
-  sanitizedTm: 'step-mother lest',
-  phoneticPk: 'regulate hurtful gleefully',
-  phoneticSk: 'scornful urgently cram',
+  id: 20627,
+  sanitizedTm: 'upward enormously',
+  phoneticPk: 'potable',
+  phoneticSk: 'versus uh-huh',
   complete: false,
 };
 

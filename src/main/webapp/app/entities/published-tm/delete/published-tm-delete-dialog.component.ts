@@ -8,7 +8,6 @@ import { IPublishedTm } from '../published-tm.model';
 import { PublishedTmService } from '../service/published-tm.service';
 
 @Component({
-  standalone: true,
   templateUrl: './published-tm-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

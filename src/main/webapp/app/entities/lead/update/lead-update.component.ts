@@ -16,7 +16,6 @@ import { ILead } from '../lead.model';
 import { LeadFormGroup, LeadFormService } from './lead-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-lead-update',
   templateUrl: './lead-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

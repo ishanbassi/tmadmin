@@ -16,7 +16,6 @@ import { ITrademark } from '../trademark.model';
 import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-trademark-update',
   templateUrl: './trademark-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

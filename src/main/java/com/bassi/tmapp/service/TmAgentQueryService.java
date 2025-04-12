@@ -65,36 +65,18 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
         Specification<TmAgent> specification = Specification.where(null);
         if (criteria != null) {
             // This has to be called first, because the distinct method returns null
-            if (criteria.getDistinct() != null) {
-                specification = specification.and(distinct(criteria.getDistinct()));
-            }
-            if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), TmAgent_.id));
-            }
-            if (criteria.getFullName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getFullName(), TmAgent_.fullName));
-            }
-            if (criteria.getAddress() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAddress(), TmAgent_.address));
-            }
-            if (criteria.getCreatedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), TmAgent_.createdDate));
-            }
-            if (criteria.getModifiedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), TmAgent_.modifiedDate));
-            }
-            if (criteria.getDeleted() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeleted(), TmAgent_.deleted));
-            }
-            if (criteria.getCompanyName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getCompanyName(), TmAgent_.companyName));
-            }
-            if (criteria.getAgentCode() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAgentCode(), TmAgent_.agentCode));
-            }
-            if (criteria.getEmail() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getEmail(), TmAgent_.email));
-            }
+            specification = Specification.allOf(
+                Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : null,
+                buildRangeSpecification(criteria.getId(), TmAgent_.id),
+                buildStringSpecification(criteria.getFullName(), TmAgent_.fullName),
+                buildStringSpecification(criteria.getAddress(), TmAgent_.address),
+                buildRangeSpecification(criteria.getCreatedDate(), TmAgent_.createdDate),
+                buildRangeSpecification(criteria.getModifiedDate(), TmAgent_.modifiedDate),
+                buildSpecification(criteria.getDeleted(), TmAgent_.deleted),
+                buildStringSpecification(criteria.getCompanyName(), TmAgent_.companyName),
+                buildStringSpecification(criteria.getAgentCode(), TmAgent_.agentCode),
+                buildStringSpecification(criteria.getEmail(), TmAgent_.email)
+            );
         }
         return specification;
     }

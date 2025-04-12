@@ -47,12 +47,12 @@ describe('Lead Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call Employee query and add missing value', () => {
-      const lead: ILead = { id: 456 };
-      const assignedTo: IEmployee = { id: 11269 };
+    it('should call Employee query and add missing value', () => {
+      const lead: ILead = { id: 6619 };
+      const assignedTo: IEmployee = { id: 1749 };
       lead.assignedTo = assignedTo;
 
-      const employeeCollection: IEmployee[] = [{ id: 6677 }];
+      const employeeCollection: IEmployee[] = [{ id: 1749 }];
       jest.spyOn(employeeService, 'query').mockReturnValue(of(new HttpResponse({ body: employeeCollection })));
       const additionalEmployees = [assignedTo];
       const expectedCollection: IEmployee[] = [...additionalEmployees, ...employeeCollection];
@@ -69,24 +69,24 @@ describe('Lead Management Update Component', () => {
       expect(comp.employeesSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
-      const lead: ILead = { id: 456 };
-      const assignedTo: IEmployee = { id: 4571 };
+    it('should update editForm', () => {
+      const lead: ILead = { id: 6619 };
+      const assignedTo: IEmployee = { id: 1749 };
       lead.assignedTo = assignedTo;
 
       activatedRoute.data = of({ lead });
       comp.ngOnInit();
 
-      expect(comp.employeesSharedCollection).toContain(assignedTo);
+      expect(comp.employeesSharedCollection).toContainEqual(assignedTo);
       expect(comp.lead).toEqual(lead);
     });
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ILead>>();
-      const lead = { id: 123 };
+      const lead = { id: 32296 };
       jest.spyOn(leadFormService, 'getLead').mockReturnValue(lead);
       jest.spyOn(leadService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -106,10 +106,10 @@ describe('Lead Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ILead>>();
-      const lead = { id: 123 };
+      const lead = { id: 32296 };
       jest.spyOn(leadFormService, 'getLead').mockReturnValue({ id: null });
       jest.spyOn(leadService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -129,10 +129,10 @@ describe('Lead Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ILead>>();
-      const lead = { id: 123 };
+      const lead = { id: 32296 };
       jest.spyOn(leadService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ lead });
@@ -152,9 +152,9 @@ describe('Lead Management Update Component', () => {
 
   describe('Compare relationships', () => {
     describe('compareEmployee', () => {
-      it('Should forward to employeeService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should forward to employeeService', () => {
+        const entity = { id: 1749 };
+        const entity2 = { id: 1545 };
         jest.spyOn(employeeService, 'compareEmployee');
         comp.compareEmployee(entity, entity2);
         expect(employeeService.compareEmployee).toHaveBeenCalledWith(entity, entity2);

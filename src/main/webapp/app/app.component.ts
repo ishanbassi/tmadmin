@@ -11,18 +11,17 @@ import { fontAwesomeIcons } from './config/font-awesome-icons';
 import MainComponent from './layouts/main/main.component';
 
 @Component({
-  standalone: true,
   selector: 'jhi-app',
-  template: '<jhi-main></jhi-main>',
+  template: '<jhi-main />',
   imports: [
     MainComponent,
     // jhipster-needle-angular-add-module JHipster will add new module here
   ],
 })
 export default class AppComponent {
-  private applicationConfigService = inject(ApplicationConfigService);
-  private iconLibrary = inject(FaIconLibrary);
-  private dpConfig = inject(NgbDatepickerConfig);
+  private readonly applicationConfigService = inject(ApplicationConfigService);
+  private readonly iconLibrary = inject(FaIconLibrary);
+  private readonly dpConfig = inject(NgbDatepickerConfig);
 
   constructor() {
     this.applicationConfigService.setEndpointPrefix(SERVER_API_URL);

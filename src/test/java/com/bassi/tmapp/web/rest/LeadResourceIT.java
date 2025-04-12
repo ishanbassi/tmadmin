@@ -156,12 +156,12 @@ class LeadResourceIT {
     }
 
     @BeforeEach
-    public void initTest() {
+    void initTest() {
         lead = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedLead != null) {
             leadRepository.delete(insertedLead);
             insertedLead = null;
@@ -230,7 +230,7 @@ class LeadResourceIT {
             .andExpect(jsonPath("$.[*].contactMethod").value(hasItem(DEFAULT_CONTACT_METHOD.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].leadSource").value(hasItem(DEFAULT_LEAD_SOURCE)));
     }
@@ -258,7 +258,7 @@ class LeadResourceIT {
             .andExpect(jsonPath("$.contactMethod").value(DEFAULT_CONTACT_METHOD.toString()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.leadSource").value(DEFAULT_LEAD_SOURCE));
     }
@@ -1055,7 +1055,7 @@ class LeadResourceIT {
             .andExpect(jsonPath("$.[*].contactMethod").value(hasItem(DEFAULT_CONTACT_METHOD.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].leadSource").value(hasItem(DEFAULT_LEAD_SOURCE)));
 

@@ -1,21 +1,20 @@
 import { IPhonetics, NewPhonetics } from './phonetics.model';
 
 export const sampleWithRequiredData: IPhonetics = {
-  id: 14278,
+  id: 5281,
 };
 
 export const sampleWithPartialData: IPhonetics = {
-  id: 4588,
-  sanitizedTm: 'ingratiate',
-  phoneticSk: 'along linseed next',
-  complete: true,
+  id: 8247,
+  sanitizedTm: 'ah',
+  phoneticPk: 'profane',
 };
 
 export const sampleWithFullData: IPhonetics = {
-  id: 31653,
-  sanitizedTm: 'successfully fibre gosh',
-  phoneticPk: 'spotless',
-  phoneticSk: 'embed zowie',
+  id: 15238,
+  sanitizedTm: 'behind swear',
+  phoneticPk: 'developmental enthusiastically',
+  phoneticSk: 'obedient cod',
   complete: false,
 };
 

@@ -1,11 +1,11 @@
-import { Component, NgZone, OnInit, inject } from '@angular/core';
+import { Component, NgZone, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
+import { FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
 import { IEmployee } from '../employee.model';
@@ -13,31 +13,21 @@ import { EmployeeService, EntityArrayResponseType } from '../service/employee.se
 import { EmployeeDeleteDialogComponent } from '../delete/employee-delete-dialog.component';
 
 @Component({
-  standalone: true,
   selector: 'jhi-employee',
   templateUrl: './employee.component.html',
-  imports: [
-    RouterModule,
-    FormsModule,
-    SharedModule,
-    SortDirective,
-    SortByDirective,
-    DurationPipe,
-    FormatMediumDatetimePipe,
-    FormatMediumDatePipe,
-  ],
+  imports: [RouterModule, FormsModule, SharedModule, SortDirective, SortByDirective, FormatMediumDatetimePipe, FormatMediumDatePipe],
 })
 export class EmployeeComponent implements OnInit {
   subscription: Subscription | null = null;
-  employees?: IEmployee[];
+  employees = signal<IEmployee[]>([]);
   isLoading = false;
 
   sortState = sortStateSignal({});
 
-  public router = inject(Router);
-  protected employeeService = inject(EmployeeService);
-  protected activatedRoute = inject(ActivatedRoute);
-  protected sortService = inject(SortService);
+  public readonly router = inject(Router);
+  protected readonly employeeService = inject(EmployeeService);
+  protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
@@ -82,7 +72,7 @@ export class EmployeeComponent implements OnInit {
 
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.employees = this.refineData(dataFromBody);
+    this.employees.set(this.refineData(dataFromBody));
   }
 
   protected refineData(data: IEmployee[]): IEmployee[] {

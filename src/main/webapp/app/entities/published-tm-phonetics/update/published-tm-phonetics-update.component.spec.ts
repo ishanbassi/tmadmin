@@ -47,12 +47,12 @@ describe('PublishedTmPhonetics Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call PublishedTm query and add missing value', () => {
-      const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 11686 };
+    it('should call PublishedTm query and add missing value', () => {
+      const publishedTmPhonetics: IPublishedTmPhonetics = { id: 3884 };
+      const publishedTm: IPublishedTm = { id: 23395 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
-      const publishedTmCollection: IPublishedTm[] = [{ id: 13536 }];
+      const publishedTmCollection: IPublishedTm[] = [{ id: 23395 }];
       jest.spyOn(publishedTmService, 'query').mockReturnValue(of(new HttpResponse({ body: publishedTmCollection })));
       const additionalPublishedTms = [publishedTm];
       const expectedCollection: IPublishedTm[] = [...additionalPublishedTms, ...publishedTmCollection];
@@ -69,24 +69,24 @@ describe('PublishedTmPhonetics Management Update Component', () => {
       expect(comp.publishedTmsSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
-      const publishedTmPhonetics: IPublishedTmPhonetics = { id: 456 };
-      const publishedTm: IPublishedTm = { id: 16200 };
+    it('should update editForm', () => {
+      const publishedTmPhonetics: IPublishedTmPhonetics = { id: 3884 };
+      const publishedTm: IPublishedTm = { id: 23395 };
       publishedTmPhonetics.publishedTm = publishedTm;
 
       activatedRoute.data = of({ publishedTmPhonetics });
       comp.ngOnInit();
 
-      expect(comp.publishedTmsSharedCollection).toContain(publishedTm);
+      expect(comp.publishedTmsSharedCollection).toContainEqual(publishedTm);
       expect(comp.publishedTmPhonetics).toEqual(publishedTmPhonetics);
     });
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPublishedTmPhonetics>>();
-      const publishedTmPhonetics = { id: 123 };
+      const publishedTmPhonetics = { id: 28612 };
       jest.spyOn(publishedTmPhoneticsFormService, 'getPublishedTmPhonetics').mockReturnValue(publishedTmPhonetics);
       jest.spyOn(publishedTmPhoneticsService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -106,10 +106,10 @@ describe('PublishedTmPhonetics Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPublishedTmPhonetics>>();
-      const publishedTmPhonetics = { id: 123 };
+      const publishedTmPhonetics = { id: 28612 };
       jest.spyOn(publishedTmPhoneticsFormService, 'getPublishedTmPhonetics').mockReturnValue({ id: null });
       jest.spyOn(publishedTmPhoneticsService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -129,10 +129,10 @@ describe('PublishedTmPhonetics Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPublishedTmPhonetics>>();
-      const publishedTmPhonetics = { id: 123 };
+      const publishedTmPhonetics = { id: 28612 };
       jest.spyOn(publishedTmPhoneticsService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ publishedTmPhonetics });
@@ -152,9 +152,9 @@ describe('PublishedTmPhonetics Management Update Component', () => {
 
   describe('Compare relationships', () => {
     describe('comparePublishedTm', () => {
-      it('Should forward to publishedTmService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should forward to publishedTmService', () => {
+        const entity = { id: 23395 };
+        const entity2 = { id: 3430 };
         jest.spyOn(publishedTmService, 'comparePublishedTm');
         comp.comparePublishedTm(entity, entity2);
         expect(publishedTmService.comparePublishedTm).toHaveBeenCalledWith(entity, entity2);

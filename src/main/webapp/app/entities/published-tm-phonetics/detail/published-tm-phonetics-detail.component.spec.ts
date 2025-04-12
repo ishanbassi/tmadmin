@@ -18,7 +18,7 @@ describe('PublishedTmPhonetics Management Detail Component', () => {
             {
               path: '**',
               loadComponent: () => import('./published-tm-phonetics-detail.component').then(m => m.PublishedTmPhoneticsDetailComponent),
-              resolve: { publishedTmPhonetics: () => of({ id: 123 }) },
+              resolve: { publishedTmPhonetics: () => of({ id: 28612 }) },
             },
           ],
           withComponentInputBinding(),
@@ -35,17 +35,17 @@ describe('PublishedTmPhonetics Management Detail Component', () => {
   });
 
   describe('OnInit', () => {
-    it('Should load publishedTmPhonetics on init', async () => {
+    it('should load publishedTmPhonetics on init', async () => {
       const harness = await RouterTestingHarness.create();
       const instance = await harness.navigateByUrl('/', PublishedTmPhoneticsDetailComponent);
 
       // THEN
-      expect(instance.publishedTmPhonetics()).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.publishedTmPhonetics()).toEqual(expect.objectContaining({ id: 28612 }));
     });
   });
 
   describe('PreviousState', () => {
-    it('Should navigate to previous state', () => {
+    it('should navigate to previous state', () => {
       jest.spyOn(window.history, 'back');
       comp.previousState();
       expect(window.history.back).toHaveBeenCalled();

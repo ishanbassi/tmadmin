@@ -8,7 +8,6 @@ import { Level, Log, LoggersResponse } from './log.model';
 import { LogsService } from './logs.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-logs',
   templateUrl: './logs.component.html',
   imports: [SharedModule, FormsModule, SortDirective, SortByDirective],
@@ -32,8 +31,8 @@ export default class LogsComponent implements OnInit {
     return data;
   });
 
-  private logsService = inject(LogsService);
-  private sortService = inject(SortService);
+  private readonly logsService = inject(LogsService);
+  private readonly sortService = inject(SortService);
 
   ngOnInit(): void {
     this.findAndExtractLoggers();

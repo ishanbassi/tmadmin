@@ -12,7 +12,6 @@ import { TmAgentService } from '../service/tm-agent.service';
 import { TmAgentFormGroup, TmAgentFormService } from './tm-agent-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-tm-agent-update',
   templateUrl: './tm-agent-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

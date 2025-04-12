@@ -3,7 +3,6 @@ package com.bassi.tmapp.web.rest;
 import com.bassi.tmapp.service.UserService;
 import com.bassi.tmapp.service.dto.UserDTO;
 import java.util.*;
-import java.util.Collections;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

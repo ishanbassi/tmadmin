@@ -18,7 +18,7 @@ describe('PublishedTm Management Detail Component', () => {
             {
               path: '**',
               loadComponent: () => import('./published-tm-detail.component').then(m => m.PublishedTmDetailComponent),
-              resolve: { publishedTm: () => of({ id: 123 }) },
+              resolve: { publishedTm: () => of({ id: 23395 }) },
             },
           ],
           withComponentInputBinding(),
@@ -35,17 +35,17 @@ describe('PublishedTm Management Detail Component', () => {
   });
 
   describe('OnInit', () => {
-    it('Should load publishedTm on init', async () => {
+    it('should load publishedTm on init', async () => {
       const harness = await RouterTestingHarness.create();
       const instance = await harness.navigateByUrl('/', PublishedTmDetailComponent);
 
       // THEN
-      expect(instance.publishedTm()).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.publishedTm()).toEqual(expect.objectContaining({ id: 23395 }));
     });
   });
 
   describe('PreviousState', () => {
-    it('Should navigate to previous state', () => {
+    it('should navigate to previous state', () => {
       jest.spyOn(window.history, 'back');
       comp.previousState();
       expect(window.history.back).toHaveBeenCalled();

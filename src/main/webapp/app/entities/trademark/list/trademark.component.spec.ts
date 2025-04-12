@@ -61,7 +61,7 @@ describe('Trademark Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 123 }],
+            body: [{ id: 4352 }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=1&size=20>; rel="next"',
             }),
@@ -71,7 +71,7 @@ describe('Trademark Management Component', () => {
       .mockReturnValueOnce(
         of(
           new HttpResponse({
-            body: [{ id: 456 }],
+            body: [{ id: 3769 }],
             headers: new HttpHeaders({
               link: '<http://localhost/api/foo?page=0&size=20>; rel="prev",<http://localhost/api/foo?page=2&size=20>; rel="next"',
             }),
@@ -80,18 +80,18 @@ describe('Trademark Management Component', () => {
       );
   });
 
-  it('Should call load all on init', () => {
+  it('should call load all on init', () => {
     // WHEN
     comp.ngOnInit();
 
     // THEN
     expect(service.query).toHaveBeenCalled();
-    expect(comp.trademarks?.[0]).toEqual(expect.objectContaining({ id: 123 }));
+    expect(comp.trademarks()[0]).toEqual(expect.objectContaining({ id: 4352 }));
   });
 
   describe('trackId', () => {
-    it('Should forward to trademarkService', () => {
-      const entity = { id: 123 };
+    it('should forward to trademarkService', () => {
+      const entity = { id: 4352 };
       jest.spyOn(service, 'getTrademarkIdentifier');
       const id = comp.trackId(entity);
       expect(service.getTrademarkIdentifier).toHaveBeenCalledWith(entity);

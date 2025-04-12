@@ -8,7 +8,6 @@ import { ITmAgent } from '../tm-agent.model';
 import { TmAgentService } from '../service/tm-agent.service';
 
 @Component({
-  standalone: true,
   templateUrl: './tm-agent-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

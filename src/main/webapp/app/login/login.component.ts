@@ -7,7 +7,6 @@ import { LoginService } from 'app/login/login.service';
 import { AccountService } from 'app/core/auth/account.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-login',
   imports: [SharedModule, FormsModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.component.html',
@@ -23,9 +22,9 @@ export default class LoginComponent implements OnInit, AfterViewInit {
     rememberMe: new FormControl(false, { nonNullable: true, validators: [Validators.required] }),
   });
 
-  private accountService = inject(AccountService);
-  private loginService = inject(LoginService);
-  private router = inject(Router);
+  private readonly accountService = inject(AccountService);
+  private readonly loginService = inject(LoginService);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     // if already authenticated then navigate to home page

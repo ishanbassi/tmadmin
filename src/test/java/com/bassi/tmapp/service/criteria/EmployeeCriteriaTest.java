@@ -2,6 +2,7 @@ package com.bassi.tmapp.service.criteria;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import org.assertj.core.api.Condition;
@@ -12,7 +13,7 @@ class EmployeeCriteriaTest {
     @Test
     void newEmployeeCriteriaHasAllFiltersNullTest() {
         var employeeCriteria = new EmployeeCriteria();
-        assertThat(employeeCriteria).is(criteriaFiltersAre(filter -> filter == null));
+        assertThat(employeeCriteria).is(criteriaFiltersAre(Objects::isNull));
     }
 
     @Test
@@ -21,7 +22,7 @@ class EmployeeCriteriaTest {
 
         setAllFilters(employeeCriteria);
 
-        assertThat(employeeCriteria).is(criteriaFiltersAre(filter -> filter != null));
+        assertThat(employeeCriteria).is(criteriaFiltersAre(Objects::nonNull));
     }
 
     @Test
@@ -39,7 +40,7 @@ class EmployeeCriteriaTest {
         );
 
         assertThat(copy).satisfies(
-            criteria -> assertThat(criteria).is(criteriaFiltersAre(filter -> filter == null)),
+            criteria -> assertThat(criteria).is(criteriaFiltersAre(Objects::isNull)),
             criteria -> assertThat(criteria).isEqualTo(employeeCriteria)
         );
     }
@@ -61,7 +62,7 @@ class EmployeeCriteriaTest {
         );
 
         assertThat(copy).satisfies(
-            criteria -> assertThat(criteria).is(criteriaFiltersAre(filter -> filter != null)),
+            criteria -> assertThat(criteria).is(criteriaFiltersAre(Objects::nonNull)),
             criteria -> assertThat(criteria).isEqualTo(employeeCriteria)
         );
     }

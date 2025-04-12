@@ -7,7 +7,6 @@ import { User } from '../user-management.model';
 import { UserManagementService } from '../service/user-management.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-user-mgmt-delete-dialog',
   templateUrl: './user-management-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
@@ -15,8 +14,8 @@ import { UserManagementService } from '../service/user-management.service';
 export default class UserManagementDeleteDialogComponent {
   user?: User;
 
-  private userService = inject(UserManagementService);
-  private activeModal = inject(NgbActiveModal);
+  private readonly userService = inject(UserManagementService);
+  private readonly activeModal = inject(NgbActiveModal);
 
   cancel(): void {
     this.activeModal.dismiss();

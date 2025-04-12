@@ -5,7 +5,6 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const WebpackNotifierPlugin = require('webpack-notifier');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ESLintPlugin = require('eslint-webpack-plugin');
 
 const environment = require('./environment');
 const proxyConfig = require('./proxy.conf');
@@ -14,10 +13,6 @@ module.exports = async (config, options, targetOptions) => {
   // PLUGINS
   if (config.mode === 'development') {
     config.plugins.push(
-      new ESLintPlugin({
-        configType: 'flat',
-        extensions: ['ts', 'js', 'html'],
-      }),
       new WebpackNotifierPlugin({
         title: 'Tmapp',
         contentImage: path.join(__dirname, 'logo-jhipster.png'),
@@ -42,13 +37,13 @@ module.exports = async (config, options, targetOptions) => {
             target: `http${tls ? 's' : ''}://localhost:${targetOptions.target === 'serve' ? '4200' : '8080'}`,
             ws: true,
             proxyOptions: {
-              changeOrigin: false, //pass the Host header to the backend unchanged  https://github.com/Browsersync/browser-sync/issues/430
+              changeOrigin: false, //pass the Host header to the backend unchanged https://github.com/Browsersync/browser-sync/issues/430
             },
             proxyReq: [
               function (proxyReq) {
                 // URI that will be retrieved by the ForwardedHeaderFilter on the server side
                 proxyReq.setHeader('X-Forwarded-Host', 'localhost:9000');
-                proxyReq.setHeader('X-Forwarded-Proto', 'https');
+                proxyReq.setHeader('X-Forwarded-Proto', `http${tls ? 's' : ''}`);
               },
             ],
           },
@@ -108,7 +103,6 @@ module.exports = async (config, options, targetOptions) => {
     new webpack.DefinePlugin({
       // APP_VERSION is passed as an environment variable from the Gradle / Maven build tasks.
       __VERSION__: JSON.stringify(environment.__VERSION__),
-      __DEBUG_INFO_ENABLED__: environment.__DEBUG_INFO_ENABLED__ || config.mode === 'development',
       // The root URL for API calls, ending with a '/' - for example: `"https://www.jhipster.tech:8081/myservice/"`.
       // If this URL is left empty (""), then it will be relative to the current context.
       // If you use an API server, in `prod` mode, you will need to enable CORS

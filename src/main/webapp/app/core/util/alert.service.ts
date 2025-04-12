@@ -25,7 +25,7 @@ export class AlertService {
   private alertId = 0;
   private alerts: Alert[] = [];
 
-  private sanitizer = inject(DomSanitizer);
+  private readonly sanitizer = inject(DomSanitizer);
 
   clear(): void {
     this.alerts = [];
@@ -37,7 +37,7 @@ export class AlertService {
 
   /**
    * Adds alert to alerts array and returns added alert.
-   * @param alert      Alert to add. If `timeout`, `toast` or `position` is missing then applying default value.
+   * @param alertToAdd Alert to add. If `timeout`, `toast` or `position` is missing then applying default value.
    * @param extAlerts  If missing then adding `alert` to `AlertService` internal array and alerts can be retrieved by `get()`.
    *                   Else adding `alert` to `extAlerts`.
    * @returns  Added alert

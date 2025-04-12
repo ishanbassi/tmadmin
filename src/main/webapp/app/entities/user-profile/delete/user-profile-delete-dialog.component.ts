@@ -8,7 +8,6 @@ import { IUserProfile } from '../user-profile.model';
 import { UserProfileService } from '../service/user-profile.service';
 
 @Component({
-  standalone: true,
   templateUrl: './user-profile-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

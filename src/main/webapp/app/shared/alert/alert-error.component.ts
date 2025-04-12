@@ -9,7 +9,6 @@ import { EventManager, EventWithContent } from 'app/core/util/event-manager.serv
 import { AlertError } from './alert-error.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-alert-error',
   templateUrl: './alert-error.component.html',
   imports: [CommonModule, NgbModule],
@@ -19,8 +18,8 @@ export class AlertErrorComponent implements OnDestroy {
   errorListener: Subscription;
   httpErrorListener: Subscription;
 
-  private alertService = inject(AlertService);
-  private eventManager = inject(EventManager);
+  private readonly alertService = inject(AlertService);
+  private readonly eventManager = inject(EventManager);
 
   constructor() {
     this.errorListener = this.eventManager.subscribe('tmappApp.error', (response: EventWithContent<unknown> | string) => {

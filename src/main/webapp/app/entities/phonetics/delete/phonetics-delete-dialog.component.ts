@@ -8,7 +8,6 @@ import { IPhonetics } from '../phonetics.model';
 import { PhoneticsService } from '../service/phonetics.service';
 
 @Component({
-  standalone: true,
   templateUrl: './phonetics-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

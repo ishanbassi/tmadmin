@@ -9,7 +9,6 @@ import PasswordStrengthBarComponent from '../password/password-strength-bar/pass
 import { RegisterService } from './register.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-register',
   imports: [SharedModule, RouterModule, FormsModule, ReactiveFormsModule, PasswordStrengthBarComponent],
   templateUrl: './register.component.html',
@@ -47,7 +46,7 @@ export default class RegisterComponent implements AfterViewInit {
     }),
   });
 
-  private registerService = inject(RegisterService);
+  private readonly registerService = inject(RegisterService);
 
   ngAfterViewInit(): void {
     this.login().nativeElement.focus();

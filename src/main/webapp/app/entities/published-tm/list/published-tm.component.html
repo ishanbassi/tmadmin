@@ -20,21 +20,19 @@
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <jhi-alert-error />
 
-  <jhi-alert></jhi-alert>
+  <jhi-alert />
 
-  @if (publishedTms?.length === 0) {
+  @if (publishedTms().length === 0) {
     <div class="alert alert-warning" id="no-result">
       <span>No Published Tms found</span>
     </div>
-  }
-
-  @if (publishedTms && publishedTms.length > 0) {
+  } @else {
     <div class="table-responsive table-entities" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
-          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span>ID</span>
@@ -199,7 +197,7 @@
           </tr>
         </thead>
         <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
-          @for (publishedTm of publishedTms; track trackId(publishedTm)) {
+          @for (publishedTm of publishedTms(); track trackId(publishedTm)) {
             <tr data-cy="entityTable">
               <td>
                 <a [routerLink]="['/published-tm', publishedTm.id, 'view']">{{ publishedTm.id }}</a>

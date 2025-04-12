@@ -8,11 +8,8 @@ plugins {
     id "jhipster.spring-cache-conventions"
     id "jhipster.docker-conventions"
     id "jhipster.code-quality-conventions"
-    id "jhipster.node-gradle-conventions"
     id "org.liquibase.gradle"
-  	id "io.freefair.lombok" version "8.6"
-    
-    
+    id "jhipster.node-gradle-conventions"
     // jhipster-needle-gradle-plugins - JHipster will add additional gradle plugins here
 }
 
@@ -23,7 +20,7 @@ description = ""
 
 sourceCompatibility=17
 targetCompatibility=17
-assert System.properties["java.specification.version"] == "17" || "18" || "19" || "20" || "21"
+assert System.properties["java.specification.version"] == "17" || "21" || "24"
 
 ext {
     springProfiles = ""
@@ -164,14 +161,14 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-data-jpa"
     implementation "org.springframework.security:spring-security-data"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate6"
-    implementation "org.hibernate.orm:hibernate-core"
-    implementation "org.hibernate.validator:hibernate-validator"
-    annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen"
     implementation "com.fasterxml.jackson.module:jackson-module-jaxb-annotations"
     implementation "com.zaxxer:HikariCP"
-    annotationProcessor "org.glassfish.jaxb:jaxb-runtime"
+    implementation "org.hibernate.orm:hibernate-core"
+    implementation "org.hibernate.validator:hibernate-validator"
+    implementation "org.postgresql:postgresql"
     testImplementation "org.testcontainers:jdbc"
     testImplementation "org.testcontainers:junit-jupiter"
+    testImplementation "org.testcontainers:postgresql"
     testImplementation "org.testcontainers:testcontainers"
 
 	implementation "org.apache.pdfbox:pdfbox:2.0.1"
@@ -186,12 +183,9 @@ dependencies {
   	implementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '2.41.0'
   	runtimeOnly 'com.fasterxml.jackson.module:jackson-modules-java8:2.8.5'
   	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.2'
-  	
-  	
-  	
-	
-
-    
+    annotationProcessor "org.glassfish.jaxb:jaxb-runtime"
+    annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen"
+    developmentOnly "org.springframework.boot:spring-boot-docker-compose"
     // jhipster-needle-gradle-dependency - JHipster will add additional dependencies here
 }
 
