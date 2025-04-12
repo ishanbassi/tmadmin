@@ -12,7 +12,7 @@ const tmAgentRoute: Routes = [
     path: '',
     component: TmAgentComponent,
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${  ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },

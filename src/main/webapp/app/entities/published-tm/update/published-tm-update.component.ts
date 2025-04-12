@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { PublishedTmService } from '../service/published-tm.service';
 import { IPublishedTm } from '../published-tm.model';
-import { PublishedTmFormService, PublishedTmFormGroup } from './published-tm-form.service';
+import { PublishedTmFormGroup, PublishedTmFormService } from './published-tm-form.service';
 
 @Component({
   standalone: true,

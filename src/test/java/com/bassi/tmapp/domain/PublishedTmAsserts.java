@@ -64,19 +64,17 @@ public class PublishedTmAsserts {
             .satisfies(e -> assertThat(e.getUsage()).as("check usage").isEqualTo(actual.getUsage()))
             .satisfies(e -> assertThat(e.getAssociatedTms()).as("check associatedTms").isEqualTo(actual.getAssociatedTms()))
             .satisfies(e -> assertThat(e.getTrademarkStatus()).as("check trademarkStatus").isEqualTo(actual.getTrademarkStatus()))
-            .satisfies(
-                e ->
-                    assertThat(e.getCreatedDate())
-                        .as("check createdDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getCreatedDate())
+            .satisfies(e ->
+                assertThat(e.getCreatedDate())
+                    .as("check createdDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(
-                e ->
-                    assertThat(e.getModifiedDate())
-                        .as("check modifiedDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getModifiedDate())
+            .satisfies(e ->
+                assertThat(e.getModifiedDate())
+                    .as("check modifiedDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getRenewalDate()).as("check renewalDate").isEqualTo(actual.getRenewalDate()))
             .satisfies(e -> assertThat(e.getType()).as("check type").isEqualTo(actual.getType()))

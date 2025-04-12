@@ -50,19 +50,17 @@ public class TmAgentAsserts {
             .as("Verify TmAgent relevant properties")
             .satisfies(e -> assertThat(e.getFullName()).as("check fullName").isEqualTo(actual.getFullName()))
             .satisfies(e -> assertThat(e.getAddress()).as("check address").isEqualTo(actual.getAddress()))
-            .satisfies(
-                e ->
-                    assertThat(e.getCreatedDate())
-                        .as("check createdDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getCreatedDate())
+            .satisfies(e ->
+                assertThat(e.getCreatedDate())
+                    .as("check createdDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(
-                e ->
-                    assertThat(e.getModifiedDate())
-                        .as("check modifiedDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getModifiedDate())
+            .satisfies(e ->
+                assertThat(e.getModifiedDate())
+                    .as("check modifiedDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
             .satisfies(e -> assertThat(e.getCompanyName()).as("check companyName").isEqualTo(actual.getCompanyName()))

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithRequiredData, sampleWithNewData } from '../lead.test-samples';
+import { sampleWithNewData, sampleWithRequiredData } from '../lead.test-samples';
 
 import { LeadFormService } from './lead-form.service';
 

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithRequiredData, sampleWithNewData } from '../trademark.test-samples';
+import { sampleWithNewData, sampleWithRequiredData } from '../trademark.test-samples';
 
 import { TrademarkFormService } from './trademark-form.service';
 

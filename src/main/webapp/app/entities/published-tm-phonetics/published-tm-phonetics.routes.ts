@@ -12,7 +12,7 @@ const publishedTmPhoneticsRoute: Routes = [
     path: '',
     component: PublishedTmPhoneticsComponent,
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${  ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },

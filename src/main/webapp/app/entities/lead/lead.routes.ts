@@ -12,7 +12,7 @@ const leadRoute: Routes = [
     path: '',
     component: LeadComponent,
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${  ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },

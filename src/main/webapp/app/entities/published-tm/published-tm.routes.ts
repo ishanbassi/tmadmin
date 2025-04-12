@@ -12,7 +12,7 @@ const publishedTmRoute: Routes = [
     path: '',
     component: PublishedTmComponent,
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${  ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },

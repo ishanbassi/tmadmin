@@ -137,9 +137,8 @@ public class TrademarkQueryService extends QueryService<Trademark> {
             }
             if (criteria.getUserProfileId() != null) {
                 specification = specification.and(
-                    buildSpecification(
-                        criteria.getUserProfileId(),
-                        root -> root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
+                    buildSpecification(criteria.getUserProfileId(), root ->
+                        root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
                     )
                 );
             }

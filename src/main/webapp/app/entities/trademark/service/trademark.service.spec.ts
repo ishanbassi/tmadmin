@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { DATE_FORMAT } from 'app/config/input.constants';
 import { ITrademark } from '../trademark.model';
-import { sampleWithRequiredData, sampleWithNewData, sampleWithPartialData, sampleWithFullData } from '../trademark.test-samples';
+import { sampleWithFullData, sampleWithNewData, sampleWithPartialData, sampleWithRequiredData } from '../trademark.test-samples';
 
-import { TrademarkService, RestTrademark } from './trademark.service';
+import { RestTrademark, TrademarkService } from './trademark.service';
 
 const requireRestSample: RestTrademark = {
   ...sampleWithRequiredData,

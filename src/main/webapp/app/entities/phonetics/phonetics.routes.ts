@@ -12,7 +12,7 @@ const phoneticsRoute: Routes = [
     path: '',
     component: PhoneticsComponent,
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${  ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },

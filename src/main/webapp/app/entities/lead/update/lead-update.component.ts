@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -13,7 +13,7 @@ import { ContactMethod } from 'app/entities/enumerations/contact-method.model';
 import { LeadStatus } from 'app/entities/enumerations/lead-status.model';
 import { LeadService } from '../service/lead.service';
 import { ILead } from '../lead.model';
-import { LeadFormService, LeadFormGroup } from './lead-form.service';
+import { LeadFormGroup, LeadFormService } from './lead-form.service';
 
 @Component({
   standalone: true,

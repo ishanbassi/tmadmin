@@ -51,19 +51,17 @@ public class EmployeeAsserts {
             .satisfies(e -> assertThat(e.getFullName()).as("check fullName").isEqualTo(actual.getFullName()))
             .satisfies(e -> assertThat(e.getPhoneNumber()).as("check phoneNumber").isEqualTo(actual.getPhoneNumber()))
             .satisfies(e -> assertThat(e.getEmail()).as("check email").isEqualTo(actual.getEmail()))
-            .satisfies(
-                e ->
-                    assertThat(e.getCreatedDate())
-                        .as("check createdDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getCreatedDate())
+            .satisfies(e ->
+                assertThat(e.getCreatedDate())
+                    .as("check createdDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(
-                e ->
-                    assertThat(e.getModifiedDate())
-                        .as("check modifiedDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getModifiedDate())
+            .satisfies(e ->
+                assertThat(e.getModifiedDate())
+                    .as("check modifiedDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
             .satisfies(e -> assertThat(e.getDesignation()).as("check designation").isEqualTo(actual.getDesignation()))

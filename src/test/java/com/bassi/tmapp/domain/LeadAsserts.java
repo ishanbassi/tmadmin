@@ -57,19 +57,17 @@ public class LeadAsserts {
             .satisfies(e -> assertThat(e.getTmClass()).as("check tmClass").isEqualTo(actual.getTmClass()))
             .satisfies(e -> assertThat(e.getComments()).as("check comments").isEqualTo(actual.getComments()))
             .satisfies(e -> assertThat(e.getContactMethod()).as("check contactMethod").isEqualTo(actual.getContactMethod()))
-            .satisfies(
-                e ->
-                    assertThat(e.getCreatedDate())
-                        .as("check createdDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getCreatedDate())
+            .satisfies(e ->
+                assertThat(e.getCreatedDate())
+                    .as("check createdDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getCreatedDate())
             )
-            .satisfies(
-                e ->
-                    assertThat(e.getModifiedDate())
-                        .as("check modifiedDate")
-                        .usingComparator(zonedDataTimeSameInstant)
-                        .isEqualTo(actual.getModifiedDate())
+            .satisfies(e ->
+                assertThat(e.getModifiedDate())
+                    .as("check modifiedDate")
+                    .usingComparator(zonedDataTimeSameInstant)
+                    .isEqualTo(actual.getModifiedDate())
             )
             .satisfies(e -> assertThat(e.getDeleted()).as("check deleted").isEqualTo(actual.getDeleted()))
             .satisfies(e -> assertThat(e.getStatus()).as("check status").isEqualTo(actual.getStatus()))

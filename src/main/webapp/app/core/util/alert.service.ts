@@ -1,4 +1,4 @@
-import { inject, Injectable, SecurityContext } from '@angular/core';
+import { Injectable, SecurityContext, inject } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 
 export type AlertType = 'success' | 'danger' | 'warning' | 'info';

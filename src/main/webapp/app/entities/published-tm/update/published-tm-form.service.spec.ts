@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { sampleWithRequiredData, sampleWithNewData } from '../published-tm.test-samples';
+import { sampleWithNewData, sampleWithRequiredData } from '../published-tm.test-samples';
 
 import { PublishedTmFormService } from './published-tm-form.service';
 

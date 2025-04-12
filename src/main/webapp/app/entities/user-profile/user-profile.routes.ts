@@ -12,7 +12,7 @@ const userProfileRoute: Routes = [
     path: '',
     component: UserProfileComponent,
     data: {
-      defaultSort: 'id,' + ASC,
+      defaultSort: `id,${  ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },
