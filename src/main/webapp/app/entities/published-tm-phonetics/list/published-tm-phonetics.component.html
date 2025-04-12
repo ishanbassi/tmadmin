@@ -1,0 +1,133 @@
+<div>
+  <h2 id="page-heading" data-cy="PublishedTmPhoneticsHeading">
+    <span>Published Tm Phonetics</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-published-tm-phonetics"
+        [routerLink]="['/published-tm-phonetics/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Published Tm Phonetics</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (publishedTmPhonetics?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Published Tm Phonetics found</span>
+    </div>
+  }
+
+  @if (publishedTmPhonetics && publishedTmPhonetics.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="sanitizedTm">
+              <div class="d-flex">
+                <span>Sanitized Tm</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="phoneticPk">
+              <div class="d-flex">
+                <span>Phonetic Pk</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="phoneticSk">
+              <div class="d-flex">
+                <span>Phonetic Sk</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="complete">
+              <div class="d-flex">
+                <span>Complete</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="publishedTm.id">
+              <div class="d-flex">
+                <span>Published Tm</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (publishedTmPhonetics of publishedTmPhonetics; track trackId) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/published-tm-phonetics', publishedTmPhonetics.id, 'view']">{{ publishedTmPhonetics.id }}</a>
+              </td>
+              <td>{{ publishedTmPhonetics.sanitizedTm }}</td>
+              <td>{{ publishedTmPhonetics.phoneticPk }}</td>
+              <td>{{ publishedTmPhonetics.phoneticSk }}</td>
+              <td>{{ publishedTmPhonetics.complete }}</td>
+              <td>
+                @if (publishedTmPhonetics.publishedTm) {
+                  <div>
+                    <a [routerLink]="['/published-tm', publishedTmPhonetics.publishedTm.id, 'view']">{{
+                      publishedTmPhonetics.publishedTm.id
+                    }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/published-tm-phonetics', publishedTmPhonetics.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/published-tm-phonetics', publishedTmPhonetics.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(publishedTmPhonetics)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

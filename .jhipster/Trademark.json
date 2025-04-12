@@ -1,0 +1,111 @@
+{
+  "annotations": {
+    "changelogDate": "20240522160735"
+  },
+  "applications": ["tmapp"],
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "details",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "applicationNo",
+      "fieldType": "Long"
+    },
+    {
+      "fieldName": "applicationDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "agentName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "agentAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "proprietorName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "proprietorAddress",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "headOffice",
+      "fieldType": "HeadOffice",
+      "fieldValues": "DELHI,MUMBAI,AHMEDABAD,KOLKATA,CHENNAI"
+    },
+    {
+      "fieldName": "imgUrl",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "tmClass",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "journalNo",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "usage",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "associatedTms",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "trademarkStatus",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "renewalDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "TrademarkType",
+      "fieldValues": "IMAGEMARK,TRADEMARK,SOUNDMARK"
+    },
+    {
+      "fieldName": "pageNo",
+      "fieldType": "Integer"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Trademark",
+  "pagination": "infinite-scroll",
+  "relationships": [
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "userProfile",
+      "relationshipName": "userProfile",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}
