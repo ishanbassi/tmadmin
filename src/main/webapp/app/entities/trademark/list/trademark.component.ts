@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
+import { FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
@@ -18,7 +18,6 @@ import { TrademarkDeleteDialogComponent } from '../delete/trademark-delete-dialo
 import { ITrademark } from '../trademark.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-trademark',
   templateUrl: './trademark.component.html',
   imports: [
@@ -27,7 +26,6 @@ import { ITrademark } from '../trademark.model';
     SharedModule,
     SortDirective,
     SortByDirective,
-    DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     InfiniteScrollDirective,
@@ -35,25 +33,25 @@ import { ITrademark } from '../trademark.model';
 })
 export class TrademarkComponent implements OnInit {
   subscription: Subscription | null = null;
-  trademarks?: ITrademark[];
+  trademarks = signal<ITrademark[]>([]);
   isLoading = false;
 
   sortState = sortStateSignal({});
 
   itemsPerPage = ITEMS_PER_PAGE;
-  links: WritableSignal<{ [key: string]: undefined | { [key: string]: string | undefined } }> = signal({});
+  links: WritableSignal<Record<string, undefined | Record<string, string | undefined>>> = signal({});
   hasMorePage = computed(() => !!this.links().next);
   isFirstFetch = computed(() => Object.keys(this.links()).length === 0);
 
-  public router = inject(Router);
-  protected trademarkService = inject(TrademarkService);
-  protected activatedRoute = inject(ActivatedRoute);
-  protected sortService = inject(SortService);
+  public readonly router = inject(Router);
+  protected readonly trademarkService = inject(TrademarkService);
+  protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly sortService = inject(SortService);
   protected parseLinks = inject(ParseLinks);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: ITrademark): number => this.trademarkService.getTrademarkIdentifier(item);
+  trackId = (item: ITrademark): number => this.trademarkService.getTrademarkIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -66,7 +64,7 @@ export class TrademarkComponent implements OnInit {
   }
 
   reset(): void {
-    this.trademarks = [];
+    this.trademarks.set([]);
   }
 
   loadNextPage(): void {
@@ -104,16 +102,16 @@ export class TrademarkComponent implements OnInit {
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.trademarks = dataFromBody;
+    this.trademarks.set(dataFromBody);
   }
 
   protected fillComponentAttributesFromResponseBody(data: ITrademark[] | null): ITrademark[] {
     // If there is previous link, data is a infinite scroll pagination content.
     if (this.links().prev) {
-      const trademarksNew = this.trademarks ?? [];
+      const trademarksNew = this.trademarks();
       if (data) {
         for (const d of data) {
-          if (trademarksNew.map(op => op.id).indexOf(d.id) === -1) {
+          if (trademarksNew.some(op => op.id === d.id)) {
             trademarksNew.push(d);
           }
         }

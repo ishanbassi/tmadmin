@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
+import { FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
@@ -18,7 +18,6 @@ import { PublishedTmDeleteDialogComponent } from '../delete/published-tm-delete-
 import { IPublishedTm } from '../published-tm.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-published-tm',
   templateUrl: './published-tm.component.html',
   imports: [
@@ -27,7 +26,6 @@ import { IPublishedTm } from '../published-tm.model';
     SharedModule,
     SortDirective,
     SortByDirective,
-    DurationPipe,
     FormatMediumDatetimePipe,
     FormatMediumDatePipe,
     InfiniteScrollDirective,
@@ -35,25 +33,25 @@ import { IPublishedTm } from '../published-tm.model';
 })
 export class PublishedTmComponent implements OnInit {
   subscription: Subscription | null = null;
-  publishedTms?: IPublishedTm[];
+  publishedTms = signal<IPublishedTm[]>([]);
   isLoading = false;
 
   sortState = sortStateSignal({});
 
   itemsPerPage = ITEMS_PER_PAGE;
-  links: WritableSignal<{ [key: string]: undefined | { [key: string]: string | undefined } }> = signal({});
+  links: WritableSignal<Record<string, undefined | Record<string, string | undefined>>> = signal({});
   hasMorePage = computed(() => !!this.links().next);
   isFirstFetch = computed(() => Object.keys(this.links()).length === 0);
 
-  public router = inject(Router);
-  protected publishedTmService = inject(PublishedTmService);
-  protected activatedRoute = inject(ActivatedRoute);
-  protected sortService = inject(SortService);
+  public readonly router = inject(Router);
+  protected readonly publishedTmService = inject(PublishedTmService);
+  protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly sortService = inject(SortService);
   protected parseLinks = inject(ParseLinks);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: IPublishedTm): number => this.publishedTmService.getPublishedTmIdentifier(item);
+  trackId = (item: IPublishedTm): number => this.publishedTmService.getPublishedTmIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -66,7 +64,7 @@ export class PublishedTmComponent implements OnInit {
   }
 
   reset(): void {
-    this.publishedTms = [];
+    this.publishedTms.set([]);
   }
 
   loadNextPage(): void {
@@ -104,16 +102,16 @@ export class PublishedTmComponent implements OnInit {
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.publishedTms = dataFromBody;
+    this.publishedTms.set(dataFromBody);
   }
 
   protected fillComponentAttributesFromResponseBody(data: IPublishedTm[] | null): IPublishedTm[] {
     // If there is previous link, data is a infinite scroll pagination content.
     if (this.links().prev) {
-      const publishedTmsNew = this.publishedTms ?? [];
+      const publishedTmsNew = this.publishedTms();
       if (data) {
         for (const d of data) {
-          if (publishedTmsNew.map(op => op.id).indexOf(d.id) === -1) {
+          if (publishedTmsNew.some(op => op.id === d.id)) {
             publishedTmsNew.push(d);
           }
         }

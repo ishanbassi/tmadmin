@@ -8,7 +8,6 @@ import { Account } from 'app/core/auth/account.model';
 const initialAccount: Account = {} as Account;
 
 @Component({
-  standalone: true,
   selector: 'jhi-settings',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],
   templateUrl: './settings.component.html',
@@ -37,7 +36,7 @@ export default class SettingsComponent implements OnInit {
     login: new FormControl(initialAccount.login, { nonNullable: true }),
   });
 
-  private accountService = inject(AccountService);
+  private readonly accountService = inject(AccountService);
 
   ngOnInit(): void {
     this.accountService.identity().subscribe(account => {

@@ -14,7 +14,6 @@ import { PhoneticsService } from '../service/phonetics.service';
 import { PhoneticsFormGroup, PhoneticsFormService } from './phonetics-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-phonetics-update',
   templateUrl: './phonetics-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

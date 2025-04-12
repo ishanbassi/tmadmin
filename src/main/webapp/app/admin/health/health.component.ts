@@ -8,16 +8,15 @@ import { Health, HealthDetails, HealthStatus } from './health.model';
 import HealthModalComponent from './modal/health-modal.component';
 
 @Component({
-  standalone: true,
   selector: 'jhi-health',
   templateUrl: './health.component.html',
-  imports: [SharedModule, HealthModalComponent],
+  imports: [SharedModule],
 })
 export default class HealthComponent implements OnInit {
   health?: Health;
 
-  private modalService = inject(NgbModal);
-  private healthService = inject(HealthService);
+  private readonly modalService = inject(NgbModal);
+  private readonly healthService = inject(HealthService);
 
   ngOnInit(): void {
     this.refresh();

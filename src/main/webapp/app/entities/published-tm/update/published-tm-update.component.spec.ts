@@ -47,12 +47,12 @@ describe('PublishedTm Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call TmAgent query and add missing value', () => {
-      const publishedTm: IPublishedTm = { id: 456 };
-      const tmAgent: ITmAgent = { id: 23051 };
+    it('should call TmAgent query and add missing value', () => {
+      const publishedTm: IPublishedTm = { id: 3430 };
+      const tmAgent: ITmAgent = { id: 9499 };
       publishedTm.tmAgent = tmAgent;
 
-      const tmAgentCollection: ITmAgent[] = [{ id: 18240 }];
+      const tmAgentCollection: ITmAgent[] = [{ id: 9499 }];
       jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
       const additionalTmAgents = [tmAgent];
       const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
@@ -69,24 +69,24 @@ describe('PublishedTm Management Update Component', () => {
       expect(comp.tmAgentsSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
-      const publishedTm: IPublishedTm = { id: 456 };
-      const tmAgent: ITmAgent = { id: 31982 };
+    it('should update editForm', () => {
+      const publishedTm: IPublishedTm = { id: 3430 };
+      const tmAgent: ITmAgent = { id: 9499 };
       publishedTm.tmAgent = tmAgent;
 
       activatedRoute.data = of({ publishedTm });
       comp.ngOnInit();
 
-      expect(comp.tmAgentsSharedCollection).toContain(tmAgent);
+      expect(comp.tmAgentsSharedCollection).toContainEqual(tmAgent);
       expect(comp.publishedTm).toEqual(publishedTm);
     });
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPublishedTm>>();
-      const publishedTm = { id: 123 };
+      const publishedTm = { id: 23395 };
       jest.spyOn(publishedTmFormService, 'getPublishedTm').mockReturnValue(publishedTm);
       jest.spyOn(publishedTmService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -106,10 +106,10 @@ describe('PublishedTm Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPublishedTm>>();
-      const publishedTm = { id: 123 };
+      const publishedTm = { id: 23395 };
       jest.spyOn(publishedTmFormService, 'getPublishedTm').mockReturnValue({ id: null });
       jest.spyOn(publishedTmService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -129,10 +129,10 @@ describe('PublishedTm Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPublishedTm>>();
-      const publishedTm = { id: 123 };
+      const publishedTm = { id: 23395 };
       jest.spyOn(publishedTmService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ publishedTm });
@@ -152,9 +152,9 @@ describe('PublishedTm Management Update Component', () => {
 
   describe('Compare relationships', () => {
     describe('compareTmAgent', () => {
-      it('Should forward to tmAgentService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should forward to tmAgentService', () => {
+        const entity = { id: 9499 };
+        const entity2 = { id: 30950 };
         jest.spyOn(tmAgentService, 'compareTmAgent');
         comp.compareTmAgent(entity, entity2);
         expect(tmAgentService.compareTmAgent).toHaveBeenCalledWith(entity, entity2);

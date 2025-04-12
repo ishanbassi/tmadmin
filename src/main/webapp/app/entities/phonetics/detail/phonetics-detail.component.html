@@ -1,41 +1,41 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (phonetics()) {
+    @if (phonetics(); as phoneticsRef) {
       <div>
         <h2 data-cy="phoneticsDetailsHeading"><span>Phonetics</span></h2>
 
         <hr />
 
-        <jhi-alert-error></jhi-alert-error>
+        <jhi-alert-error />
 
-        <jhi-alert></jhi-alert>
+        <jhi-alert />
 
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ phonetics()!.id }}</span>
+            <span>{{ phoneticsRef.id }}</span>
           </dd>
           <dt><span>Sanitized Tm</span></dt>
           <dd>
-            <span>{{ phonetics()!.sanitizedTm }}</span>
+            <span>{{ phoneticsRef.sanitizedTm }}</span>
           </dd>
           <dt><span>Phonetic Pk</span></dt>
           <dd>
-            <span>{{ phonetics()!.phoneticPk }}</span>
+            <span>{{ phoneticsRef.phoneticPk }}</span>
           </dd>
           <dt><span>Phonetic Sk</span></dt>
           <dd>
-            <span>{{ phonetics()!.phoneticSk }}</span>
+            <span>{{ phoneticsRef.phoneticSk }}</span>
           </dd>
           <dt><span>Complete</span></dt>
           <dd>
-            <span>{{ phonetics()!.complete }}</span>
+            <span>{{ phoneticsRef.complete }}</span>
           </dd>
           <dt><span>Trademark</span></dt>
           <dd>
             @if (phonetics()!.trademark) {
               <div>
-                <a [routerLink]="['/trademark', phonetics()!.trademark?.id, 'view']">{{ phonetics()!.trademark?.id }}</a>
+                <a [routerLink]="['/trademark', phonetics()!.trademark?.id, 'view']">{{ phoneticsRef.trademark?.id }}</a>
               </div>
             }
           </dd>
@@ -45,7 +45,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/phonetics', phonetics()!.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/phonetics', phoneticsRef.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>

@@ -16,10 +16,9 @@ const authorityResolve = (route: ActivatedRouteSnapshot): Observable<null | IAut
         mergeMap((authority: HttpResponse<IAuthority>) => {
           if (authority.body) {
             return of(authority.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

@@ -78,12 +78,8 @@ class UserProfileResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static UserProfile createEntity(EntityManager em) {
-        UserProfile userProfile = new UserProfile()
-            .createdDate(DEFAULT_CREATED_DATE)
-            .modifiedDate(DEFAULT_MODIFIED_DATE)
-            .deleted(DEFAULT_DELETED);
-        return userProfile;
+    public static UserProfile createEntity() {
+        return new UserProfile().createdDate(DEFAULT_CREATED_DATE).modifiedDate(DEFAULT_MODIFIED_DATE).deleted(DEFAULT_DELETED);
     }
 
     /**
@@ -92,21 +88,17 @@ class UserProfileResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static UserProfile createUpdatedEntity(EntityManager em) {
-        UserProfile userProfile = new UserProfile()
-            .createdDate(UPDATED_CREATED_DATE)
-            .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
-        return userProfile;
+    public static UserProfile createUpdatedEntity() {
+        return new UserProfile().createdDate(UPDATED_CREATED_DATE).modifiedDate(UPDATED_MODIFIED_DATE).deleted(UPDATED_DELETED);
     }
 
     @BeforeEach
-    public void initTest() {
-        userProfile = createEntity(em);
+    void initTest() {
+        userProfile = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedUserProfile != null) {
             userProfileRepository.delete(insertedUserProfile);
             insertedUserProfile = null;
@@ -166,7 +158,7 @@ class UserProfileResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(userProfile.getId().intValue())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())));
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)));
     }
 
     @Test
@@ -183,7 +175,7 @@ class UserProfileResourceIT {
             .andExpect(jsonPath("$.id").value(userProfile.getId().intValue()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()));
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
     }
 
     @Test
@@ -285,7 +277,7 @@ class UserProfileResourceIT {
         UserProfile partialUpdatedUserProfile = new UserProfile();
         partialUpdatedUserProfile.setId(userProfile.getId());
 
-        partialUpdatedUserProfile.createdDate(UPDATED_CREATED_DATE);
+        partialUpdatedUserProfile.createdDate(UPDATED_CREATED_DATE).deleted(UPDATED_DELETED);
 
         restUserProfileMockMvc
             .perform(

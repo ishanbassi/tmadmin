@@ -16,10 +16,9 @@ const employeeResolve = (route: ActivatedRouteSnapshot): Observable<null | IEmpl
         mergeMap((employee: HttpResponse<IEmployee>) => {
           if (employee.body) {
             return of(employee.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

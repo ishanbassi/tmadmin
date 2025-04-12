@@ -55,9 +55,8 @@ class AuthorityResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Authority createEntity(EntityManager em) {
-        Authority authority = new Authority().name(UUID.randomUUID().toString());
-        return authority;
+    public static Authority createEntity() {
+        return new Authority().name(UUID.randomUUID().toString());
     }
 
     /**
@@ -66,18 +65,17 @@ class AuthorityResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Authority createUpdatedEntity(EntityManager em) {
-        Authority authority = new Authority().name(UUID.randomUUID().toString());
-        return authority;
+    public static Authority createUpdatedEntity() {
+        return new Authority().name(UUID.randomUUID().toString());
     }
 
     @BeforeEach
-    public void initTest() {
-        authority = createEntity(em);
+    void initTest() {
+        authority = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedAuthority != null) {
             authorityRepository.delete(insertedAuthority);
             insertedAuthority = null;

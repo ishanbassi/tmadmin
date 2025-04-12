@@ -24,7 +24,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/phonetics")
 public class PhoneticsResource {
 
-    private static final Logger log = LoggerFactory.getLogger(PhoneticsResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PhoneticsResource.class);
 
     private static final String ENTITY_NAME = "phonetics";
 
@@ -49,7 +49,7 @@ public class PhoneticsResource {
      */
     @PostMapping("")
     public ResponseEntity<Phonetics> createPhonetics(@RequestBody Phonetics phonetics) throws URISyntaxException {
-        log.debug("REST request to save Phonetics : {}", phonetics);
+        LOG.debug("REST request to save Phonetics : {}", phonetics);
         if (phonetics.getId() != null) {
             throw new BadRequestAlertException("A new phonetics cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -74,7 +74,7 @@ public class PhoneticsResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Phonetics phonetics
     ) throws URISyntaxException {
-        log.debug("REST request to update Phonetics : {}, {}", id, phonetics);
+        LOG.debug("REST request to update Phonetics : {}, {}", id, phonetics);
         if (phonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -108,7 +108,7 @@ public class PhoneticsResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Phonetics phonetics
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Phonetics partially : {}, {}", id, phonetics);
+        LOG.debug("REST request to partial update Phonetics partially : {}, {}", id, phonetics);
         if (phonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -135,7 +135,7 @@ public class PhoneticsResource {
      */
     @GetMapping("")
     public List<Phonetics> getAllPhonetics() {
-        log.debug("REST request to get all Phonetics");
+        LOG.debug("REST request to get all Phonetics");
         return phoneticsService.findAll();
     }
 
@@ -147,7 +147,7 @@ public class PhoneticsResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Phonetics> getPhonetics(@PathVariable("id") Long id) {
-        log.debug("REST request to get Phonetics : {}", id);
+        LOG.debug("REST request to get Phonetics : {}", id);
         Optional<Phonetics> phonetics = phoneticsService.findOne(id);
         return ResponseUtil.wrapOrNotFound(phonetics);
     }
@@ -160,7 +160,7 @@ public class PhoneticsResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePhonetics(@PathVariable("id") Long id) {
-        log.debug("REST request to delete Phonetics : {}", id);
+        LOG.debug("REST request to delete Phonetics : {}", id);
         phoneticsService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

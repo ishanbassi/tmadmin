@@ -24,7 +24,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/user-profiles")
 public class UserProfileResource {
 
-    private static final Logger log = LoggerFactory.getLogger(UserProfileResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserProfileResource.class);
 
     private static final String ENTITY_NAME = "userProfile";
 
@@ -49,7 +49,7 @@ public class UserProfileResource {
      */
     @PostMapping("")
     public ResponseEntity<UserProfile> createUserProfile(@RequestBody UserProfile userProfile) throws URISyntaxException {
-        log.debug("REST request to save UserProfile : {}", userProfile);
+        LOG.debug("REST request to save UserProfile : {}", userProfile);
         if (userProfile.getId() != null) {
             throw new BadRequestAlertException("A new userProfile cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -74,7 +74,7 @@ public class UserProfileResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody UserProfile userProfile
     ) throws URISyntaxException {
-        log.debug("REST request to update UserProfile : {}, {}", id, userProfile);
+        LOG.debug("REST request to update UserProfile : {}, {}", id, userProfile);
         if (userProfile.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -108,7 +108,7 @@ public class UserProfileResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody UserProfile userProfile
     ) throws URISyntaxException {
-        log.debug("REST request to partial update UserProfile partially : {}, {}", id, userProfile);
+        LOG.debug("REST request to partial update UserProfile partially : {}, {}", id, userProfile);
         if (userProfile.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -135,7 +135,7 @@ public class UserProfileResource {
      */
     @GetMapping("")
     public List<UserProfile> getAllUserProfiles() {
-        log.debug("REST request to get all UserProfiles");
+        LOG.debug("REST request to get all UserProfiles");
         return userProfileService.findAll();
     }
 
@@ -147,7 +147,7 @@ public class UserProfileResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<UserProfile> getUserProfile(@PathVariable("id") Long id) {
-        log.debug("REST request to get UserProfile : {}", id);
+        LOG.debug("REST request to get UserProfile : {}", id);
         Optional<UserProfile> userProfile = userProfileService.findOne(id);
         return ResponseUtil.wrapOrNotFound(userProfile);
     }
@@ -160,7 +160,7 @@ public class UserProfileResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUserProfile(@PathVariable("id") Long id) {
-        log.debug("REST request to delete UserProfile : {}", id);
+        LOG.debug("REST request to delete UserProfile : {}", id);
         userProfileService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

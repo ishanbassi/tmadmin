@@ -1,67 +1,67 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (lead()) {
+    @if (lead(); as leadRef) {
       <div>
         <h2 data-cy="leadDetailsHeading"><span>Lead</span></h2>
 
         <hr />
 
-        <jhi-alert-error></jhi-alert-error>
+        <jhi-alert-error />
 
-        <jhi-alert></jhi-alert>
+        <jhi-alert />
 
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ lead()!.id }}</span>
+            <span>{{ leadRef.id }}</span>
           </dd>
           <dt><span>Full Name</span></dt>
           <dd>
-            <span>{{ lead()!.fullName }}</span>
+            <span>{{ leadRef.fullName }}</span>
           </dd>
           <dt><span>Phone Number</span></dt>
           <dd>
-            <span>{{ lead()!.phoneNumber }}</span>
+            <span>{{ leadRef.phoneNumber }}</span>
           </dd>
           <dt><span>Email</span></dt>
           <dd>
-            <span>{{ lead()!.email }}</span>
+            <span>{{ leadRef.email }}</span>
           </dd>
           <dt><span>City</span></dt>
           <dd>
-            <span>{{ lead()!.city }}</span>
+            <span>{{ leadRef.city }}</span>
           </dd>
           <dt><span>Brand Name</span></dt>
           <dd>
-            <span>{{ lead()!.brandName }}</span>
+            <span>{{ leadRef.brandName }}</span>
           </dd>
           <dt><span>Selected Package</span></dt>
           <dd>
-            <span>{{ lead()!.selectedPackage }}</span>
+            <span>{{ leadRef.selectedPackage }}</span>
           </dd>
           <dt><span>Tm Class</span></dt>
           <dd>
-            <span>{{ lead()!.tmClass }}</span>
+            <span>{{ leadRef.tmClass }}</span>
           </dd>
           <dt><span>Comments</span></dt>
           <dd>
-            <span>{{ lead()!.comments }}</span>
+            <span>{{ leadRef.comments }}</span>
           </dd>
           <dt><span>Contact Method</span></dt>
           <dd>
-            <span>{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[lead()!.contactMethod ?? 'null'] }}</span>
+            <span>{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[leadRef.contactMethod ?? 'null'] }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>
-            <span>{{ lead()!.createdDate | formatMediumDatetime }}</span>
+            <span>{{ leadRef.createdDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Modified Date</span></dt>
           <dd>
-            <span>{{ lead()!.modifiedDate | formatMediumDatetime }}</span>
+            <span>{{ leadRef.modifiedDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Deleted</span></dt>
           <dd>
-            <span>{{ lead()!.deleted }}</span>
+            <span>{{ leadRef.deleted }}</span>
           </dd>
           <dt><span>Status</span></dt>
           <dd>
@@ -73,18 +73,18 @@
                 DOCUMENTS_PENDING: 'DOCUMENTS_PENDING',
                 LOST: 'LOST',
                 FOLLOW_UP: 'FOLLOW_UP',
-              }[lead()!.status ?? 'null']
+              }[leadRef.status ?? 'null']
             }}</span>
           </dd>
           <dt><span>Lead Source</span></dt>
           <dd>
-            <span>{{ lead()!.leadSource }}</span>
+            <span>{{ leadRef.leadSource }}</span>
           </dd>
           <dt><span>Assigned To</span></dt>
           <dd>
             @if (lead()!.assignedTo) {
               <div>
-                <a [routerLink]="['/employee', lead()!.assignedTo?.id, 'view']">{{ lead()!.assignedTo?.id }}</a>
+                <a [routerLink]="['/employee', lead()!.assignedTo?.id, 'view']">{{ leadRef.assignedTo?.id }}</a>
               </div>
             }
           </dd>
@@ -94,7 +94,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/lead', lead()!.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/lead', leadRef.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>

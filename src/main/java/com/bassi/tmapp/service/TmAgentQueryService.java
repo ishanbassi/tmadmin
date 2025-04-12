@@ -23,7 +23,7 @@ import tech.jhipster.service.QueryService;
 @Transactional(readOnly = true)
 public class TmAgentQueryService extends QueryService<TmAgent> {
 
-    private static final Logger log = LoggerFactory.getLogger(TmAgentQueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TmAgentQueryService.class);
 
     private final TmAgentRepository tmAgentRepository;
 
@@ -39,7 +39,7 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
      */
     @Transactional(readOnly = true)
     public Page<TmAgent> findByCriteria(TmAgentCriteria criteria, Pageable page) {
-        log.debug("find by criteria : {}, page: {}", criteria, page);
+        LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<TmAgent> specification = createSpecification(criteria);
         return tmAgentRepository.findAll(specification, page);
     }
@@ -51,7 +51,7 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(TmAgentCriteria criteria) {
-        log.debug("count by criteria : {}", criteria);
+        LOG.debug("count by criteria : {}", criteria);
         final Specification<TmAgent> specification = createSpecification(criteria);
         return tmAgentRepository.count(specification);
     }
@@ -65,36 +65,18 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
         Specification<TmAgent> specification = Specification.where(null);
         if (criteria != null) {
             // This has to be called first, because the distinct method returns null
-            if (criteria.getDistinct() != null) {
-                specification = specification.and(distinct(criteria.getDistinct()));
-            }
-            if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), TmAgent_.id));
-            }
-            if (criteria.getFullName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getFullName(), TmAgent_.fullName));
-            }
-            if (criteria.getAddress() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAddress(), TmAgent_.address));
-            }
-            if (criteria.getCreatedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), TmAgent_.createdDate));
-            }
-            if (criteria.getModifiedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), TmAgent_.modifiedDate));
-            }
-            if (criteria.getDeleted() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeleted(), TmAgent_.deleted));
-            }
-            if (criteria.getCompanyName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getCompanyName(), TmAgent_.companyName));
-            }
-            if (criteria.getAgentCode() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAgentCode(), TmAgent_.agentCode));
-            }
-            if (criteria.getEmail() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getEmail(), TmAgent_.email));
-            }
+            specification = Specification.allOf(
+                Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : null,
+                buildRangeSpecification(criteria.getId(), TmAgent_.id),
+                buildStringSpecification(criteria.getFullName(), TmAgent_.fullName),
+                buildStringSpecification(criteria.getAddress(), TmAgent_.address),
+                buildRangeSpecification(criteria.getCreatedDate(), TmAgent_.createdDate),
+                buildRangeSpecification(criteria.getModifiedDate(), TmAgent_.modifiedDate),
+                buildSpecification(criteria.getDeleted(), TmAgent_.deleted),
+                buildStringSpecification(criteria.getCompanyName(), TmAgent_.companyName),
+                buildStringSpecification(criteria.getAgentCode(), TmAgent_.agentCode),
+                buildStringSpecification(criteria.getEmail(), TmAgent_.email)
+            );
         }
         return specification;
     }

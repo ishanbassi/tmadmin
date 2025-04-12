@@ -16,10 +16,9 @@ const publishedTmPhoneticsResolve = (route: ActivatedRouteSnapshot): Observable<
         mergeMap((publishedTmPhonetics: HttpResponse<IPublishedTmPhonetics>) => {
           if (publishedTmPhonetics.body) {
             return of(publishedTmPhonetics.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

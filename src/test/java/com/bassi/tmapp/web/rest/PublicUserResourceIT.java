@@ -9,7 +9,6 @@ import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.repository.UserRepository;
 import com.bassi.tmapp.security.AuthoritiesConstants;
 import com.bassi.tmapp.service.UserService;
-import jakarta.persistence.EntityManager;
 import java.util.Objects;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
@@ -32,16 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 @IntegrationTest
 class PublicUserResourceIT {
 
-    private static final String DEFAULT_LOGIN = "johndoe";
-
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private EntityManager em;
 
     @Autowired
     private CacheManager cacheManager;
@@ -53,17 +47,17 @@ class PublicUserResourceIT {
     private Long numberOfUsers;
 
     @BeforeEach
-    public void countUsers() {
+    void countUsers() {
         numberOfUsers = userRepository.count();
     }
 
     @BeforeEach
-    public void initTest() {
-        user = UserResourceIT.initTestUser(em);
+    void initTest() {
+        user = UserResourceIT.initTestUser();
     }
 
     @AfterEach
-    public void cleanupAndCheck() {
+    void cleanupAndCheck() {
         cacheManager
             .getCacheNames()
             .stream()

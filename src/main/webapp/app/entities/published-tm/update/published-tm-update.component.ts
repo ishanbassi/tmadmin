@@ -16,7 +16,6 @@ import { IPublishedTm } from '../published-tm.model';
 import { PublishedTmFormGroup, PublishedTmFormService } from './published-tm-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-published-tm-update',
   templateUrl: './published-tm-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

@@ -7,7 +7,6 @@ import SharedModule from 'app/shared/shared.module';
 import { PasswordResetFinishService } from './password-reset-finish.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-password-reset-finish',
   imports: [SharedModule, RouterModule, FormsModule, ReactiveFormsModule, PasswordStrengthBarComponent],
   templateUrl: './password-reset-finish.component.html',
@@ -32,8 +31,8 @@ export default class PasswordResetFinishComponent implements OnInit, AfterViewIn
     }),
   });
 
-  private passwordResetFinishService = inject(PasswordResetFinishService);
-  private route = inject(ActivatedRoute);
+  private readonly passwordResetFinishService = inject(PasswordResetFinishService);
+  private readonly route = inject(ActivatedRoute);
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {

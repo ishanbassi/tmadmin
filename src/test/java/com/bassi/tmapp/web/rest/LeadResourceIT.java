@@ -113,8 +113,8 @@ class LeadResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Lead createEntity(EntityManager em) {
-        Lead lead = new Lead()
+    public static Lead createEntity() {
+        return new Lead()
             .fullName(DEFAULT_FULL_NAME)
             .phoneNumber(DEFAULT_PHONE_NUMBER)
             .email(DEFAULT_EMAIL)
@@ -129,7 +129,6 @@ class LeadResourceIT {
             .deleted(DEFAULT_DELETED)
             .status(DEFAULT_STATUS)
             .leadSource(DEFAULT_LEAD_SOURCE);
-        return lead;
     }
 
     /**
@@ -138,8 +137,8 @@ class LeadResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Lead createUpdatedEntity(EntityManager em) {
-        Lead lead = new Lead()
+    public static Lead createUpdatedEntity() {
+        return new Lead()
             .fullName(UPDATED_FULL_NAME)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
@@ -154,16 +153,15 @@ class LeadResourceIT {
             .deleted(UPDATED_DELETED)
             .status(UPDATED_STATUS)
             .leadSource(UPDATED_LEAD_SOURCE);
-        return lead;
     }
 
     @BeforeEach
-    public void initTest() {
-        lead = createEntity(em);
+    void initTest() {
+        lead = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedLead != null) {
             leadRepository.delete(insertedLead);
             insertedLead = null;
@@ -232,7 +230,7 @@ class LeadResourceIT {
             .andExpect(jsonPath("$.[*].contactMethod").value(hasItem(DEFAULT_CONTACT_METHOD.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].leadSource").value(hasItem(DEFAULT_LEAD_SOURCE)));
     }
@@ -260,7 +258,7 @@ class LeadResourceIT {
             .andExpect(jsonPath("$.contactMethod").value(DEFAULT_CONTACT_METHOD.toString()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.leadSource").value(DEFAULT_LEAD_SOURCE));
     }
@@ -1016,7 +1014,7 @@ class LeadResourceIT {
         Employee assignedTo;
         if (TestUtil.findAll(em, Employee.class).isEmpty()) {
             leadRepository.saveAndFlush(lead);
-            assignedTo = EmployeeResourceIT.createEntity(em);
+            assignedTo = EmployeeResourceIT.createEntity();
         } else {
             assignedTo = TestUtil.findAll(em, Employee.class).get(0);
         }
@@ -1057,7 +1055,7 @@ class LeadResourceIT {
             .andExpect(jsonPath("$.[*].contactMethod").value(hasItem(DEFAULT_CONTACT_METHOD.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].leadSource").value(hasItem(DEFAULT_LEAD_SOURCE)));
 
@@ -1197,7 +1195,14 @@ class LeadResourceIT {
         Lead partialUpdatedLead = new Lead();
         partialUpdatedLead.setId(lead.getId());
 
-        partialUpdatedLead.fullName(UPDATED_FULL_NAME).selectedPackage(UPDATED_SELECTED_PACKAGE);
+        partialUpdatedLead
+            .fullName(UPDATED_FULL_NAME)
+            .comments(UPDATED_COMMENTS)
+            .contactMethod(UPDATED_CONTACT_METHOD)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .status(UPDATED_STATUS)
+            .leadSource(UPDATED_LEAD_SOURCE);
 
         restLeadMockMvc
             .perform(

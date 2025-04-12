@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class EmployeeService {
 
-    private static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmployeeService.class);
 
     private final EmployeeRepository employeeRepository;
 
@@ -30,7 +30,7 @@ public class EmployeeService {
      * @return the persisted entity.
      */
     public Employee save(Employee employee) {
-        log.debug("Request to save Employee : {}", employee);
+        LOG.debug("Request to save Employee : {}", employee);
         return employeeRepository.save(employee);
     }
 
@@ -41,7 +41,7 @@ public class EmployeeService {
      * @return the persisted entity.
      */
     public Employee update(Employee employee) {
-        log.debug("Request to update Employee : {}", employee);
+        LOG.debug("Request to update Employee : {}", employee);
         return employeeRepository.save(employee);
     }
 
@@ -52,7 +52,7 @@ public class EmployeeService {
      * @return the persisted entity.
      */
     public Optional<Employee> partialUpdate(Employee employee) {
-        log.debug("Request to partially update Employee : {}", employee);
+        LOG.debug("Request to partially update Employee : {}", employee);
 
         return employeeRepository
             .findById(employee.getId())
@@ -95,7 +95,7 @@ public class EmployeeService {
      */
     @Transactional(readOnly = true)
     public Optional<Employee> findOne(Long id) {
-        log.debug("Request to get Employee : {}", id);
+        LOG.debug("Request to get Employee : {}", id);
         return employeeRepository.findById(id);
     }
 
@@ -105,7 +105,7 @@ public class EmployeeService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Employee : {}", id);
+        LOG.debug("Request to delete Employee : {}", id);
         employeeRepository.deleteById(id);
     }
 }

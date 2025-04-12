@@ -16,10 +16,9 @@ const trademarkResolve = (route: ActivatedRouteSnapshot): Observable<null | ITra
         mergeMap((trademark: HttpResponse<ITrademark>) => {
           if (trademark.body) {
             return of(trademark.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

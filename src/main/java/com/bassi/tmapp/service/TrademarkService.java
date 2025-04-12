@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class TrademarkService {
 
-    private static final Logger log = LoggerFactory.getLogger(TrademarkService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TrademarkService.class);
 
     private final TrademarkRepository trademarkRepository;
 
@@ -30,7 +30,7 @@ public class TrademarkService {
      * @return the persisted entity.
      */
     public Trademark save(Trademark trademark) {
-        log.debug("Request to save Trademark : {}", trademark);
+        LOG.debug("Request to save Trademark : {}", trademark);
         return trademarkRepository.save(trademark);
     }
 
@@ -41,7 +41,7 @@ public class TrademarkService {
      * @return the persisted entity.
      */
     public Trademark update(Trademark trademark) {
-        log.debug("Request to update Trademark : {}", trademark);
+        LOG.debug("Request to update Trademark : {}", trademark);
         return trademarkRepository.save(trademark);
     }
 
@@ -52,7 +52,7 @@ public class TrademarkService {
      * @return the persisted entity.
      */
     public Optional<Trademark> partialUpdate(Trademark trademark) {
-        log.debug("Request to partially update Trademark : {}", trademark);
+        LOG.debug("Request to partially update Trademark : {}", trademark);
 
         return trademarkRepository
             .findById(trademark.getId())
@@ -134,7 +134,7 @@ public class TrademarkService {
      */
     @Transactional(readOnly = true)
     public Optional<Trademark> findOne(Long id) {
-        log.debug("Request to get Trademark : {}", id);
+        LOG.debug("Request to get Trademark : {}", id);
         return trademarkRepository.findById(id);
     }
 
@@ -144,7 +144,7 @@ public class TrademarkService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Trademark : {}", id);
+        LOG.debug("Request to delete Trademark : {}", id);
         trademarkRepository.deleteById(id);
     }
 }

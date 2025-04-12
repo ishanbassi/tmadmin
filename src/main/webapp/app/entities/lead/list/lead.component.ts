@@ -1,11 +1,11 @@
-import { Component, NgZone, OnInit, inject } from '@angular/core';
+import { Component, NgZone, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, Data, ParamMap, Router, RouterModule } from '@angular/router';
 import { Observable, Subscription, combineLatest, filter, tap } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
+import { FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 import { DEFAULT_SORT_DATA, ITEM_DELETED_EVENT, SORT } from 'app/config/navigation.constants';
 import { ILead } from '../lead.model';
@@ -13,35 +13,25 @@ import { EntityArrayResponseType, LeadService } from '../service/lead.service';
 import { LeadDeleteDialogComponent } from '../delete/lead-delete-dialog.component';
 
 @Component({
-  standalone: true,
   selector: 'jhi-lead',
   templateUrl: './lead.component.html',
-  imports: [
-    RouterModule,
-    FormsModule,
-    SharedModule,
-    SortDirective,
-    SortByDirective,
-    DurationPipe,
-    FormatMediumDatetimePipe,
-    FormatMediumDatePipe,
-  ],
+  imports: [RouterModule, FormsModule, SharedModule, SortDirective, SortByDirective, FormatMediumDatetimePipe],
 })
 export class LeadComponent implements OnInit {
   subscription: Subscription | null = null;
-  leads?: ILead[];
+  leads = signal<ILead[]>([]);
   isLoading = false;
 
   sortState = sortStateSignal({});
 
-  public router = inject(Router);
-  protected leadService = inject(LeadService);
-  protected activatedRoute = inject(ActivatedRoute);
-  protected sortService = inject(SortService);
+  public readonly router = inject(Router);
+  protected readonly leadService = inject(LeadService);
+  protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly sortService = inject(SortService);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: ILead): number => this.leadService.getLeadIdentifier(item);
+  trackId = (item: ILead): number => this.leadService.getLeadIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -82,7 +72,7 @@ export class LeadComponent implements OnInit {
 
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.leads = this.refineData(dataFromBody);
+    this.leads.set(this.refineData(dataFromBody));
   }
 
   protected refineData(data: ILead[]): ILead[] {

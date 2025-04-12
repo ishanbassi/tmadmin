@@ -16,10 +16,9 @@ const tmAgentResolve = (route: ActivatedRouteSnapshot): Observable<null | ITmAge
         mergeMap((tmAgent: HttpResponse<ITmAgent>) => {
           if (tmAgent.body) {
             return of(tmAgent.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

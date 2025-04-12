@@ -1,13 +1,12 @@
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import SharedModule from 'app/shared/shared.module';
-import { FormsModule } from '@angular/forms';
 import { SortByDirective, SortDirective, SortService, sortStateSignal } from 'app/shared/sort';
 import { ConfigurationService } from './configuration.service';
 import { Bean, PropertySource } from './configuration.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-configuration',
   templateUrl: './configuration.component.html',
   imports: [SharedModule, FormsModule, SortDirective, SortByDirective],
@@ -31,8 +30,8 @@ export default class ConfigurationComponent implements OnInit {
     return data;
   });
 
-  private sortService = inject(SortService);
-  private configurationService = inject(ConfigurationService);
+  private readonly sortService = inject(SortService);
+  private readonly configurationService = inject(ConfigurationService);
 
   ngOnInit(): void {
     this.configurationService.getBeans().subscribe(beans => {

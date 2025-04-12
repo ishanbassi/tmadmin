@@ -15,10 +15,9 @@ import { User } from '../user-management.model';
 import UserManagementDeleteDialogComponent from '../delete/user-management-delete-dialog.component';
 
 @Component({
-  standalone: true,
   selector: 'jhi-user-mgmt',
   templateUrl: './user-management.component.html',
-  imports: [RouterModule, SharedModule, UserManagementDeleteDialogComponent, SortDirective, SortByDirective, ItemCountComponent],
+  imports: [RouterModule, SharedModule, SortDirective, SortByDirective, ItemCountComponent],
 })
 export default class UserManagementComponent implements OnInit {
   currentAccount = inject(AccountService).trackCurrentAccount();
@@ -29,11 +28,11 @@ export default class UserManagementComponent implements OnInit {
   page!: number;
   sortState = sortStateSignal({});
 
-  private userService = inject(UserManagementService);
-  private activatedRoute = inject(ActivatedRoute);
-  private router = inject(Router);
-  private sortService = inject(SortService);
-  private modalService = inject(NgbModal);
+  private readonly userService = inject(UserManagementService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly sortService = inject(SortService);
+  private readonly modalService = inject(NgbModal);
 
   ngOnInit(): void {
     this.handleNavigation();
@@ -43,7 +42,7 @@ export default class UserManagementComponent implements OnInit {
     this.userService.update({ ...user, activated: isActivated }).subscribe(() => this.loadAll());
   }
 
-  trackIdentity(_index: number, item: User): number {
+  trackIdentity(item: User): number {
     return item.id!;
   }
 

@@ -160,7 +160,7 @@ describe('Trademark Service', () => {
     });
 
     describe('compareTrademark', () => {
-      it('Should return true if both entities are null', () => {
+      it('should return true if both entities are null', () => {
         const entity1 = null;
         const entity2 = null;
 
@@ -169,8 +169,8 @@ describe('Trademark Service', () => {
         expect(compareResult).toEqual(true);
       });
 
-      it('Should return false if one entity is null', () => {
-        const entity1 = { id: 123 };
+      it('should return false if one entity is null', () => {
+        const entity1 = { id: 4352 };
         const entity2 = null;
 
         const compareResult1 = service.compareTrademark(entity1, entity2);
@@ -180,9 +180,9 @@ describe('Trademark Service', () => {
         expect(compareResult2).toEqual(false);
       });
 
-      it('Should return false if primaryKey differs', () => {
-        const entity1 = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should return false if primaryKey differs', () => {
+        const entity1 = { id: 4352 };
+        const entity2 = { id: 3769 };
 
         const compareResult1 = service.compareTrademark(entity1, entity2);
         const compareResult2 = service.compareTrademark(entity2, entity1);
@@ -191,9 +191,9 @@ describe('Trademark Service', () => {
         expect(compareResult2).toEqual(false);
       });
 
-      it('Should return false if primaryKey matches', () => {
-        const entity1 = { id: 123 };
-        const entity2 = { id: 123 };
+      it('should return false if primaryKey matches', () => {
+        const entity1 = { id: 4352 };
+        const entity2 = { id: 4352 };
 
         const compareResult1 = service.compareTrademark(entity1, entity2);
         const compareResult2 = service.compareTrademark(entity2, entity1);

@@ -20,21 +20,19 @@
     </div>
   </h2>
 
-  <jhi-alert-error></jhi-alert-error>
+  <jhi-alert-error />
 
-  <jhi-alert></jhi-alert>
+  <jhi-alert />
 
-  @if (employees?.length === 0) {
+  @if (employees().length === 0) {
     <div class="alert alert-warning" id="no-result">
       <span>No Employees found</span>
     </div>
-  }
-
-  @if (employees && employees.length > 0) {
+  } @else {
     <div class="table-responsive table-entities" id="entities">
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
-          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
             <th scope="col" jhiSortBy="id">
               <div class="d-flex">
                 <span>ID</span>
@@ -102,7 +100,7 @@
           </tr>
         </thead>
         <tbody>
-          @for (employee of employees; track trackId) {
+          @for (employee of employees(); track trackId(employee)) {
             <tr data-cy="entityTable">
               <td>
                 <a [routerLink]="['/employee', employee.id, 'view']">{{ employee.id }}</a>

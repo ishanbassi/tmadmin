@@ -8,7 +8,6 @@ import { AccountService } from 'app/core/auth/account.service';
 import { Account } from 'app/core/auth/account.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-home',
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -19,8 +18,8 @@ export default class HomeComponent implements OnInit, OnDestroy {
 
   private readonly destroy$ = new Subject<void>();
 
-  private accountService = inject(AccountService);
-  private router = inject(Router);
+  private readonly accountService = inject(AccountService);
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.accountService

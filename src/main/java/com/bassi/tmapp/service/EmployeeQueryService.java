@@ -22,7 +22,7 @@ import tech.jhipster.service.QueryService;
 @Transactional(readOnly = true)
 public class EmployeeQueryService extends QueryService<Employee> {
 
-    private static final Logger log = LoggerFactory.getLogger(EmployeeQueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmployeeQueryService.class);
 
     private final EmployeeRepository employeeRepository;
 
@@ -37,7 +37,7 @@ public class EmployeeQueryService extends QueryService<Employee> {
      */
     @Transactional(readOnly = true)
     public List<Employee> findByCriteria(EmployeeCriteria criteria) {
-        log.debug("find by criteria : {}", criteria);
+        LOG.debug("find by criteria : {}", criteria);
         final Specification<Employee> specification = createSpecification(criteria);
         return employeeRepository.findAll(specification);
     }
@@ -49,7 +49,7 @@ public class EmployeeQueryService extends QueryService<Employee> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(EmployeeCriteria criteria) {
-        log.debug("count by criteria : {}", criteria);
+        LOG.debug("count by criteria : {}", criteria);
         final Specification<Employee> specification = createSpecification(criteria);
         return employeeRepository.count(specification);
     }
@@ -63,36 +63,18 @@ public class EmployeeQueryService extends QueryService<Employee> {
         Specification<Employee> specification = Specification.where(null);
         if (criteria != null) {
             // This has to be called first, because the distinct method returns null
-            if (criteria.getDistinct() != null) {
-                specification = specification.and(distinct(criteria.getDistinct()));
-            }
-            if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), Employee_.id));
-            }
-            if (criteria.getFullName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getFullName(), Employee_.fullName));
-            }
-            if (criteria.getPhoneNumber() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getPhoneNumber(), Employee_.phoneNumber));
-            }
-            if (criteria.getEmail() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getEmail(), Employee_.email));
-            }
-            if (criteria.getCreatedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), Employee_.createdDate));
-            }
-            if (criteria.getModifiedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), Employee_.modifiedDate));
-            }
-            if (criteria.getDeleted() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeleted(), Employee_.deleted));
-            }
-            if (criteria.getDesignation() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getDesignation(), Employee_.designation));
-            }
-            if (criteria.getJoiningDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getJoiningDate(), Employee_.joiningDate));
-            }
+            specification = Specification.allOf(
+                Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : null,
+                buildRangeSpecification(criteria.getId(), Employee_.id),
+                buildStringSpecification(criteria.getFullName(), Employee_.fullName),
+                buildStringSpecification(criteria.getPhoneNumber(), Employee_.phoneNumber),
+                buildStringSpecification(criteria.getEmail(), Employee_.email),
+                buildRangeSpecification(criteria.getCreatedDate(), Employee_.createdDate),
+                buildRangeSpecification(criteria.getModifiedDate(), Employee_.modifiedDate),
+                buildSpecification(criteria.getDeleted(), Employee_.deleted),
+                buildStringSpecification(criteria.getDesignation(), Employee_.designation),
+                buildRangeSpecification(criteria.getJoiningDate(), Employee_.joiningDate)
+            );
         }
         return specification;
     }

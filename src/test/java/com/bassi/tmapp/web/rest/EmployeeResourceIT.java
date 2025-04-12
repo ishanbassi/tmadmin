@@ -93,8 +93,8 @@ class EmployeeResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Employee createEntity(EntityManager em) {
-        Employee employee = new Employee()
+    public static Employee createEntity() {
+        return new Employee()
             .fullName(DEFAULT_FULL_NAME)
             .phoneNumber(DEFAULT_PHONE_NUMBER)
             .email(DEFAULT_EMAIL)
@@ -103,7 +103,6 @@ class EmployeeResourceIT {
             .deleted(DEFAULT_DELETED)
             .designation(DEFAULT_DESIGNATION)
             .joiningDate(DEFAULT_JOINING_DATE);
-        return employee;
     }
 
     /**
@@ -112,8 +111,8 @@ class EmployeeResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Employee createUpdatedEntity(EntityManager em) {
-        Employee employee = new Employee()
+    public static Employee createUpdatedEntity() {
+        return new Employee()
             .fullName(UPDATED_FULL_NAME)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
@@ -122,16 +121,15 @@ class EmployeeResourceIT {
             .deleted(UPDATED_DELETED)
             .designation(UPDATED_DESIGNATION)
             .joiningDate(UPDATED_JOINING_DATE);
-        return employee;
     }
 
     @BeforeEach
-    public void initTest() {
-        employee = createEntity(em);
+    void initTest() {
+        employee = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedEmployee != null) {
             employeeRepository.delete(insertedEmployee);
             insertedEmployee = null;
@@ -194,7 +192,7 @@ class EmployeeResourceIT {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION)))
             .andExpect(jsonPath("$.[*].joiningDate").value(hasItem(DEFAULT_JOINING_DATE.toString())));
     }
@@ -216,7 +214,7 @@ class EmployeeResourceIT {
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.designation").value(DEFAULT_DESIGNATION))
             .andExpect(jsonPath("$.joiningDate").value(DEFAULT_JOINING_DATE.toString()));
     }
@@ -731,7 +729,7 @@ class EmployeeResourceIT {
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].designation").value(hasItem(DEFAULT_DESIGNATION)))
             .andExpect(jsonPath("$.[*].joiningDate").value(hasItem(DEFAULT_JOINING_DATE.toString())));
 
@@ -869,9 +867,10 @@ class EmployeeResourceIT {
 
         partialUpdatedEmployee
             .fullName(UPDATED_FULL_NAME)
-            .email(UPDATED_EMAIL)
-            .createdDate(UPDATED_CREATED_DATE)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
             .deleted(UPDATED_DELETED)
+            .designation(UPDATED_DESIGNATION)
             .joiningDate(UPDATED_JOINING_DATE);
 
         restEmployeeMockMvc

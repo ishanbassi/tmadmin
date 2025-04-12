@@ -26,7 +26,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/leads")
 public class LeadResource {
 
-    private static final Logger log = LoggerFactory.getLogger(LeadResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LeadResource.class);
 
     private static final String ENTITY_NAME = "lead";
 
@@ -54,7 +54,7 @@ public class LeadResource {
      */
     @PostMapping("")
     public ResponseEntity<Lead> createLead(@RequestBody Lead lead) throws URISyntaxException {
-        log.debug("REST request to save Lead : {}", lead);
+        LOG.debug("REST request to save Lead : {}", lead);
         if (lead.getId() != null) {
             throw new BadRequestAlertException("A new lead cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -77,7 +77,7 @@ public class LeadResource {
     @PutMapping("/{id}")
     public ResponseEntity<Lead> updateLead(@PathVariable(value = "id", required = false) final Long id, @RequestBody Lead lead)
         throws URISyntaxException {
-        log.debug("REST request to update Lead : {}, {}", id, lead);
+        LOG.debug("REST request to update Lead : {}, {}", id, lead);
         if (lead.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -109,7 +109,7 @@ public class LeadResource {
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<Lead> partialUpdateLead(@PathVariable(value = "id", required = false) final Long id, @RequestBody Lead lead)
         throws URISyntaxException {
-        log.debug("REST request to partial update Lead partially : {}, {}", id, lead);
+        LOG.debug("REST request to partial update Lead partially : {}, {}", id, lead);
         if (lead.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -137,7 +137,7 @@ public class LeadResource {
      */
     @GetMapping("")
     public ResponseEntity<List<Lead>> getAllLeads(LeadCriteria criteria) {
-        log.debug("REST request to get Leads by criteria: {}", criteria);
+        LOG.debug("REST request to get Leads by criteria: {}", criteria);
 
         List<Lead> entityList = leadQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
@@ -151,7 +151,7 @@ public class LeadResource {
      */
     @GetMapping("/count")
     public ResponseEntity<Long> countLeads(LeadCriteria criteria) {
-        log.debug("REST request to count Leads by criteria: {}", criteria);
+        LOG.debug("REST request to count Leads by criteria: {}", criteria);
         return ResponseEntity.ok().body(leadQueryService.countByCriteria(criteria));
     }
 
@@ -163,7 +163,7 @@ public class LeadResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Lead> getLead(@PathVariable("id") Long id) {
-        log.debug("REST request to get Lead : {}", id);
+        LOG.debug("REST request to get Lead : {}", id);
         Optional<Lead> lead = leadService.findOne(id);
         return ResponseUtil.wrapOrNotFound(lead);
     }
@@ -176,7 +176,7 @@ public class LeadResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLead(@PathVariable("id") Long id) {
-        log.debug("REST request to delete Lead : {}", id);
+        LOG.debug("REST request to delete Lead : {}", id);
         leadService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

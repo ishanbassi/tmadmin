@@ -17,8 +17,8 @@ describe('Trademark Management Detail Component', () => {
           [
             {
               path: '**',
-              component: TrademarkDetailComponent,
-              resolve: { trademark: () => of({ id: 123 }) },
+              loadComponent: () => import('./trademark-detail.component').then(m => m.TrademarkDetailComponent),
+              resolve: { trademark: () => of({ id: 4352 }) },
             },
           ],
           withComponentInputBinding(),
@@ -35,17 +35,17 @@ describe('Trademark Management Detail Component', () => {
   });
 
   describe('OnInit', () => {
-    it('Should load trademark on init', async () => {
+    it('should load trademark on init', async () => {
       const harness = await RouterTestingHarness.create();
       const instance = await harness.navigateByUrl('/', TrademarkDetailComponent);
 
       // THEN
-      expect(instance.trademark()).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.trademark()).toEqual(expect.objectContaining({ id: 4352 }));
     });
   });
 
   describe('PreviousState', () => {
-    it('Should navigate to previous state', () => {
+    it('should navigate to previous state', () => {
       jest.spyOn(window.history, 'back');
       comp.previousState();
       expect(window.history.back).toHaveBeenCalled();

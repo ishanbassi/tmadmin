@@ -15,15 +15,15 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
-import { DEBUG_INFO_ENABLED } from 'app/app.constants';
 import './config/dayjs';
+import { environment } from 'environments/environment';
 import { httpInterceptorProviders } from './core/interceptor';
 import routes from './app.routes';
 // jhipster-needle-angular-add-module-import JHipster will add new module here
 import { NgbDateDayjsAdapter } from './config/datepicker-adapter';
 import { AppPageTitleStrategy } from './app-page-title-strategy';
 
-const routerFeatures: Array<RouterFeatures> = [
+const routerFeatures: RouterFeatures[] = [
   withComponentInputBinding(),
   withNavigationErrorHandler((e: NavigationError) => {
     const router = inject(Router);
@@ -38,7 +38,7 @@ const routerFeatures: Array<RouterFeatures> = [
     }
   }),
 ];
-if (DEBUG_INFO_ENABLED) {
+if (environment.DEBUG_INFO_ENABLED) {
   routerFeatures.push(withDebugTracing());
 }
 

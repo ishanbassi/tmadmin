@@ -47,12 +47,12 @@ describe('Phonetics Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call Trademark query and add missing value', () => {
-      const phonetics: IPhonetics = { id: 456 };
-      const trademark: ITrademark = { id: 4313 };
+    it('should call Trademark query and add missing value', () => {
+      const phonetics: IPhonetics = { id: 23938 };
+      const trademark: ITrademark = { id: 4352 };
       phonetics.trademark = trademark;
 
-      const trademarkCollection: ITrademark[] = [{ id: 468 }];
+      const trademarkCollection: ITrademark[] = [{ id: 4352 }];
       jest.spyOn(trademarkService, 'query').mockReturnValue(of(new HttpResponse({ body: trademarkCollection })));
       const additionalTrademarks = [trademark];
       const expectedCollection: ITrademark[] = [...additionalTrademarks, ...trademarkCollection];
@@ -69,24 +69,24 @@ describe('Phonetics Management Update Component', () => {
       expect(comp.trademarksSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
-      const phonetics: IPhonetics = { id: 456 };
-      const trademark: ITrademark = { id: 4740 };
+    it('should update editForm', () => {
+      const phonetics: IPhonetics = { id: 23938 };
+      const trademark: ITrademark = { id: 4352 };
       phonetics.trademark = trademark;
 
       activatedRoute.data = of({ phonetics });
       comp.ngOnInit();
 
-      expect(comp.trademarksSharedCollection).toContain(trademark);
+      expect(comp.trademarksSharedCollection).toContainEqual(trademark);
       expect(comp.phonetics).toEqual(phonetics);
     });
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPhonetics>>();
-      const phonetics = { id: 123 };
+      const phonetics = { id: 29047 };
       jest.spyOn(phoneticsFormService, 'getPhonetics').mockReturnValue(phonetics);
       jest.spyOn(phoneticsService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -106,10 +106,10 @@ describe('Phonetics Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPhonetics>>();
-      const phonetics = { id: 123 };
+      const phonetics = { id: 29047 };
       jest.spyOn(phoneticsFormService, 'getPhonetics').mockReturnValue({ id: null });
       jest.spyOn(phoneticsService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -129,10 +129,10 @@ describe('Phonetics Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IPhonetics>>();
-      const phonetics = { id: 123 };
+      const phonetics = { id: 29047 };
       jest.spyOn(phoneticsService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ phonetics });
@@ -152,9 +152,9 @@ describe('Phonetics Management Update Component', () => {
 
   describe('Compare relationships', () => {
     describe('compareTrademark', () => {
-      it('Should forward to trademarkService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should forward to trademarkService', () => {
+        const entity = { id: 4352 };
+        const entity2 = { id: 3769 };
         jest.spyOn(trademarkService, 'compareTrademark');
         comp.compareTrademark(entity, entity2);
         expect(trademarkService.compareTrademark).toHaveBeenCalledWith(entity, entity2);

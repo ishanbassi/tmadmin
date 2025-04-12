@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PublishedTmService {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmService.class);
 
     private final PublishedTmRepository publishedTmRepository;
 
@@ -30,7 +30,7 @@ public class PublishedTmService {
      * @return the persisted entity.
      */
     public PublishedTm save(PublishedTm publishedTm) {
-        log.debug("Request to save PublishedTm : {}", publishedTm);
+        LOG.debug("Request to save PublishedTm : {}", publishedTm);
         return publishedTmRepository.save(publishedTm);
     }
 
@@ -41,7 +41,7 @@ public class PublishedTmService {
      * @return the persisted entity.
      */
     public PublishedTm update(PublishedTm publishedTm) {
-        log.debug("Request to update PublishedTm : {}", publishedTm);
+        LOG.debug("Request to update PublishedTm : {}", publishedTm);
         return publishedTmRepository.save(publishedTm);
     }
 
@@ -52,7 +52,7 @@ public class PublishedTmService {
      * @return the persisted entity.
      */
     public Optional<PublishedTm> partialUpdate(PublishedTm publishedTm) {
-        log.debug("Request to partially update PublishedTm : {}", publishedTm);
+        LOG.debug("Request to partially update PublishedTm : {}", publishedTm);
 
         return publishedTmRepository
             .findById(publishedTm.getId())
@@ -134,7 +134,7 @@ public class PublishedTmService {
      */
     @Transactional(readOnly = true)
     public Optional<PublishedTm> findOne(Long id) {
-        log.debug("Request to get PublishedTm : {}", id);
+        LOG.debug("Request to get PublishedTm : {}", id);
         return publishedTmRepository.findById(id);
     }
 
@@ -144,7 +144,7 @@ public class PublishedTmService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete PublishedTm : {}", id);
+        LOG.debug("Request to delete PublishedTm : {}", id);
         publishedTmRepository.deleteById(id);
     }
 }

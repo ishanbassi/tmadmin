@@ -47,12 +47,12 @@ describe('Trademark Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call UserProfile query and add missing value', () => {
-      const trademark: ITrademark = { id: 456 };
-      const userProfile: IUserProfile = { id: 8030 };
+    it('should call UserProfile query and add missing value', () => {
+      const trademark: ITrademark = { id: 3769 };
+      const userProfile: IUserProfile = { id: 22058 };
       trademark.userProfile = userProfile;
 
-      const userProfileCollection: IUserProfile[] = [{ id: 9415 }];
+      const userProfileCollection: IUserProfile[] = [{ id: 22058 }];
       jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
       const additionalUserProfiles = [userProfile];
       const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
@@ -69,24 +69,24 @@ describe('Trademark Management Update Component', () => {
       expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
-      const trademark: ITrademark = { id: 456 };
-      const userProfile: IUserProfile = { id: 3892 };
+    it('should update editForm', () => {
+      const trademark: ITrademark = { id: 3769 };
+      const userProfile: IUserProfile = { id: 22058 };
       trademark.userProfile = userProfile;
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
-      expect(comp.userProfilesSharedCollection).toContain(userProfile);
+      expect(comp.userProfilesSharedCollection).toContainEqual(userProfile);
       expect(comp.trademark).toEqual(trademark);
     });
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITrademark>>();
-      const trademark = { id: 123 };
+      const trademark = { id: 4352 };
       jest.spyOn(trademarkFormService, 'getTrademark').mockReturnValue(trademark);
       jest.spyOn(trademarkService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -106,10 +106,10 @@ describe('Trademark Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITrademark>>();
-      const trademark = { id: 123 };
+      const trademark = { id: 4352 };
       jest.spyOn(trademarkFormService, 'getTrademark').mockReturnValue({ id: null });
       jest.spyOn(trademarkService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -129,10 +129,10 @@ describe('Trademark Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<ITrademark>>();
-      const trademark = { id: 123 };
+      const trademark = { id: 4352 };
       jest.spyOn(trademarkService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ trademark });
@@ -152,9 +152,9 @@ describe('Trademark Management Update Component', () => {
 
   describe('Compare relationships', () => {
     describe('compareUserProfile', () => {
-      it('Should forward to userProfileService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should forward to userProfileService', () => {
+        const entity = { id: 22058 };
+        const entity2 = { id: 9009 };
         jest.spyOn(userProfileService, 'compareUserProfile');
         comp.compareUserProfile(entity, entity2);
         expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);

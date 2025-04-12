@@ -16,10 +16,9 @@ const userProfileResolve = (route: ActivatedRouteSnapshot): Observable<null | IU
         mergeMap((userProfile: HttpResponse<IUserProfile>) => {
           if (userProfile.body) {
             return of(userProfile.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

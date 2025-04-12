@@ -1,2 +1,2 @@
-org.springframework.test.context.ContextCustomizerFactory = com.bassi.tmapp.\
-    config.SqlTestContainersSpringContextCustomizerFactory
+org.springframework.test.context.ContextCustomizerFactory = \
+    com.bassi.tmapp.config.SqlTestContainersSpringContextCustomizerFactory

@@ -1,51 +1,51 @@
 <div class="d-flex justify-content-center">
   <div class="col-8">
-    @if (employee()) {
+    @if (employee(); as employeeRef) {
       <div>
         <h2 data-cy="employeeDetailsHeading"><span>Employee</span></h2>
 
         <hr />
 
-        <jhi-alert-error></jhi-alert-error>
+        <jhi-alert-error />
 
-        <jhi-alert></jhi-alert>
+        <jhi-alert />
 
         <dl class="row-md jh-entity-details">
           <dt><span>ID</span></dt>
           <dd>
-            <span>{{ employee()!.id }}</span>
+            <span>{{ employeeRef.id }}</span>
           </dd>
           <dt><span>Full Name</span></dt>
           <dd>
-            <span>{{ employee()!.fullName }}</span>
+            <span>{{ employeeRef.fullName }}</span>
           </dd>
           <dt><span>Phone Number</span></dt>
           <dd>
-            <span>{{ employee()!.phoneNumber }}</span>
+            <span>{{ employeeRef.phoneNumber }}</span>
           </dd>
           <dt><span>Email</span></dt>
           <dd>
-            <span>{{ employee()!.email }}</span>
+            <span>{{ employeeRef.email }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>
-            <span>{{ employee()!.createdDate | formatMediumDatetime }}</span>
+            <span>{{ employeeRef.createdDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Modified Date</span></dt>
           <dd>
-            <span>{{ employee()!.modifiedDate | formatMediumDatetime }}</span>
+            <span>{{ employeeRef.modifiedDate | formatMediumDatetime }}</span>
           </dd>
           <dt><span>Deleted</span></dt>
           <dd>
-            <span>{{ employee()!.deleted }}</span>
+            <span>{{ employeeRef.deleted }}</span>
           </dd>
           <dt><span>Designation</span></dt>
           <dd>
-            <span>{{ employee()!.designation }}</span>
+            <span>{{ employeeRef.designation }}</span>
           </dd>
           <dt><span>Joining Date</span></dt>
           <dd>
-            <span>{{ employee()!.joiningDate | formatMediumDate }}</span>
+            <span>{{ employeeRef.joiningDate | formatMediumDate }}</span>
           </dd>
         </dl>
 
@@ -53,7 +53,7 @@
           <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
         </button>
 
-        <button type="button" [routerLink]="['/employee', employee()!.id, 'edit']" class="btn btn-primary">
+        <button type="button" [routerLink]="['/employee', employeeRef.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
       </div>

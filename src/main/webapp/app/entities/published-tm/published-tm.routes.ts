@@ -2,23 +2,20 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
-import { PublishedTmComponent } from './list/published-tm.component';
-import { PublishedTmDetailComponent } from './detail/published-tm-detail.component';
-import { PublishedTmUpdateComponent } from './update/published-tm-update.component';
 import PublishedTmResolve from './route/published-tm-routing-resolve.service';
 
 const publishedTmRoute: Routes = [
   {
     path: '',
-    component: PublishedTmComponent,
+    loadComponent: () => import('./list/published-tm.component').then(m => m.PublishedTmComponent),
     data: {
-      defaultSort: `id,${  ASC}`,
+      defaultSort: `id,${ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',
-    component: PublishedTmDetailComponent,
+    loadComponent: () => import('./detail/published-tm-detail.component').then(m => m.PublishedTmDetailComponent),
     resolve: {
       publishedTm: PublishedTmResolve,
     },
@@ -26,7 +23,7 @@ const publishedTmRoute: Routes = [
   },
   {
     path: 'new',
-    component: PublishedTmUpdateComponent,
+    loadComponent: () => import('./update/published-tm-update.component').then(m => m.PublishedTmUpdateComponent),
     resolve: {
       publishedTm: PublishedTmResolve,
     },
@@ -34,7 +31,7 @@ const publishedTmRoute: Routes = [
   },
   {
     path: ':id/edit',
-    component: PublishedTmUpdateComponent,
+    loadComponent: () => import('./update/published-tm-update.component').then(m => m.PublishedTmUpdateComponent),
     resolve: {
       publishedTm: PublishedTmResolve,
     },

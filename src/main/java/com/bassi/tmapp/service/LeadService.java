@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class LeadService {
 
-    private static final Logger log = LoggerFactory.getLogger(LeadService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LeadService.class);
 
     private final LeadRepository leadRepository;
 
@@ -30,7 +30,7 @@ public class LeadService {
      * @return the persisted entity.
      */
     public Lead save(Lead lead) {
-        log.debug("Request to save Lead : {}", lead);
+        LOG.debug("Request to save Lead : {}", lead);
         return leadRepository.save(lead);
     }
 
@@ -41,7 +41,7 @@ public class LeadService {
      * @return the persisted entity.
      */
     public Lead update(Lead lead) {
-        log.debug("Request to update Lead : {}", lead);
+        LOG.debug("Request to update Lead : {}", lead);
         return leadRepository.save(lead);
     }
 
@@ -52,7 +52,7 @@ public class LeadService {
      * @return the persisted entity.
      */
     public Optional<Lead> partialUpdate(Lead lead) {
-        log.debug("Request to partially update Lead : {}", lead);
+        LOG.debug("Request to partially update Lead : {}", lead);
 
         return leadRepository
             .findById(lead.getId())
@@ -113,7 +113,7 @@ public class LeadService {
      */
     @Transactional(readOnly = true)
     public Optional<Lead> findOne(Long id) {
-        log.debug("Request to get Lead : {}", id);
+        LOG.debug("Request to get Lead : {}", id);
         return leadRepository.findById(id);
     }
 
@@ -123,7 +123,7 @@ public class LeadService {
      * @param id the id of the entity.
      */
     public void delete(Long id) {
-        log.debug("Request to delete Lead : {}", id);
+        LOG.debug("Request to delete Lead : {}", id);
         leadRepository.deleteById(id);
     }
 }

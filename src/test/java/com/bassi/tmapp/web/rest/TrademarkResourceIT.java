@@ -140,8 +140,8 @@ class TrademarkResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Trademark createEntity(EntityManager em) {
-        Trademark trademark = new Trademark()
+    public static Trademark createEntity() {
+        return new Trademark()
             .name(DEFAULT_NAME)
             .details(DEFAULT_DETAILS)
             .applicationNo(DEFAULT_APPLICATION_NO)
@@ -163,7 +163,6 @@ class TrademarkResourceIT {
             .renewalDate(DEFAULT_RENEWAL_DATE)
             .type(DEFAULT_TYPE)
             .pageNo(DEFAULT_PAGE_NO);
-        return trademark;
     }
 
     /**
@@ -172,8 +171,8 @@ class TrademarkResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static Trademark createUpdatedEntity(EntityManager em) {
-        Trademark trademark = new Trademark()
+    public static Trademark createUpdatedEntity() {
+        return new Trademark()
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
@@ -195,16 +194,15 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO);
-        return trademark;
     }
 
     @BeforeEach
-    public void initTest() {
-        trademark = createEntity(em);
+    void initTest() {
+        trademark = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedTrademark != null) {
             trademarkRepository.delete(insertedTrademark);
             insertedTrademark = null;
@@ -274,7 +272,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
             .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
@@ -309,7 +307,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.imgUrl").value(DEFAULT_IMG_URL))
             .andExpect(jsonPath("$.tmClass").value(DEFAULT_TM_CLASS))
             .andExpect(jsonPath("$.journalNo").value(DEFAULT_JOURNAL_NO))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
             .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS))
@@ -1599,7 +1597,7 @@ class TrademarkResourceIT {
         UserProfile userProfile;
         if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
             trademarkRepository.saveAndFlush(trademark);
-            userProfile = UserProfileResourceIT.createEntity(em);
+            userProfile = UserProfileResourceIT.createEntity();
         } else {
             userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
         }
@@ -1641,7 +1639,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
             .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
@@ -1799,13 +1797,16 @@ class TrademarkResourceIT {
         partialUpdatedTrademark
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
-            .applicationNo(UPDATED_APPLICATION_NO)
+            .applicationDate(UPDATED_APPLICATION_DATE)
+            .agentName(UPDATED_AGENT_NAME)
             .agentAddress(UPDATED_AGENT_ADDRESS)
-            .proprietorName(UPDATED_PROPRIETOR_NAME)
             .headOffice(UPDATED_HEAD_OFFICE)
-            .tmClass(UPDATED_TM_CLASS)
-            .trademarkStatus(UPDATED_TRADEMARK_STATUS)
+            .imgUrl(UPDATED_IMG_URL)
+            .deleted(UPDATED_DELETED)
+            .usage(UPDATED_USAGE)
+            .associatedTms(UPDATED_ASSOCIATED_TMS)
             .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE);
 

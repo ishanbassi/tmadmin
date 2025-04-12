@@ -17,8 +17,8 @@ describe('TmAgent Management Detail Component', () => {
           [
             {
               path: '**',
-              component: TmAgentDetailComponent,
-              resolve: { tmAgent: () => of({ id: 123 }) },
+              loadComponent: () => import('./tm-agent-detail.component').then(m => m.TmAgentDetailComponent),
+              resolve: { tmAgent: () => of({ id: 9499 }) },
             },
           ],
           withComponentInputBinding(),
@@ -35,17 +35,17 @@ describe('TmAgent Management Detail Component', () => {
   });
 
   describe('OnInit', () => {
-    it('Should load tmAgent on init', async () => {
+    it('should load tmAgent on init', async () => {
       const harness = await RouterTestingHarness.create();
       const instance = await harness.navigateByUrl('/', TmAgentDetailComponent);
 
       // THEN
-      expect(instance.tmAgent()).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.tmAgent()).toEqual(expect.objectContaining({ id: 9499 }));
     });
   });
 
   describe('PreviousState', () => {
-    it('Should navigate to previous state', () => {
+    it('should navigate to previous state', () => {
       jest.spyOn(window.history, 'back');
       comp.previousState();
       expect(window.history.back).toHaveBeenCalled();

@@ -7,43 +7,38 @@
 
   <h3>JVM Metrics</h3>
 
-  @if (metrics() && !updatingMetrics()) {
+  @let metricsRef = metrics();
+  @if (metricsRef && !updatingMetrics()) {
     <div class="row">
-      <jhi-jvm-memory class="col-md-4" [updating]="updatingMetrics()" [jvmMemoryMetrics]="metrics()?.jvm"></jhi-jvm-memory>
+      <jhi-jvm-memory class="col-md-4" [updating]="updatingMetrics()" [jvmMemoryMetrics]="metricsRef.jvm" />
 
-      <jhi-jvm-threads class="col-md-4" [threads]="threads()"></jhi-jvm-threads>
+      <jhi-jvm-threads class="col-md-4" [threads]="threads()" />
 
-      <jhi-metrics-system class="col-md-4" [updating]="updatingMetrics()" [systemMetrics]="metrics()?.processMetrics"></jhi-metrics-system>
+      <jhi-metrics-system class="col-md-4" [updating]="updatingMetrics()" [systemMetrics]="metricsRef.processMetrics" />
     </div>
   }
 
-  @if (metrics() && metricsKeyExists('garbageCollector')) {
-    <jhi-metrics-garbagecollector
-      [updating]="updatingMetrics()"
-      [garbageCollectorMetrics]="metrics()?.garbageCollector"
-    ></jhi-metrics-garbagecollector>
+  @if (metricsRef?.garbageCollector; as metricsRefGarbageCollector) {
+    <jhi-metrics-garbagecollector [updating]="updatingMetrics()" [garbageCollectorMetrics]="metricsRefGarbageCollector" />
   }
 
   @if (updatingMetrics()) {
     <div class="well well-lg">Updating...</div>
   }
 
-  @if (metrics() && metricsKeyExists('http.server.requests')) {
-    <jhi-metrics-request [updating]="updatingMetrics()" [requestMetrics]="metrics()?.['http.server.requests']"></jhi-metrics-request>
+  @if (metricsRef?.['http.server.requests']; as metricsRefHttpServerRequests) {
+    <jhi-metrics-request [updating]="updatingMetrics()" [requestMetrics]="metricsRefHttpServerRequests" />
   }
 
-  @if (metrics() && metricsKeyExists('services')) {
-    <jhi-metrics-endpoints-requests
-      [updating]="updatingMetrics()"
-      [endpointsRequestsMetrics]="metrics()?.services"
-    ></jhi-metrics-endpoints-requests>
+  @if (metricsRef?.services; as metricsRefServices) {
+    <jhi-metrics-endpoints-requests [updating]="updatingMetrics()" [endpointsRequestsMetrics]="metricsRefServices" />
   }
 
-  @if (metrics() && metricsKeyExists('cache')) {
-    <jhi-metrics-cache [updating]="updatingMetrics()" [cacheMetrics]="metrics()?.cache"></jhi-metrics-cache>
+  @if (metricsRef?.cache; as metricsRefCache) {
+    <jhi-metrics-cache [updating]="updatingMetrics()" [cacheMetrics]="metricsRefCache" />
   }
 
-  @if (metrics() && metricsKeyExistsAndObjectNotEmpty('databases')) {
-    <jhi-metrics-datasource [updating]="updatingMetrics()" [datasourceMetrics]="metrics()?.databases"></jhi-metrics-datasource>
+  @if (metricsRef && metricsKeyExistsAndObjectNotEmpty('databases')) {
+    <jhi-metrics-datasource [updating]="updatingMetrics()" [datasourceMetrics]="metricsRef.databases" />
   }
 </div>

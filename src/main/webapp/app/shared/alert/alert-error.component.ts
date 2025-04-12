@@ -9,7 +9,6 @@ import { EventManager, EventWithContent } from 'app/core/util/event-manager.serv
 import { AlertError } from './alert-error.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-alert-error',
   templateUrl: './alert-error.component.html',
   imports: [CommonModule, NgbModule],
@@ -19,8 +18,8 @@ export class AlertErrorComponent implements OnDestroy {
   errorListener: Subscription;
   httpErrorListener: Subscription;
 
-  private alertService = inject(AlertService);
-  private eventManager = inject(EventManager);
+  private readonly alertService = inject(AlertService);
+  private readonly eventManager = inject(EventManager);
 
   constructor() {
     this.errorListener = this.eventManager.subscribe('tmappApp.error', (response: EventWithContent<unknown> | string) => {
@@ -33,7 +32,7 @@ export class AlertErrorComponent implements OnDestroy {
     });
   }
 
-  setClasses(alert: Alert): { [key: string]: boolean } {
+  setClasses(alert: Alert): Record<string, boolean> {
     const classes = { 'jhi-toast': Boolean(alert.toast) };
     if (alert.position) {
       return { ...classes, [alert.position]: true };
@@ -104,7 +103,7 @@ export class AlertErrorComponent implements OnDestroy {
   }
 
   private handleFieldsError(httpErrorResponse: HttpErrorResponse): void {
-    const fieldErrors = httpErrorResponse.error.fieldErrors;
+    const { fieldErrors } = httpErrorResponse.error;
     for (const fieldError of fieldErrors) {
       if (['Min', 'Max', 'DecimalMin', 'DecimalMax'].includes(fieldError.message)) {
         fieldError.message = 'Size';

@@ -72,13 +72,12 @@ class PublishedTmPhoneticsResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTmPhonetics createEntity(EntityManager em) {
-        PublishedTmPhonetics publishedTmPhonetics = new PublishedTmPhonetics()
+    public static PublishedTmPhonetics createEntity() {
+        return new PublishedTmPhonetics()
             .sanitizedTm(DEFAULT_SANITIZED_TM)
             .phoneticPk(DEFAULT_PHONETIC_PK)
             .phoneticSk(DEFAULT_PHONETIC_SK)
             .complete(DEFAULT_COMPLETE);
-        return publishedTmPhonetics;
     }
 
     /**
@@ -87,22 +86,21 @@ class PublishedTmPhoneticsResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTmPhonetics createUpdatedEntity(EntityManager em) {
-        PublishedTmPhonetics publishedTmPhonetics = new PublishedTmPhonetics()
+    public static PublishedTmPhonetics createUpdatedEntity() {
+        return new PublishedTmPhonetics()
             .sanitizedTm(UPDATED_SANITIZED_TM)
             .phoneticPk(UPDATED_PHONETIC_PK)
             .phoneticSk(UPDATED_PHONETIC_SK)
             .complete(UPDATED_COMPLETE);
-        return publishedTmPhonetics;
     }
 
     @BeforeEach
-    public void initTest() {
-        publishedTmPhonetics = createEntity(em);
+    void initTest() {
+        publishedTmPhonetics = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedPublishedTmPhonetics != null) {
             publishedTmPhoneticsRepository.delete(insertedPublishedTmPhonetics);
             insertedPublishedTmPhonetics = null;
@@ -166,7 +164,7 @@ class PublishedTmPhoneticsResourceIT {
             .andExpect(jsonPath("$.[*].sanitizedTm").value(hasItem(DEFAULT_SANITIZED_TM)))
             .andExpect(jsonPath("$.[*].phoneticPk").value(hasItem(DEFAULT_PHONETIC_PK)))
             .andExpect(jsonPath("$.[*].phoneticSk").value(hasItem(DEFAULT_PHONETIC_SK)))
-            .andExpect(jsonPath("$.[*].complete").value(hasItem(DEFAULT_COMPLETE.booleanValue())));
+            .andExpect(jsonPath("$.[*].complete").value(hasItem(DEFAULT_COMPLETE)));
     }
 
     @Test
@@ -184,7 +182,7 @@ class PublishedTmPhoneticsResourceIT {
             .andExpect(jsonPath("$.sanitizedTm").value(DEFAULT_SANITIZED_TM))
             .andExpect(jsonPath("$.phoneticPk").value(DEFAULT_PHONETIC_PK))
             .andExpect(jsonPath("$.phoneticSk").value(DEFAULT_PHONETIC_SK))
-            .andExpect(jsonPath("$.complete").value(DEFAULT_COMPLETE.booleanValue()));
+            .andExpect(jsonPath("$.complete").value(DEFAULT_COMPLETE));
     }
 
     @Test

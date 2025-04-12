@@ -140,8 +140,8 @@ class PublishedTmResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTm createEntity(EntityManager em) {
-        PublishedTm publishedTm = new PublishedTm()
+    public static PublishedTm createEntity() {
+        return new PublishedTm()
             .name(DEFAULT_NAME)
             .details(DEFAULT_DETAILS)
             .applicationNo(DEFAULT_APPLICATION_NO)
@@ -163,7 +163,6 @@ class PublishedTmResourceIT {
             .renewalDate(DEFAULT_RENEWAL_DATE)
             .type(DEFAULT_TYPE)
             .pageNo(DEFAULT_PAGE_NO);
-        return publishedTm;
     }
 
     /**
@@ -172,8 +171,8 @@ class PublishedTmResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static PublishedTm createUpdatedEntity(EntityManager em) {
-        PublishedTm publishedTm = new PublishedTm()
+    public static PublishedTm createUpdatedEntity() {
+        return new PublishedTm()
             .name(UPDATED_NAME)
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
@@ -195,16 +194,15 @@ class PublishedTmResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO);
-        return publishedTm;
     }
 
     @BeforeEach
-    public void initTest() {
-        publishedTm = createEntity(em);
+    void initTest() {
+        publishedTm = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedPublishedTm != null) {
             publishedTmRepository.delete(insertedPublishedTm);
             insertedPublishedTm = null;
@@ -274,7 +272,7 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
             .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
@@ -309,7 +307,7 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.imgUrl").value(DEFAULT_IMG_URL))
             .andExpect(jsonPath("$.tmClass").value(DEFAULT_TM_CLASS))
             .andExpect(jsonPath("$.journalNo").value(DEFAULT_JOURNAL_NO))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
             .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS))
@@ -1602,7 +1600,7 @@ class PublishedTmResourceIT {
         TmAgent tmAgent;
         if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
             publishedTmRepository.saveAndFlush(publishedTm);
-            tmAgent = TmAgentResourceIT.createEntity(em);
+            tmAgent = TmAgentResourceIT.createEntity();
         } else {
             tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
         }
@@ -1644,7 +1642,7 @@ class PublishedTmResourceIT {
             .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
             .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
             .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
@@ -1806,17 +1804,16 @@ class PublishedTmResourceIT {
             .details(UPDATED_DETAILS)
             .applicationNo(UPDATED_APPLICATION_NO)
             .applicationDate(UPDATED_APPLICATION_DATE)
-            .agentName(UPDATED_AGENT_NAME)
             .agentAddress(UPDATED_AGENT_ADDRESS)
             .proprietorName(UPDATED_PROPRIETOR_NAME)
             .proprietorAddress(UPDATED_PROPRIETOR_ADDRESS)
+            .headOffice(UPDATED_HEAD_OFFICE)
+            .imgUrl(UPDATED_IMG_URL)
             .tmClass(UPDATED_TM_CLASS)
             .journalNo(UPDATED_JOURNAL_NO)
             .deleted(UPDATED_DELETED)
-            .associatedTms(UPDATED_ASSOCIATED_TMS)
+            .usage(UPDATED_USAGE)
             .trademarkStatus(UPDATED_TRADEMARK_STATUS)
-            .createdDate(UPDATED_CREATED_DATE)
-            .renewalDate(UPDATED_RENEWAL_DATE)
             .pageNo(UPDATED_PAGE_NO);
 
         restPublishedTmMockMvc

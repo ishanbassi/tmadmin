@@ -16,10 +16,9 @@ const leadResolve = (route: ActivatedRouteSnapshot): Observable<null | ILead> =>
         mergeMap((lead: HttpResponse<ILead>) => {
           if (lead.body) {
             return of(lead.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

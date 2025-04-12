@@ -17,8 +17,8 @@ describe('UserProfile Management Detail Component', () => {
           [
             {
               path: '**',
-              component: UserProfileDetailComponent,
-              resolve: { userProfile: () => of({ id: 123 }) },
+              loadComponent: () => import('./user-profile-detail.component').then(m => m.UserProfileDetailComponent),
+              resolve: { userProfile: () => of({ id: 22058 }) },
             },
           ],
           withComponentInputBinding(),
@@ -35,17 +35,17 @@ describe('UserProfile Management Detail Component', () => {
   });
 
   describe('OnInit', () => {
-    it('Should load userProfile on init', async () => {
+    it('should load userProfile on init', async () => {
       const harness = await RouterTestingHarness.create();
       const instance = await harness.navigateByUrl('/', UserProfileDetailComponent);
 
       // THEN
-      expect(instance.userProfile()).toEqual(expect.objectContaining({ id: 123 }));
+      expect(instance.userProfile()).toEqual(expect.objectContaining({ id: 22058 }));
     });
   });
 
   describe('PreviousState', () => {
-    it('Should navigate to previous state', () => {
+    it('should navigate to previous state', () => {
       jest.spyOn(window.history, 'back');
       comp.previousState();
       expect(window.history.back).toHaveBeenCalled();

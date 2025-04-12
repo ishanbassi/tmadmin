@@ -91,8 +91,8 @@ class TmAgentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static TmAgent createEntity(EntityManager em) {
-        TmAgent tmAgent = new TmAgent()
+    public static TmAgent createEntity() {
+        return new TmAgent()
             .fullName(DEFAULT_FULL_NAME)
             .address(DEFAULT_ADDRESS)
             .createdDate(DEFAULT_CREATED_DATE)
@@ -101,7 +101,6 @@ class TmAgentResourceIT {
             .companyName(DEFAULT_COMPANY_NAME)
             .agentCode(DEFAULT_AGENT_CODE)
             .email(DEFAULT_EMAIL);
-        return tmAgent;
     }
 
     /**
@@ -110,8 +109,8 @@ class TmAgentResourceIT {
      * This is a static method, as tests for other entities might also need it,
      * if they test an entity which requires the current entity.
      */
-    public static TmAgent createUpdatedEntity(EntityManager em) {
-        TmAgent tmAgent = new TmAgent()
+    public static TmAgent createUpdatedEntity() {
+        return new TmAgent()
             .fullName(UPDATED_FULL_NAME)
             .address(UPDATED_ADDRESS)
             .createdDate(UPDATED_CREATED_DATE)
@@ -120,16 +119,15 @@ class TmAgentResourceIT {
             .companyName(UPDATED_COMPANY_NAME)
             .agentCode(UPDATED_AGENT_CODE)
             .email(UPDATED_EMAIL);
-        return tmAgent;
     }
 
     @BeforeEach
-    public void initTest() {
-        tmAgent = createEntity(em);
+    void initTest() {
+        tmAgent = createEntity();
     }
 
     @AfterEach
-    public void cleanup() {
+    void cleanup() {
         if (insertedTmAgent != null) {
             tmAgentRepository.delete(insertedTmAgent);
             insertedTmAgent = null;
@@ -191,7 +189,7 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)))
             .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
@@ -213,7 +211,7 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.address").value(DEFAULT_ADDRESS))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED.booleanValue()))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.companyName").value(DEFAULT_COMPANY_NAME))
             .andExpect(jsonPath("$.agentCode").value(DEFAULT_AGENT_CODE))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL));
@@ -693,7 +691,7 @@ class TmAgentResourceIT {
             .andExpect(jsonPath("$.[*].address").value(hasItem(DEFAULT_ADDRESS)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED.booleanValue())))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].companyName").value(hasItem(DEFAULT_COMPANY_NAME)))
             .andExpect(jsonPath("$.[*].agentCode").value(hasItem(DEFAULT_AGENT_CODE)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)));
@@ -828,7 +826,7 @@ class TmAgentResourceIT {
         TmAgent partialUpdatedTmAgent = new TmAgent();
         partialUpdatedTmAgent.setId(tmAgent.getId());
 
-        partialUpdatedTmAgent.modifiedDate(UPDATED_MODIFIED_DATE);
+        partialUpdatedTmAgent.email(UPDATED_EMAIL);
 
         restTmAgentMockMvc
             .perform(

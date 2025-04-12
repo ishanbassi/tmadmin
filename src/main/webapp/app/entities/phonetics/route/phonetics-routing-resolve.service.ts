@@ -16,10 +16,9 @@ const phoneticsResolve = (route: ActivatedRouteSnapshot): Observable<null | IPho
         mergeMap((phonetics: HttpResponse<IPhonetics>) => {
           if (phonetics.body) {
             return of(phonetics.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

@@ -47,12 +47,12 @@ describe('UserProfile Management Update Component', () => {
   });
 
   describe('ngOnInit', () => {
-    it('Should call User query and add missing value', () => {
-      const userProfile: IUserProfile = { id: 456 };
-      const user: IUser = { id: 31857 };
+    it('should call User query and add missing value', () => {
+      const userProfile: IUserProfile = { id: 9009 };
+      const user: IUser = { id: 3944 };
       userProfile.user = user;
 
-      const userCollection: IUser[] = [{ id: 32642 }];
+      const userCollection: IUser[] = [{ id: 3944 }];
       jest.spyOn(userService, 'query').mockReturnValue(of(new HttpResponse({ body: userCollection })));
       const additionalUsers = [user];
       const expectedCollection: IUser[] = [...additionalUsers, ...userCollection];
@@ -69,24 +69,24 @@ describe('UserProfile Management Update Component', () => {
       expect(comp.usersSharedCollection).toEqual(expectedCollection);
     });
 
-    it('Should update editForm', () => {
-      const userProfile: IUserProfile = { id: 456 };
-      const user: IUser = { id: 20139 };
+    it('should update editForm', () => {
+      const userProfile: IUserProfile = { id: 9009 };
+      const user: IUser = { id: 3944 };
       userProfile.user = user;
 
       activatedRoute.data = of({ userProfile });
       comp.ngOnInit();
 
-      expect(comp.usersSharedCollection).toContain(user);
+      expect(comp.usersSharedCollection).toContainEqual(user);
       expect(comp.userProfile).toEqual(userProfile);
     });
   });
 
   describe('save', () => {
-    it('Should call update service on save for existing entity', () => {
+    it('should call update service on save for existing entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IUserProfile>>();
-      const userProfile = { id: 123 };
+      const userProfile = { id: 22058 };
       jest.spyOn(userProfileFormService, 'getUserProfile').mockReturnValue(userProfile);
       jest.spyOn(userProfileService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -106,10 +106,10 @@ describe('UserProfile Management Update Component', () => {
       expect(comp.isSaving).toEqual(false);
     });
 
-    it('Should call create service on save for new entity', () => {
+    it('should call create service on save for new entity', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IUserProfile>>();
-      const userProfile = { id: 123 };
+      const userProfile = { id: 22058 };
       jest.spyOn(userProfileFormService, 'getUserProfile').mockReturnValue({ id: null });
       jest.spyOn(userProfileService, 'create').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
@@ -129,10 +129,10 @@ describe('UserProfile Management Update Component', () => {
       expect(comp.previousState).toHaveBeenCalled();
     });
 
-    it('Should set isSaving to false on error', () => {
+    it('should set isSaving to false on error', () => {
       // GIVEN
       const saveSubject = new Subject<HttpResponse<IUserProfile>>();
-      const userProfile = { id: 123 };
+      const userProfile = { id: 22058 };
       jest.spyOn(userProfileService, 'update').mockReturnValue(saveSubject);
       jest.spyOn(comp, 'previousState');
       activatedRoute.data = of({ userProfile });
@@ -152,9 +152,9 @@ describe('UserProfile Management Update Component', () => {
 
   describe('Compare relationships', () => {
     describe('compareUser', () => {
-      it('Should forward to userService', () => {
-        const entity = { id: 123 };
-        const entity2 = { id: 456 };
+      it('should forward to userService', () => {
+        const entity = { id: 3944 };
+        const entity2 = { id: 6275 };
         jest.spyOn(userService, 'compareUser');
         comp.compareUser(entity, entity2);
         expect(userService.compareUser).toHaveBeenCalledWith(entity, entity2);

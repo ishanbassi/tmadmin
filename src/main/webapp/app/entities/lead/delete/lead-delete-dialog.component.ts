@@ -8,7 +8,6 @@ import { ILead } from '../lead.model';
 import { LeadService } from '../service/lead.service';
 
 @Component({
-  standalone: true,
   templateUrl: './lead-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

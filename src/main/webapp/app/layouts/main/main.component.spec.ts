@@ -22,6 +22,8 @@ describe('MainComponent', () => {
   let router: Router;
   let document: Document;
 
+  const navigateByUrlFn = (url: string) => () => router.navigateByUrl(url);
+
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [MainComponent],
@@ -57,7 +59,7 @@ describe('MainComponent', () => {
     describe('navigation end', () => {
       it('should set page title to default title if pageTitle is missing on routes', fakeAsync(() => {
         // WHEN
-        ngZone.run(() => router.navigateByUrl(''));
+        ngZone.run(navigateByUrlFn(''));
         tick();
 
         // THEN
@@ -69,7 +71,7 @@ describe('MainComponent', () => {
         router.resetConfig([{ path: '', title: parentRoutePageTitle, component: BlankComponent }]);
 
         // WHEN
-        ngZone.run(() => router.navigateByUrl(''));
+        ngZone.run(navigateByUrlFn(''));
         tick();
 
         // THEN
@@ -87,7 +89,7 @@ describe('MainComponent', () => {
         ]);
 
         // WHEN
-        ngZone.run(() => router.navigateByUrl('home'));
+        ngZone.run(navigateByUrlFn('home'));
         tick();
 
         // THEN
@@ -105,7 +107,7 @@ describe('MainComponent', () => {
         ]);
 
         // WHEN
-        ngZone.run(() => router.navigateByUrl('home'));
+        ngZone.run(navigateByUrlFn('home'));
         tick();
 
         // THEN
@@ -115,5 +117,7 @@ describe('MainComponent', () => {
   });
 });
 
-@Component({ template: '' })
+@Component({
+  template: '',
+})
 export class BlankComponent {}

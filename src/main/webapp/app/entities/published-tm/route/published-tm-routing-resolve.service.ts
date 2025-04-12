@@ -16,10 +16,9 @@ const publishedTmResolve = (route: ActivatedRouteSnapshot): Observable<null | IP
         mergeMap((publishedTm: HttpResponse<IPublishedTm>) => {
           if (publishedTm.body) {
             return of(publishedTm.body);
-          } 
-            inject(Router).navigate(['404']);
-            return EMPTY;
-          
+          }
+          inject(Router).navigate(['404']);
+          return EMPTY;
         }),
       );
   }

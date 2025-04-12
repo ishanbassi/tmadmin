@@ -70,7 +70,7 @@ describe('Phonetics routing resolve service', () => {
       });
 
       // THEN
-      expect(service.find).not.toBeCalled();
+      expect(service.find).not.toHaveBeenCalled();
       expect(resultPhonetics).toEqual(null);
     });
 

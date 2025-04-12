@@ -26,7 +26,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/employees")
 public class EmployeeResource {
 
-    private static final Logger log = LoggerFactory.getLogger(EmployeeResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(EmployeeResource.class);
 
     private static final String ENTITY_NAME = "employee";
 
@@ -58,7 +58,7 @@ public class EmployeeResource {
      */
     @PostMapping("")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) throws URISyntaxException {
-        log.debug("REST request to save Employee : {}", employee);
+        LOG.debug("REST request to save Employee : {}", employee);
         if (employee.getId() != null) {
             throw new BadRequestAlertException("A new employee cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -83,7 +83,7 @@ public class EmployeeResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Employee employee
     ) throws URISyntaxException {
-        log.debug("REST request to update Employee : {}, {}", id, employee);
+        LOG.debug("REST request to update Employee : {}, {}", id, employee);
         if (employee.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -117,7 +117,7 @@ public class EmployeeResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody Employee employee
     ) throws URISyntaxException {
-        log.debug("REST request to partial update Employee partially : {}, {}", id, employee);
+        LOG.debug("REST request to partial update Employee partially : {}, {}", id, employee);
         if (employee.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -145,7 +145,7 @@ public class EmployeeResource {
      */
     @GetMapping("")
     public ResponseEntity<List<Employee>> getAllEmployees(EmployeeCriteria criteria) {
-        log.debug("REST request to get Employees by criteria: {}", criteria);
+        LOG.debug("REST request to get Employees by criteria: {}", criteria);
 
         List<Employee> entityList = employeeQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
@@ -159,7 +159,7 @@ public class EmployeeResource {
      */
     @GetMapping("/count")
     public ResponseEntity<Long> countEmployees(EmployeeCriteria criteria) {
-        log.debug("REST request to count Employees by criteria: {}", criteria);
+        LOG.debug("REST request to count Employees by criteria: {}", criteria);
         return ResponseEntity.ok().body(employeeQueryService.countByCriteria(criteria));
     }
 
@@ -171,7 +171,7 @@ public class EmployeeResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<Employee> getEmployee(@PathVariable("id") Long id) {
-        log.debug("REST request to get Employee : {}", id);
+        LOG.debug("REST request to get Employee : {}", id);
         Optional<Employee> employee = employeeService.findOne(id);
         return ResponseUtil.wrapOrNotFound(employee);
     }
@@ -184,7 +184,7 @@ public class EmployeeResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Long id) {
-        log.debug("REST request to delete Employee : {}", id);
+        LOG.debug("REST request to delete Employee : {}", id);
         employeeService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))

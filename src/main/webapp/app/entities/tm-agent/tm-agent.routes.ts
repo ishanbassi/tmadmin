@@ -2,23 +2,20 @@ import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
-import { TmAgentComponent } from './list/tm-agent.component';
-import { TmAgentDetailComponent } from './detail/tm-agent-detail.component';
-import { TmAgentUpdateComponent } from './update/tm-agent-update.component';
 import TmAgentResolve from './route/tm-agent-routing-resolve.service';
 
 const tmAgentRoute: Routes = [
   {
     path: '',
-    component: TmAgentComponent,
+    loadComponent: () => import('./list/tm-agent.component').then(m => m.TmAgentComponent),
     data: {
-      defaultSort: `id,${  ASC}`,
+      defaultSort: `id,${ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },
   {
     path: ':id/view',
-    component: TmAgentDetailComponent,
+    loadComponent: () => import('./detail/tm-agent-detail.component').then(m => m.TmAgentDetailComponent),
     resolve: {
       tmAgent: TmAgentResolve,
     },
@@ -26,7 +23,7 @@ const tmAgentRoute: Routes = [
   },
   {
     path: 'new',
-    component: TmAgentUpdateComponent,
+    loadComponent: () => import('./update/tm-agent-update.component').then(m => m.TmAgentUpdateComponent),
     resolve: {
       tmAgent: TmAgentResolve,
     },
@@ -34,7 +31,7 @@ const tmAgentRoute: Routes = [
   },
   {
     path: ':id/edit',
-    component: TmAgentUpdateComponent,
+    loadComponent: () => import('./update/tm-agent-update.component').then(m => m.TmAgentUpdateComponent),
     resolve: {
       tmAgent: TmAgentResolve,
     },

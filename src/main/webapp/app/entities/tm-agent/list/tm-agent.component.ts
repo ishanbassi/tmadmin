@@ -6,7 +6,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import SharedModule from 'app/shared/shared.module';
 import { SortByDirective, SortDirective, SortService, type SortState, sortStateSignal } from 'app/shared/sort';
-import { DurationPipe, FormatMediumDatePipe, FormatMediumDatetimePipe } from 'app/shared/date';
+import { FormatMediumDatetimePipe } from 'app/shared/date';
 import { FormsModule } from '@angular/forms';
 
 import { ITEMS_PER_PAGE } from 'app/config/pagination.constants';
@@ -18,42 +18,31 @@ import { TmAgentDeleteDialogComponent } from '../delete/tm-agent-delete-dialog.c
 import { ITmAgent } from '../tm-agent.model';
 
 @Component({
-  standalone: true,
   selector: 'jhi-tm-agent',
   templateUrl: './tm-agent.component.html',
-  imports: [
-    RouterModule,
-    FormsModule,
-    SharedModule,
-    SortDirective,
-    SortByDirective,
-    DurationPipe,
-    FormatMediumDatetimePipe,
-    FormatMediumDatePipe,
-    InfiniteScrollDirective,
-  ],
+  imports: [RouterModule, FormsModule, SharedModule, SortDirective, SortByDirective, FormatMediumDatetimePipe, InfiniteScrollDirective],
 })
 export class TmAgentComponent implements OnInit {
   subscription: Subscription | null = null;
-  tmAgents?: ITmAgent[];
+  tmAgents = signal<ITmAgent[]>([]);
   isLoading = false;
 
   sortState = sortStateSignal({});
 
   itemsPerPage = ITEMS_PER_PAGE;
-  links: WritableSignal<{ [key: string]: undefined | { [key: string]: string | undefined } }> = signal({});
+  links: WritableSignal<Record<string, undefined | Record<string, string | undefined>>> = signal({});
   hasMorePage = computed(() => !!this.links().next);
   isFirstFetch = computed(() => Object.keys(this.links()).length === 0);
 
-  public router = inject(Router);
-  protected tmAgentService = inject(TmAgentService);
-  protected activatedRoute = inject(ActivatedRoute);
-  protected sortService = inject(SortService);
+  public readonly router = inject(Router);
+  protected readonly tmAgentService = inject(TmAgentService);
+  protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly sortService = inject(SortService);
   protected parseLinks = inject(ParseLinks);
   protected modalService = inject(NgbModal);
   protected ngZone = inject(NgZone);
 
-  trackId = (_index: number, item: ITmAgent): number => this.tmAgentService.getTmAgentIdentifier(item);
+  trackId = (item: ITmAgent): number => this.tmAgentService.getTmAgentIdentifier(item);
 
   ngOnInit(): void {
     this.subscription = combineLatest([this.activatedRoute.queryParamMap, this.activatedRoute.data])
@@ -66,7 +55,7 @@ export class TmAgentComponent implements OnInit {
   }
 
   reset(): void {
-    this.tmAgents = [];
+    this.tmAgents.set([]);
   }
 
   loadNextPage(): void {
@@ -104,16 +93,16 @@ export class TmAgentComponent implements OnInit {
   protected onResponseSuccess(response: EntityArrayResponseType): void {
     this.fillComponentAttributesFromResponseHeader(response.headers);
     const dataFromBody = this.fillComponentAttributesFromResponseBody(response.body);
-    this.tmAgents = dataFromBody;
+    this.tmAgents.set(dataFromBody);
   }
 
   protected fillComponentAttributesFromResponseBody(data: ITmAgent[] | null): ITmAgent[] {
     // If there is previous link, data is a infinite scroll pagination content.
     if (this.links().prev) {
-      const tmAgentsNew = this.tmAgents ?? [];
+      const tmAgentsNew = this.tmAgents();
       if (data) {
         for (const d of data) {
-          if (tmAgentsNew.map(op => op.id).indexOf(d.id) === -1) {
+          if (tmAgentsNew.some(op => op.id === d.id)) {
             tmAgentsNew.push(d);
           }
         }

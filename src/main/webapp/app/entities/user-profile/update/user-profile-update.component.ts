@@ -14,7 +14,6 @@ import { UserProfileService } from '../service/user-profile.service';
 import { UserProfileFormGroup, UserProfileFormService } from './user-profile-form.service';
 
 @Component({
-  standalone: true,
   selector: 'jhi-user-profile-update',
   templateUrl: './user-profile-update.component.html',
   imports: [SharedModule, FormsModule, ReactiveFormsModule],

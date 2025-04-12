@@ -8,7 +8,6 @@ import { IPublishedTmPhonetics } from '../published-tm-phonetics.model';
 import { PublishedTmPhoneticsService } from '../service/published-tm-phonetics.service';
 
 @Component({
-  standalone: true,
   templateUrl: './published-tm-phonetics-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

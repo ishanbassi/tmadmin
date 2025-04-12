@@ -8,7 +8,6 @@ import { ITrademark } from '../trademark.model';
 import { TrademarkService } from '../service/trademark.service';
 
 @Component({
-  standalone: true,
   templateUrl: './trademark-delete-dialog.component.html',
   imports: [SharedModule, FormsModule],
 })

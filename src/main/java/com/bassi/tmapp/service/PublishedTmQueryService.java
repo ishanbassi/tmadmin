@@ -24,7 +24,7 @@ import tech.jhipster.service.QueryService;
 @Transactional(readOnly = true)
 public class PublishedTmQueryService extends QueryService<PublishedTm> {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmQueryService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmQueryService.class);
 
     private final PublishedTmRepository publishedTmRepository;
 
@@ -40,7 +40,7 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
      */
     @Transactional(readOnly = true)
     public Page<PublishedTm> findByCriteria(PublishedTmCriteria criteria, Pageable page) {
-        log.debug("find by criteria : {}, page: {}", criteria, page);
+        LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<PublishedTm> specification = createSpecification(criteria);
         return publishedTmRepository.findAll(specification, page);
     }
@@ -52,7 +52,7 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
      */
     @Transactional(readOnly = true)
     public long countByCriteria(PublishedTmCriteria criteria) {
-        log.debug("count by criteria : {}", criteria);
+        LOG.debug("count by criteria : {}", criteria);
         final Specification<PublishedTm> specification = createSpecification(criteria);
         return publishedTmRepository.count(specification);
     }
@@ -66,82 +66,32 @@ public class PublishedTmQueryService extends QueryService<PublishedTm> {
         Specification<PublishedTm> specification = Specification.where(null);
         if (criteria != null) {
             // This has to be called first, because the distinct method returns null
-            if (criteria.getDistinct() != null) {
-                specification = specification.and(distinct(criteria.getDistinct()));
-            }
-            if (criteria.getId() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getId(), PublishedTm_.id));
-            }
-            if (criteria.getName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getName(), PublishedTm_.name));
-            }
-            if (criteria.getDetails() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getDetails(), PublishedTm_.details));
-            }
-            if (criteria.getApplicationNo() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getApplicationNo(), PublishedTm_.applicationNo));
-            }
-            if (criteria.getApplicationDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getApplicationDate(), PublishedTm_.applicationDate));
-            }
-            if (criteria.getAgentName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAgentName(), PublishedTm_.agentName));
-            }
-            if (criteria.getAgentAddress() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAgentAddress(), PublishedTm_.agentAddress));
-            }
-            if (criteria.getProprietorName() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getProprietorName(), PublishedTm_.proprietorName));
-            }
-            if (criteria.getProprietorAddress() != null) {
-                specification = specification.and(
-                    buildStringSpecification(criteria.getProprietorAddress(), PublishedTm_.proprietorAddress)
-                );
-            }
-            if (criteria.getHeadOffice() != null) {
-                specification = specification.and(buildSpecification(criteria.getHeadOffice(), PublishedTm_.headOffice));
-            }
-            if (criteria.getImgUrl() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getImgUrl(), PublishedTm_.imgUrl));
-            }
-            if (criteria.getTmClass() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getTmClass(), PublishedTm_.tmClass));
-            }
-            if (criteria.getJournalNo() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getJournalNo(), PublishedTm_.journalNo));
-            }
-            if (criteria.getDeleted() != null) {
-                specification = specification.and(buildSpecification(criteria.getDeleted(), PublishedTm_.deleted));
-            }
-            if (criteria.getUsage() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getUsage(), PublishedTm_.usage));
-            }
-            if (criteria.getAssociatedTms() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getAssociatedTms(), PublishedTm_.associatedTms));
-            }
-            if (criteria.getTrademarkStatus() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getTrademarkStatus(), PublishedTm_.trademarkStatus));
-            }
-            if (criteria.getCreatedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getCreatedDate(), PublishedTm_.createdDate));
-            }
-            if (criteria.getModifiedDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getModifiedDate(), PublishedTm_.modifiedDate));
-            }
-            if (criteria.getRenewalDate() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getRenewalDate(), PublishedTm_.renewalDate));
-            }
-            if (criteria.getType() != null) {
-                specification = specification.and(buildSpecification(criteria.getType(), PublishedTm_.type));
-            }
-            if (criteria.getPageNo() != null) {
-                specification = specification.and(buildRangeSpecification(criteria.getPageNo(), PublishedTm_.pageNo));
-            }
-            if (criteria.getTmAgentId() != null) {
-                specification = specification.and(
-                    buildSpecification(criteria.getTmAgentId(), root -> root.join(PublishedTm_.tmAgent, JoinType.LEFT).get(TmAgent_.id))
-                );
-            }
+            specification = Specification.allOf(
+                Boolean.TRUE.equals(criteria.getDistinct()) ? distinct(criteria.getDistinct()) : null,
+                buildRangeSpecification(criteria.getId(), PublishedTm_.id),
+                buildStringSpecification(criteria.getName(), PublishedTm_.name),
+                buildStringSpecification(criteria.getDetails(), PublishedTm_.details),
+                buildRangeSpecification(criteria.getApplicationNo(), PublishedTm_.applicationNo),
+                buildRangeSpecification(criteria.getApplicationDate(), PublishedTm_.applicationDate),
+                buildStringSpecification(criteria.getAgentName(), PublishedTm_.agentName),
+                buildStringSpecification(criteria.getAgentAddress(), PublishedTm_.agentAddress),
+                buildStringSpecification(criteria.getProprietorName(), PublishedTm_.proprietorName),
+                buildStringSpecification(criteria.getProprietorAddress(), PublishedTm_.proprietorAddress),
+                buildSpecification(criteria.getHeadOffice(), PublishedTm_.headOffice),
+                buildStringSpecification(criteria.getImgUrl(), PublishedTm_.imgUrl),
+                buildRangeSpecification(criteria.getTmClass(), PublishedTm_.tmClass),
+                buildRangeSpecification(criteria.getJournalNo(), PublishedTm_.journalNo),
+                buildSpecification(criteria.getDeleted(), PublishedTm_.deleted),
+                buildStringSpecification(criteria.getUsage(), PublishedTm_.usage),
+                buildStringSpecification(criteria.getAssociatedTms(), PublishedTm_.associatedTms),
+                buildStringSpecification(criteria.getTrademarkStatus(), PublishedTm_.trademarkStatus),
+                buildRangeSpecification(criteria.getCreatedDate(), PublishedTm_.createdDate),
+                buildRangeSpecification(criteria.getModifiedDate(), PublishedTm_.modifiedDate),
+                buildRangeSpecification(criteria.getRenewalDate(), PublishedTm_.renewalDate),
+                buildSpecification(criteria.getType(), PublishedTm_.type),
+                buildRangeSpecification(criteria.getPageNo(), PublishedTm_.pageNo),
+                buildSpecification(criteria.getTmAgentId(), root -> root.join(PublishedTm_.tmAgent, JoinType.LEFT).get(TmAgent_.id))
+            );
         }
         return specification;
     }

@@ -10,12 +10,10 @@ import { MetricsCacheComponent } from './blocks/metrics-cache/metrics-cache.comp
 import { MetricsDatasourceComponent } from './blocks/metrics-datasource/metrics-datasource.component';
 import { MetricsEndpointsRequestsComponent } from './blocks/metrics-endpoints-requests/metrics-endpoints-requests.component';
 import { MetricsGarbageCollectorComponent } from './blocks/metrics-garbagecollector/metrics-garbagecollector.component';
-import { MetricsModalThreadsComponent } from './blocks/metrics-modal-threads/metrics-modal-threads.component';
 import { MetricsRequestComponent } from './blocks/metrics-request/metrics-request.component';
 import { MetricsSystemComponent } from './blocks/metrics-system/metrics-system.component';
 
 @Component({
-  standalone: true,
   selector: 'jhi-metrics',
   templateUrl: './metrics.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,7 +25,6 @@ import { MetricsSystemComponent } from './blocks/metrics-system/metrics-system.c
     MetricsDatasourceComponent,
     MetricsEndpointsRequestsComponent,
     MetricsGarbageCollectorComponent,
-    MetricsModalThreadsComponent,
     MetricsRequestComponent,
     MetricsSystemComponent,
   ],
@@ -37,8 +34,8 @@ export default class MetricsComponent implements OnInit {
   threads = signal<Thread[] | undefined>(undefined);
   updatingMetrics = signal(true);
 
-  private metricsService = inject(MetricsService);
-  private changeDetector = inject(ChangeDetectorRef);
+  private readonly metricsService = inject(MetricsService);
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
   ngOnInit(): void {
     this.refresh();
@@ -52,10 +49,6 @@ export default class MetricsComponent implements OnInit {
       this.updatingMetrics.set(false);
       this.changeDetector.markForCheck();
     });
-  }
-
-  metricsKeyExists(key: keyof Metrics): boolean {
-    return Boolean(this.metrics()?.[key]);
   }
 
   metricsKeyExistsAndObjectNotEmpty(key: keyof Metrics): boolean {

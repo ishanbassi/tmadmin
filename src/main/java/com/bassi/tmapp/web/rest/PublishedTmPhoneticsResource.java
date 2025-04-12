@@ -24,7 +24,7 @@ import tech.jhipster.web.util.ResponseUtil;
 @RequestMapping("/api/published-tm-phonetics")
 public class PublishedTmPhoneticsResource {
 
-    private static final Logger log = LoggerFactory.getLogger(PublishedTmPhoneticsResource.class);
+    private static final Logger LOG = LoggerFactory.getLogger(PublishedTmPhoneticsResource.class);
 
     private static final String ENTITY_NAME = "publishedTmPhonetics";
 
@@ -53,7 +53,7 @@ public class PublishedTmPhoneticsResource {
     @PostMapping("")
     public ResponseEntity<PublishedTmPhonetics> createPublishedTmPhonetics(@RequestBody PublishedTmPhonetics publishedTmPhonetics)
         throws URISyntaxException {
-        log.debug("REST request to save PublishedTmPhonetics : {}", publishedTmPhonetics);
+        LOG.debug("REST request to save PublishedTmPhonetics : {}", publishedTmPhonetics);
         if (publishedTmPhonetics.getId() != null) {
             throw new BadRequestAlertException("A new publishedTmPhonetics cannot already have an ID", ENTITY_NAME, "idexists");
         }
@@ -78,7 +78,7 @@ public class PublishedTmPhoneticsResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody PublishedTmPhonetics publishedTmPhonetics
     ) throws URISyntaxException {
-        log.debug("REST request to update PublishedTmPhonetics : {}, {}", id, publishedTmPhonetics);
+        LOG.debug("REST request to update PublishedTmPhonetics : {}, {}", id, publishedTmPhonetics);
         if (publishedTmPhonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -112,7 +112,7 @@ public class PublishedTmPhoneticsResource {
         @PathVariable(value = "id", required = false) final Long id,
         @RequestBody PublishedTmPhonetics publishedTmPhonetics
     ) throws URISyntaxException {
-        log.debug("REST request to partial update PublishedTmPhonetics partially : {}, {}", id, publishedTmPhonetics);
+        LOG.debug("REST request to partial update PublishedTmPhonetics partially : {}, {}", id, publishedTmPhonetics);
         if (publishedTmPhonetics.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
@@ -139,7 +139,7 @@ public class PublishedTmPhoneticsResource {
      */
     @GetMapping("")
     public List<PublishedTmPhonetics> getAllPublishedTmPhonetics() {
-        log.debug("REST request to get all PublishedTmPhonetics");
+        LOG.debug("REST request to get all PublishedTmPhonetics");
         return publishedTmPhoneticsService.findAll();
     }
 
@@ -151,7 +151,7 @@ public class PublishedTmPhoneticsResource {
      */
     @GetMapping("/{id}")
     public ResponseEntity<PublishedTmPhonetics> getPublishedTmPhonetics(@PathVariable("id") Long id) {
-        log.debug("REST request to get PublishedTmPhonetics : {}", id);
+        LOG.debug("REST request to get PublishedTmPhonetics : {}", id);
         Optional<PublishedTmPhonetics> publishedTmPhonetics = publishedTmPhoneticsService.findOne(id);
         return ResponseUtil.wrapOrNotFound(publishedTmPhonetics);
     }
@@ -164,7 +164,7 @@ public class PublishedTmPhoneticsResource {
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePublishedTmPhonetics(@PathVariable("id") Long id) {
-        log.debug("REST request to delete PublishedTmPhonetics : {}", id);
+        LOG.debug("REST request to delete PublishedTmPhonetics : {}", id);
         publishedTmPhoneticsService.delete(id);
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
