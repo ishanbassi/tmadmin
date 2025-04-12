@@ -36,6 +36,16 @@ const routes: Routes = [
     data: { pageTitle: 'UserProfiles' },
     loadChildren: () => import('./user-profile/user-profile.routes'),
   },
+  {
+    path: 'lead',
+    data: { pageTitle: 'Leads' },
+    loadChildren: () => import('./lead/lead.routes'),
+  },
+  {
+    path: 'employee',
+    data: { pageTitle: 'Employees' },
+    loadChildren: () => import('./employee/employee.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

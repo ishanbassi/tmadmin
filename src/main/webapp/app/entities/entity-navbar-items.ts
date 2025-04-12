@@ -25,4 +25,12 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'UserProfile',
     route: '/user-profile',
   },
+  {
+    name: 'Lead',
+    route: '/lead',
+  },
+  {
+    name: 'Employee',
+    route: '/employee',
+  },
 ];
