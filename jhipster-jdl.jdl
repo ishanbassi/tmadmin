@@ -107,6 +107,50 @@ entity UserProfile{
     
 }
 
+entity Lead{
+	fullName String
+	phoneNumber String
+	email String
+	city String
+	brandName String 
+	selectedPackage String
+	tmClass Integer
+	comments String
+	contactMethod ContactMethod
+	createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
+    deleted Boolean
+    status LeadStatus
+    leadSource String
+}
+
+entity Employee {
+	fullName String
+	phoneNumber String
+	email String
+	createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
+    deleted Boolean
+    designation String
+    joiningDate LocalDate
+	
+
+}
+
+enum ContactMethod{
+	CALL,
+	MESSAGE,
+	EMAIL
+}
+
+enum LeadStatus{
+	CONVERTED,
+	NEW,
+	DOCUMENTS_PENDING,
+	LOST,
+	FOLLOW_UP
+	
+}
 
 enum HeadOffice {
 	DELHI,
@@ -131,11 +175,13 @@ enum TrademarkType{
 	SOUNDMARK
 }
 
+
 relationship ManyToOne{
 	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
     PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
     Trademark { userProfile } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
     PublishedTm { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
+    Lead {assignedTo} to  @OnDelete("CASCADE") @OnUpdate("CASCADE") Employee
 }
 
 relationship OneToOne{
@@ -146,6 +192,8 @@ relationship OneToOne{
 filter Trademark
 filter PublishedTm
 filter TmAgent
+filter Employee
+filter Lead
 
 
 

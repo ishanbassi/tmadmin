@@ -1,0 +1,82 @@
+{
+  "annotations": {
+    "changelogDate": "20250412043410"
+  },
+  "applications": ["tmapp"],
+  "fields": [
+    {
+      "fieldName": "fullName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phoneNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "city",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "brandName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "selectedPackage",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "tmClass",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "comments",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "contactMethod",
+      "fieldType": "ContactMethod",
+      "fieldValues": "CALL,MESSAGE,EMAIL"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "LeadStatus",
+      "fieldValues": "CONVERTED,NEW,DOCUMENTS_PENDING,LOST,FOLLOW_UP"
+    },
+    {
+      "fieldName": "leadSource",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Lead",
+  "relationships": [
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "employee",
+      "relationshipName": "assignedTo",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

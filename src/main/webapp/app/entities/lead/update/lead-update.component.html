@@ -1,0 +1,189 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-lead-heading" data-cy="LeadCreateUpdateHeading">Create or edit a Lead</h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_fullName">Full Name</label>
+          <input type="text" class="form-control" name="fullName" id="field_fullName" data-cy="fullName" formControlName="fullName" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_phoneNumber">Phone Number</label>
+          <input
+            type="text"
+            class="form-control"
+            name="phoneNumber"
+            id="field_phoneNumber"
+            data-cy="phoneNumber"
+            formControlName="phoneNumber"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_email">Email</label>
+          <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_city">City</label>
+          <input type="text" class="form-control" name="city" id="field_city" data-cy="city" formControlName="city" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_brandName">Brand Name</label>
+          <input type="text" class="form-control" name="brandName" id="field_brandName" data-cy="brandName" formControlName="brandName" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_selectedPackage">Selected Package</label>
+          <input
+            type="text"
+            class="form-control"
+            name="selectedPackage"
+            id="field_selectedPackage"
+            data-cy="selectedPackage"
+            formControlName="selectedPackage"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_tmClass">Tm Class</label>
+          <input type="number" class="form-control" name="tmClass" id="field_tmClass" data-cy="tmClass" formControlName="tmClass" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_comments">Comments</label>
+          <input type="text" class="form-control" name="comments" id="field_comments" data-cy="comments" formControlName="comments" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_contactMethod">Contact Method</label>
+          <select
+            class="form-control"
+            name="contactMethod"
+            formControlName="contactMethod"
+            id="field_contactMethod"
+            data-cy="contactMethod"
+          >
+            <option [ngValue]="null"></option>
+            @for (contactMethod of contactMethodValues; track $index) {
+              <option [value]="contactMethod">{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[contactMethod] }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_createdDate">Created Date</label>
+          <div class="d-flex">
+            <input
+              id="field_createdDate"
+              data-cy="createdDate"
+              type="datetime-local"
+              class="form-control"
+              name="createdDate"
+              formControlName="createdDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_modifiedDate">Modified Date</label>
+          <div class="d-flex">
+            <input
+              id="field_modifiedDate"
+              data-cy="modifiedDate"
+              type="datetime-local"
+              class="form-control"
+              name="modifiedDate"
+              formControlName="modifiedDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_deleted">Deleted</label>
+          <input type="checkbox" class="form-check" name="deleted" id="field_deleted" data-cy="deleted" formControlName="deleted" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_status">Status</label>
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null"></option>
+            @for (leadStatus of leadStatusValues; track $index) {
+              <option [value]="leadStatus">
+                {{
+                  {
+                    null: '',
+                    CONVERTED: 'CONVERTED',
+                    NEW: 'NEW',
+                    DOCUMENTS_PENDING: 'DOCUMENTS_PENDING',
+                    LOST: 'LOST',
+                    FOLLOW_UP: 'FOLLOW_UP',
+                  }[leadStatus]
+                }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_leadSource">Lead Source</label>
+          <input
+            type="text"
+            class="form-control"
+            name="leadSource"
+            id="field_leadSource"
+            data-cy="leadSource"
+            formControlName="leadSource"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_assignedTo">Assigned To</label>
+          <select
+            class="form-control"
+            id="field_assignedTo"
+            data-cy="assignedTo"
+            name="assignedTo"
+            formControlName="assignedTo"
+            [compareWith]="compareEmployee"
+          >
+            <option [ngValue]="null"></option>
+            @for (employeeOption of employeesSharedCollection; track $index) {
+              <option [ngValue]="employeeOption">{{ employeeOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

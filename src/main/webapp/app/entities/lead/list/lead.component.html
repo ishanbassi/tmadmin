@@ -1,0 +1,214 @@
+<div>
+  <h2 id="page-heading" data-cy="LeadHeading">
+    <span>Leads</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-lead"
+        [routerLink]="['/lead/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Lead</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error></jhi-alert-error>
+
+  <jhi-alert></jhi-alert>
+
+  @if (leads?.length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Leads found</span>
+    </div>
+  }
+
+  @if (leads && leads.length > 0) {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [sortState]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fullName">
+              <div class="d-flex">
+                <span>Full Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="phoneNumber">
+              <div class="d-flex">
+                <span>Phone Number</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="email">
+              <div class="d-flex">
+                <span>Email</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="city">
+              <div class="d-flex">
+                <span>City</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="brandName">
+              <div class="d-flex">
+                <span>Brand Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="selectedPackage">
+              <div class="d-flex">
+                <span>Selected Package</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="tmClass">
+              <div class="d-flex">
+                <span>Tm Class</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="comments">
+              <div class="d-flex">
+                <span>Comments</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="contactMethod">
+              <div class="d-flex">
+                <span>Contact Method</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdDate">
+              <div class="d-flex">
+                <span>Created Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifiedDate">
+              <div class="d-flex">
+                <span>Modified Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="deleted">
+              <div class="d-flex">
+                <span>Deleted</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="status">
+              <div class="d-flex">
+                <span>Status</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="leadSource">
+              <div class="d-flex">
+                <span>Lead Source</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="assignedTo.id">
+              <div class="d-flex">
+                <span>Assigned To</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (lead of leads; track trackId(lead)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/lead', lead.id, 'view']">{{ lead.id }}</a>
+              </td>
+              <td>{{ lead.fullName }}</td>
+              <td>{{ lead.phoneNumber }}</td>
+              <td>{{ lead.email }}</td>
+              <td>{{ lead.city }}</td>
+              <td>{{ lead.brandName }}</td>
+              <td>{{ lead.selectedPackage }}</td>
+              <td>{{ lead.tmClass }}</td>
+              <td>{{ lead.comments }}</td>
+              <td>{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[lead.contactMethod ?? 'null'] }}</td>
+              <td>{{ lead.createdDate | formatMediumDatetime }}</td>
+              <td>{{ lead.modifiedDate | formatMediumDatetime }}</td>
+              <td>{{ lead.deleted }}</td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    CONVERTED: 'CONVERTED',
+                    NEW: 'NEW',
+                    DOCUMENTS_PENDING: 'DOCUMENTS_PENDING',
+                    LOST: 'LOST',
+                    FOLLOW_UP: 'FOLLOW_UP',
+                  }[lead.status ?? 'null']
+                }}
+              </td>
+              <td>{{ lead.leadSource }}</td>
+              <td>
+                @if (lead.assignedTo) {
+                  <div>
+                    <a [routerLink]="['/employee', lead.assignedTo.id, 'view']">{{ lead.assignedTo.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a [routerLink]="['/lead', lead.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a [routerLink]="['/lead', lead.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(lead)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
