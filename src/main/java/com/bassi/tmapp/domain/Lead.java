@@ -322,7 +322,7 @@ public class Lead implements Serializable {
             ", leadSource='" + getLeadSource() + "'" +
             "}";
     }
-    
+
     @PrePersist
     private void beforeSave() {
         this.createdDate = ZonedDateTime.now();
@@ -335,5 +335,4 @@ public class Lead implements Serializable {
     private void beforeUpdate() {
         this.modifiedDate = ZonedDateTime.now();
     }
-
 }

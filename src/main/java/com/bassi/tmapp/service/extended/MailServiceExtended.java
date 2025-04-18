@@ -4,7 +4,6 @@ import com.bassi.tmapp.config.ApplicationProperties;
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.service.MailService;
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
@@ -32,8 +31,7 @@ import tech.jhipster.config.JHipsterProperties;
 public class MailServiceExtended extends MailService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MailServiceExtended.class);
-	private final ApplicationProperties applicationProperties;
-
+    private final ApplicationProperties applicationProperties;
 
     public MailServiceExtended(
         JHipsterProperties jHipsterProperties,
@@ -42,11 +40,10 @@ public class MailServiceExtended extends MailService {
         SpringTemplateEngine templateEngine,
         ApplicationProperties applicationProperties
     ) {
-    	super(jHipsterProperties,javaMailSender, messageSource, templateEngine);
-    	this.applicationProperties= applicationProperties;
+        super(jHipsterProperties, javaMailSender, messageSource, templateEngine);
+        this.applicationProperties = applicationProperties;
     }
 
-    
     @Async
     public void sendNewLeadMailToAdmin(Lead lead) {
         LOG.debug("Sending new lead mail to '{}'", applicationProperties.getAdminNotificationsEmailAddress());

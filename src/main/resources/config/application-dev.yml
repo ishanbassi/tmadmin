@@ -52,10 +52,10 @@ spring:
     password: Ish@n070720
     properties:
       mail:
-       smtp:
-        auth: true
-        starttls:
-          enable: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
@@ -98,7 +98,7 @@ jhipster:
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
     base-url: http://127.0.0.1:8080
-    from: ishanbassi23@gmail.com	
+    from: ishanbassi23@gmail.com
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -120,8 +120,8 @@ application:
     url: ishanbassi23@gmail.com
     userId: Gm0iz1chYVbJ1En2QzG8
     apiKey: https://api.apitruecaptcha.org/one/gettext
-  admin-notifications-email-address: 
-     - ishanbassi23@gmail.com
+  admin-notifications-email-address:
+    - ishanbassi23@gmail.com
 
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/

@@ -1,13 +1,12 @@
 package com.bassi.tmapp.domain;
 
+import com.bassi.tmapp.domain.enumeration.LeadStatus;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.bassi.tmapp.domain.enumeration.LeadStatus;
 
 /**
  * A Employee.
@@ -203,7 +202,7 @@ public class Employee implements Serializable {
             ", joiningDate='" + getJoiningDate() + "'" +
             "}";
     }
-    
+
     @PrePersist
     private void beforeSave() {
         this.createdDate = ZonedDateTime.now();

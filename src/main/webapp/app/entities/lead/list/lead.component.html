@@ -33,7 +33,6 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            
             <th scope="col" jhiSortBy="fullName">
               <div class="d-flex">
                 <span>Full Name</span>
@@ -69,8 +68,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
-            
+
             <th scope="col" jhiSortBy="contactMethod">
               <div class="d-flex">
                 <span>Contact Method</span>
@@ -78,7 +76,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            
+
             <th scope="col" jhiSortBy="status">
               <div class="d-flex">
                 <span>Status</span>
@@ -100,8 +98,7 @@
             <tr data-cy="entityTable">
               <td>
                 <span data-toggle="tooltip" data-placement="bottom" title="Lead needs to be viewed">
-                  <img *ngIf="lead.status == 'NEW'"
-                    src="/content/images/icons/alert-circle.svg" alt="" class="lead-warning">
+                  <img *ngIf="lead.status == 'NEW'" src="/content/images/icons/alert-circle.svg" alt="" class="lead-warning" />
                 </span>
                 {{ lead.fullName }}
               </td>
@@ -109,7 +106,7 @@
               <td>{{ lead.email }}</td>
               <td>{{ lead.city }}</td>
               <td>{{ lead.brandName }}</td>
-              
+
               <td>{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[lead.contactMethod ?? 'null'] }}</td>
               <td>
                 {{
