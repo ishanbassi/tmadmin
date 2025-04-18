@@ -1,5 +1,7 @@
 package com.bassi.tmapp.config;
 
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -13,7 +15,7 @@ public class ApplicationProperties {
 
     private final Liquibase liquibase = new Liquibase();
     private final Captcha captcha = new Captcha();
-
+    private List<String> adminNotificationsEmailAddress;
     // jhipster-needle-application-properties-property
 
     public Liquibase getLiquibase() {
@@ -71,4 +73,14 @@ public class ApplicationProperties {
             this.url = url;
         }
     }
+
+	public List<String> getAdminNotificationsEmailAddress() {
+		return adminNotificationsEmailAddress;
+	}
+
+	public void setAdminNotificationsEmailAddress(List<String> adminNotificationsEmailAddress) {
+		this.adminNotificationsEmailAddress = adminNotificationsEmailAddress;
+	}
+    
+    
 }

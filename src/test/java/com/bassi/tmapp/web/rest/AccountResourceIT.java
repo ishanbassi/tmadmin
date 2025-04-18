@@ -369,7 +369,7 @@ class AccountResourceIT {
         User user = new User();
         user.setLogin("activate-account");
         user.setEmail("activate-account@example.com");
-        user.setPassword(RandomStringUtils.insecure().nextAlphanumeric(60));
+        user.setPassword(RandomStringUtils.randomAlphanumeric(60));
         user.setActivated(false);
         user.setActivationKey(activationKey);
 

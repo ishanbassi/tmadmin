@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -30,6 +31,8 @@ public class MailService {
     private static final String USER = "user";
 
     private static final String BASE_URL = "baseUrl";
+    
+    private static final String LEAD = "lead";
 
     private final JHipsterProperties jHipsterProperties;
 
@@ -98,6 +101,22 @@ public class MailService {
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
         sendEmailSync(user.getEmail(), subject, content, false, true);
+    }
+    
+    private void sendNewLeadMailToAdmin(Lead lead, String templateName, String titleKey) {
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(LEAD,lead );
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        context.setVariable(templateName, context); 	 	
+        context.setVariable("name", lead.getFullName());
+        context.setVariable("email", lead.getEmail());
+        context.setVariable("phone", lead.getPhoneNumber());
+        context.setVariable("city", lead.getCity());
+        context.setVariable("id", lead.getId());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmailSync(lead.getEmail(), subject, content, false, true);
     }
 
     @Async

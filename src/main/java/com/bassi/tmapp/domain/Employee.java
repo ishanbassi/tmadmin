@@ -7,6 +7,8 @@ import java.time.ZonedDateTime;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.bassi.tmapp.domain.enumeration.LeadStatus;
+
 /**
  * A Employee.
  */
@@ -200,5 +202,17 @@ public class Employee implements Serializable {
             ", designation='" + getDesignation() + "'" +
             ", joiningDate='" + getJoiningDate() + "'" +
             "}";
+    }
+    
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+        this.deleted = false;
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
     }
 }

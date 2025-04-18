@@ -32,3 +32,39 @@ ALTER TABLE published_tm ADD COLUMN type VARCHAR(255) ;
 
 
 
+CREATE TABLE employee(
+id BIGINT PRIMARY KEY NOT NULL,
+    full_name VARCHAR(255),
+    phone_number VARCHAR(255),
+    email VARCHAR(255),
+	created_date TIMESTAMP,
+    modified_date TIMESTAMP,
+    deleted BOOLEAN,
+    designation VARCHAR(255),
+    joining_date date
+);
+
+CREATE TABLE lead (
+    id BIGINT PRIMARY KEY NOT NULL,
+    full_name VARCHAR(255),
+    phone_number VARCHAR(255),
+    email VARCHAR(255),
+    city VARCHAR(255),
+    brand_name VARCHAR(255),
+    selected_package VARCHAR(255),
+    tm_class INTEGER,
+    comments VARCHAR(255),
+    contact_method VARCHAR(255),
+    created_date TIMESTAMP,
+    modified_date TIMESTAMP,
+    deleted BOOLEAN,
+    status VARCHAR(255),
+    lead_source VARCHAR(255),
+    assigned_to_id BIGINT,
+	employee_id BIGINT,
+	CONSTRAINT fk_lead__employee_id FOREIGN KEY (employee_id)
+	REFERENCES public.employee (id)
+);
+
+
+
