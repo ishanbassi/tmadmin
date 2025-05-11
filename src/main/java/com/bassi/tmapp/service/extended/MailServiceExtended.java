@@ -47,6 +47,6 @@ public class MailServiceExtended extends MailService {
     @Async
     public void sendNewLeadMailToAdmin(Lead lead) {
         LOG.debug("Sending new lead mail to '{}'", applicationProperties.getAdminNotificationsEmailAddress());
-        sendNewLeadMailToAdmin(lead, "mail/newLeadEmail", "email.lead.title");
+        sendNewLeadMailToAdmin(lead, "mail/newLeadEmail", "email.lead.title", applicationProperties.getAdminNotificationsEmailAddress());
     }
 }

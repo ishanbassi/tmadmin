@@ -5,6 +5,7 @@ import com.bassi.tmapp.repository.LeadRepository;
 import com.bassi.tmapp.service.LeadQueryService;
 import com.bassi.tmapp.service.LeadService;
 import com.bassi.tmapp.service.criteria.LeadCriteria;
+import com.bassi.tmapp.service.extended.LeadServiceExtended;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,14 +36,22 @@ public class LeadResourceExtended {
 
     private final LeadService leadService;
 
+    private final LeadServiceExtended leadServiceExtended;
+
     private final LeadRepository leadRepository;
 
     private final LeadQueryService leadQueryService;
 
-    public LeadResourceExtended(LeadService leadService, LeadRepository leadRepository, LeadQueryService leadQueryService) {
+    public LeadResourceExtended(
+        LeadService leadService,
+        LeadRepository leadRepository,
+        LeadQueryService leadQueryService,
+        LeadServiceExtended leadServiceExtended
+    ) {
         this.leadService = leadService;
         this.leadRepository = leadRepository;
         this.leadQueryService = leadQueryService;
+        this.leadServiceExtended = leadServiceExtended;
     }
 
     /**
@@ -58,7 +67,7 @@ public class LeadResourceExtended {
         if (lead.getId() != null) {
             throw new BadRequestAlertException("A new lead cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        lead = leadService.save(lead);
+        lead = leadServiceExtended.save(lead);
         return ResponseEntity.created(new URI("/api/leads/" + lead.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, lead.getId().toString()))
             .body(lead);

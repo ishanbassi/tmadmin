@@ -5,6 +5,7 @@ import com.bassi.tmapp.domain.User;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -103,7 +104,7 @@ public class MailService {
         sendEmailSync(user.getEmail(), subject, content, false, true);
     }
 
-    private void sendNewLeadMailToAdmin(Lead lead, String templateName, String titleKey) {
+    public void sendNewLeadMailToAdmin(Lead lead, String templateName, String titleKey, List<String> leadAdminEmails) {
         Locale locale = Locale.forLanguageTag("en");
         Context context = new Context(locale);
         context.setVariable(LEAD, lead);
@@ -116,7 +117,9 @@ public class MailService {
         context.setVariable("id", lead.getId());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmailSync(lead.getEmail(), subject, content, false, true);
+        for (String adminEmail : leadAdminEmails) {
+            sendEmailSync(adminEmail, subject, content, false, true);
+        }
     }
 
     @Async
