@@ -18,7 +18,7 @@ export const sampleWithPartialData: IPublishedTm = {
   trademarkStatus: 'when flustered',
   createdDate: dayjs('2024-05-21T22:53'),
   renewalDate: dayjs('2024-05-21'),
-  type: 'TRADEMARK',
+  type: 'SOUNDMARK',
 };
 
 export const sampleWithFullData: IPublishedTm = {
@@ -42,7 +42,7 @@ export const sampleWithFullData: IPublishedTm = {
   createdDate: dayjs('2024-05-22T00:28'),
   modifiedDate: dayjs('2024-05-22T07:28'),
   renewalDate: dayjs('2024-05-22'),
-  type: 'IMAGEMARK',
+  type: 'TRADEMARK',
   pageNo: 5010,
 };
 

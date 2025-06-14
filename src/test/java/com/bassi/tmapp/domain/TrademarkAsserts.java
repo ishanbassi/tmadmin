@@ -90,6 +90,6 @@ public class TrademarkAsserts {
     public static void assertTrademarkUpdatableRelationshipsEquals(Trademark expected, Trademark actual) {
         assertThat(actual)
             .as("Verify Trademark relationships")
-            .satisfies(a -> assertThat(a.getUserProfile()).as("check userProfile").isEqualTo(expected.getUserProfile()));
+            .satisfies(a -> assertThat(a.getCompany()).as("check company").isEqualTo(expected.getCompany()));
     }
 }

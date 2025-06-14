@@ -213,7 +213,16 @@
             <option [ngValue]="null"></option>
             @for (trademarkType of trademarkTypeValues; track $index) {
               <option [value]="trademarkType">
-                {{ { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[trademarkType] }}
+                {{
+                  {
+                    null: '',
+                    IMAGEMARK: 'IMAGEMARK',
+                    TRADEMARK: 'TRADEMARK',
+                    SOUNDMARK: 'SOUNDMARK',
+                    TRADEMARK_WITH_IMAGE: 'TRADEMARK_WITH_IMAGE',
+                    SLOGAN: 'SLOGAN',
+                  }[trademarkType]
+                }}
               </option>
             }
           </select>

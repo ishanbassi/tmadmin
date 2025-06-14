@@ -41,7 +41,7 @@ describe('Trademark Form Service', () => {
             renewalDate: expect.any(Object),
             type: expect.any(Object),
             pageNo: expect.any(Object),
-            userProfile: expect.any(Object),
+            company: expect.any(Object),
           }),
         );
       });
@@ -73,7 +73,7 @@ describe('Trademark Form Service', () => {
             renewalDate: expect.any(Object),
             type: expect.any(Object),
             pageNo: expect.any(Object),
-            userProfile: expect.any(Object),
+            company: expect.any(Object),
           }),
         );
       });

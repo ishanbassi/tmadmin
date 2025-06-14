@@ -7,4 +7,6 @@ public enum TrademarkType {
     IMAGEMARK,
     TRADEMARK,
     SOUNDMARK,
+    TRADEMARK_WITH_IMAGE,
+    SLOGAN,
 }

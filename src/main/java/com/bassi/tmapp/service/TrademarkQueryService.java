@@ -90,9 +90,7 @@ public class TrademarkQueryService extends QueryService<Trademark> {
                 buildRangeSpecification(criteria.getRenewalDate(), Trademark_.renewalDate),
                 buildSpecification(criteria.getType(), Trademark_.type),
                 buildRangeSpecification(criteria.getPageNo(), Trademark_.pageNo),
-                buildSpecification(criteria.getUserProfileId(), root ->
-                    root.join(Trademark_.userProfile, JoinType.LEFT).get(UserProfile_.id)
-                )
+                buildSpecification(criteria.getCompanyId(), root -> root.join(Trademark_.company, JoinType.LEFT).get(Company_.id))
             );
         }
         return specification;

@@ -1,5 +1,5 @@
 import dayjs from 'dayjs/esm';
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { ICompany } from 'app/entities/company/company.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 
@@ -26,7 +26,7 @@ export interface ITrademark {
   renewalDate?: dayjs.Dayjs | null;
   type?: keyof typeof TrademarkType | null;
   pageNo?: number | null;
-  userProfile?: IUserProfile | null;
+  company?: ICompany | null;
 }
 
 export type NewTrademark = Omit<ITrademark, 'id'> & { id: null };

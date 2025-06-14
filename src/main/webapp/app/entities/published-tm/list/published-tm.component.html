@@ -228,7 +228,16 @@
               <td>{{ publishedTm.modifiedDate | formatMediumDatetime }}</td>
               <td>{{ publishedTm.renewalDate | formatMediumDate }}</td>
               <td>
-                {{ { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[publishedTm.type ?? 'null'] }}
+                {{
+                  {
+                    null: '',
+                    IMAGEMARK: 'IMAGEMARK',
+                    TRADEMARK: 'TRADEMARK',
+                    SOUNDMARK: 'SOUNDMARK',
+                    TRADEMARK_WITH_IMAGE: 'TRADEMARK_WITH_IMAGE',
+                    SLOGAN: 'SLOGAN',
+                  }[publishedTm.type ?? 'null']
+                }}
               </td>
               <td>{{ publishedTm.pageNo }}</td>
               <td>

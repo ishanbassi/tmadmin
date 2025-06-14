@@ -98,7 +98,14 @@
           <dt><span>Type</span></dt>
           <dd>
             <span>{{
-              { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[publishedTmRef.type ?? 'null']
+              {
+                null: '',
+                IMAGEMARK: 'IMAGEMARK',
+                TRADEMARK: 'TRADEMARK',
+                SOUNDMARK: 'SOUNDMARK',
+                TRADEMARK_WITH_IMAGE: 'TRADEMARK_WITH_IMAGE',
+                SLOGAN: 'SLOGAN',
+              }[publishedTmRef.type ?? 'null']
             }}</span>
           </dd>
           <dt><span>Page No</span></dt>

@@ -53,7 +53,7 @@ type TrademarkFormGroupContent = {
   renewalDate: FormControl<TrademarkFormRawValue['renewalDate']>;
   type: FormControl<TrademarkFormRawValue['type']>;
   pageNo: FormControl<TrademarkFormRawValue['pageNo']>;
-  userProfile: FormControl<TrademarkFormRawValue['userProfile']>;
+  company: FormControl<TrademarkFormRawValue['company']>;
 };
 
 export type TrademarkFormGroup = FormGroup<TrademarkFormGroupContent>;
@@ -94,7 +94,7 @@ export class TrademarkFormService {
       renewalDate: new FormControl(trademarkRawValue.renewalDate),
       type: new FormControl(trademarkRawValue.type),
       pageNo: new FormControl(trademarkRawValue.pageNo),
-      userProfile: new FormControl(trademarkRawValue.userProfile),
+      company: new FormControl(trademarkRawValue.company),
     });
   }
 

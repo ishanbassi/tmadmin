@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
+import com.bassi.tmapp.domain.Company;
 import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
@@ -1593,24 +1593,24 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
-    void getAllTrademarksByUserProfileIsEqualToSomething() throws Exception {
-        UserProfile userProfile;
-        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
+    void getAllTrademarksByCompanyIsEqualToSomething() throws Exception {
+        Company company;
+        if (TestUtil.findAll(em, Company.class).isEmpty()) {
             trademarkRepository.saveAndFlush(trademark);
-            userProfile = UserProfileResourceIT.createEntity();
+            company = CompanyResourceIT.createEntity();
         } else {
-            userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
+            company = TestUtil.findAll(em, Company.class).get(0);
         }
-        em.persist(userProfile);
+        em.persist(company);
         em.flush();
-        trademark.setUserProfile(userProfile);
+        trademark.setCompany(company);
         trademarkRepository.saveAndFlush(trademark);
-        Long userProfileId = userProfile.getId();
-        // Get all the trademarkList where userProfile equals to userProfileId
-        defaultTrademarkShouldBeFound("userProfileId.equals=" + userProfileId);
+        Long companyId = company.getId();
+        // Get all the trademarkList where company equals to companyId
+        defaultTrademarkShouldBeFound("companyId.equals=" + companyId);
 
-        // Get all the trademarkList where userProfile equals to (userProfileId + 1)
-        defaultTrademarkShouldNotBeFound("userProfileId.equals=" + (userProfileId + 1));
+        // Get all the trademarkList where company equals to (companyId + 1)
+        defaultTrademarkShouldNotBeFound("companyId.equals=" + (companyId + 1));
     }
 
     private void defaultTrademarkFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

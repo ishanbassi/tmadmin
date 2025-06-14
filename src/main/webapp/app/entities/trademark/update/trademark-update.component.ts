@@ -7,8 +7,8 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
-import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
+import { ICompany } from 'app/entities/company/company.model';
+import { CompanyService } from 'app/entities/company/service/company.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkService } from '../service/trademark.service';
@@ -26,17 +26,17 @@ export class TrademarkUpdateComponent implements OnInit {
   headOfficeValues = Object.keys(HeadOffice);
   trademarkTypeValues = Object.keys(TrademarkType);
 
-  userProfilesSharedCollection: IUserProfile[] = [];
+  companiesSharedCollection: ICompany[] = [];
 
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);
-  protected userProfileService = inject(UserProfileService);
+  protected companyService = inject(CompanyService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: TrademarkFormGroup = this.trademarkFormService.createTrademarkFormGroup();
 
-  compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
+  compareCompany = (o1: ICompany | null, o2: ICompany | null): boolean => this.companyService.compareCompany(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ trademark }) => {
@@ -86,21 +86,19 @@ export class TrademarkUpdateComponent implements OnInit {
     this.trademark = trademark;
     this.trademarkFormService.resetForm(this.editForm, trademark);
 
-    this.userProfilesSharedCollection = this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(
-      this.userProfilesSharedCollection,
-      trademark.userProfile,
+    this.companiesSharedCollection = this.companyService.addCompanyToCollectionIfMissing<ICompany>(
+      this.companiesSharedCollection,
+      trademark.company,
     );
   }
 
   protected loadRelationshipsOptions(): void {
-    this.userProfileService
+    this.companyService
       .query()
-      .pipe(map((res: HttpResponse<IUserProfile[]>) => res.body ?? []))
+      .pipe(map((res: HttpResponse<ICompany[]>) => res.body ?? []))
       .pipe(
-        map((userProfiles: IUserProfile[]) =>
-          this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(userProfiles, this.trademark?.userProfile),
-        ),
+        map((companies: ICompany[]) => this.companyService.addCompanyToCollectionIfMissing<ICompany>(companies, this.trademark?.company)),
       )
-      .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
+      .subscribe((companies: ICompany[]) => (this.companiesSharedCollection = companies));
   }
 }

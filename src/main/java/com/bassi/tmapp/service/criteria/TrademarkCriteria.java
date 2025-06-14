@@ -102,7 +102,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private IntegerFilter pageNo;
 
-    private LongFilter userProfileId;
+    private LongFilter companyId;
 
     private Boolean distinct;
 
@@ -131,7 +131,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.renewalDate = other.optionalRenewalDate().map(LocalDateFilter::copy).orElse(null);
         this.type = other.optionalType().map(TrademarkTypeFilter::copy).orElse(null);
         this.pageNo = other.optionalPageNo().map(IntegerFilter::copy).orElse(null);
-        this.userProfileId = other.optionalUserProfileId().map(LongFilter::copy).orElse(null);
+        this.companyId = other.optionalCompanyId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -558,23 +558,23 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.pageNo = pageNo;
     }
 
-    public LongFilter getUserProfileId() {
-        return userProfileId;
+    public LongFilter getCompanyId() {
+        return companyId;
     }
 
-    public Optional<LongFilter> optionalUserProfileId() {
-        return Optional.ofNullable(userProfileId);
+    public Optional<LongFilter> optionalCompanyId() {
+        return Optional.ofNullable(companyId);
     }
 
-    public LongFilter userProfileId() {
-        if (userProfileId == null) {
-            setUserProfileId(new LongFilter());
+    public LongFilter companyId() {
+        if (companyId == null) {
+            setCompanyId(new LongFilter());
         }
-        return userProfileId;
+        return companyId;
     }
 
-    public void setUserProfileId(LongFilter userProfileId) {
-        this.userProfileId = userProfileId;
+    public void setCompanyId(LongFilter companyId) {
+        this.companyId = companyId;
     }
 
     public Boolean getDistinct() {
@@ -628,7 +628,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(renewalDate, that.renewalDate) &&
             Objects.equals(type, that.type) &&
             Objects.equals(pageNo, that.pageNo) &&
-            Objects.equals(userProfileId, that.userProfileId) &&
+            Objects.equals(companyId, that.companyId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -658,7 +658,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             renewalDate,
             type,
             pageNo,
-            userProfileId,
+            companyId,
             distinct
         );
     }
@@ -689,7 +689,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalRenewalDate().map(f -> "renewalDate=" + f + ", ").orElse("") +
             optionalType().map(f -> "type=" + f + ", ").orElse("") +
             optionalPageNo().map(f -> "pageNo=" + f + ", ").orElse("") +
-            optionalUserProfileId().map(f -> "userProfileId=" + f + ", ").orElse("") +
+            optionalCompanyId().map(f -> "companyId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

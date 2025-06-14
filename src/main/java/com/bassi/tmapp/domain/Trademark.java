@@ -94,7 +94,7 @@ public class Trademark implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
-    private UserProfile userProfile;
+    private Company company;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -384,16 +384,16 @@ public class Trademark implements Serializable {
         this.pageNo = pageNo;
     }
 
-    public UserProfile getUserProfile() {
-        return this.userProfile;
+    public Company getCompany() {
+        return this.company;
     }
 
-    public void setUserProfile(UserProfile userProfile) {
-        this.userProfile = userProfile;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
-    public Trademark userProfile(UserProfile userProfile) {
-        this.setUserProfile(userProfile);
+    public Trademark company(Company company) {
+        this.setCompany(company);
         return this;
     }
 

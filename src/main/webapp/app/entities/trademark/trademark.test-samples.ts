@@ -16,7 +16,7 @@ export const sampleWithPartialData: ITrademark = {
   tmClass: 435,
   journalNo: 17329,
   createdDate: dayjs('2024-05-22T09:34'),
-  type: 'IMAGEMARK',
+  type: 'TRADEMARK',
 };
 
 export const sampleWithFullData: ITrademark = {
@@ -40,7 +40,7 @@ export const sampleWithFullData: ITrademark = {
   createdDate: dayjs('2024-05-21T22:48'),
   modifiedDate: dayjs('2024-05-21T17:07'),
   renewalDate: dayjs('2024-05-22'),
-  type: 'TRADEMARK',
+  type: 'TRADEMARK_WITH_IMAGE',
   pageNo: 20941,
 };
 

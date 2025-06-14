@@ -4,4 +4,8 @@ export enum TrademarkType {
   TRADEMARK = 'TRADEMARK',
 
   SOUNDMARK = 'SOUNDMARK',
+
+  TRADEMARK_WITH_IMAGE = 'TRADEMARK_WITH_IMAGE',
+
+  SLOGAN = 'SLOGAN',
 }

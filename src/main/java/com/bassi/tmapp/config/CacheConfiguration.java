@@ -58,6 +58,8 @@ public class CacheConfiguration {
             createCache(cm, com.bassi.tmapp.domain.UserProfile.class.getName());
             createCache(cm, com.bassi.tmapp.domain.Lead.class.getName());
             createCache(cm, com.bassi.tmapp.domain.Employee.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.Company.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.Documents.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

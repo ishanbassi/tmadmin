@@ -10,11 +10,11 @@
     -->
     <changeSet id="20240522160735-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="user_profile_id"
+        <addForeignKeyConstraint baseColumnNames="company_id"
                                  baseTableName="trademark"
-                                 constraintName="fk_trademark__user_profile_id"
+                                 constraintName="fk_trademark__company_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="user_profile"
+                                 referencedTableName="company"
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  />

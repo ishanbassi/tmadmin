@@ -4,8 +4,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, from, of } from 'rxjs';
 
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
-import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
+import { ICompany } from 'app/entities/company/company.model';
+import { CompanyService } from 'app/entities/company/service/company.service';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormService } from './trademark-form.service';
@@ -18,7 +18,7 @@ describe('Trademark Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let trademarkFormService: TrademarkFormService;
   let trademarkService: TrademarkService;
-  let userProfileService: UserProfileService;
+  let companyService: CompanyService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -41,43 +41,43 @@ describe('Trademark Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     trademarkFormService = TestBed.inject(TrademarkFormService);
     trademarkService = TestBed.inject(TrademarkService);
-    userProfileService = TestBed.inject(UserProfileService);
+    companyService = TestBed.inject(CompanyService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('should call UserProfile query and add missing value', () => {
+    it('should call Company query and add missing value', () => {
       const trademark: ITrademark = { id: 3769 };
-      const userProfile: IUserProfile = { id: 22058 };
-      trademark.userProfile = userProfile;
+      const company: ICompany = { id: 29751 };
+      trademark.company = company;
 
-      const userProfileCollection: IUserProfile[] = [{ id: 22058 }];
-      jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
-      const additionalUserProfiles = [userProfile];
-      const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
-      jest.spyOn(userProfileService, 'addUserProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
+      const companyCollection: ICompany[] = [{ id: 29751 }];
+      jest.spyOn(companyService, 'query').mockReturnValue(of(new HttpResponse({ body: companyCollection })));
+      const additionalCompanies = [company];
+      const expectedCollection: ICompany[] = [...additionalCompanies, ...companyCollection];
+      jest.spyOn(companyService, 'addCompanyToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
-      expect(userProfileService.query).toHaveBeenCalled();
-      expect(userProfileService.addUserProfileToCollectionIfMissing).toHaveBeenCalledWith(
-        userProfileCollection,
-        ...additionalUserProfiles.map(expect.objectContaining),
+      expect(companyService.query).toHaveBeenCalled();
+      expect(companyService.addCompanyToCollectionIfMissing).toHaveBeenCalledWith(
+        companyCollection,
+        ...additionalCompanies.map(expect.objectContaining),
       );
-      expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
+      expect(comp.companiesSharedCollection).toEqual(expectedCollection);
     });
 
     it('should update editForm', () => {
       const trademark: ITrademark = { id: 3769 };
-      const userProfile: IUserProfile = { id: 22058 };
-      trademark.userProfile = userProfile;
+      const company: ICompany = { id: 29751 };
+      trademark.company = company;
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
-      expect(comp.userProfilesSharedCollection).toContainEqual(userProfile);
+      expect(comp.companiesSharedCollection).toContainEqual(company);
       expect(comp.trademark).toEqual(trademark);
     });
   });
@@ -151,13 +151,13 @@ describe('Trademark Management Update Component', () => {
   });
 
   describe('Compare relationships', () => {
-    describe('compareUserProfile', () => {
-      it('should forward to userProfileService', () => {
-        const entity = { id: 22058 };
-        const entity2 = { id: 9009 };
-        jest.spyOn(userProfileService, 'compareUserProfile');
-        comp.compareUserProfile(entity, entity2);
-        expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);
+    describe('compareCompany', () => {
+      it('should forward to companyService', () => {
+        const entity = { id: 29751 };
+        const entity2 = { id: 7586 };
+        jest.spyOn(companyService, 'compareCompany');
+        comp.compareCompany(entity, entity2);
+        expect(companyService.compareCompany).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

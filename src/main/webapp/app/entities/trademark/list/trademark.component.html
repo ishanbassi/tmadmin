@@ -187,9 +187,9 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="userProfile.id">
+            <th scope="col" jhiSortBy="company.id">
               <div class="d-flex">
-                <span>User Profile</span>
+                <span>Company</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -227,12 +227,23 @@
               <td>{{ trademark.createdDate | formatMediumDatetime }}</td>
               <td>{{ trademark.modifiedDate | formatMediumDatetime }}</td>
               <td>{{ trademark.renewalDate | formatMediumDate }}</td>
-              <td>{{ { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[trademark.type ?? 'null'] }}</td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    IMAGEMARK: 'IMAGEMARK',
+                    TRADEMARK: 'TRADEMARK',
+                    SOUNDMARK: 'SOUNDMARK',
+                    TRADEMARK_WITH_IMAGE: 'TRADEMARK_WITH_IMAGE',
+                    SLOGAN: 'SLOGAN',
+                  }[trademark.type ?? 'null']
+                }}
+              </td>
               <td>{{ trademark.pageNo }}</td>
               <td>
-                @if (trademark.userProfile) {
+                @if (trademark.company) {
                   <div>
-                    <a [routerLink]="['/user-profile', trademark.userProfile.id, 'view']">{{ trademark.userProfile.id }}</a>
+                    <a [routerLink]="['/company', trademark.company.id, 'view']">{{ trademark.company.id }}</a>
                   </div>
                 }
               </td>

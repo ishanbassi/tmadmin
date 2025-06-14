@@ -98,18 +98,25 @@
           <dt><span>Type</span></dt>
           <dd>
             <span>{{
-              { null: '', IMAGEMARK: 'IMAGEMARK', TRADEMARK: 'TRADEMARK', SOUNDMARK: 'SOUNDMARK' }[trademarkRef.type ?? 'null']
+              {
+                null: '',
+                IMAGEMARK: 'IMAGEMARK',
+                TRADEMARK: 'TRADEMARK',
+                SOUNDMARK: 'SOUNDMARK',
+                TRADEMARK_WITH_IMAGE: 'TRADEMARK_WITH_IMAGE',
+                SLOGAN: 'SLOGAN',
+              }[trademarkRef.type ?? 'null']
             }}</span>
           </dd>
           <dt><span>Page No</span></dt>
           <dd>
             <span>{{ trademarkRef.pageNo }}</span>
           </dd>
-          <dt><span>User Profile</span></dt>
+          <dt><span>Company</span></dt>
           <dd>
-            @if (trademark()!.userProfile) {
+            @if (trademark()!.company) {
               <div>
-                <a [routerLink]="['/user-profile', trademark()!.userProfile?.id, 'view']">{{ trademarkRef.userProfile?.id }}</a>
+                <a [routerLink]="['/company', trademark()!.company?.id, 'view']">{{ trademarkRef.company?.id }}</a>
               </div>
             }
           </dd>

@@ -1,0 +1,86 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (company(); as companyRef) {
+      <div>
+        <h2 data-cy="companyDetailsHeading"><span>Company</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ companyRef.id }}</span>
+          </dd>
+          <dt><span>Type</span></dt>
+          <dd>
+            <span>{{ companyRef.type }}</span>
+          </dd>
+          <dt><span>Name</span></dt>
+          <dd>
+            <span>{{ companyRef.name }}</span>
+          </dd>
+          <dt><span>Cin</span></dt>
+          <dd>
+            <span>{{ companyRef.cin }}</span>
+          </dd>
+          <dt><span>Gstin</span></dt>
+          <dd>
+            <span>{{ companyRef.gstin }}</span>
+          </dd>
+          <dt><span>Nature Of Business</span></dt>
+          <dd>
+            <span>{{ companyRef.natureOfBusiness }}</span>
+          </dd>
+          <dt><span>Address</span></dt>
+          <dd>
+            <span>{{ companyRef.address }}</span>
+          </dd>
+          <dt><span>State</span></dt>
+          <dd>
+            <span>{{ companyRef.state }}</span>
+          </dd>
+          <dt><span>Pincode</span></dt>
+          <dd>
+            <span>{{ companyRef.pincode }}</span>
+          </dd>
+          <dt><span>City</span></dt>
+          <dd>
+            <span>{{ companyRef.city }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ companyRef.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ companyRef.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ companyRef.deleted }}</span>
+          </dd>
+          <dt><span>User</span></dt>
+          <dd>
+            @if (company()!.user) {
+              <div>
+                <a [routerLink]="['/user-profile', company()!.user?.id, 'view']">{{ companyRef.user?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/company', companyRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

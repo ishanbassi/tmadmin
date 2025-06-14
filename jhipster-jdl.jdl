@@ -139,6 +139,30 @@ entity Employee {
 	
 
 }
+entity Company{
+	type String
+	name String
+	cin String
+	gstin String
+	natureOfBusiness String
+	address String
+	state String
+	pincode String
+	city String
+	createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
+    deleted Boolean
+
+}
+
+entity Documents{
+	documentType String
+	fileUrl String
+	createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
+    deleted Boolean
+	
+}
 
 enum ContactMethod{
 	CALL,
@@ -175,16 +199,22 @@ enum TrademarkStatus{
 enum TrademarkType{
 	IMAGEMARK,
 	TRADEMARK,
-	SOUNDMARK
+	SOUNDMARK,
+	TRADEMARK_WITH_IMAGE,
+	SLOGAN
 }
 
 
 relationship ManyToOne{
 	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
     PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
-    Trademark { userProfile } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
+    Trademark { company } to @OnDelete("CASCADE") @OnUpdate("CASCADE") Company
     PublishedTm { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
     Lead {assignedTo} to  @OnDelete("CASCADE") @OnUpdate("CASCADE") Employee
+    Company { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
+    Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
+    Documents { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
+	
 }
 
 relationship OneToOne{
@@ -197,10 +227,11 @@ filter PublishedTm
 filter TmAgent
 filter Employee
 filter Lead
+filter Company
 
 
 
-paginate Trademark , PublishedTm , TmAgent with infinite-scroll
+paginate Trademark , PublishedTm , TmAgent,Company, Documents with infinite-scroll
 
 
 

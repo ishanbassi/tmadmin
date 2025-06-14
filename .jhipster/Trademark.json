@@ -84,7 +84,7 @@
     {
       "fieldName": "type",
       "fieldType": "TrademarkType",
-      "fieldValues": "IMAGEMARK,TRADEMARK,SOUNDMARK"
+      "fieldValues": "IMAGEMARK,TRADEMARK,SOUNDMARK,TRADEMARK_WITH_IMAGE,SLOGAN"
     },
     {
       "fieldName": "pageNo",
@@ -100,8 +100,8 @@
         "onDelete": "CASCADE",
         "onUpdate": "CASCADE"
       },
-      "otherEntityName": "userProfile",
-      "relationshipName": "userProfile",
+      "otherEntityName": "company",
+      "relationshipName": "company",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }
