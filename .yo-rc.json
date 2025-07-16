@@ -29,13 +29,14 @@
       "Lead",
       "Employee",
       "Company",
-      "Documents"
+      "Documents",
+      "TrademarkClass"
     ],
     "feignClient": null,
     "jhipsterVersion": "8.10.0",
     "jwtSecretKey": "NmJmMGNmN2MxODlhOGQ1Y2E4YzQxYWRmNWFhOTQ3ZTEzM2E3MTE4MzRmYjkwYmQyYWY5ZTNhM2NkOWYxOTZkNDMxZWE2MDNiOTcyNDVmYzU2MjEwNmU5MDI2NDA4Nzg2YjBiOWI2YTlmNzA0NjBiNzdlMGE5MjI4YmE3N2I5ZDc=",
     "languages": ["en"],
-    "lastLiquibaseTimestamp": 1749835612000,
+    "lastLiquibaseTimestamp": 1752660522000,
     "messageBroker": false,
     "microfrontend": null,
     "microfrontends": [],

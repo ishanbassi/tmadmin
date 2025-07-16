@@ -41,4 +41,8 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'Documents',
     route: '/documents',
   },
+  {
+    name: 'TrademarkClass',
+    route: '/trademark-class',
+  },
 ];

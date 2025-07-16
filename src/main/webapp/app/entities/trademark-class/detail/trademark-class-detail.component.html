@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (trademarkClass(); as trademarkClassRef) {
+      <div>
+        <h2 data-cy="trademarkClassDetailsHeading"><span>Trademark Class</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.id }}</span>
+          </dd>
+          <dt><span>Code</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.code }}</span>
+          </dd>
+          <dt><span>Tm Class</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.tmClass }}</span>
+          </dd>
+          <dt><span>Keyword</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.keyword }}</span>
+          </dd>
+          <dt><span>Title</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.title }}</span>
+          </dd>
+          <dt><span>Description</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.description }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ trademarkClassRef.deleted }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/trademark-class', trademarkClassRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
