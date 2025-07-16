@@ -164,6 +164,8 @@ entity Documents{
 	
 }
 
+entity TrademarkClass{
+	code Integer
 	tmClass Integer
 	keyword String	
 	title String
