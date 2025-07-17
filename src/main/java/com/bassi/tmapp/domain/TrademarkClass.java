@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import com.bassi.tmapp.domain.enumeration.LeadStatus;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -199,5 +200,17 @@ public class TrademarkClass implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
             "}";
+    }
+
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+        this.deleted = false;
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
     }
 }

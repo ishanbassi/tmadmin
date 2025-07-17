@@ -1,8 +1,10 @@
 package com.bassi.tmapp.service.extended.pdfService;
 
 import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
+import com.bassi.tmapp.service.TrademarkClassService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
@@ -64,6 +66,7 @@ public class ITextPdfReaderService {
     private PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
     private WordSanitizationService wordSanitizationService;
     private TmAgentServiceExtended agentServiceExtended;
+    private TrademarkClassService trademarkClassService;
 
     @Autowired
     @Lazy
@@ -86,7 +89,8 @@ public class ITextPdfReaderService {
         PublishedTmMapper publishedTmMapper,
         PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
         WordSanitizationService wordSanitizationService,
-        TmAgentServiceExtended agentServiceExtended
+        TmAgentServiceExtended agentServiceExtended,
+        TrademarkClassService trademarkClassService
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
@@ -94,6 +98,7 @@ public class ITextPdfReaderService {
         this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
         this.wordSanitizationService = wordSanitizationService;
         this.agentServiceExtended = agentServiceExtended;
+        this.trademarkClassService = trademarkClassService;
     }
 
     @Async
@@ -101,6 +106,64 @@ public class ITextPdfReaderService {
         File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
 
         processDirectory(baseDirectory);
+    }
+
+    public void readPdfAndProcessTmClasses(String pdfDirectoryPath) {
+        File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + pdfDirectoryPath);
+        File[] files = fetchFilesFromDirectory(baseDirectory);
+        for (File file : files) {
+            Pattern pattern = Pattern.compile("-(\\d{1,2})\\.pdf$");
+            Matcher matcher = pattern.matcher(file.getAbsolutePath());
+            if (matcher.find()) {
+                int tmClass = Integer.parseInt(matcher.group(1));
+                processTmClassPdf(file.getAbsolutePath(), tmClass);
+                continue;
+            }
+
+            processTmClassPdf(file.getAbsolutePath(), null);
+        }
+    }
+
+    private void processTmClassPdf(String pdfFilePath, Integer tmClass) {
+        PdfDocument pdfDoc;
+        try {
+            pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
+            for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
+                CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
+                PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
+                processor.processPageContent(pdfDoc.getPage(i));
+
+                List<LineInfo> lines = strategy.getLines();
+                for (LineInfo line : lines) {
+                    String words = line.getAllWordsFromSameLineWithInfo();
+                    words = words.replaceAll("[\\u00A0\\u2007\\u202F]", " "); // replaces non-breaking spaces
+                    words = words.trim(); // removes leading/trailing space
+
+                    log.info(words);
+
+                    Pattern pattern = Pattern.compile("^\\s*(\\d{6})\\s+(.+)$");
+                    Matcher matcher = pattern.matcher(words);
+
+                    if (matcher.find()) {
+                        String basicNo = matcher.group(1);
+                        String indication = matcher.group(2);
+                        TrademarkClass trademarkClass = new TrademarkClass();
+                        trademarkClass.setCode(Integer.valueOf(basicNo));
+                        trademarkClass.setKeyword(indication);
+                        trademarkClass.setTmClass(tmClass);
+                        trademarkClassService.save(trademarkClass);
+                    }
+                }
+            }
+            pdfDoc.close();
+        } catch (IOException e) {
+            throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
+        }
+    }
+
+    private File[] fetchFilesFromDirectory(File directory) {
+        if (directory == null || !directory.exists()) return new File[0];
+        return directory.listFiles();
     }
 
     private void processDirectory(File directory) {
