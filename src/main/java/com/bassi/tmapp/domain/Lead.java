@@ -69,7 +69,7 @@ public class Lead implements Serializable {
     @Column(name = "lead_source")
     private String leadSource;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Employee assignedTo;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -321,5 +321,18 @@ public class Lead implements Serializable {
             ", status='" + getStatus() + "'" +
             ", leadSource='" + getLeadSource() + "'" +
             "}";
+    }
+
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+        this.deleted = false;
+        this.status = LeadStatus.NEW;
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
     }
 }

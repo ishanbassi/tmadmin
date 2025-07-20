@@ -33,13 +33,6 @@
       <table class="table table-striped" aria-describedby="page-heading">
         <thead>
           <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
-            <th scope="col" jhiSortBy="id">
-              <div class="d-flex">
-                <span>ID</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="fullName">
               <div class="d-flex">
                 <span>Full Name</span>
@@ -75,27 +68,7 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="selectedPackage">
-              <div class="d-flex">
-                <span>Selected Package</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="tmClass">
-              <div class="d-flex">
-                <span>Tm Class</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="comments">
-              <div class="d-flex">
-                <span>Comments</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="contactMethod">
               <div class="d-flex">
                 <span>Contact Method</span>
@@ -103,37 +76,10 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="createdDate">
-              <div class="d-flex">
-                <span>Created Date</span>
 
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="modifiedDate">
-              <div class="d-flex">
-                <span>Modified Date</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="deleted">
-              <div class="d-flex">
-                <span>Deleted</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="status">
               <div class="d-flex">
                 <span>Status</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
-            <th scope="col" jhiSortBy="leadSource">
-              <div class="d-flex">
-                <span>Lead Source</span>
 
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
@@ -151,37 +97,33 @@
           @for (lead of leads(); track trackId(lead)) {
             <tr data-cy="entityTable">
               <td>
-                <a [routerLink]="['/lead', lead.id, 'view']">{{ lead.id }}</a>
+                <span data-toggle="tooltip" data-placement="bottom" title="Lead needs to be viewed">
+                  <img *ngIf="lead.status == 'NEW'" src="/content/images/icons/alert-circle.svg" alt="" class="lead-warning" />
+                </span>
+                {{ lead.fullName }}
               </td>
-              <td>{{ lead.fullName }}</td>
               <td>{{ lead.phoneNumber }}</td>
               <td>{{ lead.email }}</td>
               <td>{{ lead.city }}</td>
               <td>{{ lead.brandName }}</td>
-              <td>{{ lead.selectedPackage }}</td>
-              <td>{{ lead.tmClass }}</td>
-              <td>{{ lead.comments }}</td>
+
               <td>{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[lead.contactMethod ?? 'null'] }}</td>
-              <td>{{ lead.createdDate | formatMediumDatetime }}</td>
-              <td>{{ lead.modifiedDate | formatMediumDatetime }}</td>
-              <td>{{ lead.deleted }}</td>
               <td>
                 {{
                   {
                     null: '',
                     CONVERTED: 'CONVERTED',
                     NEW: 'NEW',
-                    DOCUMENTS_PENDING: 'DOCUMENTS_PENDING',
+                    DOCUMENTS_PENDING: 'DOCUMENTS PENDING',
                     LOST: 'LOST',
-                    FOLLOW_UP: 'FOLLOW_UP',
+                    FOLLOW_UP: 'FOLLOW UP',
                   }[lead.status ?? 'null']
                 }}
               </td>
-              <td>{{ lead.leadSource }}</td>
               <td>
                 @if (lead.assignedTo) {
                   <div>
-                    <a [routerLink]="['/employee', lead.assignedTo.id, 'view']">{{ lead.assignedTo.id }}</a>
+                    <a [routerLink]="['/employee', lead.assignedTo.id, 'view']">{{ lead.assignedTo.fullName }}</a>
                   </div>
                 }
               </td>

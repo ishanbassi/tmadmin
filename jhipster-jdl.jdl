@@ -54,6 +54,18 @@ entity Trademark{
     
 }
 
+entity Phonetics{
+	sanitizedTm String
+    phoneticPk String
+    phoneticSk String
+    complete Boolean
+}
+entity PublishedTmPhonetics{
+	sanitizedTm String
+    phoneticPk String
+    phoneticSk String
+    complete Boolean
+}
 entity PublishedTm{
 	name String
     details String
@@ -205,6 +217,8 @@ enum TrademarkType{
 
 
 relationship ManyToOne{
+	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
+    PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
     Trademark { company } to @OnDelete("CASCADE") @OnUpdate("CASCADE") Company
     PublishedTm { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
     Lead {assignedTo} to  @OnDelete("CASCADE") @OnUpdate("CASCADE") Employee

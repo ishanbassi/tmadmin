@@ -51,18 +51,6 @@
           <dd>
             <span>{{ { null: '', CALL: 'CALL', MESSAGE: 'MESSAGE', EMAIL: 'EMAIL' }[leadRef.contactMethod ?? 'null'] }}</span>
           </dd>
-          <dt><span>Created Date</span></dt>
-          <dd>
-            <span>{{ leadRef.createdDate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Modified Date</span></dt>
-          <dd>
-            <span>{{ leadRef.modifiedDate | formatMediumDatetime }}</span>
-          </dd>
-          <dt><span>Deleted</span></dt>
-          <dd>
-            <span>{{ leadRef.deleted }}</span>
-          </dd>
           <dt><span>Status</span></dt>
           <dd>
             <span>{{
@@ -84,7 +72,7 @@
           <dd>
             @if (lead()!.assignedTo) {
               <div>
-                <a [routerLink]="['/employee', lead()!.assignedTo?.id, 'view']">{{ leadRef.assignedTo?.id }}</a>
+                <a [routerLink]="['/employee', lead()!.assignedTo?.id, 'view']">{{ leadRef.assignedTo?.fullName }}</a>
               </div>
             }
           </dd>
@@ -97,6 +85,10 @@
         <button type="button" [routerLink]="['/lead', leadRef.id, 'edit']" class="btn btn-primary">
           <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
         </button>
+      </div>
+      <div class="created-updated-text">
+        <span *ngIf="leadRef.createdDate">Created on {{ leadRef.createdDate | formatMediumDatetime }}</span>
+        <span *ngIf="leadRef.modifiedDate">modified on {{ leadRef.modifiedDate | formatMediumDatetime }}</span>
       </div>
     }
   </div>
