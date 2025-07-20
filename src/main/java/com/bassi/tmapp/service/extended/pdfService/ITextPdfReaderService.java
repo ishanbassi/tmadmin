@@ -131,6 +131,7 @@ public class ITextPdfReaderService {
 
     private void processTmClassPdf(String pdfFilePath, Integer tmClass) {
         PdfDocument pdfDoc;
+        List<TrademarkClassDTO> trademarkClassDTOs = new ArrayList<>();
         try {
             pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
             for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
@@ -156,7 +157,7 @@ public class ITextPdfReaderService {
                         trademarkClass.setCode(Integer.valueOf(basicNo));
                         trademarkClass.setKeyword(indication);
                         trademarkClass.setTmClass(tmClass);
-                        trademarkClassService.save(trademarkClass);
+                        trademarkClassDTOs.add(trademarkClass);
                     }
                 }
             }
@@ -164,6 +165,7 @@ public class ITextPdfReaderService {
         } catch (IOException e) {
             throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
         }
+        trademarkClassService.saveAll(trademarkClassDTOs);
     }
 
     private File[] fetchFilesFromDirectory(File directory) {

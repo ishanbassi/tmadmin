@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.repository.TrademarkClassRepository;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.mapper.TrademarkClassMapper;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,5 +95,12 @@ public class TrademarkClassService {
     public void delete(Long id) {
         LOG.debug("Request to delete TrademarkClass : {}", id);
         trademarkClassRepository.deleteById(id);
+    }
+
+    public List<TrademarkClassDTO> saveAll(List<TrademarkClassDTO> trademarkClassDTO) {
+        LOG.debug("Request to save TrademarkClass : {}", trademarkClassDTO);
+        List<TrademarkClass> trademarkClass = trademarkClassMapper.toEntity(trademarkClassDTO);
+        trademarkClass = trademarkClassRepository.saveAll(trademarkClass);
+        return trademarkClassMapper.toDto(trademarkClass);
     }
 }

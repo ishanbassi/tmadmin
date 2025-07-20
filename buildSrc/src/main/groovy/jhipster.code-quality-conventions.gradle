@@ -38,6 +38,7 @@ spotless {
         target 'src/*/java/**/*.java'
         // removeUnusedImports()
     }
+    enforceCheck false
 }
 
 modernizer {

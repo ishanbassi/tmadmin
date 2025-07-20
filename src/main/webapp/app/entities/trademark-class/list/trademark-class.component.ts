@@ -102,7 +102,7 @@ export class TrademarkClassComponent implements OnInit {
       const trademarkClassesNew = this.trademarkClasses();
       if (data) {
         for (const d of data) {
-          if (trademarkClassesNew.some(op => op.id === d.id)) {
+          if (!trademarkClassesNew.some(op => op.id === d.id)) {
             trademarkClassesNew.push(d);
           }
         }
