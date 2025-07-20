@@ -1,10 +1,10 @@
 package com.bassi.tmapp.web.rest;
 
-import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.repository.TrademarkClassRepository;
 import com.bassi.tmapp.service.TrademarkClassQueryService;
 import com.bassi.tmapp.service.TrademarkClassService;
 import com.bassi.tmapp.service.criteria.TrademarkClassCriteria;
+import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,42 +57,43 @@ public class TrademarkClassResource {
     /**
      * {@code POST  /trademark-classes} : Create a new trademarkClass.
      *
-     * @param trademarkClass the trademarkClass to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trademarkClass, or with status {@code 400 (Bad Request)} if the trademarkClass has already an ID.
+     * @param trademarkClassDTO the trademarkClassDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new trademarkClassDTO, or with status {@code 400 (Bad Request)} if the trademarkClass has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<TrademarkClass> createTrademarkClass(@RequestBody TrademarkClass trademarkClass) throws URISyntaxException {
-        LOG.debug("REST request to save TrademarkClass : {}", trademarkClass);
-        if (trademarkClass.getId() != null) {
+    public ResponseEntity<TrademarkClassDTO> createTrademarkClass(@RequestBody TrademarkClassDTO trademarkClassDTO)
+        throws URISyntaxException {
+        LOG.debug("REST request to save TrademarkClass : {}", trademarkClassDTO);
+        if (trademarkClassDTO.getId() != null) {
             throw new BadRequestAlertException("A new trademarkClass cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        trademarkClass = trademarkClassService.save(trademarkClass);
-        return ResponseEntity.created(new URI("/api/trademark-classes/" + trademarkClass.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, trademarkClass.getId().toString()))
-            .body(trademarkClass);
+        trademarkClassDTO = trademarkClassService.save(trademarkClassDTO);
+        return ResponseEntity.created(new URI("/api/trademark-classes/" + trademarkClassDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, trademarkClassDTO.getId().toString()))
+            .body(trademarkClassDTO);
     }
 
     /**
      * {@code PUT  /trademark-classes/:id} : Updates an existing trademarkClass.
      *
-     * @param id the id of the trademarkClass to save.
-     * @param trademarkClass the trademarkClass to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademarkClass,
-     * or with status {@code 400 (Bad Request)} if the trademarkClass is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the trademarkClass couldn't be updated.
+     * @param id the id of the trademarkClassDTO to save.
+     * @param trademarkClassDTO the trademarkClassDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademarkClassDTO,
+     * or with status {@code 400 (Bad Request)} if the trademarkClassDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the trademarkClassDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<TrademarkClass> updateTrademarkClass(
+    public ResponseEntity<TrademarkClassDTO> updateTrademarkClass(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TrademarkClass trademarkClass
+        @RequestBody TrademarkClassDTO trademarkClassDTO
     ) throws URISyntaxException {
-        LOG.debug("REST request to update TrademarkClass : {}, {}", id, trademarkClass);
-        if (trademarkClass.getId() == null) {
+        LOG.debug("REST request to update TrademarkClass : {}, {}", id, trademarkClassDTO);
+        if (trademarkClassDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, trademarkClass.getId())) {
+        if (!Objects.equals(id, trademarkClassDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -100,33 +101,33 @@ public class TrademarkClassResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        trademarkClass = trademarkClassService.update(trademarkClass);
+        trademarkClassDTO = trademarkClassService.update(trademarkClassDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkClass.getId().toString()))
-            .body(trademarkClass);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkClassDTO.getId().toString()))
+            .body(trademarkClassDTO);
     }
 
     /**
      * {@code PATCH  /trademark-classes/:id} : Partial updates given fields of an existing trademarkClass, field will ignore if it is null
      *
-     * @param id the id of the trademarkClass to save.
-     * @param trademarkClass the trademarkClass to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademarkClass,
-     * or with status {@code 400 (Bad Request)} if the trademarkClass is not valid,
-     * or with status {@code 404 (Not Found)} if the trademarkClass is not found,
-     * or with status {@code 500 (Internal Server Error)} if the trademarkClass couldn't be updated.
+     * @param id the id of the trademarkClassDTO to save.
+     * @param trademarkClassDTO the trademarkClassDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated trademarkClassDTO,
+     * or with status {@code 400 (Bad Request)} if the trademarkClassDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the trademarkClassDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the trademarkClassDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<TrademarkClass> partialUpdateTrademarkClass(
+    public ResponseEntity<TrademarkClassDTO> partialUpdateTrademarkClass(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody TrademarkClass trademarkClass
+        @RequestBody TrademarkClassDTO trademarkClassDTO
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update TrademarkClass partially : {}, {}", id, trademarkClass);
-        if (trademarkClass.getId() == null) {
+        LOG.debug("REST request to partial update TrademarkClass partially : {}, {}", id, trademarkClassDTO);
+        if (trademarkClassDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, trademarkClass.getId())) {
+        if (!Objects.equals(id, trademarkClassDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -134,11 +135,11 @@ public class TrademarkClassResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<TrademarkClass> result = trademarkClassService.partialUpdate(trademarkClass);
+        Optional<TrademarkClassDTO> result = trademarkClassService.partialUpdate(trademarkClassDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkClass.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkClassDTO.getId().toString())
         );
     }
 
@@ -150,13 +151,13 @@ public class TrademarkClassResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trademarkClasses in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<TrademarkClass>> getAllTrademarkClasses(
+    public ResponseEntity<List<TrademarkClassDTO>> getAllTrademarkClasses(
         TrademarkClassCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         LOG.debug("REST request to get TrademarkClasses by criteria: {}", criteria);
 
-        Page<TrademarkClass> page = trademarkClassQueryService.findByCriteria(criteria, pageable);
+        Page<TrademarkClassDTO> page = trademarkClassQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -176,20 +177,20 @@ public class TrademarkClassResource {
     /**
      * {@code GET  /trademark-classes/:id} : get the "id" trademarkClass.
      *
-     * @param id the id of the trademarkClass to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trademarkClass, or with status {@code 404 (Not Found)}.
+     * @param id the id of the trademarkClassDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trademarkClassDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TrademarkClass> getTrademarkClass(@PathVariable("id") Long id) {
+    public ResponseEntity<TrademarkClassDTO> getTrademarkClass(@PathVariable("id") Long id) {
         LOG.debug("REST request to get TrademarkClass : {}", id);
-        Optional<TrademarkClass> trademarkClass = trademarkClassService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(trademarkClass);
+        Optional<TrademarkClassDTO> trademarkClassDTO = trademarkClassService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(trademarkClassDTO);
     }
 
     /**
      * {@code DELETE  /trademark-classes/:id} : delete the "id" trademarkClass.
      *
-     * @param id the id of the trademarkClass to delete.
+     * @param id the id of the trademarkClassDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

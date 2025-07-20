@@ -1,10 +1,10 @@
 package com.bassi.tmapp.web.rest;
 
-import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.repository.LeadRepository;
 import com.bassi.tmapp.service.LeadQueryService;
 import com.bassi.tmapp.service.LeadService;
 import com.bassi.tmapp.service.criteria.LeadCriteria;
+import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -48,40 +48,40 @@ public class LeadResource {
     /**
      * {@code POST  /leads} : Create a new lead.
      *
-     * @param lead the lead to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new lead, or with status {@code 400 (Bad Request)} if the lead has already an ID.
+     * @param leadDTO the leadDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new leadDTO, or with status {@code 400 (Bad Request)} if the lead has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Lead> createLead(@RequestBody Lead lead) throws URISyntaxException {
-        LOG.debug("REST request to save Lead : {}", lead);
-        if (lead.getId() != null) {
+    public ResponseEntity<LeadDTO> createLead(@RequestBody LeadDTO leadDTO) throws URISyntaxException {
+        LOG.debug("REST request to save Lead : {}", leadDTO);
+        if (leadDTO.getId() != null) {
             throw new BadRequestAlertException("A new lead cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        lead = leadService.save(lead);
-        return ResponseEntity.created(new URI("/api/leads/" + lead.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, lead.getId().toString()))
-            .body(lead);
+        leadDTO = leadService.save(leadDTO);
+        return ResponseEntity.created(new URI("/api/leads/" + leadDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, leadDTO.getId().toString()))
+            .body(leadDTO);
     }
 
     /**
      * {@code PUT  /leads/:id} : Updates an existing lead.
      *
-     * @param id the id of the lead to save.
-     * @param lead the lead to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated lead,
-     * or with status {@code 400 (Bad Request)} if the lead is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the lead couldn't be updated.
+     * @param id the id of the leadDTO to save.
+     * @param leadDTO the leadDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated leadDTO,
+     * or with status {@code 400 (Bad Request)} if the leadDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the leadDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Lead> updateLead(@PathVariable(value = "id", required = false) final Long id, @RequestBody Lead lead)
+    public ResponseEntity<LeadDTO> updateLead(@PathVariable(value = "id", required = false) final Long id, @RequestBody LeadDTO leadDTO)
         throws URISyntaxException {
-        LOG.debug("REST request to update Lead : {}, {}", id, lead);
-        if (lead.getId() == null) {
+        LOG.debug("REST request to update Lead : {}, {}", id, leadDTO);
+        if (leadDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, lead.getId())) {
+        if (!Objects.equals(id, leadDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -89,31 +89,33 @@ public class LeadResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        lead = leadService.update(lead);
+        leadDTO = leadService.update(leadDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lead.getId().toString()))
-            .body(lead);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, leadDTO.getId().toString()))
+            .body(leadDTO);
     }
 
     /**
      * {@code PATCH  /leads/:id} : Partial updates given fields of an existing lead, field will ignore if it is null
      *
-     * @param id the id of the lead to save.
-     * @param lead the lead to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated lead,
-     * or with status {@code 400 (Bad Request)} if the lead is not valid,
-     * or with status {@code 404 (Not Found)} if the lead is not found,
-     * or with status {@code 500 (Internal Server Error)} if the lead couldn't be updated.
+     * @param id the id of the leadDTO to save.
+     * @param leadDTO the leadDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated leadDTO,
+     * or with status {@code 400 (Bad Request)} if the leadDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the leadDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the leadDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Lead> partialUpdateLead(@PathVariable(value = "id", required = false) final Long id, @RequestBody Lead lead)
-        throws URISyntaxException {
-        LOG.debug("REST request to partial update Lead partially : {}, {}", id, lead);
-        if (lead.getId() == null) {
+    public ResponseEntity<LeadDTO> partialUpdateLead(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody LeadDTO leadDTO
+    ) throws URISyntaxException {
+        LOG.debug("REST request to partial update Lead partially : {}, {}", id, leadDTO);
+        if (leadDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, lead.getId())) {
+        if (!Objects.equals(id, leadDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -121,11 +123,11 @@ public class LeadResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Lead> result = leadService.partialUpdate(lead);
+        Optional<LeadDTO> result = leadService.partialUpdate(leadDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, lead.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, leadDTO.getId().toString())
         );
     }
 
@@ -136,10 +138,10 @@ public class LeadResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of leads in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Lead>> getAllLeads(LeadCriteria criteria) {
+    public ResponseEntity<List<LeadDTO>> getAllLeads(LeadCriteria criteria) {
         LOG.debug("REST request to get Leads by criteria: {}", criteria);
 
-        List<Lead> entityList = leadQueryService.findByCriteria(criteria);
+        List<LeadDTO> entityList = leadQueryService.findByCriteria(criteria);
         return ResponseEntity.ok().body(entityList);
     }
 
@@ -158,20 +160,20 @@ public class LeadResource {
     /**
      * {@code GET  /leads/:id} : get the "id" lead.
      *
-     * @param id the id of the lead to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the lead, or with status {@code 404 (Not Found)}.
+     * @param id the id of the leadDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the leadDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Lead> getLead(@PathVariable("id") Long id) {
+    public ResponseEntity<LeadDTO> getLead(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Lead : {}", id);
-        Optional<Lead> lead = leadService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(lead);
+        Optional<LeadDTO> leadDTO = leadService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(leadDTO);
     }
 
     /**
      * {@code DELETE  /leads/:id} : delete the "id" lead.
      *
-     * @param id the id of the lead to delete.
+     * @param id the id of the leadDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
+import com.bassi.tmapp.service.dto.TmAgentDTO;
+import com.bassi.tmapp.service.mapper.TmAgentMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,72 +21,57 @@ public class TmAgentService {
 
     private final TmAgentRepository tmAgentRepository;
 
-    public TmAgentService(TmAgentRepository tmAgentRepository) {
+    private final TmAgentMapper tmAgentMapper;
+
+    public TmAgentService(TmAgentRepository tmAgentRepository, TmAgentMapper tmAgentMapper) {
         this.tmAgentRepository = tmAgentRepository;
+        this.tmAgentMapper = tmAgentMapper;
     }
 
     /**
      * Save a tmAgent.
      *
-     * @param tmAgent the entity to save.
+     * @param tmAgentDTO the entity to save.
      * @return the persisted entity.
      */
-    public TmAgent save(TmAgent tmAgent) {
-        LOG.debug("Request to save TmAgent : {}", tmAgent);
-        return tmAgentRepository.save(tmAgent);
+    public TmAgentDTO save(TmAgentDTO tmAgentDTO) {
+        LOG.debug("Request to save TmAgent : {}", tmAgentDTO);
+        TmAgent tmAgent = tmAgentMapper.toEntity(tmAgentDTO);
+        tmAgent = tmAgentRepository.save(tmAgent);
+        return tmAgentMapper.toDto(tmAgent);
     }
 
     /**
      * Update a tmAgent.
      *
-     * @param tmAgent the entity to save.
+     * @param tmAgentDTO the entity to save.
      * @return the persisted entity.
      */
-    public TmAgent update(TmAgent tmAgent) {
-        LOG.debug("Request to update TmAgent : {}", tmAgent);
-        return tmAgentRepository.save(tmAgent);
+    public TmAgentDTO update(TmAgentDTO tmAgentDTO) {
+        LOG.debug("Request to update TmAgent : {}", tmAgentDTO);
+        TmAgent tmAgent = tmAgentMapper.toEntity(tmAgentDTO);
+        tmAgent = tmAgentRepository.save(tmAgent);
+        return tmAgentMapper.toDto(tmAgent);
     }
 
     /**
      * Partially update a tmAgent.
      *
-     * @param tmAgent the entity to update partially.
+     * @param tmAgentDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<TmAgent> partialUpdate(TmAgent tmAgent) {
-        LOG.debug("Request to partially update TmAgent : {}", tmAgent);
+    public Optional<TmAgentDTO> partialUpdate(TmAgentDTO tmAgentDTO) {
+        LOG.debug("Request to partially update TmAgent : {}", tmAgentDTO);
 
         return tmAgentRepository
-            .findById(tmAgent.getId())
+            .findById(tmAgentDTO.getId())
             .map(existingTmAgent -> {
-                if (tmAgent.getFullName() != null) {
-                    existingTmAgent.setFullName(tmAgent.getFullName());
-                }
-                if (tmAgent.getAddress() != null) {
-                    existingTmAgent.setAddress(tmAgent.getAddress());
-                }
-                if (tmAgent.getCreatedDate() != null) {
-                    existingTmAgent.setCreatedDate(tmAgent.getCreatedDate());
-                }
-                if (tmAgent.getModifiedDate() != null) {
-                    existingTmAgent.setModifiedDate(tmAgent.getModifiedDate());
-                }
-                if (tmAgent.getDeleted() != null) {
-                    existingTmAgent.setDeleted(tmAgent.getDeleted());
-                }
-                if (tmAgent.getCompanyName() != null) {
-                    existingTmAgent.setCompanyName(tmAgent.getCompanyName());
-                }
-                if (tmAgent.getAgentCode() != null) {
-                    existingTmAgent.setAgentCode(tmAgent.getAgentCode());
-                }
-                if (tmAgent.getEmail() != null) {
-                    existingTmAgent.setEmail(tmAgent.getEmail());
-                }
+                tmAgentMapper.partialUpdate(existingTmAgent, tmAgentDTO);
 
                 return existingTmAgent;
             })
-            .map(tmAgentRepository::save);
+            .map(tmAgentRepository::save)
+            .map(tmAgentMapper::toDto);
     }
 
     /**
@@ -94,9 +81,9 @@ public class TmAgentService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<TmAgent> findOne(Long id) {
+    public Optional<TmAgentDTO> findOne(Long id) {
         LOG.debug("Request to get TmAgent : {}", id);
-        return tmAgentRepository.findById(id);
+        return tmAgentRepository.findById(id).map(tmAgentMapper::toDto);
     }
 
     /**

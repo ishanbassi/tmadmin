@@ -14,6 +14,8 @@ import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -125,6 +127,9 @@ class TrademarkResourceIT {
     private TrademarkRepository trademarkRepository;
 
     @Autowired
+    private TrademarkMapper trademarkMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -214,18 +219,20 @@ class TrademarkResourceIT {
     void createTrademark() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Trademark
-        var returnedTrademark = om.readValue(
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+        var returnedTrademarkDTO = om.readValue(
             restTrademarkMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademark)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademarkDTO)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            Trademark.class
+            TrademarkDTO.class
         );
 
         // Validate the Trademark in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedTrademark = trademarkMapper.toEntity(returnedTrademarkDTO);
         assertTrademarkUpdatableFieldsEquals(returnedTrademark, getPersistedTrademark(returnedTrademark));
 
         insertedTrademark = returnedTrademark;
@@ -236,12 +243,13 @@ class TrademarkResourceIT {
     void createTrademarkWithExistingId() throws Exception {
         // Create the Trademark with an existing ID
         trademark.setId(1L);
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTrademarkMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademark)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademarkDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Trademark in the database
@@ -1717,12 +1725,13 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO);
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedTrademark.getId())
+                put(ENTITY_API_URL_ID, trademarkDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(updatedTrademark))
+                    .content(om.writeValueAsBytes(trademarkDTO))
             )
             .andExpect(status().isOk());
 
@@ -1737,10 +1746,15 @@ class TrademarkResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         trademark.setId(longCount.incrementAndGet());
 
+        // Create the Trademark
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTrademarkMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, trademark.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademark))
+                put(ENTITY_API_URL_ID, trademarkDTO.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(trademarkDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -1754,12 +1768,15 @@ class TrademarkResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         trademark.setId(longCount.incrementAndGet());
 
+        // Create the Trademark
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTrademarkMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(trademark))
+                    .content(om.writeValueAsBytes(trademarkDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -1773,9 +1790,12 @@ class TrademarkResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         trademark.setId(longCount.incrementAndGet());
 
+        // Create the Trademark
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTrademarkMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademark)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(trademarkDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Trademark in the database
@@ -1882,12 +1902,15 @@ class TrademarkResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         trademark.setId(longCount.incrementAndGet());
 
+        // Create the Trademark
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTrademarkMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, trademark.getId())
+                patch(ENTITY_API_URL_ID, trademarkDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(trademark))
+                    .content(om.writeValueAsBytes(trademarkDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -1901,12 +1924,15 @@ class TrademarkResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         trademark.setId(longCount.incrementAndGet());
 
+        // Create the Trademark
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTrademarkMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(trademark))
+                    .content(om.writeValueAsBytes(trademarkDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -1920,9 +1946,12 @@ class TrademarkResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         trademark.setId(longCount.incrementAndGet());
 
+        // Create the Trademark
+        TrademarkDTO trademarkDTO = trademarkMapper.toDto(trademark);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restTrademarkMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(trademark)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(trademarkDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Trademark in the database

@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.PublishedTmRepository;
+import com.bassi.tmapp.service.dto.PublishedTmDTO;
+import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,111 +21,57 @@ public class PublishedTmService {
 
     private final PublishedTmRepository publishedTmRepository;
 
-    public PublishedTmService(PublishedTmRepository publishedTmRepository) {
+    private final PublishedTmMapper publishedTmMapper;
+
+    public PublishedTmService(PublishedTmRepository publishedTmRepository, PublishedTmMapper publishedTmMapper) {
         this.publishedTmRepository = publishedTmRepository;
+        this.publishedTmMapper = publishedTmMapper;
     }
 
     /**
      * Save a publishedTm.
      *
-     * @param publishedTm the entity to save.
+     * @param publishedTmDTO the entity to save.
      * @return the persisted entity.
      */
-    public PublishedTm save(PublishedTm publishedTm) {
-        LOG.debug("Request to save PublishedTm : {}", publishedTm);
-        return publishedTmRepository.save(publishedTm);
+    public PublishedTmDTO save(PublishedTmDTO publishedTmDTO) {
+        LOG.debug("Request to save PublishedTm : {}", publishedTmDTO);
+        PublishedTm publishedTm = publishedTmMapper.toEntity(publishedTmDTO);
+        publishedTm = publishedTmRepository.save(publishedTm);
+        return publishedTmMapper.toDto(publishedTm);
     }
 
     /**
      * Update a publishedTm.
      *
-     * @param publishedTm the entity to save.
+     * @param publishedTmDTO the entity to save.
      * @return the persisted entity.
      */
-    public PublishedTm update(PublishedTm publishedTm) {
-        LOG.debug("Request to update PublishedTm : {}", publishedTm);
-        return publishedTmRepository.save(publishedTm);
+    public PublishedTmDTO update(PublishedTmDTO publishedTmDTO) {
+        LOG.debug("Request to update PublishedTm : {}", publishedTmDTO);
+        PublishedTm publishedTm = publishedTmMapper.toEntity(publishedTmDTO);
+        publishedTm = publishedTmRepository.save(publishedTm);
+        return publishedTmMapper.toDto(publishedTm);
     }
 
     /**
      * Partially update a publishedTm.
      *
-     * @param publishedTm the entity to update partially.
+     * @param publishedTmDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<PublishedTm> partialUpdate(PublishedTm publishedTm) {
-        LOG.debug("Request to partially update PublishedTm : {}", publishedTm);
+    public Optional<PublishedTmDTO> partialUpdate(PublishedTmDTO publishedTmDTO) {
+        LOG.debug("Request to partially update PublishedTm : {}", publishedTmDTO);
 
         return publishedTmRepository
-            .findById(publishedTm.getId())
+            .findById(publishedTmDTO.getId())
             .map(existingPublishedTm -> {
-                if (publishedTm.getName() != null) {
-                    existingPublishedTm.setName(publishedTm.getName());
-                }
-                if (publishedTm.getDetails() != null) {
-                    existingPublishedTm.setDetails(publishedTm.getDetails());
-                }
-                if (publishedTm.getApplicationNo() != null) {
-                    existingPublishedTm.setApplicationNo(publishedTm.getApplicationNo());
-                }
-                if (publishedTm.getApplicationDate() != null) {
-                    existingPublishedTm.setApplicationDate(publishedTm.getApplicationDate());
-                }
-                if (publishedTm.getAgentName() != null) {
-                    existingPublishedTm.setAgentName(publishedTm.getAgentName());
-                }
-                if (publishedTm.getAgentAddress() != null) {
-                    existingPublishedTm.setAgentAddress(publishedTm.getAgentAddress());
-                }
-                if (publishedTm.getProprietorName() != null) {
-                    existingPublishedTm.setProprietorName(publishedTm.getProprietorName());
-                }
-                if (publishedTm.getProprietorAddress() != null) {
-                    existingPublishedTm.setProprietorAddress(publishedTm.getProprietorAddress());
-                }
-                if (publishedTm.getHeadOffice() != null) {
-                    existingPublishedTm.setHeadOffice(publishedTm.getHeadOffice());
-                }
-                if (publishedTm.getImgUrl() != null) {
-                    existingPublishedTm.setImgUrl(publishedTm.getImgUrl());
-                }
-                if (publishedTm.getTmClass() != null) {
-                    existingPublishedTm.setTmClass(publishedTm.getTmClass());
-                }
-                if (publishedTm.getJournalNo() != null) {
-                    existingPublishedTm.setJournalNo(publishedTm.getJournalNo());
-                }
-                if (publishedTm.getDeleted() != null) {
-                    existingPublishedTm.setDeleted(publishedTm.getDeleted());
-                }
-                if (publishedTm.getUsage() != null) {
-                    existingPublishedTm.setUsage(publishedTm.getUsage());
-                }
-                if (publishedTm.getAssociatedTms() != null) {
-                    existingPublishedTm.setAssociatedTms(publishedTm.getAssociatedTms());
-                }
-                if (publishedTm.getTrademarkStatus() != null) {
-                    existingPublishedTm.setTrademarkStatus(publishedTm.getTrademarkStatus());
-                }
-                if (publishedTm.getCreatedDate() != null) {
-                    existingPublishedTm.setCreatedDate(publishedTm.getCreatedDate());
-                }
-                if (publishedTm.getModifiedDate() != null) {
-                    existingPublishedTm.setModifiedDate(publishedTm.getModifiedDate());
-                }
-                if (publishedTm.getRenewalDate() != null) {
-                    existingPublishedTm.setRenewalDate(publishedTm.getRenewalDate());
-                }
-                if (publishedTm.getType() != null) {
-                    existingPublishedTm.setType(publishedTm.getType());
-                }
-                if (publishedTm.getPageNo() != null) {
-                    existingPublishedTm.setPageNo(publishedTm.getPageNo());
-                }
+                publishedTmMapper.partialUpdate(existingPublishedTm, publishedTmDTO);
 
                 return existingPublishedTm;
             })
-            .map(publishedTmRepository::save);
+            .map(publishedTmRepository::save)
+            .map(publishedTmMapper::toDto);
     }
 
     /**
@@ -133,9 +81,9 @@ public class PublishedTmService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<PublishedTm> findOne(Long id) {
+    public Optional<PublishedTmDTO> findOne(Long id) {
         LOG.debug("Request to get PublishedTm : {}", id);
-        return publishedTmRepository.findById(id);
+        return publishedTmRepository.findById(id).map(publishedTmMapper::toDto);
     }
 
     /**

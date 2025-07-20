@@ -2,8 +2,12 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.repository.UserProfileRepository;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
+import com.bassi.tmapp.service.mapper.UserProfileMapper;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -20,57 +24,57 @@ public class UserProfileService {
 
     private final UserProfileRepository userProfileRepository;
 
-    public UserProfileService(UserProfileRepository userProfileRepository) {
+    private final UserProfileMapper userProfileMapper;
+
+    public UserProfileService(UserProfileRepository userProfileRepository, UserProfileMapper userProfileMapper) {
         this.userProfileRepository = userProfileRepository;
+        this.userProfileMapper = userProfileMapper;
     }
 
     /**
      * Save a userProfile.
      *
-     * @param userProfile the entity to save.
+     * @param userProfileDTO the entity to save.
      * @return the persisted entity.
      */
-    public UserProfile save(UserProfile userProfile) {
-        LOG.debug("Request to save UserProfile : {}", userProfile);
-        return userProfileRepository.save(userProfile);
+    public UserProfileDTO save(UserProfileDTO userProfileDTO) {
+        LOG.debug("Request to save UserProfile : {}", userProfileDTO);
+        UserProfile userProfile = userProfileMapper.toEntity(userProfileDTO);
+        userProfile = userProfileRepository.save(userProfile);
+        return userProfileMapper.toDto(userProfile);
     }
 
     /**
      * Update a userProfile.
      *
-     * @param userProfile the entity to save.
+     * @param userProfileDTO the entity to save.
      * @return the persisted entity.
      */
-    public UserProfile update(UserProfile userProfile) {
-        LOG.debug("Request to update UserProfile : {}", userProfile);
-        return userProfileRepository.save(userProfile);
+    public UserProfileDTO update(UserProfileDTO userProfileDTO) {
+        LOG.debug("Request to update UserProfile : {}", userProfileDTO);
+        UserProfile userProfile = userProfileMapper.toEntity(userProfileDTO);
+        userProfile = userProfileRepository.save(userProfile);
+        return userProfileMapper.toDto(userProfile);
     }
 
     /**
      * Partially update a userProfile.
      *
-     * @param userProfile the entity to update partially.
+     * @param userProfileDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<UserProfile> partialUpdate(UserProfile userProfile) {
-        LOG.debug("Request to partially update UserProfile : {}", userProfile);
+    public Optional<UserProfileDTO> partialUpdate(UserProfileDTO userProfileDTO) {
+        LOG.debug("Request to partially update UserProfile : {}", userProfileDTO);
 
         return userProfileRepository
-            .findById(userProfile.getId())
+            .findById(userProfileDTO.getId())
             .map(existingUserProfile -> {
-                if (userProfile.getCreatedDate() != null) {
-                    existingUserProfile.setCreatedDate(userProfile.getCreatedDate());
-                }
-                if (userProfile.getModifiedDate() != null) {
-                    existingUserProfile.setModifiedDate(userProfile.getModifiedDate());
-                }
-                if (userProfile.getDeleted() != null) {
-                    existingUserProfile.setDeleted(userProfile.getDeleted());
-                }
+                userProfileMapper.partialUpdate(existingUserProfile, userProfileDTO);
 
                 return existingUserProfile;
             })
-            .map(userProfileRepository::save);
+            .map(userProfileRepository::save)
+            .map(userProfileMapper::toDto);
     }
 
     /**
@@ -79,9 +83,9 @@ public class UserProfileService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public List<UserProfile> findAll() {
+    public List<UserProfileDTO> findAll() {
         LOG.debug("Request to get all UserProfiles");
-        return userProfileRepository.findAll();
+        return userProfileRepository.findAll().stream().map(userProfileMapper::toDto).collect(Collectors.toCollection(LinkedList::new));
     }
 
     /**
@@ -91,9 +95,9 @@ public class UserProfileService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<UserProfile> findOne(Long id) {
+    public Optional<UserProfileDTO> findOne(Long id) {
         LOG.debug("Request to get UserProfile : {}", id);
-        return userProfileRepository.findById(id);
+        return userProfileRepository.findById(id).map(userProfileMapper::toDto);
     }
 
     /**

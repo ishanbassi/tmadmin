@@ -11,6 +11,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Documents;
 import com.bassi.tmapp.repository.DocumentsRepository;
+import com.bassi.tmapp.service.dto.DocumentsDTO;
+import com.bassi.tmapp.service.mapper.DocumentsMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -63,6 +65,9 @@ class DocumentsResourceIT {
 
     @Autowired
     private DocumentsRepository documentsRepository;
+
+    @Autowired
+    private DocumentsMapper documentsMapper;
 
     @Autowired
     private EntityManager em;
@@ -122,18 +127,20 @@ class DocumentsResourceIT {
     void createDocuments() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Documents
-        var returnedDocuments = om.readValue(
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+        var returnedDocumentsDTO = om.readValue(
             restDocumentsMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documents)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documentsDTO)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            Documents.class
+            DocumentsDTO.class
         );
 
         // Validate the Documents in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedDocuments = documentsMapper.toEntity(returnedDocumentsDTO);
         assertDocumentsUpdatableFieldsEquals(returnedDocuments, getPersistedDocuments(returnedDocuments));
 
         insertedDocuments = returnedDocuments;
@@ -144,12 +151,13 @@ class DocumentsResourceIT {
     void createDocumentsWithExistingId() throws Exception {
         // Create the Documents with an existing ID
         documents.setId(1L);
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restDocumentsMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documents)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documentsDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Documents in the database
@@ -219,12 +227,13 @@ class DocumentsResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .deleted(UPDATED_DELETED);
+        DocumentsDTO documentsDTO = documentsMapper.toDto(updatedDocuments);
 
         restDocumentsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedDocuments.getId())
+                put(ENTITY_API_URL_ID, documentsDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(updatedDocuments))
+                    .content(om.writeValueAsBytes(documentsDTO))
             )
             .andExpect(status().isOk());
 
@@ -239,10 +248,15 @@ class DocumentsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         documents.setId(longCount.incrementAndGet());
 
+        // Create the Documents
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDocumentsMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, documents.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documents))
+                put(ENTITY_API_URL_ID, documentsDTO.getId())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(om.writeValueAsBytes(documentsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -256,12 +270,15 @@ class DocumentsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         documents.setId(longCount.incrementAndGet());
 
+        // Create the Documents
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDocumentsMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(documents))
+                    .content(om.writeValueAsBytes(documentsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -275,9 +292,12 @@ class DocumentsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         documents.setId(longCount.incrementAndGet());
 
+        // Create the Documents
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDocumentsMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documents)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(documentsDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Documents in the database
@@ -354,12 +374,15 @@ class DocumentsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         documents.setId(longCount.incrementAndGet());
 
+        // Create the Documents
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDocumentsMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, documents.getId())
+                patch(ENTITY_API_URL_ID, documentsDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(documents))
+                    .content(om.writeValueAsBytes(documentsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -373,12 +396,15 @@ class DocumentsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         documents.setId(longCount.incrementAndGet());
 
+        // Create the Documents
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDocumentsMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(documents))
+                    .content(om.writeValueAsBytes(documentsDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -392,9 +418,12 @@ class DocumentsResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         documents.setId(longCount.incrementAndGet());
 
+        // Create the Documents
+        DocumentsDTO documentsDTO = documentsMapper.toDto(documents);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restDocumentsMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(documents)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(documentsDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Documents in the database

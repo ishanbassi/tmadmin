@@ -26,7 +26,7 @@ export interface IPublishedTm {
   renewalDate?: dayjs.Dayjs | null;
   type?: keyof typeof TrademarkType | null;
   pageNo?: number | null;
-  tmAgent?: ITmAgent | null;
+  tmAgent?: Pick<ITmAgent, 'id'> | null;
 }
 
 export type NewPublishedTm = Omit<IPublishedTm, 'id'> & { id: null };

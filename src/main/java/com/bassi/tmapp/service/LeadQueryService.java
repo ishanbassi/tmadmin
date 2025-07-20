@@ -4,6 +4,8 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.repository.LeadRepository;
 import com.bassi.tmapp.service.criteria.LeadCriteria;
+import com.bassi.tmapp.service.dto.LeadDTO;
+import com.bassi.tmapp.service.mapper.LeadMapper;
 import jakarta.persistence.criteria.JoinType;
 import java.util.List;
 import org.slf4j.Logger;
@@ -17,7 +19,7 @@ import tech.jhipster.service.QueryService;
  * Service for executing complex queries for {@link Lead} entities in the database.
  * The main input is a {@link LeadCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Lead} which fulfills the criteria.
+ * It returns a {@link List} of {@link LeadDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -27,20 +29,23 @@ public class LeadQueryService extends QueryService<Lead> {
 
     private final LeadRepository leadRepository;
 
-    public LeadQueryService(LeadRepository leadRepository) {
+    private final LeadMapper leadMapper;
+
+    public LeadQueryService(LeadRepository leadRepository, LeadMapper leadMapper) {
         this.leadRepository = leadRepository;
+        this.leadMapper = leadMapper;
     }
 
     /**
-     * Return a {@link List} of {@link Lead} which matches the criteria from the database.
+     * Return a {@link List} of {@link LeadDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Lead> findByCriteria(LeadCriteria criteria) {
+    public List<LeadDTO> findByCriteria(LeadCriteria criteria) {
         LOG.debug("find by criteria : {}", criteria);
         final Specification<Lead> specification = createSpecification(criteria);
-        return leadRepository.findAll(specification);
+        return leadMapper.toDto(leadRepository.findAll(specification));
     }
 
     /**

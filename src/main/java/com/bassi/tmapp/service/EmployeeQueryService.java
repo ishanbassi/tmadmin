@@ -4,6 +4,8 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.Employee;
 import com.bassi.tmapp.repository.EmployeeRepository;
 import com.bassi.tmapp.service.criteria.EmployeeCriteria;
+import com.bassi.tmapp.service.dto.EmployeeDTO;
+import com.bassi.tmapp.service.mapper.EmployeeMapper;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,7 @@ import tech.jhipster.service.QueryService;
  * Service for executing complex queries for {@link Employee} entities in the database.
  * The main input is a {@link EmployeeCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link List} of {@link Employee} which fulfills the criteria.
+ * It returns a {@link List} of {@link EmployeeDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -26,20 +28,23 @@ public class EmployeeQueryService extends QueryService<Employee> {
 
     private final EmployeeRepository employeeRepository;
 
-    public EmployeeQueryService(EmployeeRepository employeeRepository) {
+    private final EmployeeMapper employeeMapper;
+
+    public EmployeeQueryService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
+        this.employeeMapper = employeeMapper;
     }
 
     /**
-     * Return a {@link List} of {@link Employee} which matches the criteria from the database.
+     * Return a {@link List} of {@link EmployeeDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public List<Employee> findByCriteria(EmployeeCriteria criteria) {
+    public List<EmployeeDTO> findByCriteria(EmployeeCriteria criteria) {
         LOG.debug("find by criteria : {}", criteria);
         final Specification<Employee> specification = createSpecification(criteria);
-        return employeeRepository.findAll(specification);
+        return employeeMapper.toDto(employeeRepository.findAll(specification));
     }
 
     /**

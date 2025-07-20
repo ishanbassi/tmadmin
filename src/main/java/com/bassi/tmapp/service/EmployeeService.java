@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Employee;
 import com.bassi.tmapp.repository.EmployeeRepository;
+import com.bassi.tmapp.service.dto.EmployeeDTO;
+import com.bassi.tmapp.service.mapper.EmployeeMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,72 +21,57 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
-    public EmployeeService(EmployeeRepository employeeRepository) {
+    private final EmployeeMapper employeeMapper;
+
+    public EmployeeService(EmployeeRepository employeeRepository, EmployeeMapper employeeMapper) {
         this.employeeRepository = employeeRepository;
+        this.employeeMapper = employeeMapper;
     }
 
     /**
      * Save a employee.
      *
-     * @param employee the entity to save.
+     * @param employeeDTO the entity to save.
      * @return the persisted entity.
      */
-    public Employee save(Employee employee) {
-        LOG.debug("Request to save Employee : {}", employee);
-        return employeeRepository.save(employee);
+    public EmployeeDTO save(EmployeeDTO employeeDTO) {
+        LOG.debug("Request to save Employee : {}", employeeDTO);
+        Employee employee = employeeMapper.toEntity(employeeDTO);
+        employee = employeeRepository.save(employee);
+        return employeeMapper.toDto(employee);
     }
 
     /**
      * Update a employee.
      *
-     * @param employee the entity to save.
+     * @param employeeDTO the entity to save.
      * @return the persisted entity.
      */
-    public Employee update(Employee employee) {
-        LOG.debug("Request to update Employee : {}", employee);
-        return employeeRepository.save(employee);
+    public EmployeeDTO update(EmployeeDTO employeeDTO) {
+        LOG.debug("Request to update Employee : {}", employeeDTO);
+        Employee employee = employeeMapper.toEntity(employeeDTO);
+        employee = employeeRepository.save(employee);
+        return employeeMapper.toDto(employee);
     }
 
     /**
      * Partially update a employee.
      *
-     * @param employee the entity to update partially.
+     * @param employeeDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Employee> partialUpdate(Employee employee) {
-        LOG.debug("Request to partially update Employee : {}", employee);
+    public Optional<EmployeeDTO> partialUpdate(EmployeeDTO employeeDTO) {
+        LOG.debug("Request to partially update Employee : {}", employeeDTO);
 
         return employeeRepository
-            .findById(employee.getId())
+            .findById(employeeDTO.getId())
             .map(existingEmployee -> {
-                if (employee.getFullName() != null) {
-                    existingEmployee.setFullName(employee.getFullName());
-                }
-                if (employee.getPhoneNumber() != null) {
-                    existingEmployee.setPhoneNumber(employee.getPhoneNumber());
-                }
-                if (employee.getEmail() != null) {
-                    existingEmployee.setEmail(employee.getEmail());
-                }
-                if (employee.getCreatedDate() != null) {
-                    existingEmployee.setCreatedDate(employee.getCreatedDate());
-                }
-                if (employee.getModifiedDate() != null) {
-                    existingEmployee.setModifiedDate(employee.getModifiedDate());
-                }
-                if (employee.getDeleted() != null) {
-                    existingEmployee.setDeleted(employee.getDeleted());
-                }
-                if (employee.getDesignation() != null) {
-                    existingEmployee.setDesignation(employee.getDesignation());
-                }
-                if (employee.getJoiningDate() != null) {
-                    existingEmployee.setJoiningDate(employee.getJoiningDate());
-                }
+                employeeMapper.partialUpdate(existingEmployee, employeeDTO);
 
                 return existingEmployee;
             })
-            .map(employeeRepository::save);
+            .map(employeeRepository::save)
+            .map(employeeMapper::toDto);
     }
 
     /**
@@ -94,9 +81,9 @@ public class EmployeeService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Employee> findOne(Long id) {
+    public Optional<EmployeeDTO> findOne(Long id) {
         LOG.debug("Request to get Employee : {}", id);
-        return employeeRepository.findById(id);
+        return employeeRepository.findById(id).map(employeeMapper::toDto);
     }
 
     /**

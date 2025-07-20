@@ -12,7 +12,7 @@ public class TmAgentDTO implements Serializable {
 
     private Long id;
 
-    private String agentCode;
+    private String fullName;
 
     private String address;
 
@@ -24,15 +24,9 @@ public class TmAgentDTO implements Serializable {
 
     private String companyName;
 
-    private String fullName;
+    private String agentCode;
 
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
+    private String email;
 
     public Long getId() {
         return id;
@@ -42,12 +36,12 @@ public class TmAgentDTO implements Serializable {
         this.id = id;
     }
 
-    public String getAgentCode() {
-        return agentCode;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setAgentCode(String agentCode) {
-        this.agentCode = agentCode;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getAddress() {
@@ -90,6 +84,22 @@ public class TmAgentDTO implements Serializable {
         this.companyName = companyName;
     }
 
+    public String getAgentCode() {
+        return agentCode;
+    }
+
+    public void setAgentCode(String agentCode) {
+        this.agentCode = agentCode;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -111,26 +121,19 @@ public class TmAgentDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
-        return (
-            "TmAgentDTO [id=" +
-            id +
-            ", agentCode=" +
-            agentCode +
-            ", address=" +
-            address +
-            ", createdDate=" +
-            createdDate +
-            ", modifiedDate=" +
-            modifiedDate +
-            ", deleted=" +
-            deleted +
-            ", companyName=" +
-            companyName +
-            ", fullName=" +
-            fullName +
-            "]"
-        );
+        return "TmAgentDTO{" +
+            "id=" + getId() +
+            ", fullName='" + getFullName() + "'" +
+            ", address='" + getAddress() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", deleted='" + getDeleted() + "'" +
+            ", companyName='" + getCompanyName() + "'" +
+            ", agentCode='" + getAgentCode() + "'" +
+            ", email='" + getEmail() + "'" +
+            "}";
     }
 }

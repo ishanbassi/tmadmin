@@ -1,10 +1,10 @@
 package com.bassi.tmapp.web.rest;
 
-import com.bassi.tmapp.domain.Company;
 import com.bassi.tmapp.repository.CompanyRepository;
 import com.bassi.tmapp.service.CompanyQueryService;
 import com.bassi.tmapp.service.CompanyService;
 import com.bassi.tmapp.service.criteria.CompanyCriteria;
+import com.bassi.tmapp.service.dto.CompanyDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -53,40 +53,42 @@ public class CompanyResource {
     /**
      * {@code POST  /companies} : Create a new company.
      *
-     * @param company the company to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new company, or with status {@code 400 (Bad Request)} if the company has already an ID.
+     * @param companyDTO the companyDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new companyDTO, or with status {@code 400 (Bad Request)} if the company has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<Company> createCompany(@RequestBody Company company) throws URISyntaxException {
-        LOG.debug("REST request to save Company : {}", company);
-        if (company.getId() != null) {
+    public ResponseEntity<CompanyDTO> createCompany(@RequestBody CompanyDTO companyDTO) throws URISyntaxException {
+        LOG.debug("REST request to save Company : {}", companyDTO);
+        if (companyDTO.getId() != null) {
             throw new BadRequestAlertException("A new company cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        company = companyService.save(company);
-        return ResponseEntity.created(new URI("/api/companies/" + company.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, company.getId().toString()))
-            .body(company);
+        companyDTO = companyService.save(companyDTO);
+        return ResponseEntity.created(new URI("/api/companies/" + companyDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, companyDTO.getId().toString()))
+            .body(companyDTO);
     }
 
     /**
      * {@code PUT  /companies/:id} : Updates an existing company.
      *
-     * @param id the id of the company to save.
-     * @param company the company to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated company,
-     * or with status {@code 400 (Bad Request)} if the company is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the company couldn't be updated.
+     * @param id the id of the companyDTO to save.
+     * @param companyDTO the companyDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated companyDTO,
+     * or with status {@code 400 (Bad Request)} if the companyDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the companyDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Company> updateCompany(@PathVariable(value = "id", required = false) final Long id, @RequestBody Company company)
-        throws URISyntaxException {
-        LOG.debug("REST request to update Company : {}, {}", id, company);
-        if (company.getId() == null) {
+    public ResponseEntity<CompanyDTO> updateCompany(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody CompanyDTO companyDTO
+    ) throws URISyntaxException {
+        LOG.debug("REST request to update Company : {}, {}", id, companyDTO);
+        if (companyDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, company.getId())) {
+        if (!Objects.equals(id, companyDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -94,33 +96,33 @@ public class CompanyResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        company = companyService.update(company);
+        companyDTO = companyService.update(companyDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, company.getId().toString()))
-            .body(company);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, companyDTO.getId().toString()))
+            .body(companyDTO);
     }
 
     /**
      * {@code PATCH  /companies/:id} : Partial updates given fields of an existing company, field will ignore if it is null
      *
-     * @param id the id of the company to save.
-     * @param company the company to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated company,
-     * or with status {@code 400 (Bad Request)} if the company is not valid,
-     * or with status {@code 404 (Not Found)} if the company is not found,
-     * or with status {@code 500 (Internal Server Error)} if the company couldn't be updated.
+     * @param id the id of the companyDTO to save.
+     * @param companyDTO the companyDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated companyDTO,
+     * or with status {@code 400 (Bad Request)} if the companyDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the companyDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the companyDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<Company> partialUpdateCompany(
+    public ResponseEntity<CompanyDTO> partialUpdateCompany(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody Company company
+        @RequestBody CompanyDTO companyDTO
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update Company partially : {}, {}", id, company);
-        if (company.getId() == null) {
+        LOG.debug("REST request to partial update Company partially : {}, {}", id, companyDTO);
+        if (companyDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, company.getId())) {
+        if (!Objects.equals(id, companyDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -128,11 +130,11 @@ public class CompanyResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<Company> result = companyService.partialUpdate(company);
+        Optional<CompanyDTO> result = companyService.partialUpdate(companyDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, company.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, companyDTO.getId().toString())
         );
     }
 
@@ -144,13 +146,13 @@ public class CompanyResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of companies in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Company>> getAllCompanies(
+    public ResponseEntity<List<CompanyDTO>> getAllCompanies(
         CompanyCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         LOG.debug("REST request to get Companies by criteria: {}", criteria);
 
-        Page<Company> page = companyQueryService.findByCriteria(criteria, pageable);
+        Page<CompanyDTO> page = companyQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -170,20 +172,20 @@ public class CompanyResource {
     /**
      * {@code GET  /companies/:id} : get the "id" company.
      *
-     * @param id the id of the company to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the company, or with status {@code 404 (Not Found)}.
+     * @param id the id of the companyDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the companyDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<Company> getCompany(@PathVariable("id") Long id) {
+    public ResponseEntity<CompanyDTO> getCompany(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Company : {}", id);
-        Optional<Company> company = companyService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(company);
+        Optional<CompanyDTO> companyDTO = companyService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(companyDTO);
     }
 
     /**
      * {@code DELETE  /companies/:id} : delete the "id" company.
      *
-     * @param id the id of the company to delete.
+     * @param id the id of the companyDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

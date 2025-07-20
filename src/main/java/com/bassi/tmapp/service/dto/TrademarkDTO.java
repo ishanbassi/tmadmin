@@ -1,9 +1,8 @@
 package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.service.extended.dto.UserProfileDto;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -13,26 +12,6 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class TrademarkDTO implements Serializable {
-
-    public TrademarkDTO() {}
-
-    public TrademarkDTO(PublishedTmDTO other) {
-        this.name = other.getName();
-        this.details = other.getDetails();
-        this.applicationNo = other.getApplicationNo();
-        this.applicationDate = other.getApplicationDate();
-        this.agentName = other.getAgentName();
-        this.agentAddress = other.getAgentAddress();
-        this.proprietorName = other.getProprietorName();
-        this.proprietorAddress = other.getProprietorAddress();
-        this.headOffice = other.getHeadOffice();
-        this.imgUrl = other.getImgUrl();
-        this.tmClass = other.getTmClass();
-        this.journalNo = other.getJournalNo();
-        this.usage = other.getUsage();
-        this.associatedTms = other.getAssociatedTms();
-        this.trademarkStatus = other.getTrademarkStatus();
-    }
 
     private Long id;
 
@@ -72,17 +51,13 @@ public class TrademarkDTO implements Serializable {
 
     private ZonedDateTime modifiedDate;
 
-    private UserProfileDto userProfile;
+    private LocalDate renewalDate;
 
-    public UserProfileDto getUserProfile() {
-        return userProfile;
-    }
+    private TrademarkType type;
 
-    public void setUserProfile(UserProfileDto userProfile) {
-        this.userProfile = userProfile;
-    }
+    private Integer pageNo;
 
-    private Instant lastModifiedDate = Instant.now();
+    private CompanyDTO company;
 
     public Long getId() {
         return id;
@@ -236,12 +211,36 @@ public class TrademarkDTO implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
+    public LocalDate getRenewalDate() {
+        return renewalDate;
     }
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
+    public void setRenewalDate(LocalDate renewalDate) {
+        this.renewalDate = renewalDate;
+    }
+
+    public TrademarkType getType() {
+        return type;
+    }
+
+    public void setType(TrademarkType type) {
+        this.type = type;
+    }
+
+    public Integer getPageNo() {
+        return pageNo;
+    }
+
+    public void setPageNo(Integer pageNo) {
+        this.pageNo = pageNo;
+    }
+
+    public CompanyDTO getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDTO company) {
+        this.company = company;
     }
 
     @Override
@@ -265,52 +264,33 @@ public class TrademarkDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
+    // prettier-ignore
     @Override
     public String toString() {
-        return (
-            "TrademarkDTO [id=" +
-            id +
-            ", name=" +
-            name +
-            ", details=" +
-            details +
-            ", applicationNo=" +
-            applicationNo +
-            ", applicationDate=" +
-            applicationDate +
-            ", agentName=" +
-            agentName +
-            ", agentAddress=" +
-            agentAddress +
-            ", proprietorName=" +
-            proprietorName +
-            ", proprietorAddress=" +
-            proprietorAddress +
-            ", headOffice=" +
-            headOffice +
-            ", imgUrl=" +
-            imgUrl +
-            ", tmClass=" +
-            tmClass +
-            ", journalNo=" +
-            journalNo +
-            ", deleted=" +
-            deleted +
-            ", usage=" +
-            usage +
-            ", associatedTms=" +
-            associatedTms +
-            ", trademarkStatus=" +
-            trademarkStatus +
-            ", createdDate=" +
-            createdDate +
-            ", modifiedDate=" +
-            modifiedDate +
-            ", userProfile=" +
-            userProfile +
-            ", lastModifiedDate=" +
-            lastModifiedDate +
-            "]"
-        );
+        return "TrademarkDTO{" +
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", details='" + getDetails() + "'" +
+            ", applicationNo=" + getApplicationNo() +
+            ", applicationDate='" + getApplicationDate() + "'" +
+            ", agentName='" + getAgentName() + "'" +
+            ", agentAddress='" + getAgentAddress() + "'" +
+            ", proprietorName='" + getProprietorName() + "'" +
+            ", proprietorAddress='" + getProprietorAddress() + "'" +
+            ", headOffice='" + getHeadOffice() + "'" +
+            ", imgUrl='" + getImgUrl() + "'" +
+            ", tmClass=" + getTmClass() +
+            ", journalNo=" + getJournalNo() +
+            ", deleted='" + getDeleted() + "'" +
+            ", usage='" + getUsage() + "'" +
+            ", associatedTms='" + getAssociatedTms() + "'" +
+            ", trademarkStatus='" + getTrademarkStatus() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", renewalDate='" + getRenewalDate() + "'" +
+            ", type='" + getType() + "'" +
+            ", pageNo=" + getPageNo() +
+            ", company=" + getCompany() +
+            "}";
     }
 }

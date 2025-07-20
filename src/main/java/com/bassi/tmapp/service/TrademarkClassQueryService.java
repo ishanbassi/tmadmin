@@ -4,6 +4,8 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.repository.TrademarkClassRepository;
 import com.bassi.tmapp.service.criteria.TrademarkClassCriteria;
+import com.bassi.tmapp.service.dto.TrademarkClassDTO;
+import com.bassi.tmapp.service.mapper.TrademarkClassMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ import tech.jhipster.service.QueryService;
  * Service for executing complex queries for {@link TrademarkClass} entities in the database.
  * The main input is a {@link TrademarkClassCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link Page} of {@link TrademarkClass} which fulfills the criteria.
+ * It returns a {@link Page} of {@link TrademarkClassDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -27,21 +29,24 @@ public class TrademarkClassQueryService extends QueryService<TrademarkClass> {
 
     private final TrademarkClassRepository trademarkClassRepository;
 
-    public TrademarkClassQueryService(TrademarkClassRepository trademarkClassRepository) {
+    private final TrademarkClassMapper trademarkClassMapper;
+
+    public TrademarkClassQueryService(TrademarkClassRepository trademarkClassRepository, TrademarkClassMapper trademarkClassMapper) {
         this.trademarkClassRepository = trademarkClassRepository;
+        this.trademarkClassMapper = trademarkClassMapper;
     }
 
     /**
-     * Return a {@link Page} of {@link TrademarkClass} which matches the criteria from the database.
+     * Return a {@link Page} of {@link TrademarkClassDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<TrademarkClass> findByCriteria(TrademarkClassCriteria criteria, Pageable page) {
+    public Page<TrademarkClassDTO> findByCriteria(TrademarkClassCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<TrademarkClass> specification = createSpecification(criteria);
-        return trademarkClassRepository.findAll(specification, page);
+        return trademarkClassRepository.findAll(specification, page).map(trademarkClassMapper::toDto);
     }
 
     /**

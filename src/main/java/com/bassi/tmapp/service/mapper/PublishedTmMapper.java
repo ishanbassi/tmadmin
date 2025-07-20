@@ -11,9 +11,11 @@ import org.mapstruct.*;
  */
 @Mapper(componentModel = "spring")
 public interface PublishedTmMapper extends EntityMapper<PublishedTmDTO, PublishedTm> {
-    @Mapping(source = "agent", target = "tmAgent", qualifiedByName = "tmAgentId")
-    public PublishedTm toEntity(PublishedTmDTO publishedTmDTO);
+    @Mapping(target = "tmAgent", source = "tmAgent", qualifiedByName = "tmAgentId")
+    PublishedTmDTO toDto(PublishedTm s);
 
     @Named("tmAgentId")
-    public TmAgent toTmAgent(TmAgentDTO agentDTO);
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    TmAgentDTO toDtoTmAgentId(TmAgent tmAgent);
 }

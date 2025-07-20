@@ -3,6 +3,7 @@
     "changelogDate": "20250716100842"
   },
   "applications": ["tmapp"],
+  "dto": "mapstruct",
   "fields": [
     {
       "fieldName": "code",
