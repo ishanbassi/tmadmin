@@ -1,6 +1,5 @@
 package com.bassi.tmapp.domain;
 
-import com.bassi.tmapp.domain.enumeration.LeadStatus;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -201,17 +200,5 @@ public class Employee implements Serializable {
             ", designation='" + getDesignation() + "'" +
             ", joiningDate='" + getJoiningDate() + "'" +
             "}";
-    }
-
-    @PrePersist
-    private void beforeSave() {
-        this.createdDate = ZonedDateTime.now();
-        this.modifiedDate = ZonedDateTime.now();
-        this.deleted = false;
-    }
-
-    @PreUpdate
-    private void beforeUpdate() {
-        this.modifiedDate = ZonedDateTime.now();
     }
 }
