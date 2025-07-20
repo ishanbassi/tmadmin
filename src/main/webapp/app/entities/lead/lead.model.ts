@@ -19,7 +19,7 @@ export interface ILead {
   deleted?: boolean | null;
   status?: keyof typeof LeadStatus | null;
   leadSource?: string | null;
-  assignedTo?: Pick<IEmployee, 'id'> | null;
+  assignedTo?: Pick<IEmployee, 'id' | 'fullName'> | null;
 }
 
 export type NewLead = Omit<ILead, 'id'> & { id: null };

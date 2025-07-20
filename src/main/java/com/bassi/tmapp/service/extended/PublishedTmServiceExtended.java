@@ -8,6 +8,7 @@ import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.pdfService.ITextPdfReaderService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
+import com.bassi.tmapp.service.mapper.PublishedTmMapperImpl;
 import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import jakarta.persistence.EntityManager;
@@ -199,12 +200,13 @@ public class PublishedTmServiceExtended {
         log.debug("Request to delete PublishedTm having journalNo : {}", criteria);
         Pageable page = PageRequest.of(0, 100);
 
-        Page<PublishedTm> trademarkPage = publishedTmQueryService.findByCriteria(criteria, page);
+        Page<PublishedTmDTO> trademarkPage = publishedTmQueryService.findByCriteria(criteria, page);
         while (trademarkPage.hasContent()) {
-            deleteTrademarkImages(trademarkPage.getContent());
+            List<PublishedTm> publishedTms = publishedTmMapper.toEntity(trademarkPage.getContent());
+            deleteTrademarkImages(publishedTms);
 
             if (trademarkPage.hasNext()) {
-                trademarkPage = publishedTmRepositoryExtended.findAll(trademarkPage.nextPageable());
+                trademarkPage = publishedTmQueryService.findByCriteria(criteria, trademarkPage.nextPageable());
             } else {
                 break;
             }
