@@ -152,13 +152,13 @@ public class PublishedTmResourceExtended {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of publishedTms in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<PublishedTm>> getAllPublishedTms(
+    public ResponseEntity<List<PublishedTmDTO>> getAllPublishedTms(
         PublishedTmCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get PublishedTms by criteria: {}", criteria);
 
-        Page<PublishedTm> page = publishedTmQueryService.findByCriteria(criteria, pageable);
+        Page<PublishedTmDTO> page = publishedTmQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

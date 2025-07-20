@@ -6,11 +6,13 @@ import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.TrademarkClassService;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
+import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
+import com.bassi.tmapp.service.mapper.TrademarkClassMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -67,6 +69,7 @@ public class ITextPdfReaderService {
     private WordSanitizationService wordSanitizationService;
     private TmAgentServiceExtended agentServiceExtended;
     private TrademarkClassService trademarkClassService;
+    private final TrademarkClassMapper trademarkClassMapper;
 
     @Autowired
     @Lazy
@@ -90,7 +93,8 @@ public class ITextPdfReaderService {
         PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
         WordSanitizationService wordSanitizationService,
         TmAgentServiceExtended agentServiceExtended,
-        TrademarkClassService trademarkClassService
+        TrademarkClassService trademarkClassService,
+        TrademarkClassMapper trademarkClassMapper
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
@@ -99,6 +103,7 @@ public class ITextPdfReaderService {
         this.wordSanitizationService = wordSanitizationService;
         this.agentServiceExtended = agentServiceExtended;
         this.trademarkClassService = trademarkClassService;
+        this.trademarkClassMapper = trademarkClassMapper;
     }
 
     @Async
@@ -147,7 +152,7 @@ public class ITextPdfReaderService {
                     if (matcher.find()) {
                         String basicNo = matcher.group(1);
                         String indication = matcher.group(2);
-                        TrademarkClass trademarkClass = new TrademarkClass();
+                        TrademarkClassDTO trademarkClass = new TrademarkClassDTO();
                         trademarkClass.setCode(Integer.valueOf(basicNo));
                         trademarkClass.setKeyword(indication);
                         trademarkClass.setTmClass(tmClass);
@@ -206,7 +211,7 @@ public class ITextPdfReaderService {
             try {
                 log.info("Going to process page number {}", i);
                 currentPublishedTmDto = new PublishedTmDTO();
-                currentPublishedTmDto.setPageNo((short) i);
+                currentPublishedTmDto.setPageNo(i);
 
                 CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
                 PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);

@@ -151,13 +151,13 @@ public class TrademarkResourceExtended {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of trademarks in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<Trademark>> getAllTrademarks(
+    public ResponseEntity<List<TrademarkDTO>> getAllTrademarks(
         TrademarkCriteria criteria,
         @org.springdoc.core.annotations.ParameterObject Pageable pageable
     ) {
         log.debug("REST request to get Trademarks by criteria: {}", criteria);
 
-        Page<Trademark> page = trademarkQueryService.findByCriteria(criteria, pageable);
+        Page<TrademarkDTO> page = trademarkQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

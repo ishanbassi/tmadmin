@@ -5,6 +5,8 @@ import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -12,6 +14,39 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PublishedTmDTO implements Serializable {
+
+    public static final String APPLICATION_NUMBER_DATE = "APPLICATION_NUMBER_DATE";
+    public static final String AGENT_NAME_ADDRESS = "AGENT_NAME_ADDRESS";
+    public static final String TRADEMARK_USAGE = "TRADEMARK_USAGE";
+    public static final String TM_CLASS = "TM_CLASS";
+    public static final String PROPRIETOR_NAME_ADDRESS = "PROPRIETOR_NAME_ADDRESS";
+    public static final String HEAD_OFFICE = "HEAD_OFFICE";
+    private final Map<String, Integer> textIndexes = new HashMap<>();
+
+    public PublishedTmDTO() {}
+
+    public PublishedTmDTO(PublishedTmDTO other) {
+        this.name = other.name;
+        this.details = other.details;
+        this.applicationDate = other.applicationDate;
+        this.applicationNo = other.applicationNo;
+        this.agentAddress = other.agentAddress;
+        this.agentName = other.agentName;
+        this.proprietorAddress = other.proprietorAddress;
+        this.proprietorName = other.proprietorName;
+        this.headOffice = other.headOffice;
+        this.imgUrl = other.imgUrl;
+        this.tmClass = other.tmClass;
+        this.deleted = other.deleted;
+        this.journalNo = other.journalNo;
+        this.usage = other.usage;
+        this.associatedTms = other.associatedTms;
+        this.trademarkStatus = other.trademarkStatus;
+        this.createdDate = other.createdDate;
+        this.modifiedDate = other.modifiedDate;
+        this.pageNo = other.pageNo;
+        this.agent = other.agent;
+    }
 
     private Long id;
 
@@ -59,6 +94,28 @@ public class PublishedTmDTO implements Serializable {
 
     private TmAgentDTO tmAgent;
 
+    private TmAgentDTO agent;
+
+    private String filePath;
+
+    private TrademarkType trademarkType;
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public Map<String, Integer> getTextIndexMap() {
+        return this.textIndexes;
+    }
+
+    public void setTextIndexes(String key, int value) {
+        this.textIndexes.put(key, value);
+    }
+
     public Long getId() {
         return id;
     }
@@ -72,7 +129,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null) {
+            this.name = name.strip();
+        } else {
+            this.name = name;
+        }
     }
 
     public String getDetails() {
@@ -80,7 +141,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setDetails(String details) {
-        this.details = details;
+        if (details != null) {
+            this.details = details.strip();
+        } else {
+            this.details = details;
+        }
     }
 
     public Long getApplicationNo() {
@@ -104,7 +169,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setAgentName(String agentName) {
-        this.agentName = agentName;
+        if (agentName != null) {
+            this.agentName = agentName.strip();
+        } else {
+            this.agentName = agentName;
+        }
     }
 
     public String getAgentAddress() {
@@ -112,7 +181,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setAgentAddress(String agentAddress) {
-        this.agentAddress = agentAddress;
+        if (agentAddress != null) {
+            this.agentAddress = agentAddress.strip();
+        } else {
+            this.agentAddress = agentAddress;
+        }
     }
 
     public String getProprietorName() {
@@ -120,7 +193,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setProprietorName(String proprietorName) {
-        this.proprietorName = proprietorName;
+        if (proprietorName != null) {
+            this.proprietorName = proprietorName.strip();
+        } else {
+            this.proprietorName = proprietorName;
+        }
     }
 
     public String getProprietorAddress() {
@@ -128,7 +205,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setProprietorAddress(String proprietorAddress) {
-        this.proprietorAddress = proprietorAddress;
+        if (proprietorAddress != null) {
+            this.proprietorAddress = proprietorAddress.strip();
+        } else {
+            this.proprietorAddress = proprietorAddress;
+        }
     }
 
     public HeadOffice getHeadOffice() {
@@ -176,7 +257,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setUsage(String usage) {
-        this.usage = usage;
+        if (usage != null) {
+            this.usage = usage.strip();
+        } else {
+            this.usage = usage;
+        }
     }
 
     public String getAssociatedTms() {
@@ -184,7 +269,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setAssociatedTms(String associatedTms) {
-        this.associatedTms = associatedTms;
+        if (associatedTms != null) {
+            this.associatedTms = associatedTms.strip();
+        } else {
+            this.associatedTms = associatedTms;
+        }
     }
 
     public String getTrademarkStatus() {
@@ -192,7 +281,11 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setTrademarkStatus(String trademarkStatus) {
-        this.trademarkStatus = trademarkStatus;
+        if (trademarkStatus != null) {
+            this.trademarkStatus = trademarkStatus.strip();
+        } else {
+            this.trademarkStatus = trademarkStatus;
+        }
     }
 
     public ZonedDateTime getCreatedDate() {
@@ -241,6 +334,14 @@ public class PublishedTmDTO implements Serializable {
 
     public void setTmAgent(TmAgentDTO tmAgent) {
         this.tmAgent = tmAgent;
+    }
+
+    public TrademarkType getTrademarkType() {
+        return trademarkType;
+    }
+
+    public void setTrademarkType(TrademarkType trademarkType) {
+        this.trademarkType = trademarkType;
     }
 
     @Override
