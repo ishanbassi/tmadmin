@@ -26,7 +26,7 @@ export interface ITrademark {
   renewalDate?: dayjs.Dayjs | null;
   type?: keyof typeof TrademarkType | null;
   pageNo?: number | null;
-  company?: ICompany | null;
+  company?: Pick<ICompany, 'id'> | null;
 }
 
 export type NewTrademark = Omit<ITrademark, 'id'> & { id: null };

@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.repository.TrademarkClassRepository;
+import com.bassi.tmapp.service.dto.TrademarkClassDTO;
+import com.bassi.tmapp.service.mapper.TrademarkClassMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,72 +21,57 @@ public class TrademarkClassService {
 
     private final TrademarkClassRepository trademarkClassRepository;
 
-    public TrademarkClassService(TrademarkClassRepository trademarkClassRepository) {
+    private final TrademarkClassMapper trademarkClassMapper;
+
+    public TrademarkClassService(TrademarkClassRepository trademarkClassRepository, TrademarkClassMapper trademarkClassMapper) {
         this.trademarkClassRepository = trademarkClassRepository;
+        this.trademarkClassMapper = trademarkClassMapper;
     }
 
     /**
      * Save a trademarkClass.
      *
-     * @param trademarkClass the entity to save.
+     * @param trademarkClassDTO the entity to save.
      * @return the persisted entity.
      */
-    public TrademarkClass save(TrademarkClass trademarkClass) {
-        LOG.debug("Request to save TrademarkClass : {}", trademarkClass);
-        return trademarkClassRepository.save(trademarkClass);
+    public TrademarkClassDTO save(TrademarkClassDTO trademarkClassDTO) {
+        LOG.debug("Request to save TrademarkClass : {}", trademarkClassDTO);
+        TrademarkClass trademarkClass = trademarkClassMapper.toEntity(trademarkClassDTO);
+        trademarkClass = trademarkClassRepository.save(trademarkClass);
+        return trademarkClassMapper.toDto(trademarkClass);
     }
 
     /**
      * Update a trademarkClass.
      *
-     * @param trademarkClass the entity to save.
+     * @param trademarkClassDTO the entity to save.
      * @return the persisted entity.
      */
-    public TrademarkClass update(TrademarkClass trademarkClass) {
-        LOG.debug("Request to update TrademarkClass : {}", trademarkClass);
-        return trademarkClassRepository.save(trademarkClass);
+    public TrademarkClassDTO update(TrademarkClassDTO trademarkClassDTO) {
+        LOG.debug("Request to update TrademarkClass : {}", trademarkClassDTO);
+        TrademarkClass trademarkClass = trademarkClassMapper.toEntity(trademarkClassDTO);
+        trademarkClass = trademarkClassRepository.save(trademarkClass);
+        return trademarkClassMapper.toDto(trademarkClass);
     }
 
     /**
      * Partially update a trademarkClass.
      *
-     * @param trademarkClass the entity to update partially.
+     * @param trademarkClassDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<TrademarkClass> partialUpdate(TrademarkClass trademarkClass) {
-        LOG.debug("Request to partially update TrademarkClass : {}", trademarkClass);
+    public Optional<TrademarkClassDTO> partialUpdate(TrademarkClassDTO trademarkClassDTO) {
+        LOG.debug("Request to partially update TrademarkClass : {}", trademarkClassDTO);
 
         return trademarkClassRepository
-            .findById(trademarkClass.getId())
+            .findById(trademarkClassDTO.getId())
             .map(existingTrademarkClass -> {
-                if (trademarkClass.getCode() != null) {
-                    existingTrademarkClass.setCode(trademarkClass.getCode());
-                }
-                if (trademarkClass.getTmClass() != null) {
-                    existingTrademarkClass.setTmClass(trademarkClass.getTmClass());
-                }
-                if (trademarkClass.getKeyword() != null) {
-                    existingTrademarkClass.setKeyword(trademarkClass.getKeyword());
-                }
-                if (trademarkClass.getTitle() != null) {
-                    existingTrademarkClass.setTitle(trademarkClass.getTitle());
-                }
-                if (trademarkClass.getDescription() != null) {
-                    existingTrademarkClass.setDescription(trademarkClass.getDescription());
-                }
-                if (trademarkClass.getCreatedDate() != null) {
-                    existingTrademarkClass.setCreatedDate(trademarkClass.getCreatedDate());
-                }
-                if (trademarkClass.getModifiedDate() != null) {
-                    existingTrademarkClass.setModifiedDate(trademarkClass.getModifiedDate());
-                }
-                if (trademarkClass.getDeleted() != null) {
-                    existingTrademarkClass.setDeleted(trademarkClass.getDeleted());
-                }
+                trademarkClassMapper.partialUpdate(existingTrademarkClass, trademarkClassDTO);
 
                 return existingTrademarkClass;
             })
-            .map(trademarkClassRepository::save);
+            .map(trademarkClassRepository::save)
+            .map(trademarkClassMapper::toDto);
     }
 
     /**
@@ -94,9 +81,9 @@ public class TrademarkClassService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<TrademarkClass> findOne(Long id) {
+    public Optional<TrademarkClassDTO> findOne(Long id) {
         LOG.debug("Request to get TrademarkClass : {}", id);
-        return trademarkClassRepository.findById(id);
+        return trademarkClassRepository.findById(id).map(trademarkClassMapper::toDto);
     }
 
     /**

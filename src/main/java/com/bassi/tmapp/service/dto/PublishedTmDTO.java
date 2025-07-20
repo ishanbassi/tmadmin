@@ -5,8 +5,6 @@ import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -14,39 +12,6 @@ import java.util.Objects;
  */
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PublishedTmDTO implements Serializable {
-
-    public static final String APPLICATION_NUMBER_DATE = "APPLICATION_NUMBER_DATE";
-    public static final String AGENT_NAME_ADDRESS = "AGENT_NAME_ADDRESS";
-    public static final String TRADEMARK_USAGE = "TRADEMARK_USAGE";
-    public static final String TM_CLASS = "TM_CLASS";
-    public static final String PROPRIETOR_NAME_ADDRESS = "PROPRIETOR_NAME_ADDRESS";
-    public static final String HEAD_OFFICE = "HEAD_OFFICE";
-    private final Map<String, Integer> textIndexes = new HashMap<>();
-
-    public PublishedTmDTO() {}
-
-    public PublishedTmDTO(PublishedTmDTO other) {
-        this.name = other.name;
-        this.details = other.details;
-        this.applicationDate = other.applicationDate;
-        this.applicationNo = other.applicationNo;
-        this.agentAddress = other.agentAddress;
-        this.agentName = other.agentName;
-        this.proprietorAddress = other.proprietorAddress;
-        this.proprietorName = other.proprietorName;
-        this.headOffice = other.headOffice;
-        this.imgUrl = other.imgUrl;
-        this.tmClass = other.tmClass;
-        this.deleted = other.deleted;
-        this.journalNo = other.journalNo;
-        this.usage = other.usage;
-        this.associatedTms = other.associatedTms;
-        this.trademarkStatus = other.trademarkStatus;
-        this.createdDate = other.createdDate;
-        this.modifiedDate = other.modifiedDate;
-        this.pageNo = other.pageNo;
-        this.agent = other.agent;
-    }
 
     private Long id;
 
@@ -86,31 +51,13 @@ public class PublishedTmDTO implements Serializable {
 
     private ZonedDateTime modifiedDate;
 
-    private short pageNo;
+    private LocalDate renewalDate;
 
-    private TmAgentDTO agent;
+    private TrademarkType type;
 
-    private String filePath;
+    private Integer pageNo;
 
-    private String renewalDate;
-
-    private TrademarkType trademarkType;
-
-    public String getFilePath() {
-        return filePath;
-    }
-
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
-    }
-
-    public Map<String, Integer> getTextIndexMap() {
-        return this.textIndexes;
-    }
-
-    public void setTextIndexes(String key, int value) {
-        this.textIndexes.put(key, value);
-    }
+    private TmAgentDTO tmAgent;
 
     public Long getId() {
         return id;
@@ -125,11 +72,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setName(String name) {
-        if (name != null) {
-            this.name = name.strip();
-        } else {
-            this.name = name;
-        }
+        this.name = name;
     }
 
     public String getDetails() {
@@ -137,11 +80,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setDetails(String details) {
-        if (details != null) {
-            this.details = details.strip();
-        } else {
-            this.details = details;
-        }
+        this.details = details;
     }
 
     public Long getApplicationNo() {
@@ -165,11 +104,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setAgentName(String agentName) {
-        if (agentName != null) {
-            this.agentName = agentName.strip();
-        } else {
-            this.agentName = agentName;
-        }
+        this.agentName = agentName;
     }
 
     public String getAgentAddress() {
@@ -177,11 +112,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setAgentAddress(String agentAddress) {
-        if (agentAddress != null) {
-            this.agentAddress = agentAddress.strip();
-        } else {
-            this.agentAddress = agentAddress;
-        }
+        this.agentAddress = agentAddress;
     }
 
     public String getProprietorName() {
@@ -189,11 +120,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setProprietorName(String proprietorName) {
-        if (proprietorName != null) {
-            this.proprietorName = proprietorName.strip();
-        } else {
-            this.proprietorName = proprietorName;
-        }
+        this.proprietorName = proprietorName;
     }
 
     public String getProprietorAddress() {
@@ -201,11 +128,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setProprietorAddress(String proprietorAddress) {
-        if (proprietorAddress != null) {
-            this.proprietorAddress = proprietorAddress.strip();
-        } else {
-            this.proprietorAddress = proprietorAddress;
-        }
+        this.proprietorAddress = proprietorAddress;
     }
 
     public HeadOffice getHeadOffice() {
@@ -253,11 +176,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setUsage(String usage) {
-        if (usage != null) {
-            this.usage = usage.strip();
-        } else {
-            this.usage = usage;
-        }
+        this.usage = usage;
     }
 
     public String getAssociatedTms() {
@@ -265,11 +184,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setAssociatedTms(String associatedTms) {
-        if (associatedTms != null) {
-            this.associatedTms = associatedTms.strip();
-        } else {
-            this.associatedTms = associatedTms;
-        }
+        this.associatedTms = associatedTms;
     }
 
     public String getTrademarkStatus() {
@@ -277,11 +192,7 @@ public class PublishedTmDTO implements Serializable {
     }
 
     public void setTrademarkStatus(String trademarkStatus) {
-        if (trademarkStatus != null) {
-            this.trademarkStatus = trademarkStatus.strip();
-        } else {
-            this.trademarkStatus = trademarkStatus;
-        }
+        this.trademarkStatus = trademarkStatus;
     }
 
     public ZonedDateTime getCreatedDate() {
@@ -300,20 +211,36 @@ public class PublishedTmDTO implements Serializable {
         this.modifiedDate = modifiedDate;
     }
 
-    public short getPageNo() {
+    public LocalDate getRenewalDate() {
+        return renewalDate;
+    }
+
+    public void setRenewalDate(LocalDate renewalDate) {
+        this.renewalDate = renewalDate;
+    }
+
+    public TrademarkType getType() {
+        return type;
+    }
+
+    public void setType(TrademarkType type) {
+        this.type = type;
+    }
+
+    public Integer getPageNo() {
         return pageNo;
     }
 
-    public void setPageNo(short pageNo) {
+    public void setPageNo(Integer pageNo) {
         this.pageNo = pageNo;
     }
 
-    public TmAgentDTO getAgent() {
-        return agent;
+    public TmAgentDTO getTmAgent() {
+        return tmAgent;
     }
 
-    public void setAgent(TmAgentDTO agent) {
-        this.agent = agent;
+    public void setTmAgent(TmAgentDTO tmAgent) {
+        this.tmAgent = tmAgent;
     }
 
     @Override
@@ -337,70 +264,33 @@ public class PublishedTmDTO implements Serializable {
         return Objects.hash(this.id);
     }
 
-    public String getRenewalDate() {
-        return renewalDate;
-    }
-
-    public void setRenewalDate(String renewalDate) {
-        this.renewalDate = renewalDate;
-    }
-
-    public TrademarkType getTrademarkType() {
-        return trademarkType;
-    }
-
-    public void setTrademarkType(TrademarkType trademarkType) {
-        this.trademarkType = trademarkType;
-    }
-
+    // prettier-ignore
     @Override
     public String toString() {
-        return (
-            "PublishedTmDTO [textIndexes=" +
-            textIndexes +
-            ", id=" +
-            id +
-            ", name=" +
-            name +
-            ", details=" +
-            details +
-            ", applicationNo=" +
-            applicationNo +
-            ", applicationDate=" +
-            applicationDate +
-            ", agentName=" +
-            agentName +
-            ", agentAddress=" +
-            agentAddress +
-            ", proprietorName=" +
-            proprietorName +
-            ", proprietorAddress=" +
-            proprietorAddress +
-            ", headOffice=" +
-            headOffice +
-            ", imgUrl=" +
-            imgUrl +
-            ", tmClass=" +
-            tmClass +
-            ", journalNo=" +
-            journalNo +
-            ", deleted=" +
-            deleted +
-            ", usage=" +
-            usage +
-            ", associatedTms=" +
-            associatedTms +
-            ", trademarkStatus=" +
-            trademarkStatus +
-            ", createdDate=" +
-            createdDate +
-            ", modifiedDate=" +
-            modifiedDate +
-            ", pageNo=" +
-            pageNo +
-            ", agent=" +
-            agent +
-            "]"
-        );
+        return "PublishedTmDTO{" +
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", details='" + getDetails() + "'" +
+            ", applicationNo=" + getApplicationNo() +
+            ", applicationDate='" + getApplicationDate() + "'" +
+            ", agentName='" + getAgentName() + "'" +
+            ", agentAddress='" + getAgentAddress() + "'" +
+            ", proprietorName='" + getProprietorName() + "'" +
+            ", proprietorAddress='" + getProprietorAddress() + "'" +
+            ", headOffice='" + getHeadOffice() + "'" +
+            ", imgUrl='" + getImgUrl() + "'" +
+            ", tmClass=" + getTmClass() +
+            ", journalNo=" + getJournalNo() +
+            ", deleted='" + getDeleted() + "'" +
+            ", usage='" + getUsage() + "'" +
+            ", associatedTms='" + getAssociatedTms() + "'" +
+            ", trademarkStatus='" + getTrademarkStatus() + "'" +
+            ", createdDate='" + getCreatedDate() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", renewalDate='" + getRenewalDate() + "'" +
+            ", type='" + getType() + "'" +
+            ", pageNo=" + getPageNo() +
+            ", tmAgent=" + getTmAgent() +
+            "}";
     }
 }

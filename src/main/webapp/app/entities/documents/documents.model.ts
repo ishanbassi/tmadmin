@@ -9,8 +9,8 @@ export interface IDocuments {
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
-  trademark?: ITrademark | null;
-  user?: IUserProfile | null;
+  trademark?: Pick<ITrademark, 'id'> | null;
+  user?: Pick<IUserProfile, 'id'> | null;
 }
 
 export type NewDocuments = Omit<IDocuments, 'id'> & { id: null };

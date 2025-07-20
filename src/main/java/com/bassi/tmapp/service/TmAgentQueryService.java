@@ -4,6 +4,8 @@ import com.bassi.tmapp.domain.*; // for static metamodels
 import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.repository.TmAgentRepository;
 import com.bassi.tmapp.service.criteria.TmAgentCriteria;
+import com.bassi.tmapp.service.dto.TmAgentDTO;
+import com.bassi.tmapp.service.mapper.TmAgentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -17,7 +19,7 @@ import tech.jhipster.service.QueryService;
  * Service for executing complex queries for {@link TmAgent} entities in the database.
  * The main input is a {@link TmAgentCriteria} which gets converted to {@link Specification},
  * in a way that all the filters must apply.
- * It returns a {@link Page} of {@link TmAgent} which fulfills the criteria.
+ * It returns a {@link Page} of {@link TmAgentDTO} which fulfills the criteria.
  */
 @Service
 @Transactional(readOnly = true)
@@ -27,21 +29,24 @@ public class TmAgentQueryService extends QueryService<TmAgent> {
 
     private final TmAgentRepository tmAgentRepository;
 
-    public TmAgentQueryService(TmAgentRepository tmAgentRepository) {
+    private final TmAgentMapper tmAgentMapper;
+
+    public TmAgentQueryService(TmAgentRepository tmAgentRepository, TmAgentMapper tmAgentMapper) {
         this.tmAgentRepository = tmAgentRepository;
+        this.tmAgentMapper = tmAgentMapper;
     }
 
     /**
-     * Return a {@link Page} of {@link TmAgent} which matches the criteria from the database.
+     * Return a {@link Page} of {@link TmAgentDTO} which matches the criteria from the database.
      * @param criteria The object which holds all the filters, which the entities should match.
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
     @Transactional(readOnly = true)
-    public Page<TmAgent> findByCriteria(TmAgentCriteria criteria, Pageable page) {
+    public Page<TmAgentDTO> findByCriteria(TmAgentCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<TmAgent> specification = createSpecification(criteria);
-        return tmAgentRepository.findAll(specification, page);
+        return tmAgentRepository.findAll(specification, page).map(tmAgentMapper::toDto);
     }
 
     /**

@@ -15,7 +15,7 @@ export interface ICompany {
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
-  user?: IUserProfile | null;
+  user?: Pick<IUserProfile, 'id'> | null;
 }
 
 export type NewCompany = Omit<ICompany, 'id'> & { id: null };

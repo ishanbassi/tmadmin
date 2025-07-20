@@ -14,6 +14,8 @@ import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.enumeration.ContactMethod;
 import com.bassi.tmapp.domain.enumeration.LeadStatus;
 import com.bassi.tmapp.repository.LeadRepository;
+import com.bassi.tmapp.service.dto.LeadDTO;
+import com.bassi.tmapp.service.mapper.LeadMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -98,6 +100,9 @@ class LeadResourceIT {
     private LeadRepository leadRepository;
 
     @Autowired
+    private LeadMapper leadMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -173,18 +178,20 @@ class LeadResourceIT {
     void createLead() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the Lead
-        var returnedLead = om.readValue(
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+        var returnedLeadDTO = om.readValue(
             restLeadMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(lead)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(leadDTO)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            Lead.class
+            LeadDTO.class
         );
 
         // Validate the Lead in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedLead = leadMapper.toEntity(returnedLeadDTO);
         assertLeadUpdatableFieldsEquals(returnedLead, getPersistedLead(returnedLead));
 
         insertedLead = returnedLead;
@@ -195,12 +202,13 @@ class LeadResourceIT {
     void createLeadWithExistingId() throws Exception {
         // Create the Lead with an existing ID
         lead.setId(1L);
+        LeadDTO leadDTO = leadMapper.toDto(lead);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restLeadMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(lead)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(leadDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Lead in the database
@@ -1120,13 +1128,10 @@ class LeadResourceIT {
             .deleted(UPDATED_DELETED)
             .status(UPDATED_STATUS)
             .leadSource(UPDATED_LEAD_SOURCE);
+        LeadDTO leadDTO = leadMapper.toDto(updatedLead);
 
         restLeadMockMvc
-            .perform(
-                put(ENTITY_API_URL_ID, updatedLead.getId())
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(updatedLead))
-            )
+            .perform(put(ENTITY_API_URL_ID, leadDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(leadDTO)))
             .andExpect(status().isOk());
 
         // Validate the Lead in the database
@@ -1140,9 +1145,12 @@ class LeadResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         lead.setId(longCount.incrementAndGet());
 
+        // Create the Lead
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restLeadMockMvc
-            .perform(put(ENTITY_API_URL_ID, lead.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(lead)))
+            .perform(put(ENTITY_API_URL_ID, leadDTO.getId()).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(leadDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Lead in the database
@@ -1155,12 +1163,15 @@ class LeadResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         lead.setId(longCount.incrementAndGet());
 
+        // Create the Lead
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restLeadMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(lead))
+                    .content(om.writeValueAsBytes(leadDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -1174,9 +1185,12 @@ class LeadResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         lead.setId(longCount.incrementAndGet());
 
+        // Create the Lead
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restLeadMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(lead)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(leadDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Lead in the database
@@ -1266,9 +1280,14 @@ class LeadResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         lead.setId(longCount.incrementAndGet());
 
+        // Create the Lead
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restLeadMockMvc
-            .perform(patch(ENTITY_API_URL_ID, lead.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(lead)))
+            .perform(
+                patch(ENTITY_API_URL_ID, leadDTO.getId()).contentType("application/merge-patch+json").content(om.writeValueAsBytes(leadDTO))
+            )
             .andExpect(status().isBadRequest());
 
         // Validate the Lead in the database
@@ -1281,12 +1300,15 @@ class LeadResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         lead.setId(longCount.incrementAndGet());
 
+        // Create the Lead
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restLeadMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(lead))
+                    .content(om.writeValueAsBytes(leadDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -1300,9 +1322,12 @@ class LeadResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         lead.setId(longCount.incrementAndGet());
 
+        // Create the Lead
+        LeadDTO leadDTO = leadMapper.toDto(lead);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restLeadMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(lead)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(leadDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the Lead in the database

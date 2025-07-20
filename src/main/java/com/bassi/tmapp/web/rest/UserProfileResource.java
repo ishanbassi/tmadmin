@@ -1,8 +1,8 @@
 package com.bassi.tmapp.web.rest;
 
-import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.repository.UserProfileRepository;
 import com.bassi.tmapp.service.UserProfileService;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -43,42 +43,42 @@ public class UserProfileResource {
     /**
      * {@code POST  /user-profiles} : Create a new userProfile.
      *
-     * @param userProfile the userProfile to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new userProfile, or with status {@code 400 (Bad Request)} if the userProfile has already an ID.
+     * @param userProfileDTO the userProfileDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new userProfileDTO, or with status {@code 400 (Bad Request)} if the userProfile has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<UserProfile> createUserProfile(@RequestBody UserProfile userProfile) throws URISyntaxException {
-        LOG.debug("REST request to save UserProfile : {}", userProfile);
-        if (userProfile.getId() != null) {
+    public ResponseEntity<UserProfileDTO> createUserProfile(@RequestBody UserProfileDTO userProfileDTO) throws URISyntaxException {
+        LOG.debug("REST request to save UserProfile : {}", userProfileDTO);
+        if (userProfileDTO.getId() != null) {
             throw new BadRequestAlertException("A new userProfile cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        userProfile = userProfileService.save(userProfile);
-        return ResponseEntity.created(new URI("/api/user-profiles/" + userProfile.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, userProfile.getId().toString()))
-            .body(userProfile);
+        userProfileDTO = userProfileService.save(userProfileDTO);
+        return ResponseEntity.created(new URI("/api/user-profiles/" + userProfileDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, userProfileDTO.getId().toString()))
+            .body(userProfileDTO);
     }
 
     /**
      * {@code PUT  /user-profiles/:id} : Updates an existing userProfile.
      *
-     * @param id the id of the userProfile to save.
-     * @param userProfile the userProfile to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated userProfile,
-     * or with status {@code 400 (Bad Request)} if the userProfile is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the userProfile couldn't be updated.
+     * @param id the id of the userProfileDTO to save.
+     * @param userProfileDTO the userProfileDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated userProfileDTO,
+     * or with status {@code 400 (Bad Request)} if the userProfileDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the userProfileDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/{id}")
-    public ResponseEntity<UserProfile> updateUserProfile(
+    public ResponseEntity<UserProfileDTO> updateUserProfile(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody UserProfile userProfile
+        @RequestBody UserProfileDTO userProfileDTO
     ) throws URISyntaxException {
-        LOG.debug("REST request to update UserProfile : {}, {}", id, userProfile);
-        if (userProfile.getId() == null) {
+        LOG.debug("REST request to update UserProfile : {}, {}", id, userProfileDTO);
+        if (userProfileDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, userProfile.getId())) {
+        if (!Objects.equals(id, userProfileDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -86,33 +86,33 @@ public class UserProfileResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        userProfile = userProfileService.update(userProfile);
+        userProfileDTO = userProfileService.update(userProfileDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, userProfile.getId().toString()))
-            .body(userProfile);
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, userProfileDTO.getId().toString()))
+            .body(userProfileDTO);
     }
 
     /**
      * {@code PATCH  /user-profiles/:id} : Partial updates given fields of an existing userProfile, field will ignore if it is null
      *
-     * @param id the id of the userProfile to save.
-     * @param userProfile the userProfile to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated userProfile,
-     * or with status {@code 400 (Bad Request)} if the userProfile is not valid,
-     * or with status {@code 404 (Not Found)} if the userProfile is not found,
-     * or with status {@code 500 (Internal Server Error)} if the userProfile couldn't be updated.
+     * @param id the id of the userProfileDTO to save.
+     * @param userProfileDTO the userProfileDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated userProfileDTO,
+     * or with status {@code 400 (Bad Request)} if the userProfileDTO is not valid,
+     * or with status {@code 404 (Not Found)} if the userProfileDTO is not found,
+     * or with status {@code 500 (Internal Server Error)} if the userProfileDTO couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<UserProfile> partialUpdateUserProfile(
+    public ResponseEntity<UserProfileDTO> partialUpdateUserProfile(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody UserProfile userProfile
+        @RequestBody UserProfileDTO userProfileDTO
     ) throws URISyntaxException {
-        LOG.debug("REST request to partial update UserProfile partially : {}, {}", id, userProfile);
-        if (userProfile.getId() == null) {
+        LOG.debug("REST request to partial update UserProfile partially : {}, {}", id, userProfileDTO);
+        if (userProfileDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, userProfile.getId())) {
+        if (!Objects.equals(id, userProfileDTO.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
@@ -120,11 +120,11 @@ public class UserProfileResource {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<UserProfile> result = userProfileService.partialUpdate(userProfile);
+        Optional<UserProfileDTO> result = userProfileService.partialUpdate(userProfileDTO);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, userProfile.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, userProfileDTO.getId().toString())
         );
     }
 
@@ -134,7 +134,7 @@ public class UserProfileResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of userProfiles in body.
      */
     @GetMapping("")
-    public List<UserProfile> getAllUserProfiles() {
+    public List<UserProfileDTO> getAllUserProfiles() {
         LOG.debug("REST request to get all UserProfiles");
         return userProfileService.findAll();
     }
@@ -142,20 +142,20 @@ public class UserProfileResource {
     /**
      * {@code GET  /user-profiles/:id} : get the "id" userProfile.
      *
-     * @param id the id of the userProfile to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userProfile, or with status {@code 404 (Not Found)}.
+     * @param id the id of the userProfileDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the userProfileDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/{id}")
-    public ResponseEntity<UserProfile> getUserProfile(@PathVariable("id") Long id) {
+    public ResponseEntity<UserProfileDTO> getUserProfile(@PathVariable("id") Long id) {
         LOG.debug("REST request to get UserProfile : {}", id);
-        Optional<UserProfile> userProfile = userProfileService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(userProfile);
+        Optional<UserProfileDTO> userProfileDTO = userProfileService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(userProfileDTO);
     }
 
     /**
      * {@code DELETE  /user-profiles/:id} : delete the "id" userProfile.
      *
-     * @param id the id of the userProfile to delete.
+     * @param id the id of the userProfileDTO to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/{id}")

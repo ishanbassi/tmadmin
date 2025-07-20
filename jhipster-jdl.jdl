@@ -233,5 +233,6 @@ paginate Trademark , PublishedTm , TmAgent,Company, Documents, TrademarkClass wi
 
 
 // Use Data Transfer Objects (DTO)
+dto * with mapstruct
 
 service * with serviceClass

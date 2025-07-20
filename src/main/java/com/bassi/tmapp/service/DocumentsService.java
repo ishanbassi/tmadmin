@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Documents;
 import com.bassi.tmapp.repository.DocumentsRepository;
+import com.bassi.tmapp.service.dto.DocumentsDTO;
+import com.bassi.tmapp.service.mapper.DocumentsMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,63 +23,57 @@ public class DocumentsService {
 
     private final DocumentsRepository documentsRepository;
 
-    public DocumentsService(DocumentsRepository documentsRepository) {
+    private final DocumentsMapper documentsMapper;
+
+    public DocumentsService(DocumentsRepository documentsRepository, DocumentsMapper documentsMapper) {
         this.documentsRepository = documentsRepository;
+        this.documentsMapper = documentsMapper;
     }
 
     /**
      * Save a documents.
      *
-     * @param documents the entity to save.
+     * @param documentsDTO the entity to save.
      * @return the persisted entity.
      */
-    public Documents save(Documents documents) {
-        LOG.debug("Request to save Documents : {}", documents);
-        return documentsRepository.save(documents);
+    public DocumentsDTO save(DocumentsDTO documentsDTO) {
+        LOG.debug("Request to save Documents : {}", documentsDTO);
+        Documents documents = documentsMapper.toEntity(documentsDTO);
+        documents = documentsRepository.save(documents);
+        return documentsMapper.toDto(documents);
     }
 
     /**
      * Update a documents.
      *
-     * @param documents the entity to save.
+     * @param documentsDTO the entity to save.
      * @return the persisted entity.
      */
-    public Documents update(Documents documents) {
-        LOG.debug("Request to update Documents : {}", documents);
-        return documentsRepository.save(documents);
+    public DocumentsDTO update(DocumentsDTO documentsDTO) {
+        LOG.debug("Request to update Documents : {}", documentsDTO);
+        Documents documents = documentsMapper.toEntity(documentsDTO);
+        documents = documentsRepository.save(documents);
+        return documentsMapper.toDto(documents);
     }
 
     /**
      * Partially update a documents.
      *
-     * @param documents the entity to update partially.
+     * @param documentsDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Documents> partialUpdate(Documents documents) {
-        LOG.debug("Request to partially update Documents : {}", documents);
+    public Optional<DocumentsDTO> partialUpdate(DocumentsDTO documentsDTO) {
+        LOG.debug("Request to partially update Documents : {}", documentsDTO);
 
         return documentsRepository
-            .findById(documents.getId())
+            .findById(documentsDTO.getId())
             .map(existingDocuments -> {
-                if (documents.getDocumentType() != null) {
-                    existingDocuments.setDocumentType(documents.getDocumentType());
-                }
-                if (documents.getFileUrl() != null) {
-                    existingDocuments.setFileUrl(documents.getFileUrl());
-                }
-                if (documents.getCreatedDate() != null) {
-                    existingDocuments.setCreatedDate(documents.getCreatedDate());
-                }
-                if (documents.getModifiedDate() != null) {
-                    existingDocuments.setModifiedDate(documents.getModifiedDate());
-                }
-                if (documents.getDeleted() != null) {
-                    existingDocuments.setDeleted(documents.getDeleted());
-                }
+                documentsMapper.partialUpdate(existingDocuments, documentsDTO);
 
                 return existingDocuments;
             })
-            .map(documentsRepository::save);
+            .map(documentsRepository::save)
+            .map(documentsMapper::toDto);
     }
 
     /**
@@ -87,9 +83,9 @@ public class DocumentsService {
      * @return the list of entities.
      */
     @Transactional(readOnly = true)
-    public Page<Documents> findAll(Pageable pageable) {
+    public Page<DocumentsDTO> findAll(Pageable pageable) {
         LOG.debug("Request to get all Documents");
-        return documentsRepository.findAll(pageable);
+        return documentsRepository.findAll(pageable).map(documentsMapper::toDto);
     }
 
     /**
@@ -99,9 +95,9 @@ public class DocumentsService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Documents> findOne(Long id) {
+    public Optional<DocumentsDTO> findOne(Long id) {
         LOG.debug("Request to get Documents : {}", id);
-        return documentsRepository.findById(id);
+        return documentsRepository.findById(id).map(documentsMapper::toDto);
     }
 
     /**

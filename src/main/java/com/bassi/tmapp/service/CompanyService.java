@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Company;
 import com.bassi.tmapp.repository.CompanyRepository;
+import com.bassi.tmapp.service.dto.CompanyDTO;
+import com.bassi.tmapp.service.mapper.CompanyMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,84 +21,57 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
 
-    public CompanyService(CompanyRepository companyRepository) {
+    private final CompanyMapper companyMapper;
+
+    public CompanyService(CompanyRepository companyRepository, CompanyMapper companyMapper) {
         this.companyRepository = companyRepository;
+        this.companyMapper = companyMapper;
     }
 
     /**
      * Save a company.
      *
-     * @param company the entity to save.
+     * @param companyDTO the entity to save.
      * @return the persisted entity.
      */
-    public Company save(Company company) {
-        LOG.debug("Request to save Company : {}", company);
-        return companyRepository.save(company);
+    public CompanyDTO save(CompanyDTO companyDTO) {
+        LOG.debug("Request to save Company : {}", companyDTO);
+        Company company = companyMapper.toEntity(companyDTO);
+        company = companyRepository.save(company);
+        return companyMapper.toDto(company);
     }
 
     /**
      * Update a company.
      *
-     * @param company the entity to save.
+     * @param companyDTO the entity to save.
      * @return the persisted entity.
      */
-    public Company update(Company company) {
-        LOG.debug("Request to update Company : {}", company);
-        return companyRepository.save(company);
+    public CompanyDTO update(CompanyDTO companyDTO) {
+        LOG.debug("Request to update Company : {}", companyDTO);
+        Company company = companyMapper.toEntity(companyDTO);
+        company = companyRepository.save(company);
+        return companyMapper.toDto(company);
     }
 
     /**
      * Partially update a company.
      *
-     * @param company the entity to update partially.
+     * @param companyDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Company> partialUpdate(Company company) {
-        LOG.debug("Request to partially update Company : {}", company);
+    public Optional<CompanyDTO> partialUpdate(CompanyDTO companyDTO) {
+        LOG.debug("Request to partially update Company : {}", companyDTO);
 
         return companyRepository
-            .findById(company.getId())
+            .findById(companyDTO.getId())
             .map(existingCompany -> {
-                if (company.getType() != null) {
-                    existingCompany.setType(company.getType());
-                }
-                if (company.getName() != null) {
-                    existingCompany.setName(company.getName());
-                }
-                if (company.getCin() != null) {
-                    existingCompany.setCin(company.getCin());
-                }
-                if (company.getGstin() != null) {
-                    existingCompany.setGstin(company.getGstin());
-                }
-                if (company.getNatureOfBusiness() != null) {
-                    existingCompany.setNatureOfBusiness(company.getNatureOfBusiness());
-                }
-                if (company.getAddress() != null) {
-                    existingCompany.setAddress(company.getAddress());
-                }
-                if (company.getState() != null) {
-                    existingCompany.setState(company.getState());
-                }
-                if (company.getPincode() != null) {
-                    existingCompany.setPincode(company.getPincode());
-                }
-                if (company.getCity() != null) {
-                    existingCompany.setCity(company.getCity());
-                }
-                if (company.getCreatedDate() != null) {
-                    existingCompany.setCreatedDate(company.getCreatedDate());
-                }
-                if (company.getModifiedDate() != null) {
-                    existingCompany.setModifiedDate(company.getModifiedDate());
-                }
-                if (company.getDeleted() != null) {
-                    existingCompany.setDeleted(company.getDeleted());
-                }
+                companyMapper.partialUpdate(existingCompany, companyDTO);
 
                 return existingCompany;
             })
-            .map(companyRepository::save);
+            .map(companyRepository::save)
+            .map(companyMapper::toDto);
     }
 
     /**
@@ -106,9 +81,9 @@ public class CompanyService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Company> findOne(Long id) {
+    public Optional<CompanyDTO> findOne(Long id) {
         LOG.debug("Request to get Company : {}", id);
-        return companyRepository.findById(id);
+        return companyRepository.findById(id).map(companyMapper::toDto);
     }
 
     /**

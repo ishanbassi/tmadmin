@@ -2,6 +2,8 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.repository.LeadRepository;
+import com.bassi.tmapp.service.dto.LeadDTO;
+import com.bassi.tmapp.service.mapper.LeadMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,90 +21,57 @@ public class LeadService {
 
     private final LeadRepository leadRepository;
 
-    public LeadService(LeadRepository leadRepository) {
+    private final LeadMapper leadMapper;
+
+    public LeadService(LeadRepository leadRepository, LeadMapper leadMapper) {
         this.leadRepository = leadRepository;
+        this.leadMapper = leadMapper;
     }
 
     /**
      * Save a lead.
      *
-     * @param lead the entity to save.
+     * @param leadDTO the entity to save.
      * @return the persisted entity.
      */
-    public Lead save(Lead lead) {
-        LOG.debug("Request to save Lead : {}", lead);
-        return leadRepository.save(lead);
+    public LeadDTO save(LeadDTO leadDTO) {
+        LOG.debug("Request to save Lead : {}", leadDTO);
+        Lead lead = leadMapper.toEntity(leadDTO);
+        lead = leadRepository.save(lead);
+        return leadMapper.toDto(lead);
     }
 
     /**
      * Update a lead.
      *
-     * @param lead the entity to save.
+     * @param leadDTO the entity to save.
      * @return the persisted entity.
      */
-    public Lead update(Lead lead) {
-        LOG.debug("Request to update Lead : {}", lead);
-        return leadRepository.save(lead);
+    public LeadDTO update(LeadDTO leadDTO) {
+        LOG.debug("Request to update Lead : {}", leadDTO);
+        Lead lead = leadMapper.toEntity(leadDTO);
+        lead = leadRepository.save(lead);
+        return leadMapper.toDto(lead);
     }
 
     /**
      * Partially update a lead.
      *
-     * @param lead the entity to update partially.
+     * @param leadDTO the entity to update partially.
      * @return the persisted entity.
      */
-    public Optional<Lead> partialUpdate(Lead lead) {
-        LOG.debug("Request to partially update Lead : {}", lead);
+    public Optional<LeadDTO> partialUpdate(LeadDTO leadDTO) {
+        LOG.debug("Request to partially update Lead : {}", leadDTO);
 
         return leadRepository
-            .findById(lead.getId())
+            .findById(leadDTO.getId())
             .map(existingLead -> {
-                if (lead.getFullName() != null) {
-                    existingLead.setFullName(lead.getFullName());
-                }
-                if (lead.getPhoneNumber() != null) {
-                    existingLead.setPhoneNumber(lead.getPhoneNumber());
-                }
-                if (lead.getEmail() != null) {
-                    existingLead.setEmail(lead.getEmail());
-                }
-                if (lead.getCity() != null) {
-                    existingLead.setCity(lead.getCity());
-                }
-                if (lead.getBrandName() != null) {
-                    existingLead.setBrandName(lead.getBrandName());
-                }
-                if (lead.getSelectedPackage() != null) {
-                    existingLead.setSelectedPackage(lead.getSelectedPackage());
-                }
-                if (lead.getTmClass() != null) {
-                    existingLead.setTmClass(lead.getTmClass());
-                }
-                if (lead.getComments() != null) {
-                    existingLead.setComments(lead.getComments());
-                }
-                if (lead.getContactMethod() != null) {
-                    existingLead.setContactMethod(lead.getContactMethod());
-                }
-                if (lead.getCreatedDate() != null) {
-                    existingLead.setCreatedDate(lead.getCreatedDate());
-                }
-                if (lead.getModifiedDate() != null) {
-                    existingLead.setModifiedDate(lead.getModifiedDate());
-                }
-                if (lead.getDeleted() != null) {
-                    existingLead.setDeleted(lead.getDeleted());
-                }
-                if (lead.getStatus() != null) {
-                    existingLead.setStatus(lead.getStatus());
-                }
-                if (lead.getLeadSource() != null) {
-                    existingLead.setLeadSource(lead.getLeadSource());
-                }
+                leadMapper.partialUpdate(existingLead, leadDTO);
 
                 return existingLead;
             })
-            .map(leadRepository::save);
+            .map(leadRepository::save)
+            .map(leadMapper::toDto);
     }
 
     /**
@@ -112,9 +81,9 @@ public class LeadService {
      * @return the entity.
      */
     @Transactional(readOnly = true)
-    public Optional<Lead> findOne(Long id) {
+    public Optional<LeadDTO> findOne(Long id) {
         LOG.debug("Request to get Lead : {}", id);
-        return leadRepository.findById(id);
+        return leadRepository.findById(id).map(leadMapper::toDto);
     }
 
     /**

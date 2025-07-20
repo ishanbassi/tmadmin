@@ -12,6 +12,8 @@ import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.repository.UserProfileRepository;
 import com.bassi.tmapp.repository.UserRepository;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
+import com.bassi.tmapp.service.mapper.UserProfileMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import java.time.Instant;
@@ -63,6 +65,9 @@ class UserProfileResourceIT {
     private UserRepository userRepository;
 
     @Autowired
+    private UserProfileMapper userProfileMapper;
+
+    @Autowired
     private EntityManager em;
 
     @Autowired
@@ -110,18 +115,20 @@ class UserProfileResourceIT {
     void createUserProfile() throws Exception {
         long databaseSizeBeforeCreate = getRepositoryCount();
         // Create the UserProfile
-        var returnedUserProfile = om.readValue(
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+        var returnedUserProfileDTO = om.readValue(
             restUserProfileMockMvc
-                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfile)))
+                .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
                 .andExpect(status().isCreated())
                 .andReturn()
                 .getResponse()
                 .getContentAsString(),
-            UserProfile.class
+            UserProfileDTO.class
         );
 
         // Validate the UserProfile in the database
         assertIncrementedRepositoryCount(databaseSizeBeforeCreate);
+        var returnedUserProfile = userProfileMapper.toEntity(returnedUserProfileDTO);
         assertUserProfileUpdatableFieldsEquals(returnedUserProfile, getPersistedUserProfile(returnedUserProfile));
 
         insertedUserProfile = returnedUserProfile;
@@ -132,12 +139,13 @@ class UserProfileResourceIT {
     void createUserProfileWithExistingId() throws Exception {
         // Create the UserProfile with an existing ID
         userProfile.setId(1L);
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
 
         long databaseSizeBeforeCreate = getRepositoryCount();
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserProfileMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfile)))
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the UserProfile in the database
@@ -198,12 +206,13 @@ class UserProfileResourceIT {
         // Disconnect from session so that the updates on updatedUserProfile are not directly saved in db
         em.detach(updatedUserProfile);
         updatedUserProfile.createdDate(UPDATED_CREATED_DATE).modifiedDate(UPDATED_MODIFIED_DATE).deleted(UPDATED_DELETED);
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(updatedUserProfile);
 
         restUserProfileMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, updatedUserProfile.getId())
+                put(ENTITY_API_URL_ID, userProfileDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(updatedUserProfile))
+                    .content(om.writeValueAsBytes(userProfileDTO))
             )
             .andExpect(status().isOk());
 
@@ -218,12 +227,15 @@ class UserProfileResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         userProfile.setId(longCount.incrementAndGet());
 
+        // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUserProfileMockMvc
             .perform(
-                put(ENTITY_API_URL_ID, userProfile.getId())
+                put(ENTITY_API_URL_ID, userProfileDTO.getId())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(userProfile))
+                    .content(om.writeValueAsBytes(userProfileDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -237,12 +249,15 @@ class UserProfileResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         userProfile.setId(longCount.incrementAndGet());
 
+        // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserProfileMockMvc
             .perform(
                 put(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(om.writeValueAsBytes(userProfile))
+                    .content(om.writeValueAsBytes(userProfileDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -256,9 +271,12 @@ class UserProfileResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         userProfile.setId(longCount.incrementAndGet());
 
+        // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserProfileMockMvc
-            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfile)))
+            .perform(put(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the UserProfile in the database
@@ -330,12 +348,15 @@ class UserProfileResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         userProfile.setId(longCount.incrementAndGet());
 
+        // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUserProfileMockMvc
             .perform(
-                patch(ENTITY_API_URL_ID, userProfile.getId())
+                patch(ENTITY_API_URL_ID, userProfileDTO.getId())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(userProfile))
+                    .content(om.writeValueAsBytes(userProfileDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -349,12 +370,15 @@ class UserProfileResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         userProfile.setId(longCount.incrementAndGet());
 
+        // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserProfileMockMvc
             .perform(
                 patch(ENTITY_API_URL_ID, longCount.incrementAndGet())
                     .contentType("application/merge-patch+json")
-                    .content(om.writeValueAsBytes(userProfile))
+                    .content(om.writeValueAsBytes(userProfileDTO))
             )
             .andExpect(status().isBadRequest());
 
@@ -368,9 +392,12 @@ class UserProfileResourceIT {
         long databaseSizeBeforeUpdate = getRepositoryCount();
         userProfile.setId(longCount.incrementAndGet());
 
+        // Create the UserProfile
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
         // If url ID doesn't match entity ID, it will throw BadRequestAlertException
         restUserProfileMockMvc
-            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(userProfile)))
+            .perform(patch(ENTITY_API_URL).contentType("application/merge-patch+json").content(om.writeValueAsBytes(userProfileDTO)))
             .andExpect(status().isMethodNotAllowed());
 
         // Validate the UserProfile in the database
