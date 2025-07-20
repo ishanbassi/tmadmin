@@ -444,15 +444,4 @@ public class Trademark implements Serializable {
             ", pageNo=" + getPageNo() +
             "}";
     }
-
-    @PrePersist
-    private void beforeSave() {
-        this.createdDate = ZonedDateTime.now();
-        this.modifiedDate = ZonedDateTime.now();
-    }
-
-    @PreUpdate
-    private void beforeUpdate() {
-        this.modifiedDate = ZonedDateTime.now();
-    }
 }

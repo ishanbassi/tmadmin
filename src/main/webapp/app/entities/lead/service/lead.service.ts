@@ -31,7 +31,6 @@ export class LeadService {
   protected readonly applicationConfigService = inject(ApplicationConfigService);
 
   protected resourceUrl = this.applicationConfigService.getEndpointFor('api/leads');
-  protected resourceUrlExtended = this.applicationConfigService.getEndpointFor('api/extended/leads');
 
   create(lead: NewLead): Observable<EntityResponseType> {
     const copy = this.convertDateFromClient(lead);
