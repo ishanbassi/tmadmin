@@ -38,7 +38,6 @@ type DocumentsFormGroupContent = {
   modifiedDate: FormControl<DocumentsFormRawValue['modifiedDate']>;
   deleted: FormControl<DocumentsFormRawValue['deleted']>;
   trademark: FormControl<DocumentsFormRawValue['trademark']>;
-  user: FormControl<DocumentsFormRawValue['user']>;
 };
 
 export type DocumentsFormGroup = FormGroup<DocumentsFormGroupContent>;
@@ -64,7 +63,6 @@ export class DocumentsFormService {
       modifiedDate: new FormControl(documentsRawValue.modifiedDate),
       deleted: new FormControl(documentsRawValue.deleted),
       trademark: new FormControl(documentsRawValue.trademark),
-      user: new FormControl(documentsRawValue.user),
     });
   }
 

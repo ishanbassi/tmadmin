@@ -1,7 +1,8 @@
 package com.bassi.tmapp.domain;
 
-import static com.bassi.tmapp.domain.CompanyTestSamples.*;
+import static com.bassi.tmapp.domain.LeadTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
+import static com.bassi.tmapp.domain.UserProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bassi.tmapp.web.rest.TestUtil;
@@ -24,14 +25,26 @@ class TrademarkTest {
     }
 
     @Test
-    void companyTest() {
+    void leadTest() {
         Trademark trademark = getTrademarkRandomSampleGenerator();
-        Company companyBack = getCompanyRandomSampleGenerator();
+        Lead leadBack = getLeadRandomSampleGenerator();
 
-        trademark.setCompany(companyBack);
-        assertThat(trademark.getCompany()).isEqualTo(companyBack);
+        trademark.setLead(leadBack);
+        assertThat(trademark.getLead()).isEqualTo(leadBack);
 
-        trademark.company(null);
-        assertThat(trademark.getCompany()).isNull();
+        trademark.lead(null);
+        assertThat(trademark.getLead()).isNull();
+    }
+
+    @Test
+    void userTest() {
+        Trademark trademark = getTrademarkRandomSampleGenerator();
+        UserProfile userProfileBack = getUserProfileRandomSampleGenerator();
+
+        trademark.setUser(userProfileBack);
+        assertThat(trademark.getUser()).isEqualTo(userProfileBack);
+
+        trademark.user(null);
+        assertThat(trademark.getUser()).isNull();
     }
 }

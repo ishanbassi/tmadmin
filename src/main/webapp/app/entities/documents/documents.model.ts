@@ -1,6 +1,5 @@
 import dayjs from 'dayjs/esm';
 import { ITrademark } from 'app/entities/trademark/trademark.model';
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 
 export interface IDocuments {
   id: number;
@@ -10,7 +9,6 @@ export interface IDocuments {
   modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
   trademark?: Pick<ITrademark, 'id'> | null;
-  user?: Pick<IUserProfile, 'id'> | null;
 }
 
 export type NewDocuments = Omit<IDocuments, 'id'> & { id: null };

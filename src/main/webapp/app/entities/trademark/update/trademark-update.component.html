@@ -234,18 +234,41 @@
         </div>
 
         <div class="mb-3">
-          <label class="form-label" for="field_company">Company</label>
-          <select
-            class="form-control"
-            id="field_company"
-            data-cy="company"
-            name="company"
-            formControlName="company"
-            [compareWith]="compareCompany"
-          >
+          <label class="form-label" for="field_source">Source</label>
+          <select class="form-control" name="source" formControlName="source" id="field_source" data-cy="source">
             <option [ngValue]="null"></option>
-            @for (companyOption of companiesSharedCollection; track $index) {
-              <option [ngValue]="companyOption">{{ companyOption.id }}</option>
+            @for (trademarkSource of trademarkSourceValues; track $index) {
+              <option [value]="trademarkSource">
+                {{
+                  {
+                    null: '',
+                    JOURNAL_PUBLICATION: 'JOURNAL_PUBLICATION',
+                    EXCEL: 'EXCEL',
+                    ADMIN_PORTAL: 'ADMIN_PORTAL',
+                    MEMBER_PORTAL: 'MEMBER_PORTAL',
+                  }[trademarkSource]
+                }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_lead">Lead</label>
+          <select class="form-control" id="field_lead" data-cy="lead" name="lead" formControlName="lead" [compareWith]="compareLead">
+            <option [ngValue]="null"></option>
+            @for (leadOption of leadsSharedCollection; track $index) {
+              <option [ngValue]="leadOption">{{ leadOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" [compareWith]="compareUserProfile">
+            <option [ngValue]="null"></option>
+            @for (userProfileOption of userProfilesSharedCollection; track $index) {
+              <option [ngValue]="userProfileOption">{{ userProfileOption.id }}</option>
             }
           </select>
         </div>

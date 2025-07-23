@@ -2,7 +2,6 @@ package com.bassi.tmapp.domain;
 
 import static com.bassi.tmapp.domain.DocumentsTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
-import static com.bassi.tmapp.domain.UserProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bassi.tmapp.web.rest.TestUtil;
@@ -34,17 +33,5 @@ class DocumentsTest {
 
         documents.trademark(null);
         assertThat(documents.getTrademark()).isNull();
-    }
-
-    @Test
-    void userTest() {
-        Documents documents = getDocumentsRandomSampleGenerator();
-        UserProfile userProfileBack = getUserProfileRandomSampleGenerator();
-
-        documents.setUser(userProfileBack);
-        assertThat(documents.getUser()).isEqualTo(userProfileBack);
-
-        documents.user(null);
-        assertThat(documents.getUser()).isNull();
     }
 }

@@ -38,16 +38,6 @@
       "relationshipName": "trademark",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
-    },
-    {
-      "options": {
-        "onDelete": "CASCADE",
-        "onUpdate": "CASCADE"
-      },
-      "otherEntityName": "userProfile",
-      "relationshipName": "user",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
     }
   ],
   "searchEngine": "no",

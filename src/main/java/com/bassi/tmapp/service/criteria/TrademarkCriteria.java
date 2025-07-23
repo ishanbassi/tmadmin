@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.criteria;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.util.Objects;
@@ -56,6 +57,23 @@ public class TrademarkCriteria implements Serializable, Criteria {
         }
     }
 
+    /**
+     * Class for filtering TrademarkSource
+     */
+    public static class TrademarkSourceFilter extends Filter<TrademarkSource> {
+
+        public TrademarkSourceFilter() {}
+
+        public TrademarkSourceFilter(TrademarkSourceFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public TrademarkSourceFilter copy() {
+            return new TrademarkSourceFilter(this);
+        }
+    }
+
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;
@@ -102,7 +120,11 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private IntegerFilter pageNo;
 
-    private LongFilter companyId;
+    private TrademarkSourceFilter source;
+
+    private LongFilter leadId;
+
+    private LongFilter userId;
 
     private Boolean distinct;
 
@@ -131,7 +153,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.renewalDate = other.optionalRenewalDate().map(LocalDateFilter::copy).orElse(null);
         this.type = other.optionalType().map(TrademarkTypeFilter::copy).orElse(null);
         this.pageNo = other.optionalPageNo().map(IntegerFilter::copy).orElse(null);
-        this.companyId = other.optionalCompanyId().map(LongFilter::copy).orElse(null);
+        this.source = other.optionalSource().map(TrademarkSourceFilter::copy).orElse(null);
+        this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
+        this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -558,23 +582,61 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.pageNo = pageNo;
     }
 
-    public LongFilter getCompanyId() {
-        return companyId;
+    public TrademarkSourceFilter getSource() {
+        return source;
     }
 
-    public Optional<LongFilter> optionalCompanyId() {
-        return Optional.ofNullable(companyId);
+    public Optional<TrademarkSourceFilter> optionalSource() {
+        return Optional.ofNullable(source);
     }
 
-    public LongFilter companyId() {
-        if (companyId == null) {
-            setCompanyId(new LongFilter());
+    public TrademarkSourceFilter source() {
+        if (source == null) {
+            setSource(new TrademarkSourceFilter());
         }
-        return companyId;
+        return source;
     }
 
-    public void setCompanyId(LongFilter companyId) {
-        this.companyId = companyId;
+    public void setSource(TrademarkSourceFilter source) {
+        this.source = source;
+    }
+
+    public LongFilter getLeadId() {
+        return leadId;
+    }
+
+    public Optional<LongFilter> optionalLeadId() {
+        return Optional.ofNullable(leadId);
+    }
+
+    public LongFilter leadId() {
+        if (leadId == null) {
+            setLeadId(new LongFilter());
+        }
+        return leadId;
+    }
+
+    public void setLeadId(LongFilter leadId) {
+        this.leadId = leadId;
+    }
+
+    public LongFilter getUserId() {
+        return userId;
+    }
+
+    public Optional<LongFilter> optionalUserId() {
+        return Optional.ofNullable(userId);
+    }
+
+    public LongFilter userId() {
+        if (userId == null) {
+            setUserId(new LongFilter());
+        }
+        return userId;
+    }
+
+    public void setUserId(LongFilter userId) {
+        this.userId = userId;
     }
 
     public Boolean getDistinct() {
@@ -628,7 +690,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(renewalDate, that.renewalDate) &&
             Objects.equals(type, that.type) &&
             Objects.equals(pageNo, that.pageNo) &&
-            Objects.equals(companyId, that.companyId) &&
+            Objects.equals(source, that.source) &&
+            Objects.equals(leadId, that.leadId) &&
+            Objects.equals(userId, that.userId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -658,7 +722,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             renewalDate,
             type,
             pageNo,
-            companyId,
+            source,
+            leadId,
+            userId,
             distinct
         );
     }
@@ -689,7 +755,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalRenewalDate().map(f -> "renewalDate=" + f + ", ").orElse("") +
             optionalType().map(f -> "type=" + f + ", ").orElse("") +
             optionalPageNo().map(f -> "pageNo=" + f + ", ").orElse("") +
-            optionalCompanyId().map(f -> "companyId=" + f + ", ").orElse("") +
+            optionalSource().map(f -> "source=" + f + ", ").orElse("") +
+            optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
+            optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

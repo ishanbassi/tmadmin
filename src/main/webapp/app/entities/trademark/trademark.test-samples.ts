@@ -7,16 +7,16 @@ export const sampleWithRequiredData: ITrademark = {
 };
 
 export const sampleWithPartialData: ITrademark = {
-  id: 25950,
-  applicationNo: 19482,
-  agentName: 'extroverted chase',
-  proprietorName: 'strategy napkin',
-  proprietorAddress: 'vivid whenever bah',
-  headOffice: 'CHENNAI',
-  tmClass: 435,
-  journalNo: 17329,
-  createdDate: dayjs('2024-05-22T09:34'),
-  type: 'TRADEMARK',
+  id: 19482,
+  applicationNo: 14738,
+  agentName: 'ethyl drat strategy',
+  proprietorName: 'who',
+  proprietorAddress: 'memorable ew',
+  headOffice: 'DELHI',
+  tmClass: 26694,
+  journalNo: 17002,
+  createdDate: dayjs('2024-05-21T20:18'),
+  type: 'TRADEMARK_WITH_IMAGE',
 };
 
 export const sampleWithFullData: ITrademark = {
@@ -42,6 +42,7 @@ export const sampleWithFullData: ITrademark = {
   renewalDate: dayjs('2024-05-22'),
   type: 'TRADEMARK_WITH_IMAGE',
   pageNo: 20941,
+  source: 'MEMBER_PORTAL',
 };
 
 export const sampleWithNewData: NewTrademark = {

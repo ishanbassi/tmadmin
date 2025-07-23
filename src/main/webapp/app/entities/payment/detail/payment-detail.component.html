@@ -1,0 +1,82 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (payment(); as paymentRef) {
+      <div>
+        <h2 data-cy="paymentDetailsHeading"><span>Payment</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ paymentRef.id }}</span>
+          </dd>
+          <dt><span>Gateway</span></dt>
+          <dd>
+            <span>{{ paymentRef.gateway }}</span>
+          </dd>
+          <dt><span>Gateway Payment Id</span></dt>
+          <dd>
+            <span>{{ paymentRef.gatewayPaymentId }}</span>
+          </dd>
+          <dt><span>Amount</span></dt>
+          <dd>
+            <span>{{ paymentRef.amount }}</span>
+          </dd>
+          <dt><span>Currency</span></dt>
+          <dd>
+            <span>{{ paymentRef.currency }}</span>
+          </dd>
+          <dt><span>Status</span></dt>
+          <dd>
+            <span>{{ paymentRef.status }}</span>
+          </dd>
+          <dt><span>Payment Method</span></dt>
+          <dd>
+            <span>{{ paymentRef.paymentMethod }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ paymentRef.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ paymentRef.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ paymentRef.deleted }}</span>
+          </dd>
+          <dt><span>Lead</span></dt>
+          <dd>
+            @if (payment()!.lead) {
+              <div>
+                <a [routerLink]="['/lead', payment()!.lead?.id, 'view']">{{ paymentRef.lead?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span>User</span></dt>
+          <dd>
+            @if (payment()!.user) {
+              <div>
+                <a [routerLink]="['/user-profile', payment()!.user?.id, 'view']">{{ paymentRef.user?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/payment', paymentRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

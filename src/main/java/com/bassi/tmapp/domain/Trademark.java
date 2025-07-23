@@ -1,6 +1,7 @@
 package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -92,9 +93,17 @@ public class Trademark implements Serializable {
     @Column(name = "page_no")
     private Integer pageNo;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "source")
+    private TrademarkSource source;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
+    private Lead lead;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
-    private Company company;
+    private UserProfile user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -384,16 +393,42 @@ public class Trademark implements Serializable {
         this.pageNo = pageNo;
     }
 
-    public Company getCompany() {
-        return this.company;
+    public TrademarkSource getSource() {
+        return this.source;
     }
 
-    public void setCompany(Company company) {
-        this.company = company;
+    public Trademark source(TrademarkSource source) {
+        this.setSource(source);
+        return this;
     }
 
-    public Trademark company(Company company) {
-        this.setCompany(company);
+    public void setSource(TrademarkSource source) {
+        this.source = source;
+    }
+
+    public Lead getLead() {
+        return this.lead;
+    }
+
+    public void setLead(Lead lead) {
+        this.lead = lead;
+    }
+
+    public Trademark lead(Lead lead) {
+        this.setLead(lead);
+        return this;
+    }
+
+    public UserProfile getUser() {
+        return this.user;
+    }
+
+    public void setUser(UserProfile userProfile) {
+        this.user = userProfile;
+    }
+
+    public Trademark user(UserProfile userProfile) {
+        this.setUser(userProfile);
         return this;
     }
 
@@ -442,6 +477,7 @@ public class Trademark implements Serializable {
             ", renewalDate='" + getRenewalDate() + "'" +
             ", type='" + getType() + "'" +
             ", pageNo=" + getPageNo() +
+            ", source='" + getSource() + "'" +
             "}";
     }
 }

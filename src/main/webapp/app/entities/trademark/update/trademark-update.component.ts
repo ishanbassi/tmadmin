@@ -7,10 +7,13 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ICompany } from 'app/entities/company/company.model';
-import { CompanyService } from 'app/entities/company/service/company.service';
+import { ILead } from 'app/entities/lead/lead.model';
+import { LeadService } from 'app/entities/lead/service/lead.service';
+import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
+import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.service';
@@ -25,18 +28,23 @@ export class TrademarkUpdateComponent implements OnInit {
   trademark: ITrademark | null = null;
   headOfficeValues = Object.keys(HeadOffice);
   trademarkTypeValues = Object.keys(TrademarkType);
+  trademarkSourceValues = Object.keys(TrademarkSource);
 
-  companiesSharedCollection: ICompany[] = [];
+  leadsSharedCollection: ILead[] = [];
+  userProfilesSharedCollection: IUserProfile[] = [];
 
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);
-  protected companyService = inject(CompanyService);
+  protected leadService = inject(LeadService);
+  protected userProfileService = inject(UserProfileService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: TrademarkFormGroup = this.trademarkFormService.createTrademarkFormGroup();
 
-  compareCompany = (o1: ICompany | null, o2: ICompany | null): boolean => this.companyService.compareCompany(o1, o2);
+  compareLead = (o1: ILead | null, o2: ILead | null): boolean => this.leadService.compareLead(o1, o2);
+
+  compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ trademark }) => {
@@ -86,19 +94,28 @@ export class TrademarkUpdateComponent implements OnInit {
     this.trademark = trademark;
     this.trademarkFormService.resetForm(this.editForm, trademark);
 
-    this.companiesSharedCollection = this.companyService.addCompanyToCollectionIfMissing<ICompany>(
-      this.companiesSharedCollection,
-      trademark.company,
+    this.leadsSharedCollection = this.leadService.addLeadToCollectionIfMissing<ILead>(this.leadsSharedCollection, trademark.lead);
+    this.userProfilesSharedCollection = this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(
+      this.userProfilesSharedCollection,
+      trademark.user,
     );
   }
 
   protected loadRelationshipsOptions(): void {
-    this.companyService
+    this.leadService
       .query()
-      .pipe(map((res: HttpResponse<ICompany[]>) => res.body ?? []))
+      .pipe(map((res: HttpResponse<ILead[]>) => res.body ?? []))
+      .pipe(map((leads: ILead[]) => this.leadService.addLeadToCollectionIfMissing<ILead>(leads, this.trademark?.lead)))
+      .subscribe((leads: ILead[]) => (this.leadsSharedCollection = leads));
+
+    this.userProfileService
+      .query()
+      .pipe(map((res: HttpResponse<IUserProfile[]>) => res.body ?? []))
       .pipe(
-        map((companies: ICompany[]) => this.companyService.addCompanyToCollectionIfMissing<ICompany>(companies, this.trademark?.company)),
+        map((userProfiles: IUserProfile[]) =>
+          this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(userProfiles, this.trademark?.user),
+        ),
       )
-      .subscribe((companies: ICompany[]) => (this.companiesSharedCollection = companies));
+      .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
   }
 }

@@ -61,6 +61,11 @@ const routes: Routes = [
     data: { pageTitle: 'TrademarkClasses' },
     loadChildren: () => import('./trademark-class/trademark-class.routes'),
   },
+  {
+    path: 'payment',
+    data: { pageTitle: 'Payments' },
+    loadChildren: () => import('./payment/payment.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 
