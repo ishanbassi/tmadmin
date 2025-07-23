@@ -112,11 +112,31 @@
           <dd>
             <span>{{ trademarkRef.pageNo }}</span>
           </dd>
-          <dt><span>Company</span></dt>
+          <dt><span>Source</span></dt>
           <dd>
-            @if (trademark()!.company) {
+            <span>{{
+              {
+                null: '',
+                JOURNAL_PUBLICATION: 'JOURNAL_PUBLICATION',
+                EXCEL: 'EXCEL',
+                ADMIN_PORTAL: 'ADMIN_PORTAL',
+                MEMBER_PORTAL: 'MEMBER_PORTAL',
+              }[trademarkRef.source ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span>Lead</span></dt>
+          <dd>
+            @if (trademark()!.lead) {
               <div>
-                <a [routerLink]="['/company', trademark()!.company?.id, 'view']">{{ trademarkRef.company?.id }}</a>
+                <a [routerLink]="['/lead', trademark()!.lead?.id, 'view']">{{ trademarkRef.lead?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span>User</span></dt>
+          <dd>
+            @if (trademark()!.user) {
+              <div>
+                <a [routerLink]="['/user-profile', trademark()!.user?.id, 'view']">{{ trademarkRef.user?.id }}</a>
               </div>
             }
           </dd>

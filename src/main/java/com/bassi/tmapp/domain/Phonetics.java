@@ -36,7 +36,7 @@ public class Phonetics implements Serializable {
     private Boolean complete;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "company" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user" }, allowSetters = true)
     private Trademark trademark;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

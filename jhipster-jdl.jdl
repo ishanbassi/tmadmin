@@ -50,6 +50,7 @@ entity Trademark{
     renewalDate LocalDate
     type TrademarkType
     pageNo Integer
+    source TrademarkSource
     
     
 }
@@ -175,6 +176,18 @@ entity TrademarkClass{
     deleted Boolean	
 }
 
+entity Payment{
+    gateway String
+    gatewayPaymentId String
+    amount BigDecimal
+    currency String
+    status String
+    paymentMethod String
+    createdDate ZonedDateTime
+    modifiedDate ZonedDateTime
+    deleted Boolean	
+}
+
 enum ContactMethod{
 	CALL,
 	MESSAGE,
@@ -215,16 +228,27 @@ enum TrademarkType{
 	SLOGAN
 }
 
+enum TrademarkSource{
+    JOURNAL_PUBLICATION,
+    EXCEL,
+    ADMIN_PORTAL,
+    MEMBER_PORTAL
+
+
+}
+
 
 relationship ManyToOne{
-	Phonetics { trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark,
-    PublishedTmPhonetics { publishedTm} to @OnDelete("CASCADE") @OnUpdate("CASCADE") PublishedTm
-    Trademark { company } to @OnDelete("CASCADE") @OnUpdate("CASCADE") Company
+    Trademark { lead } to @OnDelete("CASCADE") @OnUpdate("CASCADE") Lead
+    Trademark { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
     PublishedTm { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
     Lead {assignedTo} to  @OnDelete("CASCADE") @OnUpdate("CASCADE") Employee
     Company { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
     Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
-    Documents { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
+    Payment {lead} to  @OnUpdate("CASCADE") Lead
+    Payment {user} to  @OnUpdate("CASCADE") UserProfile
+
+
 	
 }
 
@@ -240,9 +264,10 @@ filter Employee
 filter Lead
 filter Company
 filter TrademarkClass
+filter Payment
 
 
-paginate Trademark , PublishedTm , TmAgent,Company, Documents, TrademarkClass with infinite-scroll
+paginate Trademark , PublishedTm , TmAgent,Company, Documents, TrademarkClass, Payment with infinite-scroll
 
 
 

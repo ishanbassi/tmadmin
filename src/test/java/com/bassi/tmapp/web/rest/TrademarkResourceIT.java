@@ -9,9 +9,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
-import com.bassi.tmapp.domain.Company;
+import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
@@ -114,6 +116,9 @@ class TrademarkResourceIT {
     private static final Integer UPDATED_PAGE_NO = 2;
     private static final Integer SMALLER_PAGE_NO = 1 - 1;
 
+    private static final TrademarkSource DEFAULT_SOURCE = TrademarkSource.JOURNAL_PUBLICATION;
+    private static final TrademarkSource UPDATED_SOURCE = TrademarkSource.EXCEL;
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -167,7 +172,8 @@ class TrademarkResourceIT {
             .modifiedDate(DEFAULT_MODIFIED_DATE)
             .renewalDate(DEFAULT_RENEWAL_DATE)
             .type(DEFAULT_TYPE)
-            .pageNo(DEFAULT_PAGE_NO);
+            .pageNo(DEFAULT_PAGE_NO)
+            .source(DEFAULT_SOURCE);
     }
 
     /**
@@ -198,7 +204,8 @@ class TrademarkResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
-            .pageNo(UPDATED_PAGE_NO);
+            .pageNo(UPDATED_PAGE_NO)
+            .source(UPDATED_SOURCE);
     }
 
     @BeforeEach
@@ -288,7 +295,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)));
+            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
     }
 
     @Test
@@ -323,7 +331,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
-            .andExpect(jsonPath("$.pageNo").value(DEFAULT_PAGE_NO));
+            .andExpect(jsonPath("$.pageNo").value(DEFAULT_PAGE_NO))
+            .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()));
     }
 
     @Test
@@ -1601,24 +1610,76 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
-    void getAllTrademarksByCompanyIsEqualToSomething() throws Exception {
-        Company company;
-        if (TestUtil.findAll(em, Company.class).isEmpty()) {
-            trademarkRepository.saveAndFlush(trademark);
-            company = CompanyResourceIT.createEntity();
-        } else {
-            company = TestUtil.findAll(em, Company.class).get(0);
-        }
-        em.persist(company);
-        em.flush();
-        trademark.setCompany(company);
-        trademarkRepository.saveAndFlush(trademark);
-        Long companyId = company.getId();
-        // Get all the trademarkList where company equals to companyId
-        defaultTrademarkShouldBeFound("companyId.equals=" + companyId);
+    void getAllTrademarksBySourceIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
 
-        // Get all the trademarkList where company equals to (companyId + 1)
-        defaultTrademarkShouldNotBeFound("companyId.equals=" + (companyId + 1));
+        // Get all the trademarkList where source equals to
+        defaultTrademarkFiltering("source.equals=" + DEFAULT_SOURCE, "source.equals=" + UPDATED_SOURCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksBySourceIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where source in
+        defaultTrademarkFiltering("source.in=" + DEFAULT_SOURCE + "," + UPDATED_SOURCE, "source.in=" + UPDATED_SOURCE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksBySourceIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where source is not null
+        defaultTrademarkFiltering("source.specified=true", "source.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByLeadIsEqualToSomething() throws Exception {
+        Lead lead;
+        if (TestUtil.findAll(em, Lead.class).isEmpty()) {
+            trademarkRepository.saveAndFlush(trademark);
+            lead = LeadResourceIT.createEntity();
+        } else {
+            lead = TestUtil.findAll(em, Lead.class).get(0);
+        }
+        em.persist(lead);
+        em.flush();
+        trademark.setLead(lead);
+        trademarkRepository.saveAndFlush(trademark);
+        Long leadId = lead.getId();
+        // Get all the trademarkList where lead equals to leadId
+        defaultTrademarkShouldBeFound("leadId.equals=" + leadId);
+
+        // Get all the trademarkList where lead equals to (leadId + 1)
+        defaultTrademarkShouldNotBeFound("leadId.equals=" + (leadId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByUserIsEqualToSomething() throws Exception {
+        UserProfile user;
+        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
+            trademarkRepository.saveAndFlush(trademark);
+            user = UserProfileResourceIT.createEntity();
+        } else {
+            user = TestUtil.findAll(em, UserProfile.class).get(0);
+        }
+        em.persist(user);
+        em.flush();
+        trademark.setUser(user);
+        trademarkRepository.saveAndFlush(trademark);
+        Long userId = user.getId();
+        // Get all the trademarkList where user equals to userId
+        defaultTrademarkShouldBeFound("userId.equals=" + userId);
+
+        // Get all the trademarkList where user equals to (userId + 1)
+        defaultTrademarkShouldNotBeFound("userId.equals=" + (userId + 1));
     }
 
     private void defaultTrademarkFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
@@ -1655,7 +1716,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)));
+            .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -1724,7 +1786,8 @@ class TrademarkResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
-            .pageNo(UPDATED_PAGE_NO);
+            .pageNo(UPDATED_PAGE_NO)
+            .source(UPDATED_SOURCE);
         TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
@@ -1828,7 +1891,8 @@ class TrademarkResourceIT {
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
-            .type(UPDATED_TYPE);
+            .type(UPDATED_TYPE)
+            .source(UPDATED_SOURCE);
 
         restTrademarkMockMvc
             .perform(
@@ -1880,7 +1944,8 @@ class TrademarkResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
-            .pageNo(UPDATED_PAGE_NO);
+            .pageNo(UPDATED_PAGE_NO)
+            .source(UPDATED_SOURCE);
 
         restTrademarkMockMvc
             .perform(

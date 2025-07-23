@@ -6,10 +6,8 @@ import { Subject, from, of } from 'rxjs';
 
 import { ITrademark } from 'app/entities/trademark/trademark.model';
 import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
-import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
-import { IDocuments } from '../documents.model';
 import { DocumentsService } from '../service/documents.service';
+import { IDocuments } from '../documents.model';
 import { DocumentsFormService } from './documents-form.service';
 
 import { DocumentsUpdateComponent } from './documents-update.component';
@@ -21,7 +19,6 @@ describe('Documents Management Update Component', () => {
   let documentsFormService: DocumentsFormService;
   let documentsService: DocumentsService;
   let trademarkService: TrademarkService;
-  let userProfileService: UserProfileService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -45,7 +42,6 @@ describe('Documents Management Update Component', () => {
     documentsFormService = TestBed.inject(DocumentsFormService);
     documentsService = TestBed.inject(DocumentsService);
     trademarkService = TestBed.inject(TrademarkService);
-    userProfileService = TestBed.inject(UserProfileService);
 
     comp = fixture.componentInstance;
   });
@@ -73,40 +69,15 @@ describe('Documents Management Update Component', () => {
       expect(comp.trademarksSharedCollection).toEqual(expectedCollection);
     });
 
-    it('should call UserProfile query and add missing value', () => {
-      const documents: IDocuments = { id: 1265 };
-      const user: IUserProfile = { id: 22058 };
-      documents.user = user;
-
-      const userProfileCollection: IUserProfile[] = [{ id: 22058 }];
-      jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
-      const additionalUserProfiles = [user];
-      const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
-      jest.spyOn(userProfileService, 'addUserProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
-
-      activatedRoute.data = of({ documents });
-      comp.ngOnInit();
-
-      expect(userProfileService.query).toHaveBeenCalled();
-      expect(userProfileService.addUserProfileToCollectionIfMissing).toHaveBeenCalledWith(
-        userProfileCollection,
-        ...additionalUserProfiles.map(expect.objectContaining),
-      );
-      expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
-    });
-
     it('should update editForm', () => {
       const documents: IDocuments = { id: 1265 };
       const trademark: ITrademark = { id: 4352 };
       documents.trademark = trademark;
-      const user: IUserProfile = { id: 22058 };
-      documents.user = user;
 
       activatedRoute.data = of({ documents });
       comp.ngOnInit();
 
       expect(comp.trademarksSharedCollection).toContainEqual(trademark);
-      expect(comp.userProfilesSharedCollection).toContainEqual(user);
       expect(comp.documents).toEqual(documents);
     });
   });
@@ -187,16 +158,6 @@ describe('Documents Management Update Component', () => {
         jest.spyOn(trademarkService, 'compareTrademark');
         comp.compareTrademark(entity, entity2);
         expect(trademarkService.compareTrademark).toHaveBeenCalledWith(entity, entity2);
-      });
-    });
-
-    describe('compareUserProfile', () => {
-      it('should forward to userProfileService', () => {
-        const entity = { id: 22058 };
-        const entity2 = { id: 9009 };
-        jest.spyOn(userProfileService, 'compareUserProfile');
-        comp.compareUserProfile(entity, entity2);
-        expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

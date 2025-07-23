@@ -97,7 +97,9 @@ class TrademarkCriteriaTest {
         trademarkCriteria.renewalDate();
         trademarkCriteria.type();
         trademarkCriteria.pageNo();
-        trademarkCriteria.companyId();
+        trademarkCriteria.source();
+        trademarkCriteria.leadId();
+        trademarkCriteria.userId();
         trademarkCriteria.distinct();
     }
 
@@ -126,7 +128,9 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getRenewalDate()) &&
                 condition.apply(criteria.getType()) &&
                 condition.apply(criteria.getPageNo()) &&
-                condition.apply(criteria.getCompanyId()) &&
+                condition.apply(criteria.getSource()) &&
+                condition.apply(criteria.getLeadId()) &&
+                condition.apply(criteria.getUserId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -157,7 +161,9 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getRenewalDate(), copy.getRenewalDate()) &&
                 condition.apply(criteria.getType(), copy.getType()) &&
                 condition.apply(criteria.getPageNo(), copy.getPageNo()) &&
-                condition.apply(criteria.getCompanyId(), copy.getCompanyId()) &&
+                condition.apply(criteria.getSource(), copy.getSource()) &&
+                condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
+                condition.apply(criteria.getUserId(), copy.getUserId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

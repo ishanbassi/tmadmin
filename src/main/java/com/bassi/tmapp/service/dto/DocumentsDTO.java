@@ -24,8 +24,6 @@ public class DocumentsDTO implements Serializable {
 
     private TrademarkDTO trademark;
 
-    private UserProfileDTO user;
-
     public Long getId() {
         return id;
     }
@@ -82,14 +80,6 @@ public class DocumentsDTO implements Serializable {
         this.trademark = trademark;
     }
 
-    public UserProfileDTO getUser() {
-        return user;
-    }
-
-    public void setUser(UserProfileDTO user) {
-        this.user = user;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -122,7 +112,6 @@ public class DocumentsDTO implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
             ", trademark=" + getTrademark() +
-            ", user=" + getUser() +
             "}";
     }
 }

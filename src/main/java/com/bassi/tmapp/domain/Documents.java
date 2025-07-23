@@ -40,12 +40,8 @@ public class Documents implements Serializable {
     private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "company" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user" }, allowSetters = true)
     private Trademark trademark;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
-    private UserProfile user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -137,19 +133,6 @@ public class Documents implements Serializable {
 
     public Documents trademark(Trademark trademark) {
         this.setTrademark(trademark);
-        return this;
-    }
-
-    public UserProfile getUser() {
-        return this.user;
-    }
-
-    public void setUser(UserProfile userProfile) {
-        this.user = userProfile;
-    }
-
-    public Documents user(UserProfile userProfile) {
-        this.setUser(userProfile);
         return this;
     }
 

@@ -187,9 +187,22 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="company.id">
+            <th scope="col" jhiSortBy="source">
               <div class="d-flex">
-                <span>Company</span>
+                <span>Source</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="lead.id">
+              <div class="d-flex">
+                <span>Lead</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="user.id">
+              <div class="d-flex">
+                <span>User</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -241,9 +254,27 @@
               </td>
               <td>{{ trademark.pageNo }}</td>
               <td>
-                @if (trademark.company) {
+                {{
+                  {
+                    null: '',
+                    JOURNAL_PUBLICATION: 'JOURNAL_PUBLICATION',
+                    EXCEL: 'EXCEL',
+                    ADMIN_PORTAL: 'ADMIN_PORTAL',
+                    MEMBER_PORTAL: 'MEMBER_PORTAL',
+                  }[trademark.source ?? 'null']
+                }}
+              </td>
+              <td>
+                @if (trademark.lead) {
                   <div>
-                    <a [routerLink]="['/company', trademark.company.id, 'view']">{{ trademark.company.id }}</a>
+                    <a [routerLink]="['/lead', trademark.lead.id, 'view']">{{ trademark.lead.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (trademark.user) {
+                  <div>
+                    <a [routerLink]="['/user-profile', trademark.user.id, 'view']">{{ trademark.user.id }}</a>
                   </div>
                 }
               </td>

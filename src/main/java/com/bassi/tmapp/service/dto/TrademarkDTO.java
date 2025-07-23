@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -57,7 +58,11 @@ public class TrademarkDTO implements Serializable {
 
     private Integer pageNo;
 
-    private CompanyDTO company;
+    private TrademarkSource source;
+
+    private LeadDTO lead;
+
+    private UserProfileDTO user;
 
     public Long getId() {
         return id;
@@ -235,12 +240,28 @@ public class TrademarkDTO implements Serializable {
         this.pageNo = pageNo;
     }
 
-    public CompanyDTO getCompany() {
-        return company;
+    public TrademarkSource getSource() {
+        return source;
     }
 
-    public void setCompany(CompanyDTO company) {
-        this.company = company;
+    public void setSource(TrademarkSource source) {
+        this.source = source;
+    }
+
+    public LeadDTO getLead() {
+        return lead;
+    }
+
+    public void setLead(LeadDTO lead) {
+        this.lead = lead;
+    }
+
+    public UserProfileDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserProfileDTO user) {
+        this.user = user;
     }
 
     @Override
@@ -290,7 +311,9 @@ public class TrademarkDTO implements Serializable {
             ", renewalDate='" + getRenewalDate() + "'" +
             ", type='" + getType() + "'" +
             ", pageNo=" + getPageNo() +
-            ", company=" + getCompany() +
+            ", source='" + getSource() + "'" +
+            ", lead=" + getLead() +
+            ", user=" + getUser() +
             "}";
     }
 }

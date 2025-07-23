@@ -78,7 +78,8 @@ public class TrademarkAsserts {
             )
             .satisfies(a -> assertThat(a.getRenewalDate()).as("check renewalDate").isEqualTo(expected.getRenewalDate()))
             .satisfies(a -> assertThat(a.getType()).as("check type").isEqualTo(expected.getType()))
-            .satisfies(a -> assertThat(a.getPageNo()).as("check pageNo").isEqualTo(expected.getPageNo()));
+            .satisfies(a -> assertThat(a.getPageNo()).as("check pageNo").isEqualTo(expected.getPageNo()))
+            .satisfies(a -> assertThat(a.getSource()).as("check source").isEqualTo(expected.getSource()));
     }
 
     /**
@@ -90,6 +91,7 @@ public class TrademarkAsserts {
     public static void assertTrademarkUpdatableRelationshipsEquals(Trademark expected, Trademark actual) {
         assertThat(actual)
             .as("Verify Trademark relationships")
-            .satisfies(a -> assertThat(a.getCompany()).as("check company").isEqualTo(expected.getCompany()));
+            .satisfies(a -> assertThat(a.getLead()).as("check lead").isEqualTo(expected.getLead()))
+            .satisfies(a -> assertThat(a.getUser()).as("check user").isEqualTo(expected.getUser()));
     }
 }
