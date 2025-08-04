@@ -68,7 +68,7 @@ public class LeadResourceExtended {
         if (leadDTO.getId() != null) {
             throw new BadRequestAlertException("A new lead cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        leadDTO = leadService.save(leadDTO);
+        leadDTO = leadServiceExtended.save(leadDTO);
         return ResponseEntity.created(new URI("/api/leads/" + leadDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, leadDTO.getId().toString()))
             .body(leadDTO);

@@ -1,6 +1,9 @@
 package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.Lead;
+import com.bassi.tmapp.domain.TmAgent;
+import java.util.List;
+import java.util.Set;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +12,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface LeadRepository extends JpaRepository<Lead, Long>, JpaSpecificationExecutor<Lead> {}
+public interface LeadRepository extends JpaRepository<Lead, Long>, JpaSpecificationExecutor<Lead> {
+    @Query(value = "SELECT l FROM Lead l WHERE l.leadSource=?1 and l.email IS NOT NULL")
+    public List<Lead> findByLeadSource(String leadSource);
+}

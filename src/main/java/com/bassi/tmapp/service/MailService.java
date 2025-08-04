@@ -122,6 +122,16 @@ public class MailService {
         }
     }
 
+    public void sendOfferMailToPharamas(Lead lead, String templateName, String titleKey, String leadEmail) {
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(LEAD, lead);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmailSync(leadEmail, subject, content, false, true);
+    }
+
     @Async
     public void sendActivationEmail(User user) {
         LOG.debug("Sending activation email to '{}'", user.getEmail());

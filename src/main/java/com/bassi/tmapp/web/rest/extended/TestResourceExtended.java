@@ -43,4 +43,9 @@ public class TestResourceExtended {
     public void processTmClass(@RequestParam("pdfPath") String pdfPath) {
         iTextPdfReaderService.readPdfAndProcessTmClasses(pdfPath);
     }
+
+    @GetMapping("/pdfs/leads")
+    public void processLeads(@RequestParam("pdfPath") String pdfPath) {
+        iTextPdfReaderService.readPdfAndProcessLeads(pdfPath);
+    }
 }

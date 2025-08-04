@@ -49,4 +49,10 @@ public class MailServiceExtended extends MailService {
         LOG.debug("Sending new lead mail to '{}'", applicationProperties.getAdminNotificationsEmailAddress());
         sendNewLeadMailToAdmin(lead, "mail/newLeadEmail", "email.lead.title", applicationProperties.getAdminNotificationsEmailAddress());
     }
+
+    @Async
+    public void sendOfferMailToPharamas(Lead lead) {
+        LOG.debug("Sending new offer mail to pharma companies");
+        sendOfferMailToPharamas(lead, "mail/offerMailPharma", "email.offer.pharma.title", lead.getEmail());
+    }
 }

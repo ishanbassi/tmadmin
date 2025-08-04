@@ -1,12 +1,16 @@
 package com.bassi.tmapp.service.extended.pdfService;
 
+import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
+import com.bassi.tmapp.service.LeadService;
 import com.bassi.tmapp.service.TrademarkClassService;
+import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
+import com.bassi.tmapp.service.extended.LeadServiceExtended;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
@@ -70,6 +74,8 @@ public class ITextPdfReaderService {
     private TmAgentServiceExtended agentServiceExtended;
     private TrademarkClassService trademarkClassService;
     private final TrademarkClassMapper trademarkClassMapper;
+    private CompanyDataProcessor companyDataProcessor;
+    private LeadService leadService;
 
     @Autowired
     @Lazy
@@ -94,7 +100,9 @@ public class ITextPdfReaderService {
         WordSanitizationService wordSanitizationService,
         TmAgentServiceExtended agentServiceExtended,
         TrademarkClassService trademarkClassService,
-        TrademarkClassMapper trademarkClassMapper
+        TrademarkClassMapper trademarkClassMapper,
+        CompanyDataProcessor companyDataProcessor,
+        LeadService leadService
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
@@ -104,6 +112,8 @@ public class ITextPdfReaderService {
         this.agentServiceExtended = agentServiceExtended;
         this.trademarkClassService = trademarkClassService;
         this.trademarkClassMapper = trademarkClassMapper;
+        this.companyDataProcessor = companyDataProcessor;
+        this.leadService = leadService;
     }
 
     @Async
@@ -126,6 +136,116 @@ public class ITextPdfReaderService {
             }
 
             processTmClassPdf(file.getAbsolutePath(), null);
+        }
+    }
+
+    public void readPdfAndProcessLeads(String pdfDirectoryPath) {
+        File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + pdfDirectoryPath);
+        File[] files = fetchFilesFromDirectory(baseDirectory);
+        for (File file : files) {
+            processLeadsPdf(file.getAbsolutePath());
+        }
+    }
+
+    private void processLeadsPdf(String pdfFilePath) {
+        PdfDocument pdfDoc;
+        List<String> contactNameList = new ArrayList<>();
+        List<String> emailList = new ArrayList<>();
+        List<String> addressList = new ArrayList<>();
+        List<String> phoneNumberList = new ArrayList<>();
+        List<String> businessTypeList = new ArrayList<>();
+        emailList.size();
+        contactNameList.size();
+
+        try {
+            pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
+            for (int i = 45; i <= pdfDoc.getNumberOfPages(); i++) {
+                CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
+                PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
+                processor.processPageContent(pdfDoc.getPage(i));
+
+                List<LineInfo> lines = strategy.getLines();
+                for (LineInfo line : lines) {
+                    String words = line.getAllWordsFromSameLineWithInfo();
+                    words = words.replaceAll("[\\u00A0\\u2007\\u202F]", " "); // replaces non-breaking spaces
+                    words = words.trim(); // removes leading/trailing space
+
+                    Pattern contactNamePattern = Pattern.compile("Contact Name\\s*:\\s*(.*)");
+                    Pattern designationPattern = Pattern.compile("Designation\\s*:\\s*(.*)");
+                    Pattern addressPattern = Pattern.compile(
+                        "Address\\s*:\\s*(.*?)(?=Phone\\s*:|Fax\\s*:|Email\\s*:|Business Activities\\s*:|$)",
+                        Pattern.DOTALL
+                    );
+                    Pattern phonePattern = Pattern.compile("Phone\\s*:\\s*([\\d\\-\\+\\(\\) ]+)");
+                    Pattern faxPattern = Pattern.compile("Fax\\s*:\\s*([\\d\\-\\+\\(\\) ]+)");
+                    Pattern emailPattern = Pattern.compile("Email\\s*:\\s*([\\w\\.-]+@[\\w\\.-]+)", Pattern.CASE_INSENSITIVE);
+                    Pattern businessActivitiesPattern = Pattern.compile("Business Activities\\s*:\\s*(.*)", Pattern.DOTALL);
+
+                    // Extract values
+                    Matcher mContact = contactNamePattern.matcher(words);
+                    Matcher mDesignation = designationPattern.matcher(words);
+                    Matcher mAddress = addressPattern.matcher(words);
+                    Matcher mPhone = phonePattern.matcher(words);
+                    Matcher mFax = faxPattern.matcher(words);
+                    Matcher mEmail = emailPattern.matcher(words);
+                    Matcher mBusiness = businessActivitiesPattern.matcher(words);
+
+                    if (mContact.find()) {
+                        String contactName = mContact.group(1).trim();
+                        contactNameList.add(contactName);
+                    }
+                    if (mDesignation.find()) {
+                        String designation = mDesignation.group(1).trim();
+                        log.info("Designation: " + designation);
+                    }
+                    if (mAddress.find()) {
+                        String address = mAddress.group(1).replaceAll("[\\r\\n]+", " ").trim();
+                        addressList.add(address);
+                    }
+                    if (mPhone.find()) {
+                        String phone = mPhone.group(1).trim();
+                        phoneNumberList.add(phone);
+                    }
+                    if (mFax.find()) {
+                        String fax = mFax.group(1).trim();
+                        log.info("Fax: " + fax);
+                    }
+                    if (mEmail.find()) {
+                        String email = mEmail.group(1).trim();
+                        emailList.add(email);
+                    }
+                    if (mBusiness.find()) {
+                        String businessActivities = mBusiness.group(1).replaceAll("[\\r\\n]+", " ").trim();
+                        businessTypeList.add(businessActivities);
+                    }
+                }
+            }
+            emailList = emailList.stream().filter(email -> !email.equalsIgnoreCase("info@pharmexcil.com")).toList();
+
+            List<LeadDTO> leads = new ArrayList<>();
+            for (int i = 0; i < emailList.size(); i++) {
+                LeadDTO lead = new LeadDTO();
+                lead.setEmail(getValueOrNull(emailList, i));
+                lead.setLeadSource("Pharmexcil_Members_Directory_2008.pdf");
+                lead.setFullName(getValueOrNull(contactNameList, i));
+                lead.setComments(getValueOrNull(businessTypeList, i));
+                lead.setCity(getValueOrNull(addressList, i));
+                lead.setPhoneNumber(getValueOrNull(phoneNumberList, i));
+                leads.add(lead);
+            }
+            leadService.saveAll(leads);
+
+            pdfDoc.close();
+        } catch (IOException e) {
+            throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
+        }
+    }
+
+    private String getValueOrNull(List<String> list, int i) {
+        try {
+            return list.get(i);
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
         }
     }
 

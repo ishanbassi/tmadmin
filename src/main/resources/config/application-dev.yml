@@ -46,15 +46,16 @@ spring:
     contexts: dev
     enabled: true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ishanbassi23@gmail.com
-    password: unjm nzwi qcwb issj
+    host: smtp.hostinger.com
+    port: 465
+    username: support@trademarx.in
+    password: Ish@n070720
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
-          starttls:
+          ssl:
             enable: true
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
@@ -98,7 +99,7 @@ jhipster:
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
     base-url: http://127.0.0.1:8080
-    from: ishanbassi23@gmail.com
+    from: support@trademarx.in
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -122,9 +123,9 @@ application:
     apiKey: https://api.apitruecaptcha.org/one/gettext
   admin-notifications-email-address:
     - ishanbassi23@gmail.com
-  razorpay:
-    keyId: YOUR_RAZORPAY_KEY_ID
-    keySecret: YOUR_RAZORPAY_KEY_SECRET
+#  razorpay:
+#    keyId: YOUR_RAZORPAY_KEY_ID
+#    keySecret: YOUR_RAZORPAY_KEY_SECRET
 
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/
