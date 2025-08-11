@@ -49,6 +49,8 @@ public class DocumentsAsserts {
         assertThat(actual)
             .as("Verify Documents relevant properties")
             .satisfies(a -> assertThat(a.getDocumentType()).as("check documentType").isEqualTo(expected.getDocumentType()))
+            .satisfies(a -> assertThat(a.getFileContentType()).as("check fileContentType").isEqualTo(expected.getFileContentType()))
+            .satisfies(a -> assertThat(a.getFileName()).as("check fileName").isEqualTo(expected.getFileName()))
             .satisfies(a -> assertThat(a.getFileUrl()).as("check fileUrl").isEqualTo(expected.getFileUrl()))
             .satisfies(a ->
                 assertThat(a.getCreatedDate())

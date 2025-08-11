@@ -15,14 +15,31 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_documentType">Document Type</label>
+          <select class="form-control" name="documentType" formControlName="documentType" id="field_documentType" data-cy="documentType">
+            <option [ngValue]="null"></option>
+            @for (documentType of documentTypeValues; track $index) {
+              <option [value]="documentType">
+                {{ { null: '', OTHERS: 'OTHERS', LOGO: 'LOGO', ADDRESS_PROOF: 'ADDRESS_PROOF', SIGNED_POA: 'SIGNED_POA' }[documentType] }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_fileContentType">File Content Type</label>
           <input
             type="text"
             class="form-control"
-            name="documentType"
-            id="field_documentType"
-            data-cy="documentType"
-            formControlName="documentType"
+            name="fileContentType"
+            id="field_fileContentType"
+            data-cy="fileContentType"
+            formControlName="fileContentType"
           />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_fileName">File Name</label>
+          <input type="text" class="form-control" name="fileName" id="field_fileName" data-cy="fileName" formControlName="fileName" />
         </div>
 
         <div class="mb-3">

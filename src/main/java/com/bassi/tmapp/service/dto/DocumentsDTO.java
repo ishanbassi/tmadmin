@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.dto;
 
+import com.bassi.tmapp.domain.enumeration.DocumentType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -12,7 +13,11 @@ public class DocumentsDTO implements Serializable {
 
     private Long id;
 
-    private String documentType;
+    private DocumentType documentType;
+
+    private String fileContentType;
+
+    private String fileName;
 
     private String fileUrl;
 
@@ -32,12 +37,28 @@ public class DocumentsDTO implements Serializable {
         this.id = id;
     }
 
-    public String getDocumentType() {
+    public DocumentType getDocumentType() {
         return documentType;
     }
 
-    public void setDocumentType(String documentType) {
+    public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
+    }
+
+    public String getFileContentType() {
+        return fileContentType;
+    }
+
+    public void setFileContentType(String fileContentType) {
+        this.fileContentType = fileContentType;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getFileUrl() {
@@ -107,6 +128,8 @@ public class DocumentsDTO implements Serializable {
         return "DocumentsDTO{" +
             "id=" + getId() +
             ", documentType='" + getDocumentType() + "'" +
+            ", fileContentType='" + getFileContentType() + "'" +
+            ", fileName='" + getFileName() + "'" +
             ", fileUrl='" + getFileUrl() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +

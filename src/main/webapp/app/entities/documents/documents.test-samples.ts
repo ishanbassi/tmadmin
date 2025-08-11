@@ -7,17 +7,20 @@ export const sampleWithRequiredData: IDocuments = {
 };
 
 export const sampleWithPartialData: IDocuments = {
-  id: 19957,
-  documentType: 'since',
-  createdDate: dayjs('2025-06-12T17:27'),
+  id: 13152,
+  documentType: 'OTHERS',
+  fileName: 'and off circa',
+  deleted: false,
 };
 
 export const sampleWithFullData: IDocuments = {
   id: 13607,
-  documentType: 'apud beautifully iterate',
-  fileUrl: 'supposing',
-  createdDate: dayjs('2025-06-13T07:06'),
-  modifiedDate: dayjs('2025-06-13T04:20'),
+  documentType: 'ADDRESS_PROOF',
+  fileContentType: 'phew',
+  fileName: 'inasmuch',
+  fileUrl: 'hmph drat',
+  createdDate: dayjs('2025-06-13T14:27'),
+  modifiedDate: dayjs('2025-06-13T10:51'),
   deleted: false,
 };
 

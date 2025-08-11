@@ -157,7 +157,9 @@ entity Company{
 }
 
 entity Documents{
-	documentType String
+	documentType DocumentType
+	fileContentType String 
+	fileName String
 	fileUrl String
 	createdDate ZonedDateTime
     modifiedDate ZonedDateTime
@@ -235,6 +237,13 @@ enum TrademarkSource{
     MEMBER_PORTAL
 
 
+}
+
+enum DocumentType {
+    OTHERS
+    LOGO
+    ADDRESS_PROOF
+    SIGNED_POA
 }
 
 

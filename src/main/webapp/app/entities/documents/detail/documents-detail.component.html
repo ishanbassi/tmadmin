@@ -17,7 +17,19 @@
           </dd>
           <dt><span>Document Type</span></dt>
           <dd>
-            <span>{{ documentsRef.documentType }}</span>
+            <span>{{
+              { null: '', OTHERS: 'OTHERS', LOGO: 'LOGO', ADDRESS_PROOF: 'ADDRESS_PROOF', SIGNED_POA: 'SIGNED_POA' }[
+                documentsRef.documentType ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span>File Content Type</span></dt>
+          <dd>
+            <span>{{ documentsRef.fileContentType }}</span>
+          </dd>
+          <dt><span>File Name</span></dt>
+          <dd>
+            <span>{{ documentsRef.fileName }}</span>
           </dd>
           <dt><span>File Url</span></dt>
           <dd>

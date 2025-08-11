@@ -17,6 +17,12 @@
             <column name="document_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="file_content_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="file_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="file_url" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
@@ -56,6 +62,8 @@
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="document_type" type="string"/>
+            <column name="file_content_type" type="string"/>
+            <column name="file_name" type="string"/>
             <column name="file_url" type="string"/>
             <column name="created_date" type="date"/>
             <column name="modified_date" type="date"/>

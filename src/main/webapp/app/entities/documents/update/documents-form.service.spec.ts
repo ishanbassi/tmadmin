@@ -21,6 +21,8 @@ describe('Documents Form Service', () => {
           expect.objectContaining({
             id: expect.any(Object),
             documentType: expect.any(Object),
+            fileContentType: expect.any(Object),
+            fileName: expect.any(Object),
             fileUrl: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
@@ -37,6 +39,8 @@ describe('Documents Form Service', () => {
           expect.objectContaining({
             id: expect.any(Object),
             documentType: expect.any(Object),
+            fileContentType: expect.any(Object),
+            fileName: expect.any(Object),
             fileUrl: expect.any(Object),
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
