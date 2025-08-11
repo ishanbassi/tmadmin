@@ -47,6 +47,20 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="fileContentType">
+              <div class="d-flex">
+                <span>File Content Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="fileName">
+              <div class="d-flex">
+                <span>File Name</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="fileUrl">
               <div class="d-flex">
                 <span>File Url</span>
@@ -90,7 +104,15 @@
               <td>
                 <a [routerLink]="['/documents', documents.id, 'view']">{{ documents.id }}</a>
               </td>
-              <td>{{ documents.documentType }}</td>
+              <td>
+                {{
+                  { null: '', OTHERS: 'OTHERS', LOGO: 'LOGO', ADDRESS_PROOF: 'ADDRESS_PROOF', SIGNED_POA: 'SIGNED_POA' }[
+                    documents.documentType ?? 'null'
+                  ]
+                }}
+              </td>
+              <td>{{ documents.fileContentType }}</td>
+              <td>{{ documents.fileName }}</td>
               <td>{{ documents.fileUrl }}</td>
               <td>{{ documents.createdDate | formatMediumDatetime }}</td>
               <td>{{ documents.modifiedDate | formatMediumDatetime }}</td>

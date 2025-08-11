@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Documents;
+import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.bassi.tmapp.repository.DocumentsRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.mapper.DocumentsMapper;
@@ -39,8 +40,14 @@ import org.springframework.transaction.annotation.Transactional;
 @WithMockUser
 class DocumentsResourceIT {
 
-    private static final String DEFAULT_DOCUMENT_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_DOCUMENT_TYPE = "BBBBBBBBBB";
+    private static final DocumentType DEFAULT_DOCUMENT_TYPE = DocumentType.OTHERS;
+    private static final DocumentType UPDATED_DOCUMENT_TYPE = DocumentType.LOGO;
+
+    private static final String DEFAULT_FILE_CONTENT_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_FILE_CONTENT_TYPE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_FILE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_FILE_NAME = "BBBBBBBBBB";
 
     private static final String DEFAULT_FILE_URL = "AAAAAAAAAA";
     private static final String UPDATED_FILE_URL = "BBBBBBBBBB";
@@ -88,6 +95,8 @@ class DocumentsResourceIT {
     public static Documents createEntity() {
         return new Documents()
             .documentType(DEFAULT_DOCUMENT_TYPE)
+            .fileContentType(DEFAULT_FILE_CONTENT_TYPE)
+            .fileName(DEFAULT_FILE_NAME)
             .fileUrl(DEFAULT_FILE_URL)
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
@@ -103,6 +112,8 @@ class DocumentsResourceIT {
     public static Documents createUpdatedEntity() {
         return new Documents()
             .documentType(UPDATED_DOCUMENT_TYPE)
+            .fileContentType(UPDATED_FILE_CONTENT_TYPE)
+            .fileName(UPDATED_FILE_NAME)
             .fileUrl(UPDATED_FILE_URL)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
@@ -176,7 +187,9 @@ class DocumentsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(documents.getId().intValue())))
-            .andExpect(jsonPath("$.[*].documentType").value(hasItem(DEFAULT_DOCUMENT_TYPE)))
+            .andExpect(jsonPath("$.[*].documentType").value(hasItem(DEFAULT_DOCUMENT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].fileContentType").value(hasItem(DEFAULT_FILE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME)))
             .andExpect(jsonPath("$.[*].fileUrl").value(hasItem(DEFAULT_FILE_URL)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
@@ -195,7 +208,9 @@ class DocumentsResourceIT {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
             .andExpect(jsonPath("$.id").value(documents.getId().intValue()))
-            .andExpect(jsonPath("$.documentType").value(DEFAULT_DOCUMENT_TYPE))
+            .andExpect(jsonPath("$.documentType").value(DEFAULT_DOCUMENT_TYPE.toString()))
+            .andExpect(jsonPath("$.fileContentType").value(DEFAULT_FILE_CONTENT_TYPE))
+            .andExpect(jsonPath("$.fileName").value(DEFAULT_FILE_NAME))
             .andExpect(jsonPath("$.fileUrl").value(DEFAULT_FILE_URL))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
@@ -223,6 +238,8 @@ class DocumentsResourceIT {
         em.detach(updatedDocuments);
         updatedDocuments
             .documentType(UPDATED_DOCUMENT_TYPE)
+            .fileContentType(UPDATED_FILE_CONTENT_TYPE)
+            .fileName(UPDATED_FILE_NAME)
             .fileUrl(UPDATED_FILE_URL)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
@@ -316,7 +333,7 @@ class DocumentsResourceIT {
         Documents partialUpdatedDocuments = new Documents();
         partialUpdatedDocuments.setId(documents.getId());
 
-        partialUpdatedDocuments.documentType(UPDATED_DOCUMENT_TYPE).modifiedDate(UPDATED_MODIFIED_DATE);
+        partialUpdatedDocuments.documentType(UPDATED_DOCUMENT_TYPE).fileUrl(UPDATED_FILE_URL).modifiedDate(UPDATED_MODIFIED_DATE);
 
         restDocumentsMockMvc
             .perform(
@@ -349,6 +366,8 @@ class DocumentsResourceIT {
 
         partialUpdatedDocuments
             .documentType(UPDATED_DOCUMENT_TYPE)
+            .fileContentType(UPDATED_FILE_CONTENT_TYPE)
+            .fileName(UPDATED_FILE_NAME)
             .fileUrl(UPDATED_FILE_URL)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)

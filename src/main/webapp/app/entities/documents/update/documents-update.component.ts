@@ -9,8 +9,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ITrademark } from 'app/entities/trademark/trademark.model';
 import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
-import { IDocuments } from '../documents.model';
+import { DocumentType } from 'app/entities/enumerations/document-type.model';
 import { DocumentsService } from '../service/documents.service';
+import { IDocuments } from '../documents.model';
 import { DocumentsFormGroup, DocumentsFormService } from './documents-form.service';
 
 @Component({
@@ -21,6 +22,7 @@ import { DocumentsFormGroup, DocumentsFormService } from './documents-form.servi
 export class DocumentsUpdateComponent implements OnInit {
   isSaving = false;
   documents: IDocuments | null = null;
+  documentTypeValues = Object.keys(DocumentType);
 
   trademarksSharedCollection: ITrademark[] = [];
 

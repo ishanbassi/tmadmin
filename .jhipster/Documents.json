@@ -7,6 +7,15 @@
   "fields": [
     {
       "fieldName": "documentType",
+      "fieldType": "DocumentType",
+      "fieldValues": "OTHERS,LOGO,ADDRESS_PROOF,SIGNED_POA"
+    },
+    {
+      "fieldName": "fileContentType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "fileName",
       "fieldType": "String"
     },
     {

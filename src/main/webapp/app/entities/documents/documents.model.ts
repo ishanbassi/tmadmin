@@ -1,9 +1,12 @@
 import dayjs from 'dayjs/esm';
 import { ITrademark } from 'app/entities/trademark/trademark.model';
+import { DocumentType } from 'app/entities/enumerations/document-type.model';
 
 export interface IDocuments {
   id: number;
-  documentType?: string | null;
+  documentType?: keyof typeof DocumentType | null;
+  fileContentType?: string | null;
+  fileName?: string | null;
   fileUrl?: string | null;
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;

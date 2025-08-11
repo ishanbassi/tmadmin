@@ -33,6 +33,8 @@ type DocumentsFormDefaults = Pick<NewDocuments, 'id' | 'createdDate' | 'modified
 type DocumentsFormGroupContent = {
   id: FormControl<DocumentsFormRawValue['id'] | NewDocuments['id']>;
   documentType: FormControl<DocumentsFormRawValue['documentType']>;
+  fileContentType: FormControl<DocumentsFormRawValue['fileContentType']>;
+  fileName: FormControl<DocumentsFormRawValue['fileName']>;
   fileUrl: FormControl<DocumentsFormRawValue['fileUrl']>;
   createdDate: FormControl<DocumentsFormRawValue['createdDate']>;
   modifiedDate: FormControl<DocumentsFormRawValue['modifiedDate']>;
@@ -58,6 +60,8 @@ export class DocumentsFormService {
         },
       ),
       documentType: new FormControl(documentsRawValue.documentType),
+      fileContentType: new FormControl(documentsRawValue.fileContentType),
+      fileName: new FormControl(documentsRawValue.fileName),
       fileUrl: new FormControl(documentsRawValue.fileUrl),
       createdDate: new FormControl(documentsRawValue.createdDate),
       modifiedDate: new FormControl(documentsRawValue.modifiedDate),

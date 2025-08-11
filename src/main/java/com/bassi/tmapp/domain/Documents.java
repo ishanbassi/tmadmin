@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -24,8 +25,15 @@ public class Documents implements Serializable {
     @Column(name = "id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "document_type")
-    private String documentType;
+    private DocumentType documentType;
+
+    @Column(name = "file_content_type")
+    private String fileContentType;
+
+    @Column(name = "file_name")
+    private String fileName;
 
     @Column(name = "file_url")
     private String fileUrl;
@@ -58,17 +66,43 @@ public class Documents implements Serializable {
         this.id = id;
     }
 
-    public String getDocumentType() {
+    public DocumentType getDocumentType() {
         return this.documentType;
     }
 
-    public Documents documentType(String documentType) {
+    public Documents documentType(DocumentType documentType) {
         this.setDocumentType(documentType);
         return this;
     }
 
-    public void setDocumentType(String documentType) {
+    public void setDocumentType(DocumentType documentType) {
         this.documentType = documentType;
+    }
+
+    public String getFileContentType() {
+        return this.fileContentType;
+    }
+
+    public Documents fileContentType(String fileContentType) {
+        this.setFileContentType(fileContentType);
+        return this;
+    }
+
+    public void setFileContentType(String fileContentType) {
+        this.fileContentType = fileContentType;
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public Documents fileName(String fileName) {
+        this.setFileName(fileName);
+        return this;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getFileUrl() {
@@ -161,6 +195,8 @@ public class Documents implements Serializable {
         return "Documents{" +
             "id=" + getId() +
             ", documentType='" + getDocumentType() + "'" +
+            ", fileContentType='" + getFileContentType() + "'" +
+            ", fileName='" + getFileName() + "'" +
             ", fileUrl='" + getFileUrl() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
