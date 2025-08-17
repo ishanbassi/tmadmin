@@ -109,9 +109,13 @@ public class LeadService {
     }
 
     public void sendOfferMail() {
-        List<Lead> leads = leadRepository.findByLeadSource("Pharmexcil_Members_Directory_2008.pdf");
+        List<Lead> leads = leadRepository.findByLeadSourceAndStatus("Pharmexcil_Members_Directory_2008.pdf", LeadStatus.NEW);
         int count = 0;
         for (Lead lead : leads) {
+            if (count >= 1000) {
+                LOG.info("Ending the process because email limit reached.");
+                break;
+            }
             if (lead.getStatus() != LeadStatus.NEW) {
                 continue;
             }

@@ -50,7 +50,6 @@ public class MailServiceExtended extends MailService {
         sendNewLeadMailToAdmin(lead, "mail/newLeadEmail", "email.lead.title", applicationProperties.getAdminNotificationsEmailAddress());
     }
 
-    @Async
     public void sendOfferMailToPharamas(Lead lead) {
         LOG.debug("Sending new offer mail to pharma companies");
         sendOfferMailToPharamas(lead, "mail/offerMailPharma", "email.offer.pharma.title", lead.getEmail());

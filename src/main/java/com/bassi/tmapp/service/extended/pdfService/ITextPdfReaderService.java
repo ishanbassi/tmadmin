@@ -154,8 +154,6 @@ public class ITextPdfReaderService {
         List<String> addressList = new ArrayList<>();
         List<String> phoneNumberList = new ArrayList<>();
         List<String> businessTypeList = new ArrayList<>();
-        emailList.size();
-        contactNameList.size();
 
         try {
             pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));

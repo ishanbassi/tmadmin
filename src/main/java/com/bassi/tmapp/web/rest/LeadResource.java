@@ -194,4 +194,11 @@ public class LeadResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @GetMapping("/mail/offer-mail/pharma")
+    public ResponseEntity<String> sendOfferMailToPharma() {
+        LOG.debug("Going to send offer mail to pharma companies");
+        leadService.sendOfferMail();
+        return ResponseEntity.ok("Process Initialized");
+    }
 }
