@@ -4,6 +4,8 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, from, of } from 'rxjs';
 
+import { ITrademark } from 'app/entities/trademark/trademark.model';
+import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
 import { TrademarkClassService } from '../service/trademark-class.service';
 import { ITrademarkClass } from '../trademark-class.model';
 import { TrademarkClassFormService } from './trademark-class-form.service';
@@ -16,6 +18,7 @@ describe('TrademarkClass Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let trademarkClassFormService: TrademarkClassFormService;
   let trademarkClassService: TrademarkClassService;
+  let trademarkService: TrademarkService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -38,17 +41,43 @@ describe('TrademarkClass Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     trademarkClassFormService = TestBed.inject(TrademarkClassFormService);
     trademarkClassService = TestBed.inject(TrademarkClassService);
+    trademarkService = TestBed.inject(TrademarkService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('should update editForm', () => {
+    it('should call Trademark query and add missing value', () => {
       const trademarkClass: ITrademarkClass = { id: 29079 };
+      const trademarks: ITrademark[] = [{ id: 4352 }];
+      trademarkClass.trademarks = trademarks;
+
+      const trademarkCollection: ITrademark[] = [{ id: 4352 }];
+      jest.spyOn(trademarkService, 'query').mockReturnValue(of(new HttpResponse({ body: trademarkCollection })));
+      const additionalTrademarks = [...trademarks];
+      const expectedCollection: ITrademark[] = [...additionalTrademarks, ...trademarkCollection];
+      jest.spyOn(trademarkService, 'addTrademarkToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ trademarkClass });
       comp.ngOnInit();
 
+      expect(trademarkService.query).toHaveBeenCalled();
+      expect(trademarkService.addTrademarkToCollectionIfMissing).toHaveBeenCalledWith(
+        trademarkCollection,
+        ...additionalTrademarks.map(expect.objectContaining),
+      );
+      expect(comp.trademarksSharedCollection).toEqual(expectedCollection);
+    });
+
+    it('should update editForm', () => {
+      const trademarkClass: ITrademarkClass = { id: 29079 };
+      const trademarks: ITrademark = { id: 4352 };
+      trademarkClass.trademarks = [trademarks];
+
+      activatedRoute.data = of({ trademarkClass });
+      comp.ngOnInit();
+
+      expect(comp.trademarksSharedCollection).toContainEqual(trademarks);
       expect(comp.trademarkClass).toEqual(trademarkClass);
     });
   });
@@ -118,6 +147,18 @@ describe('TrademarkClass Management Update Component', () => {
       expect(trademarkClassService.update).toHaveBeenCalled();
       expect(comp.isSaving).toEqual(false);
       expect(comp.previousState).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Compare relationships', () => {
+    describe('compareTrademark', () => {
+      it('should forward to trademarkService', () => {
+        const entity = { id: 4352 };
+        const entity2 = { id: 3769 };
+        jest.spyOn(trademarkService, 'compareTrademark');
+        comp.compareTrademark(entity, entity2);
+        expect(trademarkService.compareTrademark).toHaveBeenCalledWith(entity, entity2);
+      });
     });
   });
 });

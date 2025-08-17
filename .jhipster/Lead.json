@@ -66,6 +66,7 @@
   ],
   "jpaMetamodelFiltering": true,
   "name": "Lead",
+  "pagination": "infinite-scroll",
   "relationships": [
     {
       "options": {

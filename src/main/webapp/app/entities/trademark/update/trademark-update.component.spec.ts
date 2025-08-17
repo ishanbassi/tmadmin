@@ -8,6 +8,8 @@ import { ILead } from 'app/entities/lead/lead.model';
 import { LeadService } from 'app/entities/lead/service/lead.service';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
+import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
+import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkService } from '../service/trademark.service';
 import { TrademarkFormService } from './trademark-form.service';
@@ -22,6 +24,7 @@ describe('Trademark Management Update Component', () => {
   let trademarkService: TrademarkService;
   let leadService: LeadService;
   let userProfileService: UserProfileService;
+  let trademarkClassService: TrademarkClassService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -46,6 +49,7 @@ describe('Trademark Management Update Component', () => {
     trademarkService = TestBed.inject(TrademarkService);
     leadService = TestBed.inject(LeadService);
     userProfileService = TestBed.inject(UserProfileService);
+    trademarkClassService = TestBed.inject(TrademarkClassService);
 
     comp = fixture.componentInstance;
   });
@@ -95,18 +99,43 @@ describe('Trademark Management Update Component', () => {
       expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
     });
 
+    it('should call TrademarkClass query and add missing value', () => {
+      const trademark: ITrademark = { id: 3769 };
+      const trademarkClasses: ITrademarkClass[] = [{ id: 17567 }];
+      trademark.trademarkClasses = trademarkClasses;
+
+      const trademarkClassCollection: ITrademarkClass[] = [{ id: 17567 }];
+      jest.spyOn(trademarkClassService, 'query').mockReturnValue(of(new HttpResponse({ body: trademarkClassCollection })));
+      const additionalTrademarkClasses = [...trademarkClasses];
+      const expectedCollection: ITrademarkClass[] = [...additionalTrademarkClasses, ...trademarkClassCollection];
+      jest.spyOn(trademarkClassService, 'addTrademarkClassToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ trademark });
+      comp.ngOnInit();
+
+      expect(trademarkClassService.query).toHaveBeenCalled();
+      expect(trademarkClassService.addTrademarkClassToCollectionIfMissing).toHaveBeenCalledWith(
+        trademarkClassCollection,
+        ...additionalTrademarkClasses.map(expect.objectContaining),
+      );
+      expect(comp.trademarkClassesSharedCollection).toEqual(expectedCollection);
+    });
+
     it('should update editForm', () => {
       const trademark: ITrademark = { id: 3769 };
       const lead: ILead = { id: 32296 };
       trademark.lead = lead;
       const user: IUserProfile = { id: 22058 };
       trademark.user = user;
+      const trademarkClasses: ITrademarkClass = { id: 17567 };
+      trademark.trademarkClasses = [trademarkClasses];
 
       activatedRoute.data = of({ trademark });
       comp.ngOnInit();
 
       expect(comp.leadsSharedCollection).toContainEqual(lead);
       expect(comp.userProfilesSharedCollection).toContainEqual(user);
+      expect(comp.trademarkClassesSharedCollection).toContainEqual(trademarkClasses);
       expect(comp.trademark).toEqual(trademark);
     });
   });
@@ -197,6 +226,16 @@ describe('Trademark Management Update Component', () => {
         jest.spyOn(userProfileService, 'compareUserProfile');
         comp.compareUserProfile(entity, entity2);
         expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareTrademarkClass', () => {
+      it('should forward to trademarkClassService', () => {
+        const entity = { id: 17567 };
+        const entity2 = { id: 29079 };
+        jest.spyOn(trademarkClassService, 'compareTrademarkClass');
+        comp.compareTrademarkClass(entity, entity2);
+        expect(trademarkClassService.compareTrademarkClass).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

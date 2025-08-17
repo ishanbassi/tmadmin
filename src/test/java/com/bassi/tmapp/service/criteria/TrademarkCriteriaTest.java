@@ -100,6 +100,7 @@ class TrademarkCriteriaTest {
         trademarkCriteria.source();
         trademarkCriteria.leadId();
         trademarkCriteria.userId();
+        trademarkCriteria.trademarkClassesId();
         trademarkCriteria.distinct();
     }
 
@@ -131,6 +132,7 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getSource()) &&
                 condition.apply(criteria.getLeadId()) &&
                 condition.apply(criteria.getUserId()) &&
+                condition.apply(criteria.getTrademarkClassesId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -164,6 +166,7 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getSource(), copy.getSource()) &&
                 condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
                 condition.apply(criteria.getUserId(), copy.getUserId()) &&
+                condition.apply(criteria.getTrademarkClassesId(), copy.getTrademarkClassesId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

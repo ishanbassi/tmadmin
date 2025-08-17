@@ -79,6 +79,23 @@
           <label class="form-label" for="field_deleted">Deleted</label>
           <input type="checkbox" class="form-check" name="deleted" id="field_deleted" data-cy="deleted" formControlName="deleted" />
         </div>
+
+        <div class="mb-3">
+          <label for="field_trademarks">Trademarks</label>
+          <select
+            class="form-control"
+            id="field_trademarks"
+            data-cy="trademarks"
+            multiple
+            name="trademarks"
+            formControlName="trademarks"
+            [compareWith]="compareTrademark"
+          >
+            @for (trademarkOption of trademarksSharedCollection; track $index) {
+              <option [ngValue]="trademarkOption">{{ trademarkOption.id }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

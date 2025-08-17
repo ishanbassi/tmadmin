@@ -47,6 +47,15 @@
           <dd>
             <span>{{ trademarkClassRef.deleted }}</span>
           </dd>
+          <dt><span>Trademarks</span></dt>
+          <dd>
+            @for (trademarks of trademarkClassRef.trademarks; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/trademark', trademarks.id, 'view']">{{ trademarks?.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
         </dl>
 
         <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">

@@ -84,6 +84,7 @@ class TrademarkClassCriteriaTest {
         trademarkClassCriteria.createdDate();
         trademarkClassCriteria.modifiedDate();
         trademarkClassCriteria.deleted();
+        trademarkClassCriteria.trademarksId();
         trademarkClassCriteria.distinct();
     }
 
@@ -99,6 +100,7 @@ class TrademarkClassCriteriaTest {
                 condition.apply(criteria.getCreatedDate()) &&
                 condition.apply(criteria.getModifiedDate()) &&
                 condition.apply(criteria.getDeleted()) &&
+                condition.apply(criteria.getTrademarksId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -119,6 +121,7 @@ class TrademarkClassCriteriaTest {
                 condition.apply(criteria.getCreatedDate(), copy.getCreatedDate()) &&
                 condition.apply(criteria.getModifiedDate(), copy.getModifiedDate()) &&
                 condition.apply(criteria.getDeleted(), copy.getDeleted()) &&
+                condition.apply(criteria.getTrademarksId(), copy.getTrademarksId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

@@ -11,6 +11,8 @@ import { ILead } from 'app/entities/lead/lead.model';
 import { LeadService } from 'app/entities/lead/service/lead.service';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
+import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
+import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
@@ -32,11 +34,13 @@ export class TrademarkUpdateComponent implements OnInit {
 
   leadsSharedCollection: ILead[] = [];
   userProfilesSharedCollection: IUserProfile[] = [];
+  trademarkClassesSharedCollection: ITrademarkClass[] = [];
 
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);
   protected leadService = inject(LeadService);
   protected userProfileService = inject(UserProfileService);
+  protected trademarkClassService = inject(TrademarkClassService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -45,6 +49,9 @@ export class TrademarkUpdateComponent implements OnInit {
   compareLead = (o1: ILead | null, o2: ILead | null): boolean => this.leadService.compareLead(o1, o2);
 
   compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
+
+  compareTrademarkClass = (o1: ITrademarkClass | null, o2: ITrademarkClass | null): boolean =>
+    this.trademarkClassService.compareTrademarkClass(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ trademark }) => {
@@ -99,6 +106,10 @@ export class TrademarkUpdateComponent implements OnInit {
       this.userProfilesSharedCollection,
       trademark.user,
     );
+    this.trademarkClassesSharedCollection = this.trademarkClassService.addTrademarkClassToCollectionIfMissing<ITrademarkClass>(
+      this.trademarkClassesSharedCollection,
+      ...(trademark.trademarkClasses ?? []),
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -117,5 +128,18 @@ export class TrademarkUpdateComponent implements OnInit {
         ),
       )
       .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
+
+    this.trademarkClassService
+      .query()
+      .pipe(map((res: HttpResponse<ITrademarkClass[]>) => res.body ?? []))
+      .pipe(
+        map((trademarkClasses: ITrademarkClass[]) =>
+          this.trademarkClassService.addTrademarkClassToCollectionIfMissing<ITrademarkClass>(
+            trademarkClasses,
+            ...(this.trademark?.trademarkClasses ?? []),
+          ),
+        ),
+      )
+      .subscribe((trademarkClasses: ITrademarkClass[]) => (this.trademarkClassesSharedCollection = trademarkClasses));
   }
 }

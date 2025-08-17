@@ -41,7 +41,15 @@
   "jpaMetamodelFiltering": true,
   "name": "TrademarkClass",
   "pagination": "infinite-scroll",
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "trademark",
+      "otherEntityRelationshipName": "trademarkClasses",
+      "relationshipName": "trademarks",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
   "searchEngine": "no",
   "service": "serviceClass"
 }

@@ -44,6 +44,7 @@ describe('Trademark Form Service', () => {
             source: expect.any(Object),
             lead: expect.any(Object),
             user: expect.any(Object),
+            trademarkClasses: expect.any(Object),
           }),
         );
       });
@@ -78,6 +79,7 @@ describe('Trademark Form Service', () => {
             source: expect.any(Object),
             lead: expect.any(Object),
             user: expect.any(Object),
+            trademarkClasses: expect.any(Object),
           }),
         );
       });

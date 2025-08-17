@@ -265,6 +265,9 @@ relationship OneToOne{
 	UserProfile { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") User with builtInEntity
 }
 
+relationship ManyToMany{
+	Trademark{trademarkClasses} to TrademarkClass{trademarks}
+}
 
 filter Trademark
 filter PublishedTm
@@ -276,7 +279,7 @@ filter TrademarkClass
 filter Payment
 
 
-paginate Trademark , PublishedTm , TmAgent,Company, Documents, TrademarkClass, Payment with infinite-scroll
+paginate Trademark , PublishedTm , TmAgent,Company, Documents, TrademarkClass, Payment,Lead with infinite-scroll
 
 
 

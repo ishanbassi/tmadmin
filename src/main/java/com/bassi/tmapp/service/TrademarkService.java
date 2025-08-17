@@ -7,6 +7,8 @@ import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,6 +77,15 @@ public class TrademarkService {
     }
 
     /**
+     * Get all the trademarks with eager load of many-to-many relationships.
+     *
+     * @return the list of entities.
+     */
+    public Page<TrademarkDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return trademarkRepository.findAllWithEagerRelationships(pageable).map(trademarkMapper::toDto);
+    }
+
+    /**
      * Get one trademark by id.
      *
      * @param id the id of the entity.
@@ -83,7 +94,7 @@ public class TrademarkService {
     @Transactional(readOnly = true)
     public Optional<TrademarkDTO> findOne(Long id) {
         LOG.debug("Request to get Trademark : {}", id);
-        return trademarkRepository.findById(id).map(trademarkMapper::toDto);
+        return trademarkRepository.findOneWithEagerRelationships(id).map(trademarkMapper::toDto);
     }
 
     /**

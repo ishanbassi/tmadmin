@@ -14,9 +14,14 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
+import tech.jhipster.web.util.PaginationUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
 /**
@@ -134,15 +139,20 @@ public class LeadResource {
     /**
      * {@code GET  /leads} : get all the leads.
      *
+     * @param pageable the pagination information.
      * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of leads in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<LeadDTO>> getAllLeads(LeadCriteria criteria) {
+    public ResponseEntity<List<LeadDTO>> getAllLeads(
+        LeadCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
         LOG.debug("REST request to get Leads by criteria: {}", criteria);
 
-        List<LeadDTO> entityList = leadQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
+        Page<LeadDTO> page = leadQueryService.findByCriteria(criteria, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**

@@ -272,6 +272,23 @@
             }
           </select>
         </div>
+
+        <div class="mb-3">
+          <label for="field_trademarkClasses">Trademark Classes</label>
+          <select
+            class="form-control"
+            id="field_trademarkClasses"
+            data-cy="trademarkClasses"
+            multiple
+            name="trademarkClasses"
+            formControlName="trademarkClasses"
+            [compareWith]="compareTrademarkClass"
+          >
+            @for (trademarkClassOption of trademarkClassesSharedCollection; track $index) {
+              <option [ngValue]="trademarkClassOption">{{ trademarkClassOption.id }}</option>
+            }
+          </select>
+        </div>
       </div>
 
       <div>

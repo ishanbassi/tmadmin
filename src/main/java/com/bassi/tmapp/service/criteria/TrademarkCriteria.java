@@ -126,6 +126,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private LongFilter userId;
 
+    private LongFilter trademarkClassesId;
+
     private Boolean distinct;
 
     public TrademarkCriteria() {}
@@ -156,6 +158,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.source = other.optionalSource().map(TrademarkSourceFilter::copy).orElse(null);
         this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
+        this.trademarkClassesId = other.optionalTrademarkClassesId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -639,6 +642,25 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.userId = userId;
     }
 
+    public LongFilter getTrademarkClassesId() {
+        return trademarkClassesId;
+    }
+
+    public Optional<LongFilter> optionalTrademarkClassesId() {
+        return Optional.ofNullable(trademarkClassesId);
+    }
+
+    public LongFilter trademarkClassesId() {
+        if (trademarkClassesId == null) {
+            setTrademarkClassesId(new LongFilter());
+        }
+        return trademarkClassesId;
+    }
+
+    public void setTrademarkClassesId(LongFilter trademarkClassesId) {
+        this.trademarkClassesId = trademarkClassesId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -693,6 +715,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(source, that.source) &&
             Objects.equals(leadId, that.leadId) &&
             Objects.equals(userId, that.userId) &&
+            Objects.equals(trademarkClassesId, that.trademarkClassesId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -725,6 +748,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             source,
             leadId,
             userId,
+            trademarkClassesId,
             distinct
         );
     }
@@ -758,6 +782,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalSource().map(f -> "source=" + f + ", ").orElse("") +
             optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
+            optionalTrademarkClassesId().map(f -> "trademarkClassesId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

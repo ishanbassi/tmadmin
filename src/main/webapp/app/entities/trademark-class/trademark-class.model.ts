@@ -1,4 +1,5 @@
 import dayjs from 'dayjs/esm';
+import { ITrademark } from 'app/entities/trademark/trademark.model';
 
 export interface ITrademarkClass {
   id: number;
@@ -10,6 +11,7 @@ export interface ITrademarkClass {
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
+  trademarks?: Pick<ITrademark, 'id'>[] | null;
 }
 
 export type NewTrademarkClass = Omit<ITrademarkClass, 'id'> & { id: null };

@@ -1,11 +1,14 @@
 package com.bassi.tmapp.domain;
 
 import static com.bassi.tmapp.domain.LeadTestSamples.*;
+import static com.bassi.tmapp.domain.TrademarkClassTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
 import static com.bassi.tmapp.domain.UserProfileTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bassi.tmapp.web.rest.TestUtil;
+import java.util.HashSet;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class TrademarkTest {
@@ -46,5 +49,23 @@ class TrademarkTest {
 
         trademark.user(null);
         assertThat(trademark.getUser()).isNull();
+    }
+
+    @Test
+    void trademarkClassesTest() {
+        Trademark trademark = getTrademarkRandomSampleGenerator();
+        TrademarkClass trademarkClassBack = getTrademarkClassRandomSampleGenerator();
+
+        trademark.addTrademarkClasses(trademarkClassBack);
+        assertThat(trademark.getTrademarkClasses()).containsOnly(trademarkClassBack);
+
+        trademark.removeTrademarkClasses(trademarkClassBack);
+        assertThat(trademark.getTrademarkClasses()).doesNotContain(trademarkClassBack);
+
+        trademark.trademarkClasses(new HashSet<>(Set.of(trademarkClassBack)));
+        assertThat(trademark.getTrademarkClasses()).containsOnly(trademarkClassBack);
+
+        trademark.setTrademarkClasses(new HashSet<>());
+        assertThat(trademark.getTrademarkClasses()).doesNotContain(trademarkClassBack);
     }
 }
