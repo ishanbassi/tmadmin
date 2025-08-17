@@ -69,6 +69,7 @@ public class SecurityConfiguration {
                     .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/extended/authenticate")).permitAll()
                     .requestMatchers(mvc.pattern(HttpMethod.GET, "/api/trademark-classes")).permitAll()
                     .requestMatchers(mvc.pattern("/api/extended/register")).permitAll()
+                    .requestMatchers(mvc.pattern("/api/trademarks/**")).permitAll()
                     .requestMatchers(mvc.pattern("/api/register")).permitAll()
                     .requestMatchers(mvc.pattern("/api/activate")).permitAll()
                     .requestMatchers(mvc.pattern("/api/account/reset-password/init")).permitAll()

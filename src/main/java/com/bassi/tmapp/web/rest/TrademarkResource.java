@@ -1,10 +1,12 @@
 package com.bassi.tmapp.web.rest;
 
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.DocumentsService;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -44,14 +46,18 @@ public class TrademarkResource {
 
     private final TrademarkQueryService trademarkQueryService;
 
+    private final DocumentsService documentsService;
+
     public TrademarkResource(
         TrademarkService trademarkService,
         TrademarkRepository trademarkRepository,
-        TrademarkQueryService trademarkQueryService
+        TrademarkQueryService trademarkQueryService,
+        DocumentsService documentsService
     ) {
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
         this.trademarkQueryService = trademarkQueryService;
+        this.documentsService = documentsService;
     }
 
     /**
@@ -199,5 +205,31 @@ public class TrademarkResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @PatchMapping(value = "/onboarding/{id}")
+    public ResponseEntity<TrademarkDTO> partialUpdateTrademarkAndCreateLogoDocument(
+        @PathVariable(value = "id", required = false) final Long id,
+        @RequestBody TrademarkWithLogoDto trademarkDTO
+    ) throws URISyntaxException {
+        LOG.debug("REST request to partial update Trademark partially : {}, {}", id, trademarkDTO);
+        if (trademarkDTO.getTrademark() == null || trademarkDTO.getTrademark().getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, trademarkDTO.getTrademark().getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!trademarkRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        Optional<TrademarkDTO> result = trademarkService.partialUpdate(trademarkDTO.getTrademark());
+        documentsService.saveDocumentAndSaveFile(trademarkDTO.getDocument(), trademarkDTO.getFile());
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getTrademark().getId().toString())
+        );
     }
 }
