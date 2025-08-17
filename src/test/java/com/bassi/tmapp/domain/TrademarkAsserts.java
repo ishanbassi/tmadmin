@@ -92,6 +92,7 @@ public class TrademarkAsserts {
         assertThat(actual)
             .as("Verify Trademark relationships")
             .satisfies(a -> assertThat(a.getLead()).as("check lead").isEqualTo(expected.getLead()))
-            .satisfies(a -> assertThat(a.getUser()).as("check user").isEqualTo(expected.getUser()));
+            .satisfies(a -> assertThat(a.getUser()).as("check user").isEqualTo(expected.getUser()))
+            .satisfies(a -> assertThat(a.getTrademarkClasses()).as("check trademarkClasses").isEqualTo(expected.getTrademarkClasses()));
     }
 }

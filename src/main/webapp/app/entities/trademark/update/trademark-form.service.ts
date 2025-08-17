@@ -28,7 +28,7 @@ type TrademarkFormRawValue = FormValueOf<ITrademark>;
 
 type NewTrademarkFormRawValue = FormValueOf<NewTrademark>;
 
-type TrademarkFormDefaults = Pick<NewTrademark, 'id' | 'deleted' | 'createdDate' | 'modifiedDate'>;
+type TrademarkFormDefaults = Pick<NewTrademark, 'id' | 'deleted' | 'createdDate' | 'modifiedDate' | 'trademarkClasses'>;
 
 type TrademarkFormGroupContent = {
   id: FormControl<TrademarkFormRawValue['id'] | NewTrademark['id']>;
@@ -56,6 +56,7 @@ type TrademarkFormGroupContent = {
   source: FormControl<TrademarkFormRawValue['source']>;
   lead: FormControl<TrademarkFormRawValue['lead']>;
   user: FormControl<TrademarkFormRawValue['user']>;
+  trademarkClasses: FormControl<TrademarkFormRawValue['trademarkClasses']>;
 };
 
 export type TrademarkFormGroup = FormGroup<TrademarkFormGroupContent>;
@@ -99,6 +100,7 @@ export class TrademarkFormService {
       source: new FormControl(trademarkRawValue.source),
       lead: new FormControl(trademarkRawValue.lead),
       user: new FormControl(trademarkRawValue.user),
+      trademarkClasses: new FormControl(trademarkRawValue.trademarkClasses ?? []),
     });
   }
 
@@ -124,6 +126,7 @@ export class TrademarkFormService {
       deleted: false,
       createdDate: currentTime,
       modifiedDate: currentTime,
+      trademarkClasses: [],
     };
   }
 
@@ -142,6 +145,7 @@ export class TrademarkFormService {
       ...trademark,
       createdDate: trademark.createdDate ? trademark.createdDate.format(DATE_TIME_FORMAT) : undefined,
       modifiedDate: trademark.modifiedDate ? trademark.modifiedDate.format(DATE_TIME_FORMAT) : undefined,
+      trademarkClasses: trademark.trademarkClasses ?? [],
     };
   }
 }

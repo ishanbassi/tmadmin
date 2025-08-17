@@ -51,6 +51,7 @@ public class CacheConfiguration {
             createCache(cm, com.bassi.tmapp.domain.Authority.class.getName());
             createCache(cm, com.bassi.tmapp.domain.User.class.getName() + ".authorities");
             createCache(cm, com.bassi.tmapp.domain.Trademark.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.Trademark.class.getName() + ".trademarkClasses");
             createCache(cm, com.bassi.tmapp.domain.Phonetics.class.getName());
             createCache(cm, com.bassi.tmapp.domain.PublishedTmPhonetics.class.getName());
             createCache(cm, com.bassi.tmapp.domain.PublishedTm.class.getName());
@@ -61,6 +62,7 @@ public class CacheConfiguration {
             createCache(cm, com.bassi.tmapp.domain.Company.class.getName());
             createCache(cm, com.bassi.tmapp.domain.Documents.class.getName());
             createCache(cm, com.bassi.tmapp.domain.TrademarkClass.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.TrademarkClass.class.getName() + ".trademarks");
             createCache(cm, com.bassi.tmapp.domain.Payment.class.getName());
             // jhipster-needle-ehcache-add-entry
         };

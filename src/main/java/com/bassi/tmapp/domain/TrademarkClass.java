@@ -1,8 +1,11 @@
 package com.bassi.tmapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -46,6 +49,11 @@ public class TrademarkClass implements Serializable {
 
     @Column(name = "deleted")
     private Boolean deleted;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "trademarkClasses")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkClasses" }, allowSetters = true)
+    private Set<Trademark> trademarks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -164,6 +172,37 @@ public class TrademarkClass implements Serializable {
 
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
+    }
+
+    public Set<Trademark> getTrademarks() {
+        return this.trademarks;
+    }
+
+    public void setTrademarks(Set<Trademark> trademarks) {
+        if (this.trademarks != null) {
+            this.trademarks.forEach(i -> i.removeTrademarkClasses(this));
+        }
+        if (trademarks != null) {
+            trademarks.forEach(i -> i.addTrademarkClasses(this));
+        }
+        this.trademarks = trademarks;
+    }
+
+    public TrademarkClass trademarks(Set<Trademark> trademarks) {
+        this.setTrademarks(trademarks);
+        return this;
+    }
+
+    public TrademarkClass addTrademarks(Trademark trademark) {
+        this.trademarks.add(trademark);
+        trademark.getTrademarkClasses().add(this);
+        return this;
+    }
+
+    public TrademarkClass removeTrademarks(Trademark trademark) {
+        this.trademarks.remove(trademark);
+        trademark.getTrademarkClasses().remove(this);
+        return this;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

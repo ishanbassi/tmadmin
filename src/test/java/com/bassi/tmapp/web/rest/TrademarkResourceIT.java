@@ -5,17 +5,20 @@ import static com.bassi.tmapp.web.rest.TestUtil.createUpdateProxyForBean;
 import static com.bassi.tmapp.web.rest.TestUtil.sameInstant;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,13 +28,19 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -41,6 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Integration tests for the {@link TrademarkResource} REST controller.
  */
 @IntegrationTest
+@ExtendWith(MockitoExtension.class)
 @AutoConfigureMockMvc
 @WithMockUser
 class TrademarkResourceIT {
@@ -131,8 +141,14 @@ class TrademarkResourceIT {
     @Autowired
     private TrademarkRepository trademarkRepository;
 
+    @Mock
+    private TrademarkRepository trademarkRepositoryMock;
+
     @Autowired
     private TrademarkMapper trademarkMapper;
+
+    @Mock
+    private TrademarkService trademarkServiceMock;
 
     @Autowired
     private EntityManager em;
@@ -297,6 +313,23 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
             .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllTrademarksWithEagerRelationshipsIsEnabled() throws Exception {
+        when(trademarkServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restTrademarkMockMvc.perform(get(ENTITY_API_URL + "?eagerload=true")).andExpect(status().isOk());
+
+        verify(trademarkServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    void getAllTrademarksWithEagerRelationshipsIsNotEnabled() throws Exception {
+        when(trademarkServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        restTrademarkMockMvc.perform(get(ENTITY_API_URL + "?eagerload=false")).andExpect(status().isOk());
+        verify(trademarkRepositoryMock, times(1)).findAll(any(Pageable.class));
     }
 
     @Test
@@ -1680,6 +1713,28 @@ class TrademarkResourceIT {
 
         // Get all the trademarkList where user equals to (userId + 1)
         defaultTrademarkShouldNotBeFound("userId.equals=" + (userId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByTrademarkClassesIsEqualToSomething() throws Exception {
+        TrademarkClass trademarkClasses;
+        if (TestUtil.findAll(em, TrademarkClass.class).isEmpty()) {
+            trademarkRepository.saveAndFlush(trademark);
+            trademarkClasses = TrademarkClassResourceIT.createEntity();
+        } else {
+            trademarkClasses = TestUtil.findAll(em, TrademarkClass.class).get(0);
+        }
+        em.persist(trademarkClasses);
+        em.flush();
+        trademark.addTrademarkClasses(trademarkClasses);
+        trademarkRepository.saveAndFlush(trademark);
+        Long trademarkClassesId = trademarkClasses.getId();
+        // Get all the trademarkList where trademarkClasses equals to trademarkClassesId
+        defaultTrademarkShouldBeFound("trademarkClassesId.equals=" + trademarkClassesId);
+
+        // Get all the trademarkList where trademarkClasses equals to (trademarkClassesId + 1)
+        defaultTrademarkShouldNotBeFound("trademarkClassesId.equals=" + (trademarkClassesId + 1));
     }
 
     private void defaultTrademarkFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

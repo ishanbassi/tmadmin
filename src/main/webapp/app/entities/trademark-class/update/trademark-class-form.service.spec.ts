@@ -28,6 +28,7 @@ describe('TrademarkClass Form Service', () => {
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
+            trademarks: expect.any(Object),
           }),
         );
       });
@@ -46,6 +47,7 @@ describe('TrademarkClass Form Service', () => {
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
+            trademarks: expect.any(Object),
           }),
         );
       });

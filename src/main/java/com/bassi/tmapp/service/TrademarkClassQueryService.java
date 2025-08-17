@@ -6,6 +6,7 @@ import com.bassi.tmapp.repository.TrademarkClassRepository;
 import com.bassi.tmapp.service.criteria.TrademarkClassCriteria;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.mapper.TrademarkClassMapper;
+import jakarta.persistence.criteria.JoinType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -80,7 +81,10 @@ public class TrademarkClassQueryService extends QueryService<TrademarkClass> {
                 buildStringSpecification(criteria.getDescription(), TrademarkClass_.description),
                 buildRangeSpecification(criteria.getCreatedDate(), TrademarkClass_.createdDate),
                 buildRangeSpecification(criteria.getModifiedDate(), TrademarkClass_.modifiedDate),
-                buildSpecification(criteria.getDeleted(), TrademarkClass_.deleted)
+                buildSpecification(criteria.getDeleted(), TrademarkClass_.deleted),
+                buildSpecification(criteria.getTrademarksId(), root ->
+                    root.join(TrademarkClass_.trademarks, JoinType.LEFT).get(Trademark_.id)
+                )
             );
         }
         return specification;

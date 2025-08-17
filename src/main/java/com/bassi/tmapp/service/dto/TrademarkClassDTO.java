@@ -2,7 +2,9 @@ package com.bassi.tmapp.service.dto;
 
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A DTO for the {@link com.bassi.tmapp.domain.TrademarkClass} entity.
@@ -27,6 +29,8 @@ public class TrademarkClassDTO implements Serializable {
     private ZonedDateTime modifiedDate;
 
     private Boolean deleted;
+
+    private Set<TrademarkDTO> trademarks = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -100,6 +104,14 @@ public class TrademarkClassDTO implements Serializable {
         this.deleted = deleted;
     }
 
+    public Set<TrademarkDTO> getTrademarks() {
+        return trademarks;
+    }
+
+    public void setTrademarks(Set<TrademarkDTO> trademarks) {
+        this.trademarks = trademarks;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -134,6 +146,7 @@ public class TrademarkClassDTO implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
+            ", trademarks=" + getTrademarks() +
             "}";
     }
 }

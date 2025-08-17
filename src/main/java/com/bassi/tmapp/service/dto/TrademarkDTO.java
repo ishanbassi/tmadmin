@@ -6,7 +6,9 @@ import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * A DTO for the {@link com.bassi.tmapp.domain.Trademark} entity.
@@ -63,6 +65,8 @@ public class TrademarkDTO implements Serializable {
     private LeadDTO lead;
 
     private UserProfileDTO user;
+
+    private Set<TrademarkClassDTO> trademarkClasses = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -264,6 +268,14 @@ public class TrademarkDTO implements Serializable {
         this.user = user;
     }
 
+    public Set<TrademarkClassDTO> getTrademarkClasses() {
+        return trademarkClasses;
+    }
+
+    public void setTrademarkClasses(Set<TrademarkClassDTO> trademarkClasses) {
+        this.trademarkClasses = trademarkClasses;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -314,6 +326,7 @@ public class TrademarkDTO implements Serializable {
             ", source='" + getSource() + "'" +
             ", lead=" + getLead() +
             ", user=" + getUser() +
+            ", trademarkClasses=" + getTrademarkClasses() +
             "}";
     }
 }

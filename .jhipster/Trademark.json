@@ -120,6 +120,13 @@
       "relationshipName": "user",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "trademarkClass",
+      "otherEntityRelationshipName": "trademarks",
+      "relationshipName": "trademarkClasses",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-many"
     }
   ],
   "searchEngine": "no",

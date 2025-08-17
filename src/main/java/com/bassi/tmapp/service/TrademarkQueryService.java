@@ -47,7 +47,7 @@ public class TrademarkQueryService extends QueryService<Trademark> {
     public Page<TrademarkDTO> findByCriteria(TrademarkCriteria criteria, Pageable page) {
         LOG.debug("find by criteria : {}, page: {}", criteria, page);
         final Specification<Trademark> specification = createSpecification(criteria);
-        return trademarkRepository.findAll(specification, page).map(trademarkMapper::toDto);
+        return trademarkRepository.fetchBagRelationships(trademarkRepository.findAll(specification, page)).map(trademarkMapper::toDto);
     }
 
     /**
@@ -97,7 +97,10 @@ public class TrademarkQueryService extends QueryService<Trademark> {
                 buildRangeSpecification(criteria.getPageNo(), Trademark_.pageNo),
                 buildSpecification(criteria.getSource(), Trademark_.source),
                 buildSpecification(criteria.getLeadId(), root -> root.join(Trademark_.lead, JoinType.LEFT).get(Lead_.id)),
-                buildSpecification(criteria.getUserId(), root -> root.join(Trademark_.user, JoinType.LEFT).get(UserProfile_.id))
+                buildSpecification(criteria.getUserId(), root -> root.join(Trademark_.user, JoinType.LEFT).get(UserProfile_.id)),
+                buildSpecification(criteria.getTrademarkClassesId(), root ->
+                    root.join(Trademark_.trademarkClasses, JoinType.LEFT).get(TrademarkClass_.id)
+                )
             );
         }
         return specification;

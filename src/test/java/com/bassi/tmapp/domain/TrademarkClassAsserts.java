@@ -75,6 +75,8 @@ public class TrademarkClassAsserts {
      * @param actual the actual entity
      */
     public static void assertTrademarkClassUpdatableRelationshipsEquals(TrademarkClass expected, TrademarkClass actual) {
-        // empty method
+        assertThat(actual)
+            .as("Verify TrademarkClass relationships")
+            .satisfies(a -> assertThat(a.getTrademarks()).as("check trademarks").isEqualTo(expected.getTrademarks()));
     }
 }

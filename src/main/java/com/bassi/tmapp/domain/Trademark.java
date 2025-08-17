@@ -8,6 +8,8 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -104,6 +106,16 @@ public class Trademark implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
     private UserProfile user;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "rel_trademark__trademark_classes",
+        joinColumns = @JoinColumn(name = "trademark_id"),
+        inverseJoinColumns = @JoinColumn(name = "trademark_classes_id")
+    )
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "trademarks" }, allowSetters = true)
+    private Set<TrademarkClass> trademarkClasses = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -429,6 +441,29 @@ public class Trademark implements Serializable {
 
     public Trademark user(UserProfile userProfile) {
         this.setUser(userProfile);
+        return this;
+    }
+
+    public Set<TrademarkClass> getTrademarkClasses() {
+        return this.trademarkClasses;
+    }
+
+    public void setTrademarkClasses(Set<TrademarkClass> trademarkClasses) {
+        this.trademarkClasses = trademarkClasses;
+    }
+
+    public Trademark trademarkClasses(Set<TrademarkClass> trademarkClasses) {
+        this.setTrademarkClasses(trademarkClasses);
+        return this;
+    }
+
+    public Trademark addTrademarkClasses(TrademarkClass trademarkClass) {
+        this.trademarkClasses.add(trademarkClass);
+        return this;
+    }
+
+    public Trademark removeTrademarkClasses(TrademarkClass trademarkClass) {
+        this.trademarkClasses.remove(trademarkClass);
         return this;
     }
 

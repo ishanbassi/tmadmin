@@ -92,6 +92,20 @@
         <dropDefaultValue tableName="trademark" columnName="modified_date" columnDataType="${datetimeType}"/>
     </changeSet>
 
+    <changeSet id="20240522160735-1-relations" author="jhipster">
+
+        <createTable tableName="rel_trademark__trademark_classes">
+            <column name="trademark_classes_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trademark_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="trademark_id, trademark_classes_id" tableName="rel_trademark__trademark_classes"/>
+    </changeSet>
+
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
 
     <!--

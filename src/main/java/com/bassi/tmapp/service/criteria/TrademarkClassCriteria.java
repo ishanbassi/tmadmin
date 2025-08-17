@@ -40,6 +40,8 @@ public class TrademarkClassCriteria implements Serializable, Criteria {
 
     private BooleanFilter deleted;
 
+    private LongFilter trademarksId;
+
     private Boolean distinct;
 
     public TrademarkClassCriteria() {}
@@ -54,6 +56,7 @@ public class TrademarkClassCriteria implements Serializable, Criteria {
         this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.deleted = other.optionalDeleted().map(BooleanFilter::copy).orElse(null);
+        this.trademarksId = other.optionalTrademarksId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -233,6 +236,25 @@ public class TrademarkClassCriteria implements Serializable, Criteria {
         this.deleted = deleted;
     }
 
+    public LongFilter getTrademarksId() {
+        return trademarksId;
+    }
+
+    public Optional<LongFilter> optionalTrademarksId() {
+        return Optional.ofNullable(trademarksId);
+    }
+
+    public LongFilter trademarksId() {
+        if (trademarksId == null) {
+            setTrademarksId(new LongFilter());
+        }
+        return trademarksId;
+    }
+
+    public void setTrademarksId(LongFilter trademarksId) {
+        this.trademarksId = trademarksId;
+    }
+
     public Boolean getDistinct() {
         return distinct;
     }
@@ -271,13 +293,14 @@ public class TrademarkClassCriteria implements Serializable, Criteria {
             Objects.equals(createdDate, that.createdDate) &&
             Objects.equals(modifiedDate, that.modifiedDate) &&
             Objects.equals(deleted, that.deleted) &&
+            Objects.equals(trademarksId, that.trademarksId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, code, tmClass, keyword, title, description, createdDate, modifiedDate, deleted, distinct);
+        return Objects.hash(id, code, tmClass, keyword, title, description, createdDate, modifiedDate, deleted, trademarksId, distinct);
     }
 
     // prettier-ignore
@@ -293,6 +316,7 @@ public class TrademarkClassCriteria implements Serializable, Criteria {
             optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
             optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
             optionalDeleted().map(f -> "deleted=" + f + ", ").orElse("") +
+            optionalTrademarksId().map(f -> "trademarksId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

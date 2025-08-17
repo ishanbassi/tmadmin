@@ -1,6 +1,7 @@
 import dayjs from 'dayjs/esm';
 import { ILead } from 'app/entities/lead/lead.model';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
@@ -31,6 +32,7 @@ export interface ITrademark {
   source?: keyof typeof TrademarkSource | null;
   lead?: Pick<ILead, 'id'> | null;
   user?: Pick<IUserProfile, 'id'> | null;
+  trademarkClasses?: Pick<ITrademarkClass, 'id'>[] | null;
 }
 
 export type NewTrademark = Omit<ITrademark, 'id'> & { id: null };

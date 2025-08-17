@@ -27,5 +27,19 @@
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  />
+
+        <addForeignKeyConstraint baseColumnNames="trademark_id"
+                                 baseTableName="rel_trademark__trademark_classes"
+                                 constraintName="fk_rel_trademark__trademark_classes__trademark_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="trademark"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="trademark_classes_id"
+                                 baseTableName="rel_trademark__trademark_classes"
+                                 constraintName="fk_rel_trademark__trademark_classes__trademark_classes_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="trademark_class"
+                                 />
     </changeSet>
 </databaseChangeLog>

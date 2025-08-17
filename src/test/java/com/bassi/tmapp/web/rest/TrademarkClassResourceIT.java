@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.repository.TrademarkClassRepository;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
@@ -730,6 +731,28 @@ class TrademarkClassResourceIT {
 
         // Get all the trademarkClassList where deleted is not null
         defaultTrademarkClassFiltering("deleted.specified=true", "deleted.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarkClassesByTrademarksIsEqualToSomething() throws Exception {
+        Trademark trademarks;
+        if (TestUtil.findAll(em, Trademark.class).isEmpty()) {
+            trademarkClassRepository.saveAndFlush(trademarkClass);
+            trademarks = TrademarkResourceIT.createEntity();
+        } else {
+            trademarks = TestUtil.findAll(em, Trademark.class).get(0);
+        }
+        em.persist(trademarks);
+        em.flush();
+        trademarkClass.addTrademarks(trademarks);
+        trademarkClassRepository.saveAndFlush(trademarkClass);
+        Long trademarksId = trademarks.getId();
+        // Get all the trademarkClassList where trademarks equals to trademarksId
+        defaultTrademarkClassShouldBeFound("trademarksId.equals=" + trademarksId);
+
+        // Get all the trademarkClassList where trademarks equals to (trademarksId + 1)
+        defaultTrademarkClassShouldNotBeFound("trademarksId.equals=" + (trademarksId + 1));
     }
 
     private void defaultTrademarkClassFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {

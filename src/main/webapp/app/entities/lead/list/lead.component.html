@@ -147,7 +147,7 @@
             <th scope="col"></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody infinite-scroll (scrolled)="loadNextPage()" [infiniteScrollDisabled]="!hasMorePage()" [infiniteScrollDistance]="0">
           @for (lead of leads(); track trackId(lead)) {
             <tr data-cy="entityTable">
               <td>
