@@ -1,8 +1,11 @@
 package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Documents;
+import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.bassi.tmapp.repository.DocumentsRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.DocumentsMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import java.io.IOException;
@@ -161,5 +164,9 @@ public class DocumentsService {
 
     private String removePathSeperators(String fileName) {
         return fileName.replace("/", "-").replace("\\", "-").trim();
+    }
+
+    public Optional<DocumentsDTO> findByTrademark(Trademark trademark) {
+        return documentsRepository.findByTrademark(trademark, DocumentType.LOGO).map(documentsMapper::toDto);
     }
 }

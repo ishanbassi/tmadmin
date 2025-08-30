@@ -2,7 +2,9 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -25,9 +27,12 @@ public class TrademarkService {
 
     private final TrademarkMapper trademarkMapper;
 
-    public TrademarkService(TrademarkRepository trademarkRepository, TrademarkMapper trademarkMapper) {
+    private final DocumentsService documentsService;
+
+    public TrademarkService(TrademarkRepository trademarkRepository, TrademarkMapper trademarkMapper, DocumentsService documentsService) {
         this.trademarkRepository = trademarkRepository;
         this.trademarkMapper = trademarkMapper;
+        this.documentsService = documentsService;
     }
 
     /**
@@ -105,5 +110,23 @@ public class TrademarkService {
     public void delete(Long id) {
         LOG.debug("Request to delete Trademark : {}", id);
         trademarkRepository.deleteById(id);
+    }
+
+    /**
+     * Get one trademark by id with logo document.
+     *
+     * @param id the id of the entity.
+     * @return the entity.
+     */
+    @Transactional(readOnly = true)
+    public TrademarkWithLogoDto findOneWithLogo(Long id) {
+        LOG.debug("Request to get Trademark : {}", id);
+        Optional<TrademarkDTO> trademarkDtoOptional = trademarkRepository.findOneWithEagerRelationships(id).map(trademarkMapper::toDto);
+        TrademarkWithLogoDto trademarkWithLogoDto = new TrademarkWithLogoDto();
+        trademarkDtoOptional.ifPresent(trademarkDto -> {
+            trademarkWithLogoDto.setTrademark(trademarkDto);
+            documentsService.findByTrademark(trademarkMapper.toEntity(trademarkDto)).ifPresent(trademarkWithLogoDto::setDocument);
+        });
+        return trademarkWithLogoDto;
     }
 }

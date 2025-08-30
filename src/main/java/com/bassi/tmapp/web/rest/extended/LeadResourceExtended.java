@@ -142,20 +142,6 @@ public class LeadResourceExtended {
     }
 
     /**
-     * {@code GET  /leads} : get all the leads.
-     *
-     * @param criteria the criteria which the requested entities should match.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of leads in body.
-     */
-    @GetMapping("")
-    public ResponseEntity<List<LeadDTO>> getAllLeads(LeadCriteria criteria) {
-        LOG.debug("REST request to get Leads by criteria: {}", criteria);
-
-        List<LeadDTO> entityList = leadQueryService.findByCriteria(criteria);
-        return ResponseEntity.ok().body(entityList);
-    }
-
-    /**
      * {@code GET  /leads/count} : count all the leads.
      *
      * @param criteria the criteria which the requested entities should match.

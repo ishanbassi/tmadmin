@@ -29,7 +29,7 @@ public class LeadServiceExtended {
         LOG.debug("Request to save Lead : {}", leadDTO);
         Lead lead = leadMapper.toEntity(leadDTO);
         lead = leadRepository.save(lead);
-        this.mailServiceExtended.sendNewLeadMailToAdmin(lead);
+        //        this.mailServiceExtended.sendNewLeadMailToAdmin(lead);
         return leadMapper.toDto(lead);
     }
 }

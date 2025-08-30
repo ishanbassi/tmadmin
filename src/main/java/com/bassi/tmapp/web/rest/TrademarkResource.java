@@ -225,11 +225,26 @@ public class TrademarkResource {
         }
 
         Optional<TrademarkDTO> result = trademarkService.partialUpdate(trademarkDTO.getTrademark());
-        documentsService.saveDocumentAndSaveFile(trademarkDTO.getDocument(), trademarkDTO.getFile());
+        if (trademarkDTO.getFile() != null) {
+            documentsService.saveDocumentAndSaveFile(trademarkDTO.getDocument(), trademarkDTO.getFile());
+        }
 
         return ResponseUtil.wrapOrNotFound(
             result,
             HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, trademarkDTO.getTrademark().getId().toString())
         );
+    }
+
+    /**
+     * {@code GET  /trademarks/:id} : get the "id" trademark with LOGO Document.
+     *
+     * @param id the id of the trademarkDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the trademarkDTO, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/logo/{id}")
+    public ResponseEntity<TrademarkWithLogoDto> getTrademarkWithLogoDocument(@PathVariable("id") Long id) {
+        LOG.debug("REST request to get Trademark : {}", id);
+        TrademarkWithLogoDto trademarkWithLogoDto = trademarkService.findOneWithLogo(id);
+        return ResponseEntity.ok().body(trademarkWithLogoDto);
     }
 }
