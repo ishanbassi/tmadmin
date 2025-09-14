@@ -1,0 +1,7 @@
+export enum TrademarkPlanType {
+  TM_FILING = 'TM_FILING',
+
+  TM_FILING_AND_FOLLOW_UP = 'TM_FILING_AND_FOLLOW_UP',
+
+  FOLLOW_UP_ONLY = 'FOLLOW_UP_ONLY',
+}

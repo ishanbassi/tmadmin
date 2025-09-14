@@ -16,6 +16,7 @@ import { TrademarkClassService } from 'app/entities/trademark-class/service/trad
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
+import { TrademarkPlanType } from 'app/entities/enumerations/trademark-plan-type.model';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.service';
@@ -31,6 +32,7 @@ export class TrademarkUpdateComponent implements OnInit {
   headOfficeValues = Object.keys(HeadOffice);
   trademarkTypeValues = Object.keys(TrademarkType);
   trademarkSourceValues = Object.keys(TrademarkSource);
+  trademarkPlanTypeValues = Object.keys(TrademarkPlanType);
 
   leadsSharedCollection: ILead[] = [];
   userProfilesSharedCollection: IUserProfile[] = [];

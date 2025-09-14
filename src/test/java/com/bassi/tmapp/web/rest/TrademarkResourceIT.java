@@ -15,6 +15,7 @@ import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkPlanType;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
@@ -129,6 +130,9 @@ class TrademarkResourceIT {
     private static final TrademarkSource DEFAULT_SOURCE = TrademarkSource.JOURNAL_PUBLICATION;
     private static final TrademarkSource UPDATED_SOURCE = TrademarkSource.EXCEL;
 
+    private static final TrademarkPlanType DEFAULT_PLAN_TYPE = TrademarkPlanType.TM_FILING;
+    private static final TrademarkPlanType UPDATED_PLAN_TYPE = TrademarkPlanType.TM_FILING_AND_FOLLOW_UP;
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -189,7 +193,8 @@ class TrademarkResourceIT {
             .renewalDate(DEFAULT_RENEWAL_DATE)
             .type(DEFAULT_TYPE)
             .pageNo(DEFAULT_PAGE_NO)
-            .source(DEFAULT_SOURCE);
+            .source(DEFAULT_SOURCE)
+            .planType(DEFAULT_PLAN_TYPE);
     }
 
     /**
@@ -221,7 +226,8 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .planType(UPDATED_PLAN_TYPE);
     }
 
     @BeforeEach
@@ -312,7 +318,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
-            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
+            .andExpect(jsonPath("$.[*].planType").value(hasItem(DEFAULT_PLAN_TYPE.toString())));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -365,7 +372,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.pageNo").value(DEFAULT_PAGE_NO))
-            .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()));
+            .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()))
+            .andExpect(jsonPath("$.planType").value(DEFAULT_PLAN_TYPE.toString()));
     }
 
     @Test
@@ -1673,6 +1681,36 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByPlanTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where planType equals to
+        defaultTrademarkFiltering("planType.equals=" + DEFAULT_PLAN_TYPE, "planType.equals=" + UPDATED_PLAN_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPlanTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where planType in
+        defaultTrademarkFiltering("planType.in=" + DEFAULT_PLAN_TYPE + "," + UPDATED_PLAN_TYPE, "planType.in=" + UPDATED_PLAN_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPlanTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where planType is not null
+        defaultTrademarkFiltering("planType.specified=true", "planType.specified=false");
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByLeadIsEqualToSomething() throws Exception {
         Lead lead;
         if (TestUtil.findAll(em, Lead.class).isEmpty()) {
@@ -1772,7 +1810,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
-            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
+            .andExpect(jsonPath("$.[*].planType").value(hasItem(DEFAULT_PLAN_TYPE.toString())));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -1842,7 +1881,8 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .planType(UPDATED_PLAN_TYPE);
         TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
@@ -1947,7 +1987,8 @@ class TrademarkResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .planType(UPDATED_PLAN_TYPE);
 
         restTrademarkMockMvc
             .perform(
@@ -2000,7 +2041,8 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .planType(UPDATED_PLAN_TYPE);
 
         restTrademarkMockMvc
             .perform(

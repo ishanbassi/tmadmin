@@ -194,6 +194,13 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="planType">
+              <div class="d-flex">
+                <span>Plan Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="lead.id">
               <div class="d-flex">
                 <span>Lead</span>
@@ -262,6 +269,16 @@
                     ADMIN_PORTAL: 'ADMIN_PORTAL',
                     MEMBER_PORTAL: 'MEMBER_PORTAL',
                   }[trademark.source ?? 'null']
+                }}
+              </td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    TM_FILING: 'TM_FILING',
+                    TM_FILING_AND_FOLLOW_UP: 'TM_FILING_AND_FOLLOW_UP',
+                    FOLLOW_UP_ONLY: 'FOLLOW_UP_ONLY',
+                  }[trademark.planType ?? 'null']
                 }}
               </td>
               <td>

@@ -46,19 +46,24 @@ public class Payment implements Serializable {
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
-    @Column(name = "modified_date")
-    private ZonedDateTime modifiedDate;
-
     @Column(name = "deleted")
     private Boolean deleted;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
-    private Lead lead;
+    @Column(name = "modified_date")
+    private ZonedDateTime modifiedDate;
+
+    @Column(name = "order_id")
+    private String orderId;
+
+    @Column(name = "gateway_order_id")
+    private String gatewayOrderId;
+
+    @Column(name = "failure_reason")
+    private String failureReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
-    private UserProfile user;
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkClasses" }, allowSetters = true)
+    private Trademark trademark;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -166,19 +171,6 @@ public class Payment implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public ZonedDateTime getModifiedDate() {
-        return this.modifiedDate;
-    }
-
-    public Payment modifiedDate(ZonedDateTime modifiedDate) {
-        this.setModifiedDate(modifiedDate);
-        return this;
-    }
-
-    public void setModifiedDate(ZonedDateTime modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
     public Boolean getDeleted() {
         return this.deleted;
     }
@@ -192,29 +184,68 @@ public class Payment implements Serializable {
         this.deleted = deleted;
     }
 
-    public Lead getLead() {
-        return this.lead;
+    public ZonedDateTime getModifiedDate() {
+        return this.modifiedDate;
     }
 
-    public void setLead(Lead lead) {
-        this.lead = lead;
-    }
-
-    public Payment lead(Lead lead) {
-        this.setLead(lead);
+    public Payment modifiedDate(ZonedDateTime modifiedDate) {
+        this.setModifiedDate(modifiedDate);
         return this;
     }
 
-    public UserProfile getUser() {
-        return this.user;
+    public void setModifiedDate(ZonedDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
-    public void setUser(UserProfile userProfile) {
-        this.user = userProfile;
+    public String getOrderId() {
+        return this.orderId;
     }
 
-    public Payment user(UserProfile userProfile) {
-        this.setUser(userProfile);
+    public Payment orderId(String orderId) {
+        this.setOrderId(orderId);
+        return this;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getGatewayOrderId() {
+        return this.gatewayOrderId;
+    }
+
+    public Payment gatewayOrderId(String gatewayOrderId) {
+        this.setGatewayOrderId(gatewayOrderId);
+        return this;
+    }
+
+    public void setGatewayOrderId(String gatewayOrderId) {
+        this.gatewayOrderId = gatewayOrderId;
+    }
+
+    public String getFailureReason() {
+        return this.failureReason;
+    }
+
+    public Payment failureReason(String failureReason) {
+        this.setFailureReason(failureReason);
+        return this;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public Trademark getTrademark() {
+        return this.trademark;
+    }
+
+    public void setTrademark(Trademark trademark) {
+        this.trademark = trademark;
+    }
+
+    public Payment trademark(Trademark trademark) {
+        this.setTrademark(trademark);
         return this;
     }
 
@@ -249,8 +280,11 @@ public class Payment implements Serializable {
             ", status='" + getStatus() + "'" +
             ", paymentMethod='" + getPaymentMethod() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
-            ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", orderId='" + getOrderId() + "'" +
+            ", gatewayOrderId='" + getGatewayOrderId() + "'" +
+            ", failureReason='" + getFailureReason() + "'" +
             "}";
     }
 }

@@ -5,6 +5,7 @@ import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.mo
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
+import { TrademarkPlanType } from 'app/entities/enumerations/trademark-plan-type.model';
 
 export interface ITrademark {
   id: number;
@@ -30,6 +31,7 @@ export interface ITrademark {
   type?: keyof typeof TrademarkType | null;
   pageNo?: number | null;
   source?: keyof typeof TrademarkSource | null;
+  planType?: keyof typeof TrademarkPlanType | null;
   lead?: Pick<ILead, 'id'> | null;
   user?: Pick<IUserProfile, 'id'> | null;
   trademarkClasses?: Pick<ITrademarkClass, 'id'>[] | null;

@@ -95,6 +95,11 @@
       "fieldName": "source",
       "fieldType": "TrademarkSource",
       "fieldValues": "JOURNAL_PUBLICATION,EXCEL,ADMIN_PORTAL,MEMBER_PORTAL"
+    },
+    {
+      "fieldName": "planType",
+      "fieldType": "TrademarkPlanType",
+      "fieldValues": "TM_FILING,TM_FILING_AND_FOLLOW_UP,FOLLOW_UP_ONLY"
     }
   ],
   "jpaMetamodelFiltering": true,

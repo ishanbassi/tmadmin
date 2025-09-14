@@ -83,10 +83,12 @@ class PaymentCriteriaTest {
         paymentCriteria.status();
         paymentCriteria.paymentMethod();
         paymentCriteria.createdDate();
-        paymentCriteria.modifiedDate();
         paymentCriteria.deleted();
-        paymentCriteria.leadId();
-        paymentCriteria.userId();
+        paymentCriteria.modifiedDate();
+        paymentCriteria.orderId();
+        paymentCriteria.gatewayOrderId();
+        paymentCriteria.failureReason();
+        paymentCriteria.trademarkId();
         paymentCriteria.distinct();
     }
 
@@ -101,10 +103,12 @@ class PaymentCriteriaTest {
                 condition.apply(criteria.getStatus()) &&
                 condition.apply(criteria.getPaymentMethod()) &&
                 condition.apply(criteria.getCreatedDate()) &&
-                condition.apply(criteria.getModifiedDate()) &&
                 condition.apply(criteria.getDeleted()) &&
-                condition.apply(criteria.getLeadId()) &&
-                condition.apply(criteria.getUserId()) &&
+                condition.apply(criteria.getModifiedDate()) &&
+                condition.apply(criteria.getOrderId()) &&
+                condition.apply(criteria.getGatewayOrderId()) &&
+                condition.apply(criteria.getFailureReason()) &&
+                condition.apply(criteria.getTrademarkId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -121,10 +125,12 @@ class PaymentCriteriaTest {
                 condition.apply(criteria.getStatus(), copy.getStatus()) &&
                 condition.apply(criteria.getPaymentMethod(), copy.getPaymentMethod()) &&
                 condition.apply(criteria.getCreatedDate(), copy.getCreatedDate()) &&
-                condition.apply(criteria.getModifiedDate(), copy.getModifiedDate()) &&
                 condition.apply(criteria.getDeleted(), copy.getDeleted()) &&
-                condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
-                condition.apply(criteria.getUserId(), copy.getUserId()) &&
+                condition.apply(criteria.getModifiedDate(), copy.getModifiedDate()) &&
+                condition.apply(criteria.getOrderId(), copy.getOrderId()) &&
+                condition.apply(criteria.getGatewayOrderId(), copy.getGatewayOrderId()) &&
+                condition.apply(criteria.getFailureReason(), copy.getFailureReason()) &&
+                condition.apply(criteria.getTrademarkId(), copy.getTrademarkId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );

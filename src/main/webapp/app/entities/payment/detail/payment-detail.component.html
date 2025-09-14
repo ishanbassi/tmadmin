@@ -43,27 +43,31 @@
           <dd>
             <span>{{ paymentRef.createdDate | formatMediumDatetime }}</span>
           </dd>
-          <dt><span>Modified Date</span></dt>
-          <dd>
-            <span>{{ paymentRef.modifiedDate | formatMediumDatetime }}</span>
-          </dd>
           <dt><span>Deleted</span></dt>
           <dd>
             <span>{{ paymentRef.deleted }}</span>
           </dd>
-          <dt><span>Lead</span></dt>
+          <dt><span>Modified Date</span></dt>
           <dd>
-            @if (payment()!.lead) {
-              <div>
-                <a [routerLink]="['/lead', payment()!.lead?.id, 'view']">{{ paymentRef.lead?.id }}</a>
-              </div>
-            }
+            <span>{{ paymentRef.modifiedDate | formatMediumDatetime }}</span>
           </dd>
-          <dt><span>User</span></dt>
+          <dt><span>Order Id</span></dt>
           <dd>
-            @if (payment()!.user) {
+            <span>{{ paymentRef.orderId }}</span>
+          </dd>
+          <dt><span>Gateway Order Id</span></dt>
+          <dd>
+            <span>{{ paymentRef.gatewayOrderId }}</span>
+          </dd>
+          <dt><span>Failure Reason</span></dt>
+          <dd>
+            <span>{{ paymentRef.failureReason }}</span>
+          </dd>
+          <dt><span>Trademark</span></dt>
+          <dd>
+            @if (payment()!.trademark) {
               <div>
-                <a [routerLink]="['/user-profile', payment()!.user?.id, 'view']">{{ paymentRef.user?.id }}</a>
+                <a [routerLink]="['/trademark', payment()!.trademark?.id, 'view']">{{ paymentRef.trademark?.id }}</a>
               </div>
             }
           </dd>

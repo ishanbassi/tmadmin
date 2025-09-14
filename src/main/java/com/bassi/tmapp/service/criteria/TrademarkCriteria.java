@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.criteria;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkPlanType;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
@@ -74,6 +75,23 @@ public class TrademarkCriteria implements Serializable, Criteria {
         }
     }
 
+    /**
+     * Class for filtering TrademarkPlanType
+     */
+    public static class TrademarkPlanTypeFilter extends Filter<TrademarkPlanType> {
+
+        public TrademarkPlanTypeFilter() {}
+
+        public TrademarkPlanTypeFilter(TrademarkPlanTypeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public TrademarkPlanTypeFilter copy() {
+            return new TrademarkPlanTypeFilter(this);
+        }
+    }
+
     private static final long serialVersionUID = 1L;
 
     private LongFilter id;
@@ -122,6 +140,8 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private TrademarkSourceFilter source;
 
+    private TrademarkPlanTypeFilter planType;
+
     private LongFilter leadId;
 
     private LongFilter userId;
@@ -156,6 +176,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.type = other.optionalType().map(TrademarkTypeFilter::copy).orElse(null);
         this.pageNo = other.optionalPageNo().map(IntegerFilter::copy).orElse(null);
         this.source = other.optionalSource().map(TrademarkSourceFilter::copy).orElse(null);
+        this.planType = other.optionalPlanType().map(TrademarkPlanTypeFilter::copy).orElse(null);
         this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.trademarkClassesId = other.optionalTrademarkClassesId().map(LongFilter::copy).orElse(null);
@@ -604,6 +625,25 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.source = source;
     }
 
+    public TrademarkPlanTypeFilter getPlanType() {
+        return planType;
+    }
+
+    public Optional<TrademarkPlanTypeFilter> optionalPlanType() {
+        return Optional.ofNullable(planType);
+    }
+
+    public TrademarkPlanTypeFilter planType() {
+        if (planType == null) {
+            setPlanType(new TrademarkPlanTypeFilter());
+        }
+        return planType;
+    }
+
+    public void setPlanType(TrademarkPlanTypeFilter planType) {
+        this.planType = planType;
+    }
+
     public LongFilter getLeadId() {
         return leadId;
     }
@@ -713,6 +753,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(type, that.type) &&
             Objects.equals(pageNo, that.pageNo) &&
             Objects.equals(source, that.source) &&
+            Objects.equals(planType, that.planType) &&
             Objects.equals(leadId, that.leadId) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(trademarkClassesId, that.trademarkClassesId) &&
@@ -746,6 +787,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             type,
             pageNo,
             source,
+            planType,
             leadId,
             userId,
             trademarkClassesId,
@@ -780,6 +822,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalType().map(f -> "type=" + f + ", ").orElse("") +
             optionalPageNo().map(f -> "pageNo=" + f + ", ").orElse("") +
             optionalSource().map(f -> "source=" + f + ", ").orElse("") +
+            optionalPlanType().map(f -> "planType=" + f + ", ").orElse("") +
             optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalTrademarkClassesId().map(f -> "trademarkClassesId=" + f + ", ").orElse("") +
