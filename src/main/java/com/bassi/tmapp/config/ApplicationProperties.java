@@ -15,6 +15,7 @@ public class ApplicationProperties {
     private final Liquibase liquibase = new Liquibase();
     private final Captcha captcha = new Captcha();
     private List<String> adminNotificationsEmailAddress;
+    private RazorPay razorPay;
 
     // jhipster-needle-application-properties-property
 
@@ -26,6 +27,14 @@ public class ApplicationProperties {
 
     public Captcha getCaptcha() {
         return captcha;
+    }
+
+    public RazorPay getRazorPay() {
+        return razorPay;
+    }
+
+    public void setRazorPay(RazorPay razorPay) {
+        this.razorPay = razorPay;
     }
 
     public static class Liquibase {
@@ -80,5 +89,45 @@ public class ApplicationProperties {
 
     public void setAdminNotificationsEmailAddress(List<String> adminNotificationsEmailAddress) {
         this.adminNotificationsEmailAddress = adminNotificationsEmailAddress;
+    }
+
+    public static class RazorPay {
+
+        private String keyId;
+        private String keySecret;
+        private String companyName;
+        private String currency;
+
+        public String getKeyId() {
+            return keyId;
+        }
+
+        public void setKeyId(String keyId) {
+            this.keyId = keyId;
+        }
+
+        public String getKeySecret() {
+            return keySecret;
+        }
+
+        public void setKeySecret(String keySecret) {
+            this.keySecret = keySecret;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
+        }
+
+        public String getCurrency() {
+            return currency;
+        }
+
+        public void setCurrency(String currency) {
+            this.currency = currency;
+        }
     }
 }

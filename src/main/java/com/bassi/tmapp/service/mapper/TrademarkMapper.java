@@ -19,7 +19,7 @@ import org.mapstruct.*;
 public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Mapping(target = "lead", source = "lead", qualifiedByName = "leadId")
     @Mapping(target = "user", source = "user", qualifiedByName = "userProfileId")
-    @Mapping(target = "trademarkClasses", source = "trademarkClasses", qualifiedByName = "trademarkClassIdSet")
+    @Mapping(target = "trademarkClasses", source = "trademarkClasses", qualifiedByName = "trademarkClassSet")
     TrademarkDTO toDto(Trademark s);
 
     @Mapping(target = "removeTrademarkClasses", ignore = true)
@@ -40,8 +40,22 @@ public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Mapping(target = "id", source = "id")
     TrademarkClassDTO toDtoTrademarkClassId(TrademarkClass trademarkClass);
 
-    @Named("trademarkClassIdSet")
-    default Set<TrademarkClassDTO> toDtoTrademarkClassIdSet(Set<TrademarkClass> trademarkClass) {
-        return trademarkClass.stream().map(this::toDtoTrademarkClassId).collect(Collectors.toSet());
+    @Named("trademarkClass")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "tmClass", source = "tmClass")
+    @Mapping(target = "keyword", source = "keyword")
+    @Mapping(target = "title", source = "title")
+    @Mapping(target = "code", source = "code")
+    TrademarkClassDTO toDtoTrademarkClass(TrademarkClass trademarkClass);
+
+    //    @Named("trademarkClassIdSet")
+    //    default Set<TrademarkClassDTO> toDtoTrademarkClassIdSet(Set<TrademarkClass> trademarkClass) {
+    //        return trademarkClass.stream().map(this::toDtoTrademarkClassId).collect(Collectors.toSet());
+    //    }
+
+    @Named("trademarkClassSet")
+    default Set<TrademarkClassDTO> toDtoTrademarkClassSet(Set<TrademarkClass> trademarkClass) {
+        return trademarkClass.stream().map(this::toDtoTrademarkClass).collect(Collectors.toSet());
     }
 }

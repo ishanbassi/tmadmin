@@ -126,6 +126,10 @@ public class DocumentsService {
     public DocumentsDTO saveDocumentAndSaveFile(DocumentsDTO documentsDTO, byte[] content) {
         LOG.debug("Request to save Documents : {}", documentsDTO);
         Documents documents = documentsMapper.toEntity(documentsDTO);
+        if (documents.getId() != null) {
+            documentsRepository.findById(documentsDTO.getId()).ifPresent(d -> deleteDocumentFile(d.getFileUrl()));
+        }
+
         documents.setFileUrl(saveToFileSystem(documentsDTO, content));
         documents = documentsRepository.save(documents);
         return documentsMapper.toDto(documents);
@@ -168,5 +172,15 @@ public class DocumentsService {
 
     public Optional<DocumentsDTO> findByTrademark(Trademark trademark) {
         return documentsRepository.findByTrademark(trademark, DocumentType.LOGO).map(documentsMapper::toDto);
+    }
+
+    private void deleteDocumentFile(String filePath) {
+        LOG.info("Going to delete household bill file: {}", filePath);
+        try {
+            Path path = Paths.get(documentBasePath, filePath);
+            Files.delete(path);
+        } catch (IOException e) {
+            LOG.error("Failed to delete bill File because file does not exist , filename:  {}", filePath);
+        }
     }
 }

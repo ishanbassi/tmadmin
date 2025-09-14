@@ -129,4 +129,9 @@ public class TrademarkService {
         });
         return trademarkWithLogoDto;
     }
+
+    public int calculateTotalFees() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }

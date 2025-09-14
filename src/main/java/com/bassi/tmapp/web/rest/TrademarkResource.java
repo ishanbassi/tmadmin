@@ -6,6 +6,7 @@ import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -246,5 +247,10 @@ public class TrademarkResource {
         LOG.debug("REST request to get Trademark : {}", id);
         TrademarkWithLogoDto trademarkWithLogoDto = trademarkService.findOneWithLogo(id);
         return ResponseEntity.ok().body(trademarkWithLogoDto);
+    }
+
+    @GetMapping("order-summary")
+    public ResponseEntity<TrademarkOrderSummary> getOrderSummary(@RequestBody TrademarkDTO trademarkDTO) throws URISyntaxException {
+        return null;
     }
 }
