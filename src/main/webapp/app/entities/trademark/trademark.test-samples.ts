@@ -7,16 +7,16 @@ export const sampleWithRequiredData: ITrademark = {
 };
 
 export const sampleWithPartialData: ITrademark = {
-  id: 14738,
-  applicationNo: 30436,
-  agentName: 'yearly around brand',
-  proprietorName: 'notarize',
-  proprietorAddress: 'snarling accidentally adult',
-  headOffice: 'AHMEDABAD',
-  tmClass: 23832,
-  journalNo: 9293,
-  createdDate: dayjs('2024-05-21T23:35'),
-  type: 'SLOGAN',
+  id: 19482,
+  applicationNo: 14738,
+  agentName: 'ethyl drat strategy',
+  proprietorName: 'who',
+  proprietorAddress: 'memorable ew',
+  headOffice: 'DELHI',
+  tmClass: 26694,
+  journalNo: 17002,
+  createdDate: dayjs('2024-05-21T20:18'),
+  type: 'TRADEMARK_WITH_IMAGE',
 };
 
 export const sampleWithFullData: ITrademark = {
@@ -43,7 +43,6 @@ export const sampleWithFullData: ITrademark = {
   type: 'TRADEMARK_WITH_IMAGE',
   pageNo: 20941,
   source: 'MEMBER_PORTAL',
-  planType: 'TM_FILING',
 };
 
 export const sampleWithNewData: NewTrademark = {

@@ -124,14 +124,6 @@
               }[trademarkRef.source ?? 'null']
             }}</span>
           </dd>
-          <dt><span>Plan Type</span></dt>
-          <dd>
-            <span>{{
-              { null: '', TM_FILING: 'TM_FILING', TM_FILING_AND_FOLLOW_UP: 'TM_FILING_AND_FOLLOW_UP', FOLLOW_UP_ONLY: 'FOLLOW_UP_ONLY' }[
-                trademarkRef.planType ?? 'null'
-              ]
-            }}</span>
-          </dd>
           <dt><span>Lead</span></dt>
           <dd>
             @if (trademark()!.lead) {
@@ -145,6 +137,14 @@
             @if (trademark()!.user) {
               <div>
                 <a [routerLink]="['/user-profile', trademark()!.user?.id, 'view']">{{ trademarkRef.user?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span>Trademark Plan</span></dt>
+          <dd>
+            @if (trademark()!.trademarkPlan) {
+              <div>
+                <a [routerLink]="['/trademark-plan', trademark()!.trademarkPlan?.id, 'view']">{{ trademarkRef.trademarkPlan?.id }}</a>
               </div>
             }
           </dd>

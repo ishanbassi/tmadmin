@@ -42,9 +42,9 @@ describe('Trademark Form Service', () => {
             type: expect.any(Object),
             pageNo: expect.any(Object),
             source: expect.any(Object),
-            planType: expect.any(Object),
             lead: expect.any(Object),
             user: expect.any(Object),
+            trademarkPlan: expect.any(Object),
             trademarkClasses: expect.any(Object),
           }),
         );
@@ -78,9 +78,9 @@ describe('Trademark Form Service', () => {
             type: expect.any(Object),
             pageNo: expect.any(Object),
             source: expect.any(Object),
-            planType: expect.any(Object),
             lead: expect.any(Object),
             user: expect.any(Object),
+            trademarkPlan: expect.any(Object),
             trademarkClasses: expect.any(Object),
           }),
         );

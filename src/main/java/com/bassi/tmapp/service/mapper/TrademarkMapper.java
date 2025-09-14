@@ -3,10 +3,12 @@ package com.bassi.tmapp.service.mapper;
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
+import com.bassi.tmapp.domain.TrademarkPlan;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -20,6 +22,7 @@ public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Mapping(target = "lead", source = "lead", qualifiedByName = "leadId")
     @Mapping(target = "user", source = "user", qualifiedByName = "userProfileId")
     @Mapping(target = "trademarkClasses", source = "trademarkClasses", qualifiedByName = "trademarkClassSet")
+    @Mapping(target = "trademarkPlan", source = "trademarkPlan", qualifiedByName = "trademarkPlanId")
     TrademarkDTO toDto(Trademark s);
 
     @Mapping(target = "removeTrademarkClasses", ignore = true)
@@ -34,6 +37,11 @@ public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
     UserProfileDTO toDtoUserProfileId(UserProfile userProfile);
+
+    @Named("trademarkPlanId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    TrademarkPlanDTO toDtoTrademarkPlanId(TrademarkPlan trademarkPlan);
 
     @Named("trademarkClassId")
     @BeanMapping(ignoreByDefault = true)

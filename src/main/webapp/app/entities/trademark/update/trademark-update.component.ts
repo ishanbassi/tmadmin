@@ -11,12 +11,13 @@ import { ILead } from 'app/entities/lead/lead.model';
 import { LeadService } from 'app/entities/lead/service/lead.service';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
+import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model';
+import { TrademarkPlanService } from 'app/entities/trademark-plan/service/trademark-plan.service';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
-import { TrademarkPlanType } from 'app/entities/enumerations/trademark-plan-type.model';
 import { TrademarkService } from '../service/trademark.service';
 import { ITrademark } from '../trademark.model';
 import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.service';
@@ -32,16 +33,17 @@ export class TrademarkUpdateComponent implements OnInit {
   headOfficeValues = Object.keys(HeadOffice);
   trademarkTypeValues = Object.keys(TrademarkType);
   trademarkSourceValues = Object.keys(TrademarkSource);
-  trademarkPlanTypeValues = Object.keys(TrademarkPlanType);
 
   leadsSharedCollection: ILead[] = [];
   userProfilesSharedCollection: IUserProfile[] = [];
+  trademarkPlansSharedCollection: ITrademarkPlan[] = [];
   trademarkClassesSharedCollection: ITrademarkClass[] = [];
 
   protected trademarkService = inject(TrademarkService);
   protected trademarkFormService = inject(TrademarkFormService);
   protected leadService = inject(LeadService);
   protected userProfileService = inject(UserProfileService);
+  protected trademarkPlanService = inject(TrademarkPlanService);
   protected trademarkClassService = inject(TrademarkClassService);
   protected activatedRoute = inject(ActivatedRoute);
 
@@ -51,6 +53,9 @@ export class TrademarkUpdateComponent implements OnInit {
   compareLead = (o1: ILead | null, o2: ILead | null): boolean => this.leadService.compareLead(o1, o2);
 
   compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
+
+  compareTrademarkPlan = (o1: ITrademarkPlan | null, o2: ITrademarkPlan | null): boolean =>
+    this.trademarkPlanService.compareTrademarkPlan(o1, o2);
 
   compareTrademarkClass = (o1: ITrademarkClass | null, o2: ITrademarkClass | null): boolean =>
     this.trademarkClassService.compareTrademarkClass(o1, o2);
@@ -108,6 +113,10 @@ export class TrademarkUpdateComponent implements OnInit {
       this.userProfilesSharedCollection,
       trademark.user,
     );
+    this.trademarkPlansSharedCollection = this.trademarkPlanService.addTrademarkPlanToCollectionIfMissing<ITrademarkPlan>(
+      this.trademarkPlansSharedCollection,
+      trademark.trademarkPlan,
+    );
     this.trademarkClassesSharedCollection = this.trademarkClassService.addTrademarkClassToCollectionIfMissing<ITrademarkClass>(
       this.trademarkClassesSharedCollection,
       ...(trademark.trademarkClasses ?? []),
@@ -130,6 +139,16 @@ export class TrademarkUpdateComponent implements OnInit {
         ),
       )
       .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
+
+    this.trademarkPlanService
+      .query()
+      .pipe(map((res: HttpResponse<ITrademarkPlan[]>) => res.body ?? []))
+      .pipe(
+        map((trademarkPlans: ITrademarkPlan[]) =>
+          this.trademarkPlanService.addTrademarkPlanToCollectionIfMissing<ITrademarkPlan>(trademarkPlans, this.trademark?.trademarkPlan),
+        ),
+      )
+      .subscribe((trademarkPlans: ITrademarkPlan[]) => (this.trademarkPlansSharedCollection = trademarkPlans));
 
     this.trademarkClassService
       .query()

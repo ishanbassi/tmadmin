@@ -1,11 +1,11 @@
 import dayjs from 'dayjs/esm';
 import { ILead } from 'app/entities/lead/lead.model';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
-import { TrademarkPlanType } from 'app/entities/enumerations/trademark-plan-type.model';
 
 export interface ITrademark {
   id: number;
@@ -31,9 +31,9 @@ export interface ITrademark {
   type?: keyof typeof TrademarkType | null;
   pageNo?: number | null;
   source?: keyof typeof TrademarkSource | null;
-  planType?: keyof typeof TrademarkPlanType | null;
   lead?: Pick<ILead, 'id'> | null;
   user?: Pick<IUserProfile, 'id'> | null;
+  trademarkPlan?: Pick<ITrademarkPlan, 'id'> | null;
   trademarkClasses?: Pick<ITrademarkClass, 'id'>[] | null;
 }
 

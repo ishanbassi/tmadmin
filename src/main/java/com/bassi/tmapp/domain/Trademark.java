@@ -1,7 +1,6 @@
 package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.domain.enumeration.TrademarkPlanType;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -100,10 +99,6 @@ public class Trademark implements Serializable {
     @Column(name = "source")
     private TrademarkSource source;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "plan_type")
-    private TrademarkPlanType planType;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
     private Lead lead;
@@ -111,6 +106,9 @@ public class Trademark implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
     private UserProfile user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TrademarkPlan trademarkPlan;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -423,19 +421,6 @@ public class Trademark implements Serializable {
         this.source = source;
     }
 
-    public TrademarkPlanType getPlanType() {
-        return this.planType;
-    }
-
-    public Trademark planType(TrademarkPlanType planType) {
-        this.setPlanType(planType);
-        return this;
-    }
-
-    public void setPlanType(TrademarkPlanType planType) {
-        this.planType = planType;
-    }
-
     public Lead getLead() {
         return this.lead;
     }
@@ -459,6 +444,19 @@ public class Trademark implements Serializable {
 
     public Trademark user(UserProfile userProfile) {
         this.setUser(userProfile);
+        return this;
+    }
+
+    public TrademarkPlan getTrademarkPlan() {
+        return this.trademarkPlan;
+    }
+
+    public void setTrademarkPlan(TrademarkPlan trademarkPlan) {
+        this.trademarkPlan = trademarkPlan;
+    }
+
+    public Trademark trademarkPlan(TrademarkPlan trademarkPlan) {
+        this.setTrademarkPlan(trademarkPlan);
         return this;
     }
 
@@ -531,7 +529,6 @@ public class Trademark implements Serializable {
             ", type='" + getType() + "'" +
             ", pageNo=" + getPageNo() +
             ", source='" + getSource() + "'" +
-            ", planType='" + getPlanType() + "'" +
             "}";
     }
 

@@ -1,7 +1,6 @@
 package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
-import com.bassi.tmapp.domain.enumeration.TrademarkPlanType;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
@@ -63,11 +62,11 @@ public class TrademarkDTO implements Serializable {
 
     private TrademarkSource source;
 
-    private TrademarkPlanType planType;
-
     private LeadDTO lead;
 
     private UserProfileDTO user;
+
+    private TrademarkPlanDTO trademarkPlan;
 
     private Set<TrademarkClassDTO> trademarkClasses = new HashSet<>();
 
@@ -255,14 +254,6 @@ public class TrademarkDTO implements Serializable {
         this.source = source;
     }
 
-    public TrademarkPlanType getPlanType() {
-        return planType;
-    }
-
-    public void setPlanType(TrademarkPlanType planType) {
-        this.planType = planType;
-    }
-
     public LeadDTO getLead() {
         return lead;
     }
@@ -277,6 +268,14 @@ public class TrademarkDTO implements Serializable {
 
     public void setUser(UserProfileDTO user) {
         this.user = user;
+    }
+
+    public TrademarkPlanDTO getTrademarkPlan() {
+        return trademarkPlan;
+    }
+
+    public void setTrademarkPlan(TrademarkPlanDTO trademarkPlan) {
+        this.trademarkPlan = trademarkPlan;
     }
 
     public Set<TrademarkClassDTO> getTrademarkClasses() {
@@ -335,9 +334,9 @@ public class TrademarkDTO implements Serializable {
             ", type='" + getType() + "'" +
             ", pageNo=" + getPageNo() +
             ", source='" + getSource() + "'" +
-            ", planType='" + getPlanType() + "'" +
             ", lead=" + getLead() +
             ", user=" + getUser() +
+            ", trademarkPlan=" + getTrademarkPlan() +
             ", trademarkClasses=" + getTrademarkClasses() +
             "}";
     }

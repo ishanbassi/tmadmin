@@ -48,7 +48,7 @@ public class Documents implements Serializable {
     private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "lead", "user", "trademarkClasses" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses" }, allowSetters = true)
     private Trademark trademark;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

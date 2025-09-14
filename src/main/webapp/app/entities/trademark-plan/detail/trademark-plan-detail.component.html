@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (trademarkPlan(); as trademarkPlanRef) {
+      <div>
+        <h2 data-cy="trademarkPlanDetailsHeading"><span>Trademark Plan</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.id }}</span>
+          </dd>
+          <dt><span>Name</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.name }}</span>
+          </dd>
+          <dt><span>Fees</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.fees }}</span>
+          </dd>
+          <dt><span>Notes</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.notes }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.deleted }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ trademarkPlanRef.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/trademark-plan', trademarkPlanRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>
