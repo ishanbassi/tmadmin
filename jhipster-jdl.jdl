@@ -51,7 +51,6 @@ entity Trademark{
     type TrademarkType
     pageNo Integer
     source TrademarkSource
-    planType TrademarkPlanType
     
     
 }
@@ -182,6 +181,16 @@ entity Payment{
     failureReason String
 }
 
+entity TrademarkPlan{
+	name String
+	fees BigDecimal
+	notes String
+	createdDate ZonedDateTime
+    deleted Boolean	
+    modifiedDate ZonedDateTime
+
+}
+
 enum ContactMethod{
 	CALL,
 	MESSAGE,
@@ -239,11 +248,7 @@ enum DocumentType {
 }
 
 
-enum TrademarkPlanType {
-	TM_FILING,
-	TM_FILING_AND_FOLLOW_UP,
-	FOLLOW_UP_ONLY
-}
+
 
 relationship ManyToOne{
     Trademark { lead } to @OnDelete("CASCADE") @OnUpdate("CASCADE") Lead
@@ -253,6 +258,7 @@ relationship ManyToOne{
     Company { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
     Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
     Payment {trademark} to @OnUpdate("CASCADE") Trademark
+    Trademark {trademarkPlan} to @OnUpdate("CASCADE") TrademarkPlan
 
 
 	

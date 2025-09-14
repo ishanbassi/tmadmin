@@ -194,13 +194,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="planType">
-              <div class="d-flex">
-                <span>Plan Type</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="lead.id">
               <div class="d-flex">
                 <span>Lead</span>
@@ -210,6 +203,12 @@
             <th scope="col" jhiSortBy="user.id">
               <div class="d-flex">
                 <span>User</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="trademarkPlan.id">
+              <div class="d-flex">
+                <span>Trademark Plan</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -272,16 +271,6 @@
                 }}
               </td>
               <td>
-                {{
-                  {
-                    null: '',
-                    TM_FILING: 'TM_FILING',
-                    TM_FILING_AND_FOLLOW_UP: 'TM_FILING_AND_FOLLOW_UP',
-                    FOLLOW_UP_ONLY: 'FOLLOW_UP_ONLY',
-                  }[trademark.planType ?? 'null']
-                }}
-              </td>
-              <td>
                 @if (trademark.lead) {
                   <div>
                     <a [routerLink]="['/lead', trademark.lead.id, 'view']">{{ trademark.lead.id }}</a>
@@ -292,6 +281,13 @@
                 @if (trademark.user) {
                   <div>
                     <a [routerLink]="['/user-profile', trademark.user.id, 'view']">{{ trademark.user.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (trademark.trademarkPlan) {
+                  <div>
+                    <a [routerLink]="['/trademark-plan', trademark.trademarkPlan.id, 'view']">{{ trademark.trademarkPlan.id }}</a>
                   </div>
                 }
               </td>

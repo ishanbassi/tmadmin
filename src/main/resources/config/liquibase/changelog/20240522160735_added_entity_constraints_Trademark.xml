@@ -28,6 +28,14 @@
                                  onUpdate="CASCADE"
                                  />
 
+        <addForeignKeyConstraint baseColumnNames="trademark_plan_id"
+                                 baseTableName="trademark"
+                                 constraintName="fk_trademark__trademark_plan_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="trademark_plan"
+                                 onUpdate="CASCADE"
+                                 />
+
         <addForeignKeyConstraint baseColumnNames="trademark_id"
                                  baseTableName="rel_trademark__trademark_classes"
                                  constraintName="fk_rel_trademark__trademark_classes__trademark_id"

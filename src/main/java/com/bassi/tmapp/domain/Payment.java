@@ -62,7 +62,7 @@ public class Payment implements Serializable {
     private String failureReason;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "lead", "user", "trademarkClasses" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses" }, allowSetters = true)
     private Trademark trademark;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

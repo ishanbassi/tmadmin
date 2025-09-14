@@ -49,4 +49,8 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'Payment',
     route: '/payment',
   },
+  {
+    name: 'TrademarkPlan',
+    route: '/trademark-plan',
+  },
 ];
