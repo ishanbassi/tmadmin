@@ -7,12 +7,10 @@ import { finalize, map } from 'rxjs/operators';
 import SharedModule from 'app/shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ILead } from 'app/entities/lead/lead.model';
-import { LeadService } from 'app/entities/lead/service/lead.service';
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
-import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
-import { PaymentService } from '../service/payment.service';
+import { ITrademark } from 'app/entities/trademark/trademark.model';
+import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
 import { IPayment } from '../payment.model';
+import { PaymentService } from '../service/payment.service';
 import { PaymentFormGroup, PaymentFormService } from './payment-form.service';
 
 @Component({
@@ -24,21 +22,17 @@ export class PaymentUpdateComponent implements OnInit {
   isSaving = false;
   payment: IPayment | null = null;
 
-  leadsSharedCollection: ILead[] = [];
-  userProfilesSharedCollection: IUserProfile[] = [];
+  trademarksSharedCollection: ITrademark[] = [];
 
   protected paymentService = inject(PaymentService);
   protected paymentFormService = inject(PaymentFormService);
-  protected leadService = inject(LeadService);
-  protected userProfileService = inject(UserProfileService);
+  protected trademarkService = inject(TrademarkService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: PaymentFormGroup = this.paymentFormService.createPaymentFormGroup();
 
-  compareLead = (o1: ILead | null, o2: ILead | null): boolean => this.leadService.compareLead(o1, o2);
-
-  compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
+  compareTrademark = (o1: ITrademark | null, o2: ITrademark | null): boolean => this.trademarkService.compareTrademark(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ payment }) => {
@@ -88,28 +82,21 @@ export class PaymentUpdateComponent implements OnInit {
     this.payment = payment;
     this.paymentFormService.resetForm(this.editForm, payment);
 
-    this.leadsSharedCollection = this.leadService.addLeadToCollectionIfMissing<ILead>(this.leadsSharedCollection, payment.lead);
-    this.userProfilesSharedCollection = this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(
-      this.userProfilesSharedCollection,
-      payment.user,
+    this.trademarksSharedCollection = this.trademarkService.addTrademarkToCollectionIfMissing<ITrademark>(
+      this.trademarksSharedCollection,
+      payment.trademark,
     );
   }
 
   protected loadRelationshipsOptions(): void {
-    this.leadService
+    this.trademarkService
       .query()
-      .pipe(map((res: HttpResponse<ILead[]>) => res.body ?? []))
-      .pipe(map((leads: ILead[]) => this.leadService.addLeadToCollectionIfMissing<ILead>(leads, this.payment?.lead)))
-      .subscribe((leads: ILead[]) => (this.leadsSharedCollection = leads));
-
-    this.userProfileService
-      .query()
-      .pipe(map((res: HttpResponse<IUserProfile[]>) => res.body ?? []))
+      .pipe(map((res: HttpResponse<ITrademark[]>) => res.body ?? []))
       .pipe(
-        map((userProfiles: IUserProfile[]) =>
-          this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(userProfiles, this.payment?.user),
+        map((trademarks: ITrademark[]) =>
+          this.trademarkService.addTrademarkToCollectionIfMissing<ITrademark>(trademarks, this.payment?.trademark),
         ),
       )
-      .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
+      .subscribe((trademarks: ITrademark[]) => (this.trademarksSharedCollection = trademarks));
   }
 }

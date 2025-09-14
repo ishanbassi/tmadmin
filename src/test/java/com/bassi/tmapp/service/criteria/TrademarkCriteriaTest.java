@@ -98,6 +98,7 @@ class TrademarkCriteriaTest {
         trademarkCriteria.type();
         trademarkCriteria.pageNo();
         trademarkCriteria.source();
+        trademarkCriteria.planType();
         trademarkCriteria.leadId();
         trademarkCriteria.userId();
         trademarkCriteria.trademarkClassesId();
@@ -130,6 +131,7 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getType()) &&
                 condition.apply(criteria.getPageNo()) &&
                 condition.apply(criteria.getSource()) &&
+                condition.apply(criteria.getPlanType()) &&
                 condition.apply(criteria.getLeadId()) &&
                 condition.apply(criteria.getUserId()) &&
                 condition.apply(criteria.getTrademarkClassesId()) &&
@@ -164,6 +166,7 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getType(), copy.getType()) &&
                 condition.apply(criteria.getPageNo(), copy.getPageNo()) &&
                 condition.apply(criteria.getSource(), copy.getSource()) &&
+                condition.apply(criteria.getPlanType(), copy.getPlanType()) &&
                 condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
                 condition.apply(criteria.getUserId(), copy.getUserId()) &&
                 condition.apply(criteria.getTrademarkClassesId(), copy.getTrademarkClassesId()) &&

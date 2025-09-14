@@ -89,13 +89,6 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="modifiedDate">
-              <div class="d-flex">
-                <span>Modified Date</span>
-
-                <fa-icon class="p-1" icon="sort"></fa-icon>
-              </div>
-            </th>
             <th scope="col" jhiSortBy="deleted">
               <div class="d-flex">
                 <span>Deleted</span>
@@ -103,15 +96,37 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="lead.id">
+            <th scope="col" jhiSortBy="modifiedDate">
               <div class="d-flex">
-                <span>Lead</span>
+                <span>Modified Date</span>
+
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
-            <th scope="col" jhiSortBy="user.id">
+            <th scope="col" jhiSortBy="orderId">
               <div class="d-flex">
-                <span>User</span>
+                <span>Order Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="gatewayOrderId">
+              <div class="d-flex">
+                <span>Gateway Order Id</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="failureReason">
+              <div class="d-flex">
+                <span>Failure Reason</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="trademark.id">
+              <div class="d-flex">
+                <span>Trademark</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -131,19 +146,15 @@
               <td>{{ payment.status }}</td>
               <td>{{ payment.paymentMethod }}</td>
               <td>{{ payment.createdDate | formatMediumDatetime }}</td>
-              <td>{{ payment.modifiedDate | formatMediumDatetime }}</td>
               <td>{{ payment.deleted }}</td>
+              <td>{{ payment.modifiedDate | formatMediumDatetime }}</td>
+              <td>{{ payment.orderId }}</td>
+              <td>{{ payment.gatewayOrderId }}</td>
+              <td>{{ payment.failureReason }}</td>
               <td>
-                @if (payment.lead) {
+                @if (payment.trademark) {
                   <div>
-                    <a [routerLink]="['/lead', payment.lead.id, 'view']">{{ payment.lead.id }}</a>
-                  </div>
-                }
-              </td>
-              <td>
-                @if (payment.user) {
-                  <div>
-                    <a [routerLink]="['/user-profile', payment.user.id, 'view']">{{ payment.user.id }}</a>
+                    <a [routerLink]="['/trademark', payment.trademark.id, 'view']">{{ payment.trademark.id }}</a>
                   </div>
                 }
               </td>

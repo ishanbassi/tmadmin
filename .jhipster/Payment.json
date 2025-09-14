@@ -34,12 +34,24 @@
       "fieldType": "ZonedDateTime"
     },
     {
+      "fieldName": "deleted",
+      "fieldType": "Boolean"
+    },
+    {
       "fieldName": "modifiedDate",
       "fieldType": "ZonedDateTime"
     },
     {
-      "fieldName": "deleted",
-      "fieldType": "Boolean"
+      "fieldName": "orderId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "gatewayOrderId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "failureReason",
+      "fieldType": "String"
     }
   ],
   "jpaMetamodelFiltering": true,
@@ -50,17 +62,8 @@
       "options": {
         "onUpdate": "CASCADE"
       },
-      "otherEntityName": "lead",
-      "relationshipName": "lead",
-      "relationshipSide": "left",
-      "relationshipType": "many-to-one"
-    },
-    {
-      "options": {
-        "onUpdate": "CASCADE"
-      },
-      "otherEntityName": "userProfile",
-      "relationshipName": "user",
+      "otherEntityName": "trademark",
+      "relationshipName": "trademark",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

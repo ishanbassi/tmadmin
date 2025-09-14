@@ -38,13 +38,17 @@ public class PaymentCriteria implements Serializable, Criteria {
 
     private ZonedDateTimeFilter createdDate;
 
-    private ZonedDateTimeFilter modifiedDate;
-
     private BooleanFilter deleted;
 
-    private LongFilter leadId;
+    private ZonedDateTimeFilter modifiedDate;
 
-    private LongFilter userId;
+    private StringFilter orderId;
+
+    private StringFilter gatewayOrderId;
+
+    private StringFilter failureReason;
+
+    private LongFilter trademarkId;
 
     private Boolean distinct;
 
@@ -59,10 +63,12 @@ public class PaymentCriteria implements Serializable, Criteria {
         this.status = other.optionalStatus().map(StringFilter::copy).orElse(null);
         this.paymentMethod = other.optionalPaymentMethod().map(StringFilter::copy).orElse(null);
         this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
-        this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.deleted = other.optionalDeleted().map(BooleanFilter::copy).orElse(null);
-        this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
-        this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
+        this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
+        this.orderId = other.optionalOrderId().map(StringFilter::copy).orElse(null);
+        this.gatewayOrderId = other.optionalGatewayOrderId().map(StringFilter::copy).orElse(null);
+        this.failureReason = other.optionalFailureReason().map(StringFilter::copy).orElse(null);
+        this.trademarkId = other.optionalTrademarkId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -223,25 +229,6 @@ public class PaymentCriteria implements Serializable, Criteria {
         this.createdDate = createdDate;
     }
 
-    public ZonedDateTimeFilter getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public Optional<ZonedDateTimeFilter> optionalModifiedDate() {
-        return Optional.ofNullable(modifiedDate);
-    }
-
-    public ZonedDateTimeFilter modifiedDate() {
-        if (modifiedDate == null) {
-            setModifiedDate(new ZonedDateTimeFilter());
-        }
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(ZonedDateTimeFilter modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
     public BooleanFilter getDeleted() {
         return deleted;
     }
@@ -261,42 +248,99 @@ public class PaymentCriteria implements Serializable, Criteria {
         this.deleted = deleted;
     }
 
-    public LongFilter getLeadId() {
-        return leadId;
+    public ZonedDateTimeFilter getModifiedDate() {
+        return modifiedDate;
     }
 
-    public Optional<LongFilter> optionalLeadId() {
-        return Optional.ofNullable(leadId);
+    public Optional<ZonedDateTimeFilter> optionalModifiedDate() {
+        return Optional.ofNullable(modifiedDate);
     }
 
-    public LongFilter leadId() {
-        if (leadId == null) {
-            setLeadId(new LongFilter());
+    public ZonedDateTimeFilter modifiedDate() {
+        if (modifiedDate == null) {
+            setModifiedDate(new ZonedDateTimeFilter());
         }
-        return leadId;
+        return modifiedDate;
     }
 
-    public void setLeadId(LongFilter leadId) {
-        this.leadId = leadId;
+    public void setModifiedDate(ZonedDateTimeFilter modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
-    public LongFilter getUserId() {
-        return userId;
+    public StringFilter getOrderId() {
+        return orderId;
     }
 
-    public Optional<LongFilter> optionalUserId() {
-        return Optional.ofNullable(userId);
+    public Optional<StringFilter> optionalOrderId() {
+        return Optional.ofNullable(orderId);
     }
 
-    public LongFilter userId() {
-        if (userId == null) {
-            setUserId(new LongFilter());
+    public StringFilter orderId() {
+        if (orderId == null) {
+            setOrderId(new StringFilter());
         }
-        return userId;
+        return orderId;
     }
 
-    public void setUserId(LongFilter userId) {
-        this.userId = userId;
+    public void setOrderId(StringFilter orderId) {
+        this.orderId = orderId;
+    }
+
+    public StringFilter getGatewayOrderId() {
+        return gatewayOrderId;
+    }
+
+    public Optional<StringFilter> optionalGatewayOrderId() {
+        return Optional.ofNullable(gatewayOrderId);
+    }
+
+    public StringFilter gatewayOrderId() {
+        if (gatewayOrderId == null) {
+            setGatewayOrderId(new StringFilter());
+        }
+        return gatewayOrderId;
+    }
+
+    public void setGatewayOrderId(StringFilter gatewayOrderId) {
+        this.gatewayOrderId = gatewayOrderId;
+    }
+
+    public StringFilter getFailureReason() {
+        return failureReason;
+    }
+
+    public Optional<StringFilter> optionalFailureReason() {
+        return Optional.ofNullable(failureReason);
+    }
+
+    public StringFilter failureReason() {
+        if (failureReason == null) {
+            setFailureReason(new StringFilter());
+        }
+        return failureReason;
+    }
+
+    public void setFailureReason(StringFilter failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public LongFilter getTrademarkId() {
+        return trademarkId;
+    }
+
+    public Optional<LongFilter> optionalTrademarkId() {
+        return Optional.ofNullable(trademarkId);
+    }
+
+    public LongFilter trademarkId() {
+        if (trademarkId == null) {
+            setTrademarkId(new LongFilter());
+        }
+        return trademarkId;
+    }
+
+    public void setTrademarkId(LongFilter trademarkId) {
+        this.trademarkId = trademarkId;
     }
 
     public Boolean getDistinct() {
@@ -336,10 +380,12 @@ public class PaymentCriteria implements Serializable, Criteria {
             Objects.equals(status, that.status) &&
             Objects.equals(paymentMethod, that.paymentMethod) &&
             Objects.equals(createdDate, that.createdDate) &&
-            Objects.equals(modifiedDate, that.modifiedDate) &&
             Objects.equals(deleted, that.deleted) &&
-            Objects.equals(leadId, that.leadId) &&
-            Objects.equals(userId, that.userId) &&
+            Objects.equals(modifiedDate, that.modifiedDate) &&
+            Objects.equals(orderId, that.orderId) &&
+            Objects.equals(gatewayOrderId, that.gatewayOrderId) &&
+            Objects.equals(failureReason, that.failureReason) &&
+            Objects.equals(trademarkId, that.trademarkId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -355,10 +401,12 @@ public class PaymentCriteria implements Serializable, Criteria {
             status,
             paymentMethod,
             createdDate,
-            modifiedDate,
             deleted,
-            leadId,
-            userId,
+            modifiedDate,
+            orderId,
+            gatewayOrderId,
+            failureReason,
+            trademarkId,
             distinct
         );
     }
@@ -375,10 +423,12 @@ public class PaymentCriteria implements Serializable, Criteria {
             optionalStatus().map(f -> "status=" + f + ", ").orElse("") +
             optionalPaymentMethod().map(f -> "paymentMethod=" + f + ", ").orElse("") +
             optionalCreatedDate().map(f -> "createdDate=" + f + ", ").orElse("") +
-            optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
             optionalDeleted().map(f -> "deleted=" + f + ", ").orElse("") +
-            optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
-            optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
+            optionalModifiedDate().map(f -> "modifiedDate=" + f + ", ").orElse("") +
+            optionalOrderId().map(f -> "orderId=" + f + ", ").orElse("") +
+            optionalGatewayOrderId().map(f -> "gatewayOrderId=" + f + ", ").orElse("") +
+            optionalFailureReason().map(f -> "failureReason=" + f + ", ").orElse("") +
+            optionalTrademarkId().map(f -> "trademarkId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

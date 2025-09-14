@@ -63,13 +63,16 @@ public class PaymentAsserts {
                     .usingComparator(zonedDataTimeSameInstant)
                     .isEqualTo(expected.getCreatedDate())
             )
+            .satisfies(a -> assertThat(a.getDeleted()).as("check deleted").isEqualTo(expected.getDeleted()))
             .satisfies(a ->
                 assertThat(a.getModifiedDate())
                     .as("check modifiedDate")
                     .usingComparator(zonedDataTimeSameInstant)
                     .isEqualTo(expected.getModifiedDate())
             )
-            .satisfies(a -> assertThat(a.getDeleted()).as("check deleted").isEqualTo(expected.getDeleted()));
+            .satisfies(a -> assertThat(a.getOrderId()).as("check orderId").isEqualTo(expected.getOrderId()))
+            .satisfies(a -> assertThat(a.getGatewayOrderId()).as("check gatewayOrderId").isEqualTo(expected.getGatewayOrderId()))
+            .satisfies(a -> assertThat(a.getFailureReason()).as("check failureReason").isEqualTo(expected.getFailureReason()));
     }
 
     /**
@@ -81,7 +84,6 @@ public class PaymentAsserts {
     public static void assertPaymentUpdatableRelationshipsEquals(Payment expected, Payment actual) {
         assertThat(actual)
             .as("Verify Payment relationships")
-            .satisfies(a -> assertThat(a.getLead()).as("check lead").isEqualTo(expected.getLead()))
-            .satisfies(a -> assertThat(a.getUser()).as("check user").isEqualTo(expected.getUser()));
+            .satisfies(a -> assertThat(a.getTrademark()).as("check trademark").isEqualTo(expected.getTrademark()));
     }
 }

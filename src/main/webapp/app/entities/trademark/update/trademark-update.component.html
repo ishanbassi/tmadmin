@@ -254,6 +254,25 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" for="field_planType">Plan Type</label>
+          <select class="form-control" name="planType" formControlName="planType" id="field_planType" data-cy="planType">
+            <option [ngValue]="null"></option>
+            @for (trademarkPlanType of trademarkPlanTypeValues; track $index) {
+              <option [value]="trademarkPlanType">
+                {{
+                  {
+                    null: '',
+                    TM_FILING: 'TM_FILING',
+                    TM_FILING_AND_FOLLOW_UP: 'TM_FILING_AND_FOLLOW_UP',
+                    FOLLOW_UP_ONLY: 'FOLLOW_UP_ONLY',
+                  }[trademarkPlanType]
+                }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="field_lead">Lead</label>
           <select class="form-control" id="field_lead" data-cy="lead" name="lead" formControlName="lead" [compareWith]="compareLead">
             <option [ngValue]="null"></option>

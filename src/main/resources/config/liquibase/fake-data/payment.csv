@@ -1,11 +1,11 @@
-id;gateway;gateway_payment_id;amount;currency;status;payment_method;created_date;modified_date;deleted
-1;custody nauseate;quicker stock;20280.83;label;towards pulverize;beyond unlike grim;2025-07-23T07:21:54;2025-07-23T12:10:48;false
-2;earnest;frightfully always;9835.82;delightfully swordfish ridge;purple gerbil noted;before;2025-07-23T06:28:44;2025-07-23T10:46:08;false
-3;offset although garrote;heartfelt;2991.22;how;sign;mortally;2025-07-23T01:24:28;2025-07-22T20:21:15;false
-4;intent reassuringly;except jubilant round;29859.49;roughly;retract cafe;dearly fold entwine;2025-07-23T05:19:46;2025-07-23T03:10:27;true
-5;an apt circa;oh round sharply;3193.95;prudent what gee;minus until;knuckle coolly;2025-07-22T16:31:18;2025-07-22T19:02:28;false
-6;quaintly how;idealistic fortunate uproot;24358.46;nephew individual capitalize;both impeccable;fooey;2025-07-23T10:40:01;2025-07-23T09:54:15;true
-7;yippee seldom;lender ignite coarse;766.31;but;at insecure about;instead whoever gadzooks;2025-07-23T13:19:41;2025-07-23T11:37:13;false
-8;savour term and;quixotic;1034.75;colorize like pantyhose;finally;absent mechanically blah;2025-07-23T06:11:29;2025-07-23T11:57:53;false
-9;alert;hmph joyfully lock;10054.2;beneath;dicker but woot;because beyond;2025-07-23T00:02:16;2025-07-23T08:58:57;true
-10;coagulate;uh-huh;10522.85;red pish satisfy;only;down reproachfully;2025-07-23T05:40:28;2025-07-23T09:36:36;false
+id;gateway;gateway_payment_id;amount;currency;status;payment_method;created_date;deleted;modified_date;order_id;gateway_order_id;failure_reason
+1;custody nauseate;quicker stock;20280.83;label;towards pulverize;beyond unlike grim;2025-07-23T07:21:54;false;2025-07-23T09:24:31;earnest;frightfully always;kindly
+2;swordfish;tough;23093.95;teeming;rebuild bravely;ouch heavily epic;2025-07-22T15:33:54;false;2025-07-23T02:03:12;despite;apropos frankly;arcade mortally
+3;er tectonics;confused fantastic stall;17240.85;presell on bin;recount potentially ouch;ouch;2025-07-23T12:59:08;true;2025-07-23T05:36:57;following beside anneal;which;regal onto
+4;foretell doubter;gerbil;13493.53;refer invite decode;likewise;scary papa;2025-07-23T00:02:18;true;2025-07-23T04:08:30;tough brand;rival kissingly euphonium;oof
+5;stake phooey;whenever;8721.46;bob gleefully;paralyse kiss;after pleasing;2025-07-22T21:33:54;true;2025-07-23T10:38:09;right like;faithfully;whoever gadzooks
+6;nervously undergo between;spook;26716.81;concerning drat bitter;between obnoxiously cleaner;cappelletti cuckoo alert;2025-07-23T10:19:44;true;2025-07-23T01:45:43;until upon ick;advertisement boohoo;swine pleasing unblinking
+7;when;complete;4627.43;uh-huh;oof;pish satisfy efface;2025-07-23T04:19:43;true;2025-07-23T13:16:23;muted;overcooked;jealously
+8;frankly among;cop-out;4573.6;square;mundane;obedient boo;2025-07-23T02:16:49;true;2025-07-23T04:20:47;awkwardly;willfully;which across
+9;bah;hose circa fooey;20857.86;spice;made-up amend whenever;before scotch ah;2025-07-22T21:00:28;true;2025-07-22T21:39:35;despite well-to-do;bitter;insist window handover
+10;boo;traduce given bowed;12290.1;gee off profitable;suckle geez;whereas gee;2025-07-23T14:57:30;true;2025-07-22T21:45:03;woeful sternly;which nor fortunately;as wing

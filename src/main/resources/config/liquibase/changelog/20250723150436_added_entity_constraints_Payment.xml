@@ -10,19 +10,11 @@
     -->
     <changeSet id="20250723150436-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="lead_id"
+        <addForeignKeyConstraint baseColumnNames="trademark_id"
                                  baseTableName="payment"
-                                 constraintName="fk_payment__lead_id"
+                                 constraintName="fk_payment__trademark_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="lead"
-                                 onUpdate="CASCADE"
-                                 />
-
-        <addForeignKeyConstraint baseColumnNames="user_id"
-                                 baseTableName="payment"
-                                 constraintName="fk_payment__user_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="user_profile"
+                                 referencedTableName="trademark"
                                  onUpdate="CASCADE"
                                  />
     </changeSet>

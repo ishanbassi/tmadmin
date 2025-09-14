@@ -1,6 +1,5 @@
 import dayjs from 'dayjs/esm';
-import { ILead } from 'app/entities/lead/lead.model';
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { ITrademark } from 'app/entities/trademark/trademark.model';
 
 export interface IPayment {
   id: number;
@@ -11,10 +10,12 @@ export interface IPayment {
   status?: string | null;
   paymentMethod?: string | null;
   createdDate?: dayjs.Dayjs | null;
-  modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
-  lead?: Pick<ILead, 'id'> | null;
-  user?: Pick<IUserProfile, 'id'> | null;
+  modifiedDate?: dayjs.Dayjs | null;
+  orderId?: string | null;
+  gatewayOrderId?: string | null;
+  failureReason?: string | null;
+  trademark?: Pick<ITrademark, 'id'> | null;
 }
 
 export type NewPayment = Omit<IPayment, 'id'> & { id: null };

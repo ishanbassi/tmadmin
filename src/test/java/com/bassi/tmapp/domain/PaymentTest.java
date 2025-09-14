@@ -1,8 +1,7 @@
 package com.bassi.tmapp.domain;
 
-import static com.bassi.tmapp.domain.LeadTestSamples.*;
 import static com.bassi.tmapp.domain.PaymentTestSamples.*;
-import static com.bassi.tmapp.domain.UserProfileTestSamples.*;
+import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.bassi.tmapp.web.rest.TestUtil;
@@ -25,26 +24,14 @@ class PaymentTest {
     }
 
     @Test
-    void leadTest() {
+    void trademarkTest() {
         Payment payment = getPaymentRandomSampleGenerator();
-        Lead leadBack = getLeadRandomSampleGenerator();
+        Trademark trademarkBack = getTrademarkRandomSampleGenerator();
 
-        payment.setLead(leadBack);
-        assertThat(payment.getLead()).isEqualTo(leadBack);
+        payment.setTrademark(trademarkBack);
+        assertThat(payment.getTrademark()).isEqualTo(trademarkBack);
 
-        payment.lead(null);
-        assertThat(payment.getLead()).isNull();
-    }
-
-    @Test
-    void userTest() {
-        Payment payment = getPaymentRandomSampleGenerator();
-        UserProfile userProfileBack = getUserProfileRandomSampleGenerator();
-
-        payment.setUser(userProfileBack);
-        assertThat(payment.getUser()).isEqualTo(userProfileBack);
-
-        payment.user(null);
-        assertThat(payment.getUser()).isNull();
+        payment.trademark(null);
+        assertThat(payment.getTrademark()).isNull();
     }
 }

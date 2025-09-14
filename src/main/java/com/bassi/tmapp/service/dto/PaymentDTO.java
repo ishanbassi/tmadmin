@@ -27,13 +27,17 @@ public class PaymentDTO implements Serializable {
 
     private ZonedDateTime createdDate;
 
-    private ZonedDateTime modifiedDate;
-
     private Boolean deleted;
 
-    private LeadDTO lead;
+    private ZonedDateTime modifiedDate;
 
-    private UserProfileDTO user;
+    private String orderId;
+
+    private String gatewayOrderId;
+
+    private String failureReason;
+
+    private TrademarkDTO trademark;
 
     public Long getId() {
         return id;
@@ -99,14 +103,6 @@ public class PaymentDTO implements Serializable {
         this.createdDate = createdDate;
     }
 
-    public ZonedDateTime getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(ZonedDateTime modifiedDate) {
-        this.modifiedDate = modifiedDate;
-    }
-
     public Boolean getDeleted() {
         return deleted;
     }
@@ -115,20 +111,44 @@ public class PaymentDTO implements Serializable {
         this.deleted = deleted;
     }
 
-    public LeadDTO getLead() {
-        return lead;
+    public ZonedDateTime getModifiedDate() {
+        return modifiedDate;
     }
 
-    public void setLead(LeadDTO lead) {
-        this.lead = lead;
+    public void setModifiedDate(ZonedDateTime modifiedDate) {
+        this.modifiedDate = modifiedDate;
     }
 
-    public UserProfileDTO getUser() {
-        return user;
+    public String getOrderId() {
+        return orderId;
     }
 
-    public void setUser(UserProfileDTO user) {
-        this.user = user;
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getGatewayOrderId() {
+        return gatewayOrderId;
+    }
+
+    public void setGatewayOrderId(String gatewayOrderId) {
+        this.gatewayOrderId = gatewayOrderId;
+    }
+
+    public String getFailureReason() {
+        return failureReason;
+    }
+
+    public void setFailureReason(String failureReason) {
+        this.failureReason = failureReason;
+    }
+
+    public TrademarkDTO getTrademark() {
+        return trademark;
+    }
+
+    public void setTrademark(TrademarkDTO trademark) {
+        this.trademark = trademark;
     }
 
     @Override
@@ -164,10 +184,12 @@ public class PaymentDTO implements Serializable {
             ", status='" + getStatus() + "'" +
             ", paymentMethod='" + getPaymentMethod() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
-            ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
-            ", lead=" + getLead() +
-            ", user=" + getUser() +
+            ", modifiedDate='" + getModifiedDate() + "'" +
+            ", orderId='" + getOrderId() + "'" +
+            ", gatewayOrderId='" + getGatewayOrderId() + "'" +
+            ", failureReason='" + getFailureReason() + "'" +
+            ", trademark=" + getTrademark() +
             "}";
     }
 }

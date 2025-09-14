@@ -10,9 +10,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.bassi.tmapp.IntegrationTest;
-import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.Payment;
-import com.bassi.tmapp.domain.UserProfile;
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.PaymentRepository;
 import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.mapper.PaymentMapper;
@@ -66,12 +65,21 @@ class PaymentResourceIT {
     private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
+    private static final Boolean DEFAULT_DELETED = false;
+    private static final Boolean UPDATED_DELETED = true;
+
     private static final ZonedDateTime DEFAULT_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
     private static final ZonedDateTime SMALLER_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
-    private static final Boolean DEFAULT_DELETED = false;
-    private static final Boolean UPDATED_DELETED = true;
+    private static final String DEFAULT_ORDER_ID = "AAAAAAAAAA";
+    private static final String UPDATED_ORDER_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_GATEWAY_ORDER_ID = "AAAAAAAAAA";
+    private static final String UPDATED_GATEWAY_ORDER_ID = "BBBBBBBBBB";
+
+    private static final String DEFAULT_FAILURE_REASON = "AAAAAAAAAA";
+    private static final String UPDATED_FAILURE_REASON = "BBBBBBBBBB";
 
     private static final String ENTITY_API_URL = "/api/payments";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -113,8 +121,11 @@ class PaymentResourceIT {
             .status(DEFAULT_STATUS)
             .paymentMethod(DEFAULT_PAYMENT_METHOD)
             .createdDate(DEFAULT_CREATED_DATE)
+            .deleted(DEFAULT_DELETED)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
-            .deleted(DEFAULT_DELETED);
+            .orderId(DEFAULT_ORDER_ID)
+            .gatewayOrderId(DEFAULT_GATEWAY_ORDER_ID)
+            .failureReason(DEFAULT_FAILURE_REASON);
     }
 
     /**
@@ -132,8 +143,11 @@ class PaymentResourceIT {
             .status(UPDATED_STATUS)
             .paymentMethod(UPDATED_PAYMENT_METHOD)
             .createdDate(UPDATED_CREATED_DATE)
+            .deleted(UPDATED_DELETED)
             .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
+            .orderId(UPDATED_ORDER_ID)
+            .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID)
+            .failureReason(UPDATED_FAILURE_REASON);
     }
 
     @BeforeEach
@@ -210,8 +224,11 @@ class PaymentResourceIT {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].paymentMethod").value(hasItem(DEFAULT_PAYMENT_METHOD)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)));
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID)))
+            .andExpect(jsonPath("$.[*].gatewayOrderId").value(hasItem(DEFAULT_GATEWAY_ORDER_ID)))
+            .andExpect(jsonPath("$.[*].failureReason").value(hasItem(DEFAULT_FAILURE_REASON)));
     }
 
     @Test
@@ -233,8 +250,11 @@ class PaymentResourceIT {
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS))
             .andExpect(jsonPath("$.paymentMethod").value(DEFAULT_PAYMENT_METHOD))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
+            .andExpect(jsonPath("$.orderId").value(DEFAULT_ORDER_ID))
+            .andExpect(jsonPath("$.gatewayOrderId").value(DEFAULT_GATEWAY_ORDER_ID))
+            .andExpect(jsonPath("$.failureReason").value(DEFAULT_FAILURE_REASON));
     }
 
     @Test
@@ -671,6 +691,36 @@ class PaymentResourceIT {
 
     @Test
     @Transactional
+    void getAllPaymentsByDeletedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where deleted equals to
+        defaultPaymentFiltering("deleted.equals=" + DEFAULT_DELETED, "deleted.equals=" + UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByDeletedIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where deleted in
+        defaultPaymentFiltering("deleted.in=" + DEFAULT_DELETED + "," + UPDATED_DELETED, "deleted.in=" + UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByDeletedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where deleted is not null
+        defaultPaymentFiltering("deleted.specified=true", "deleted.specified=false");
+    }
+
+    @Test
+    @Transactional
     void getAllPaymentsByModifiedDateIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedPayment = paymentRepository.saveAndFlush(payment);
@@ -750,76 +800,189 @@ class PaymentResourceIT {
 
     @Test
     @Transactional
-    void getAllPaymentsByDeletedIsEqualToSomething() throws Exception {
+    void getAllPaymentsByOrderIdIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedPayment = paymentRepository.saveAndFlush(payment);
 
-        // Get all the paymentList where deleted equals to
-        defaultPaymentFiltering("deleted.equals=" + DEFAULT_DELETED, "deleted.equals=" + UPDATED_DELETED);
+        // Get all the paymentList where orderId equals to
+        defaultPaymentFiltering("orderId.equals=" + DEFAULT_ORDER_ID, "orderId.equals=" + UPDATED_ORDER_ID);
     }
 
     @Test
     @Transactional
-    void getAllPaymentsByDeletedIsInShouldWork() throws Exception {
+    void getAllPaymentsByOrderIdIsInShouldWork() throws Exception {
         // Initialize the database
         insertedPayment = paymentRepository.saveAndFlush(payment);
 
-        // Get all the paymentList where deleted in
-        defaultPaymentFiltering("deleted.in=" + DEFAULT_DELETED + "," + UPDATED_DELETED, "deleted.in=" + UPDATED_DELETED);
+        // Get all the paymentList where orderId in
+        defaultPaymentFiltering("orderId.in=" + DEFAULT_ORDER_ID + "," + UPDATED_ORDER_ID, "orderId.in=" + UPDATED_ORDER_ID);
     }
 
     @Test
     @Transactional
-    void getAllPaymentsByDeletedIsNullOrNotNull() throws Exception {
+    void getAllPaymentsByOrderIdIsNullOrNotNull() throws Exception {
         // Initialize the database
         insertedPayment = paymentRepository.saveAndFlush(payment);
 
-        // Get all the paymentList where deleted is not null
-        defaultPaymentFiltering("deleted.specified=true", "deleted.specified=false");
+        // Get all the paymentList where orderId is not null
+        defaultPaymentFiltering("orderId.specified=true", "orderId.specified=false");
     }
 
     @Test
     @Transactional
-    void getAllPaymentsByLeadIsEqualToSomething() throws Exception {
-        Lead lead;
-        if (TestUtil.findAll(em, Lead.class).isEmpty()) {
+    void getAllPaymentsByOrderIdContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where orderId contains
+        defaultPaymentFiltering("orderId.contains=" + DEFAULT_ORDER_ID, "orderId.contains=" + UPDATED_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByOrderIdNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where orderId does not contain
+        defaultPaymentFiltering("orderId.doesNotContain=" + UPDATED_ORDER_ID, "orderId.doesNotContain=" + DEFAULT_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByGatewayOrderIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where gatewayOrderId equals to
+        defaultPaymentFiltering("gatewayOrderId.equals=" + DEFAULT_GATEWAY_ORDER_ID, "gatewayOrderId.equals=" + UPDATED_GATEWAY_ORDER_ID);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByGatewayOrderIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where gatewayOrderId in
+        defaultPaymentFiltering(
+            "gatewayOrderId.in=" + DEFAULT_GATEWAY_ORDER_ID + "," + UPDATED_GATEWAY_ORDER_ID,
+            "gatewayOrderId.in=" + UPDATED_GATEWAY_ORDER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByGatewayOrderIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where gatewayOrderId is not null
+        defaultPaymentFiltering("gatewayOrderId.specified=true", "gatewayOrderId.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByGatewayOrderIdContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where gatewayOrderId contains
+        defaultPaymentFiltering(
+            "gatewayOrderId.contains=" + DEFAULT_GATEWAY_ORDER_ID,
+            "gatewayOrderId.contains=" + UPDATED_GATEWAY_ORDER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByGatewayOrderIdNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where gatewayOrderId does not contain
+        defaultPaymentFiltering(
+            "gatewayOrderId.doesNotContain=" + UPDATED_GATEWAY_ORDER_ID,
+            "gatewayOrderId.doesNotContain=" + DEFAULT_GATEWAY_ORDER_ID
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByFailureReasonIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where failureReason equals to
+        defaultPaymentFiltering("failureReason.equals=" + DEFAULT_FAILURE_REASON, "failureReason.equals=" + UPDATED_FAILURE_REASON);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByFailureReasonIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where failureReason in
+        defaultPaymentFiltering(
+            "failureReason.in=" + DEFAULT_FAILURE_REASON + "," + UPDATED_FAILURE_REASON,
+            "failureReason.in=" + UPDATED_FAILURE_REASON
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByFailureReasonIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where failureReason is not null
+        defaultPaymentFiltering("failureReason.specified=true", "failureReason.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByFailureReasonContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where failureReason contains
+        defaultPaymentFiltering("failureReason.contains=" + DEFAULT_FAILURE_REASON, "failureReason.contains=" + UPDATED_FAILURE_REASON);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByFailureReasonNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where failureReason does not contain
+        defaultPaymentFiltering(
+            "failureReason.doesNotContain=" + UPDATED_FAILURE_REASON,
+            "failureReason.doesNotContain=" + DEFAULT_FAILURE_REASON
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByTrademarkIsEqualToSomething() throws Exception {
+        Trademark trademark;
+        if (TestUtil.findAll(em, Trademark.class).isEmpty()) {
             paymentRepository.saveAndFlush(payment);
-            lead = LeadResourceIT.createEntity();
+            trademark = TrademarkResourceIT.createEntity();
         } else {
-            lead = TestUtil.findAll(em, Lead.class).get(0);
+            trademark = TestUtil.findAll(em, Trademark.class).get(0);
         }
-        em.persist(lead);
+        em.persist(trademark);
         em.flush();
-        payment.setLead(lead);
+        payment.setTrademark(trademark);
         paymentRepository.saveAndFlush(payment);
-        Long leadId = lead.getId();
-        // Get all the paymentList where lead equals to leadId
-        defaultPaymentShouldBeFound("leadId.equals=" + leadId);
+        Long trademarkId = trademark.getId();
+        // Get all the paymentList where trademark equals to trademarkId
+        defaultPaymentShouldBeFound("trademarkId.equals=" + trademarkId);
 
-        // Get all the paymentList where lead equals to (leadId + 1)
-        defaultPaymentShouldNotBeFound("leadId.equals=" + (leadId + 1));
-    }
-
-    @Test
-    @Transactional
-    void getAllPaymentsByUserIsEqualToSomething() throws Exception {
-        UserProfile user;
-        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
-            paymentRepository.saveAndFlush(payment);
-            user = UserProfileResourceIT.createEntity();
-        } else {
-            user = TestUtil.findAll(em, UserProfile.class).get(0);
-        }
-        em.persist(user);
-        em.flush();
-        payment.setUser(user);
-        paymentRepository.saveAndFlush(payment);
-        Long userId = user.getId();
-        // Get all the paymentList where user equals to userId
-        defaultPaymentShouldBeFound("userId.equals=" + userId);
-
-        // Get all the paymentList where user equals to (userId + 1)
-        defaultPaymentShouldNotBeFound("userId.equals=" + (userId + 1));
+        // Get all the paymentList where trademark equals to (trademarkId + 1)
+        defaultPaymentShouldNotBeFound("trademarkId.equals=" + (trademarkId + 1));
     }
 
     private void defaultPaymentFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
@@ -843,8 +1006,11 @@ class PaymentResourceIT {
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)))
             .andExpect(jsonPath("$.[*].paymentMethod").value(hasItem(DEFAULT_PAYMENT_METHOD)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)));
+            .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID)))
+            .andExpect(jsonPath("$.[*].gatewayOrderId").value(hasItem(DEFAULT_GATEWAY_ORDER_ID)))
+            .andExpect(jsonPath("$.[*].failureReason").value(hasItem(DEFAULT_FAILURE_REASON)));
 
         // Check, that the count call also returns 1
         restPaymentMockMvc
@@ -900,8 +1066,11 @@ class PaymentResourceIT {
             .status(UPDATED_STATUS)
             .paymentMethod(UPDATED_PAYMENT_METHOD)
             .createdDate(UPDATED_CREATED_DATE)
+            .deleted(UPDATED_DELETED)
             .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
+            .orderId(UPDATED_ORDER_ID)
+            .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID)
+            .failureReason(UPDATED_FAILURE_REASON);
         PaymentDTO paymentDTO = paymentMapper.toDto(updatedPayment);
 
         restPaymentMockMvc
@@ -987,7 +1156,11 @@ class PaymentResourceIT {
         Payment partialUpdatedPayment = new Payment();
         partialUpdatedPayment.setId(payment.getId());
 
-        partialUpdatedPayment.gateway(UPDATED_GATEWAY).paymentMethod(UPDATED_PAYMENT_METHOD).modifiedDate(UPDATED_MODIFIED_DATE);
+        partialUpdatedPayment
+            .gateway(UPDATED_GATEWAY)
+            .paymentMethod(UPDATED_PAYMENT_METHOD)
+            .deleted(UPDATED_DELETED)
+            .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID);
 
         restPaymentMockMvc
             .perform(
@@ -1023,8 +1196,11 @@ class PaymentResourceIT {
             .status(UPDATED_STATUS)
             .paymentMethod(UPDATED_PAYMENT_METHOD)
             .createdDate(UPDATED_CREATED_DATE)
+            .deleted(UPDATED_DELETED)
             .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
+            .orderId(UPDATED_ORDER_ID)
+            .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID)
+            .failureReason(UPDATED_FAILURE_REASON);
 
         restPaymentMockMvc
             .perform(

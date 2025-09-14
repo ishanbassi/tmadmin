@@ -4,12 +4,10 @@ import { FormBuilder } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Subject, from, of } from 'rxjs';
 
-import { ILead } from 'app/entities/lead/lead.model';
-import { LeadService } from 'app/entities/lead/service/lead.service';
-import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
-import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
-import { IPayment } from '../payment.model';
+import { ITrademark } from 'app/entities/trademark/trademark.model';
+import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
 import { PaymentService } from '../service/payment.service';
+import { IPayment } from '../payment.model';
 import { PaymentFormService } from './payment-form.service';
 
 import { PaymentUpdateComponent } from './payment-update.component';
@@ -20,8 +18,7 @@ describe('Payment Management Update Component', () => {
   let activatedRoute: ActivatedRoute;
   let paymentFormService: PaymentFormService;
   let paymentService: PaymentService;
-  let leadService: LeadService;
-  let userProfileService: UserProfileService;
+  let trademarkService: TrademarkService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -44,69 +41,43 @@ describe('Payment Management Update Component', () => {
     activatedRoute = TestBed.inject(ActivatedRoute);
     paymentFormService = TestBed.inject(PaymentFormService);
     paymentService = TestBed.inject(PaymentService);
-    leadService = TestBed.inject(LeadService);
-    userProfileService = TestBed.inject(UserProfileService);
+    trademarkService = TestBed.inject(TrademarkService);
 
     comp = fixture.componentInstance;
   });
 
   describe('ngOnInit', () => {
-    it('should call Lead query and add missing value', () => {
+    it('should call Trademark query and add missing value', () => {
       const payment: IPayment = { id: 31232 };
-      const lead: ILead = { id: 32296 };
-      payment.lead = lead;
+      const trademark: ITrademark = { id: 4352 };
+      payment.trademark = trademark;
 
-      const leadCollection: ILead[] = [{ id: 32296 }];
-      jest.spyOn(leadService, 'query').mockReturnValue(of(new HttpResponse({ body: leadCollection })));
-      const additionalLeads = [lead];
-      const expectedCollection: ILead[] = [...additionalLeads, ...leadCollection];
-      jest.spyOn(leadService, 'addLeadToCollectionIfMissing').mockReturnValue(expectedCollection);
+      const trademarkCollection: ITrademark[] = [{ id: 4352 }];
+      jest.spyOn(trademarkService, 'query').mockReturnValue(of(new HttpResponse({ body: trademarkCollection })));
+      const additionalTrademarks = [trademark];
+      const expectedCollection: ITrademark[] = [...additionalTrademarks, ...trademarkCollection];
+      jest.spyOn(trademarkService, 'addTrademarkToCollectionIfMissing').mockReturnValue(expectedCollection);
 
       activatedRoute.data = of({ payment });
       comp.ngOnInit();
 
-      expect(leadService.query).toHaveBeenCalled();
-      expect(leadService.addLeadToCollectionIfMissing).toHaveBeenCalledWith(
-        leadCollection,
-        ...additionalLeads.map(expect.objectContaining),
+      expect(trademarkService.query).toHaveBeenCalled();
+      expect(trademarkService.addTrademarkToCollectionIfMissing).toHaveBeenCalledWith(
+        trademarkCollection,
+        ...additionalTrademarks.map(expect.objectContaining),
       );
-      expect(comp.leadsSharedCollection).toEqual(expectedCollection);
-    });
-
-    it('should call UserProfile query and add missing value', () => {
-      const payment: IPayment = { id: 31232 };
-      const user: IUserProfile = { id: 22058 };
-      payment.user = user;
-
-      const userProfileCollection: IUserProfile[] = [{ id: 22058 }];
-      jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
-      const additionalUserProfiles = [user];
-      const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
-      jest.spyOn(userProfileService, 'addUserProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
-
-      activatedRoute.data = of({ payment });
-      comp.ngOnInit();
-
-      expect(userProfileService.query).toHaveBeenCalled();
-      expect(userProfileService.addUserProfileToCollectionIfMissing).toHaveBeenCalledWith(
-        userProfileCollection,
-        ...additionalUserProfiles.map(expect.objectContaining),
-      );
-      expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
+      expect(comp.trademarksSharedCollection).toEqual(expectedCollection);
     });
 
     it('should update editForm', () => {
       const payment: IPayment = { id: 31232 };
-      const lead: ILead = { id: 32296 };
-      payment.lead = lead;
-      const user: IUserProfile = { id: 22058 };
-      payment.user = user;
+      const trademark: ITrademark = { id: 4352 };
+      payment.trademark = trademark;
 
       activatedRoute.data = of({ payment });
       comp.ngOnInit();
 
-      expect(comp.leadsSharedCollection).toContainEqual(lead);
-      expect(comp.userProfilesSharedCollection).toContainEqual(user);
+      expect(comp.trademarksSharedCollection).toContainEqual(trademark);
       expect(comp.payment).toEqual(payment);
     });
   });
@@ -180,23 +151,13 @@ describe('Payment Management Update Component', () => {
   });
 
   describe('Compare relationships', () => {
-    describe('compareLead', () => {
-      it('should forward to leadService', () => {
-        const entity = { id: 32296 };
-        const entity2 = { id: 6619 };
-        jest.spyOn(leadService, 'compareLead');
-        comp.compareLead(entity, entity2);
-        expect(leadService.compareLead).toHaveBeenCalledWith(entity, entity2);
-      });
-    });
-
-    describe('compareUserProfile', () => {
-      it('should forward to userProfileService', () => {
-        const entity = { id: 22058 };
-        const entity2 = { id: 9009 };
-        jest.spyOn(userProfileService, 'compareUserProfile');
-        comp.compareUserProfile(entity, entity2);
-        expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);
+    describe('compareTrademark', () => {
+      it('should forward to trademarkService', () => {
+        const entity = { id: 4352 };
+        const entity2 = { id: 3769 };
+        jest.spyOn(trademarkService, 'compareTrademark');
+        comp.compareTrademark(entity, entity2);
+        expect(trademarkService.compareTrademark).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

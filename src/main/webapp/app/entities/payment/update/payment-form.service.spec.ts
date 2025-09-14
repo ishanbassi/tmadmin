@@ -27,10 +27,12 @@ describe('Payment Form Service', () => {
             status: expect.any(Object),
             paymentMethod: expect.any(Object),
             createdDate: expect.any(Object),
-            modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
-            lead: expect.any(Object),
-            user: expect.any(Object),
+            modifiedDate: expect.any(Object),
+            orderId: expect.any(Object),
+            gatewayOrderId: expect.any(Object),
+            failureReason: expect.any(Object),
+            trademark: expect.any(Object),
           }),
         );
       });
@@ -48,10 +50,12 @@ describe('Payment Form Service', () => {
             status: expect.any(Object),
             paymentMethod: expect.any(Object),
             createdDate: expect.any(Object),
-            modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
-            lead: expect.any(Object),
-            user: expect.any(Object),
+            modifiedDate: expect.any(Object),
+            orderId: expect.any(Object),
+            gatewayOrderId: expect.any(Object),
+            failureReason: expect.any(Object),
+            trademark: expect.any(Object),
           }),
         );
       });

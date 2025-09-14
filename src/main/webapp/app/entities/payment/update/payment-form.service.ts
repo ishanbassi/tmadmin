@@ -28,7 +28,7 @@ type PaymentFormRawValue = FormValueOf<IPayment>;
 
 type NewPaymentFormRawValue = FormValueOf<NewPayment>;
 
-type PaymentFormDefaults = Pick<NewPayment, 'id' | 'createdDate' | 'modifiedDate' | 'deleted'>;
+type PaymentFormDefaults = Pick<NewPayment, 'id' | 'createdDate' | 'deleted' | 'modifiedDate'>;
 
 type PaymentFormGroupContent = {
   id: FormControl<PaymentFormRawValue['id'] | NewPayment['id']>;
@@ -39,10 +39,12 @@ type PaymentFormGroupContent = {
   status: FormControl<PaymentFormRawValue['status']>;
   paymentMethod: FormControl<PaymentFormRawValue['paymentMethod']>;
   createdDate: FormControl<PaymentFormRawValue['createdDate']>;
-  modifiedDate: FormControl<PaymentFormRawValue['modifiedDate']>;
   deleted: FormControl<PaymentFormRawValue['deleted']>;
-  lead: FormControl<PaymentFormRawValue['lead']>;
-  user: FormControl<PaymentFormRawValue['user']>;
+  modifiedDate: FormControl<PaymentFormRawValue['modifiedDate']>;
+  orderId: FormControl<PaymentFormRawValue['orderId']>;
+  gatewayOrderId: FormControl<PaymentFormRawValue['gatewayOrderId']>;
+  failureReason: FormControl<PaymentFormRawValue['failureReason']>;
+  trademark: FormControl<PaymentFormRawValue['trademark']>;
 };
 
 export type PaymentFormGroup = FormGroup<PaymentFormGroupContent>;
@@ -69,10 +71,12 @@ export class PaymentFormService {
       status: new FormControl(paymentRawValue.status),
       paymentMethod: new FormControl(paymentRawValue.paymentMethod),
       createdDate: new FormControl(paymentRawValue.createdDate),
-      modifiedDate: new FormControl(paymentRawValue.modifiedDate),
       deleted: new FormControl(paymentRawValue.deleted),
-      lead: new FormControl(paymentRawValue.lead),
-      user: new FormControl(paymentRawValue.user),
+      modifiedDate: new FormControl(paymentRawValue.modifiedDate),
+      orderId: new FormControl(paymentRawValue.orderId),
+      gatewayOrderId: new FormControl(paymentRawValue.gatewayOrderId),
+      failureReason: new FormControl(paymentRawValue.failureReason),
+      trademark: new FormControl(paymentRawValue.trademark),
     });
   }
 
@@ -96,8 +100,8 @@ export class PaymentFormService {
     return {
       id: null,
       createdDate: currentTime,
-      modifiedDate: currentTime,
       deleted: false,
+      modifiedDate: currentTime,
     };
   }
 

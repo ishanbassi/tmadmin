@@ -16,7 +16,10 @@ public class PaymentTestSamples {
             .gatewayPaymentId("gatewayPaymentId1")
             .currency("currency1")
             .status("status1")
-            .paymentMethod("paymentMethod1");
+            .paymentMethod("paymentMethod1")
+            .orderId("orderId1")
+            .gatewayOrderId("gatewayOrderId1")
+            .failureReason("failureReason1");
     }
 
     public static Payment getPaymentSample2() {
@@ -26,7 +29,10 @@ public class PaymentTestSamples {
             .gatewayPaymentId("gatewayPaymentId2")
             .currency("currency2")
             .status("status2")
-            .paymentMethod("paymentMethod2");
+            .paymentMethod("paymentMethod2")
+            .orderId("orderId2")
+            .gatewayOrderId("gatewayOrderId2")
+            .failureReason("failureReason2");
     }
 
     public static Payment getPaymentRandomSampleGenerator() {
@@ -36,6 +42,9 @@ public class PaymentTestSamples {
             .gatewayPaymentId(UUID.randomUUID().toString())
             .currency(UUID.randomUUID().toString())
             .status(UUID.randomUUID().toString())
-            .paymentMethod(UUID.randomUUID().toString());
+            .paymentMethod(UUID.randomUUID().toString())
+            .orderId(UUID.randomUUID().toString())
+            .gatewayOrderId(UUID.randomUUID().toString())
+            .failureReason(UUID.randomUUID().toString());
     }
 }
