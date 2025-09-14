@@ -51,6 +51,7 @@ entity Trademark{
     type TrademarkType
     pageNo Integer
     source TrademarkSource
+    planType TrademarkPlanType
     
     
 }
@@ -174,8 +175,11 @@ entity Payment{
     status String
     paymentMethod String
     createdDate ZonedDateTime
-    modifiedDate ZonedDateTime
     deleted Boolean	
+    modifiedDate ZonedDateTime
+    orderId String
+    gatewayOrderId String
+    failureReason String
 }
 
 enum ContactMethod{
@@ -235,6 +239,12 @@ enum DocumentType {
 }
 
 
+enum TrademarkPlanType {
+	TM_FILING,
+	TM_FILING_AND_FOLLOW_UP,
+	FOLLOW_UP_ONLY
+}
+
 relationship ManyToOne{
     Trademark { lead } to @OnDelete("CASCADE") @OnUpdate("CASCADE") Lead
     Trademark { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
@@ -242,8 +252,7 @@ relationship ManyToOne{
     Lead {assignedTo} to  @OnDelete("CASCADE") @OnUpdate("CASCADE") Employee
     Company { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
     Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
-    Payment {lead} to  @OnUpdate("CASCADE") Lead
-    Payment {user} to  @OnUpdate("CASCADE") UserProfile
+    Payment {trademark} to @OnUpdate("CASCADE") Trademark
 
 
 	
