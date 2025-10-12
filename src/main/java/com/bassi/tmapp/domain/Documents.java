@@ -47,6 +47,9 @@ public class Documents implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @Column(name = "status")
+    private String status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses" }, allowSetters = true)
     private Trademark trademark;
@@ -157,6 +160,19 @@ public class Documents implements Serializable {
         this.deleted = deleted;
     }
 
+    public String getStatus() {
+        return this.status;
+    }
+
+    public Documents status(String status) {
+        this.setStatus(status);
+        return this;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Trademark getTrademark() {
         return this.trademark;
     }
@@ -201,6 +217,7 @@ public class Documents implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
+            ", status='" + getStatus() + "'" +
             "}";
     }
 }

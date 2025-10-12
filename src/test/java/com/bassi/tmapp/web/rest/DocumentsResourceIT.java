@@ -61,6 +61,9 @@ class DocumentsResourceIT {
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
 
+    private static final String DEFAULT_STATUS = "AAAAAAAAAA";
+    private static final String UPDATED_STATUS = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/documents";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -100,7 +103,8 @@ class DocumentsResourceIT {
             .fileUrl(DEFAULT_FILE_URL)
             .createdDate(DEFAULT_CREATED_DATE)
             .modifiedDate(DEFAULT_MODIFIED_DATE)
-            .deleted(DEFAULT_DELETED);
+            .deleted(DEFAULT_DELETED)
+            .status(DEFAULT_STATUS);
     }
 
     /**
@@ -117,7 +121,8 @@ class DocumentsResourceIT {
             .fileUrl(UPDATED_FILE_URL)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
+            .deleted(UPDATED_DELETED)
+            .status(UPDATED_STATUS);
     }
 
     @BeforeEach
@@ -193,7 +198,8 @@ class DocumentsResourceIT {
             .andExpect(jsonPath("$.[*].fileUrl").value(hasItem(DEFAULT_FILE_URL)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)));
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)));
     }
 
     @Test
@@ -214,7 +220,8 @@ class DocumentsResourceIT {
             .andExpect(jsonPath("$.fileUrl").value(DEFAULT_FILE_URL))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS));
     }
 
     @Test
@@ -243,7 +250,8 @@ class DocumentsResourceIT {
             .fileUrl(UPDATED_FILE_URL)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
+            .deleted(UPDATED_DELETED)
+            .status(UPDATED_STATUS);
         DocumentsDTO documentsDTO = documentsMapper.toDto(updatedDocuments);
 
         restDocumentsMockMvc
@@ -333,7 +341,11 @@ class DocumentsResourceIT {
         Documents partialUpdatedDocuments = new Documents();
         partialUpdatedDocuments.setId(documents.getId());
 
-        partialUpdatedDocuments.documentType(UPDATED_DOCUMENT_TYPE).fileUrl(UPDATED_FILE_URL).modifiedDate(UPDATED_MODIFIED_DATE);
+        partialUpdatedDocuments
+            .documentType(UPDATED_DOCUMENT_TYPE)
+            .fileUrl(UPDATED_FILE_URL)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .status(UPDATED_STATUS);
 
         restDocumentsMockMvc
             .perform(
@@ -371,7 +383,8 @@ class DocumentsResourceIT {
             .fileUrl(UPDATED_FILE_URL)
             .createdDate(UPDATED_CREATED_DATE)
             .modifiedDate(UPDATED_MODIFIED_DATE)
-            .deleted(UPDATED_DELETED);
+            .deleted(UPDATED_DELETED)
+            .status(UPDATED_STATUS);
 
         restDocumentsMockMvc
             .perform(

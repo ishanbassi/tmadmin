@@ -96,6 +96,23 @@ entity UserProfile{
 	createdDate ZonedDateTime
     modifiedDate ZonedDateTime
     deleted Boolean
+  	firstName String required
+    lastName String required
+    active Boolean
+    email String
+    phoneNumber String
+    addressLine1 String
+    addressLine2 String
+    city String required
+    zipCode Integer required
+    State String
+    utmCampaign String
+    utmSource String
+    utmMedium String
+    utmContent String
+   
+    
+ 
     
 }
 
@@ -152,6 +169,7 @@ entity Documents{
 	createdDate ZonedDateTime
     modifiedDate ZonedDateTime
     deleted Boolean
+    status String
 	
 }
 

@@ -11,6 +11,7 @@ export interface IDocuments {
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
   deleted?: boolean | null;
+  status?: string | null;
   trademark?: Pick<ITrademark, 'id'> | null;
 }
 

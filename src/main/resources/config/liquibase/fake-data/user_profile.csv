@@ -1,11 +1,11 @@
-id;created_date;modified_date;deleted
-1;2024-10-18T22:05:03;2024-10-19T09:18:52;true
-2;2024-10-19T06:45:17;2024-10-18T20:25:49;true
-3;2024-10-19T00:13:33;2024-10-18T17:08:58;false
-4;2024-10-19T08:19:54;2024-10-18T14:08:43;true
-5;2024-10-18T14:10:51;2024-10-18T11:21:48;true
-6;2024-10-19T08:03:35;2024-10-18T13:59:25;true
-7;2024-10-18T23:43:20;2024-10-19T10:16:48;true
-8;2024-10-19T00:55:05;2024-10-18T19:49:41;true
-9;2024-10-18T20:07:46;2024-10-19T01:49:33;true
-10;2024-10-19T01:48:34;2024-10-19T09:46:32;true
+id;created_date;modified_date;deleted;first_name;last_name;active;email;phone_number;address_line_1;address_line_2;city;zip_code;state;utm_campaign;utm_source;utm_medium;utm_content
+1;2024-10-18T22:05:03;2024-10-19T09:18:52;true;Reba;Collier;false;Yasmeen.Cassin12@gmail.com;minion ick;gee;sedately;Kearny;17046;in hippodrome gloss;modulo lest mid;unless or boo;boo;aboard
+2;2024-10-18T20:49:35;2024-10-19T10:56:54;false;Clotilde;Lakin;true;Davion.Wiza32@gmail.com;inwardly;tribe apparatus or;consequently qua;West Glendacester;16490;drain;quietly rusty;nun geez;deceivingly quizzically underneath;past frightfully until
+3;2024-10-18T20:27:10;2024-10-18T12:56:49;false;Fredrick;Casper;true;Candice.Ebert@yahoo.com;without;creak why;politely regarding;West Rachelshire;813;warlike boo ah;barring;joint violently;ah;conversation left whose
+4;2024-10-18T23:47:11;2024-10-18T20:02:59;true;Kaya;Murazik;false;Adelia_Wehner@gmail.com;phony;ugh regarding;forceful;Perth Amboy;9285;farm for vaguely;brr aggressive;caring times;glass;concerning aw often
+5;2024-10-19T09:43:21;2024-10-19T10:22:21;false;Royce;Schowalter;true;Moises88@gmail.com;fax tut;woot mmm at;masquerade;Buckeye;18042;gloom;accompany excluding;and which triumphantly;uncomfortable;anti gah
+6;2024-10-18T17:28:45;2024-10-19T01:00:29;true;Hyman;Murazik;true;Shanna82@gmail.com;clearly;about that;aw impostor;Lake Amaya;12141;pro ugh whoa;psst gee;pointless off unto;inside meatloaf besides;aw executor
+7;2024-10-19T06:45:43;2024-10-19T10:28:37;true;Brent;Dooley;false;Lorenza86@hotmail.com;diagram provided;inasmuch aside that;now;South Fanniefurt;11866;boo of;forage yummy;excepting;rapidly phew continually;whoa
+8;2024-10-18T16:43:11;2024-10-18T12:56:46;true;Emmanuel;Collier;true;Valentine.Wolff54@gmail.com;oh ick muffled;summarise;elegant pfft;New Diontown;4548;statue;afterwards accidentally gleefully;topsail gee;object;indeed
+9;2024-10-19T05:49:14;2024-10-18T12:20:01;false;Antwon;Pouros;true;Baron65@hotmail.com;lazily;bravely;mysterious mortally;East Jordanehaven;16547;frozen zowie till;yippee inasmuch;coexist provided eek;hyphenation subsidy;hmph
+10;2024-10-19T09:36:24;2024-10-19T10:15:47;false;Kenyon;Oberbrunner;true;Dena.Brown@yahoo.com;thread tackle;round;snarling hoot;New Laila;16139;consequently violently;before sprinkles;standard pull merrily;energetic;profane meh since

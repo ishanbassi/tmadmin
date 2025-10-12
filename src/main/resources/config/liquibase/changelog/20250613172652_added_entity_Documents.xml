@@ -35,6 +35,9 @@
             <column name="deleted" type="boolean">
                 <constraints nullable="true" />
             </column>
+            <column name="status" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="trademark_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -68,6 +71,7 @@
             <column name="created_date" type="date"/>
             <column name="modified_date" type="date"/>
             <column name="deleted" type="boolean"/>
+            <column name="status" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

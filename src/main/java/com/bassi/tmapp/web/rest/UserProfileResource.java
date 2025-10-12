@@ -4,6 +4,8 @@ import com.bassi.tmapp.repository.UserProfileRepository;
 import com.bassi.tmapp.service.UserProfileService;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -48,7 +50,7 @@ public class UserProfileResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("")
-    public ResponseEntity<UserProfileDTO> createUserProfile(@RequestBody UserProfileDTO userProfileDTO) throws URISyntaxException {
+    public ResponseEntity<UserProfileDTO> createUserProfile(@Valid @RequestBody UserProfileDTO userProfileDTO) throws URISyntaxException {
         LOG.debug("REST request to save UserProfile : {}", userProfileDTO);
         if (userProfileDTO.getId() != null) {
             throw new BadRequestAlertException("A new userProfile cannot already have an ID", ENTITY_NAME, "idexists");
@@ -72,7 +74,7 @@ public class UserProfileResource {
     @PutMapping("/{id}")
     public ResponseEntity<UserProfileDTO> updateUserProfile(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody UserProfileDTO userProfileDTO
+        @Valid @RequestBody UserProfileDTO userProfileDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to update UserProfile : {}, {}", id, userProfileDTO);
         if (userProfileDTO.getId() == null) {
@@ -106,7 +108,7 @@ public class UserProfileResource {
     @PatchMapping(value = "/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<UserProfileDTO> partialUpdateUserProfile(
         @PathVariable(value = "id", required = false) final Long id,
-        @RequestBody UserProfileDTO userProfileDTO
+        @NotNull @RequestBody UserProfileDTO userProfileDTO
     ) throws URISyntaxException {
         LOG.debug("REST request to partial update UserProfile partially : {}, {}", id, userProfileDTO);
         if (userProfileDTO.getId() == null) {

@@ -28,13 +28,27 @@ type UserProfileFormRawValue = FormValueOf<IUserProfile>;
 
 type NewUserProfileFormRawValue = FormValueOf<NewUserProfile>;
 
-type UserProfileFormDefaults = Pick<NewUserProfile, 'id' | 'createdDate' | 'modifiedDate' | 'deleted'>;
+type UserProfileFormDefaults = Pick<NewUserProfile, 'id' | 'createdDate' | 'modifiedDate' | 'deleted' | 'active'>;
 
 type UserProfileFormGroupContent = {
   id: FormControl<UserProfileFormRawValue['id'] | NewUserProfile['id']>;
   createdDate: FormControl<UserProfileFormRawValue['createdDate']>;
   modifiedDate: FormControl<UserProfileFormRawValue['modifiedDate']>;
   deleted: FormControl<UserProfileFormRawValue['deleted']>;
+  firstName: FormControl<UserProfileFormRawValue['firstName']>;
+  lastName: FormControl<UserProfileFormRawValue['lastName']>;
+  active: FormControl<UserProfileFormRawValue['active']>;
+  email: FormControl<UserProfileFormRawValue['email']>;
+  phoneNumber: FormControl<UserProfileFormRawValue['phoneNumber']>;
+  addressLine1: FormControl<UserProfileFormRawValue['addressLine1']>;
+  addressLine2: FormControl<UserProfileFormRawValue['addressLine2']>;
+  city: FormControl<UserProfileFormRawValue['city']>;
+  zipCode: FormControl<UserProfileFormRawValue['zipCode']>;
+  state: FormControl<UserProfileFormRawValue['state']>;
+  utmCampaign: FormControl<UserProfileFormRawValue['utmCampaign']>;
+  utmSource: FormControl<UserProfileFormRawValue['utmSource']>;
+  utmMedium: FormControl<UserProfileFormRawValue['utmMedium']>;
+  utmContent: FormControl<UserProfileFormRawValue['utmContent']>;
   user: FormControl<UserProfileFormRawValue['user']>;
 };
 
@@ -58,6 +72,28 @@ export class UserProfileFormService {
       createdDate: new FormControl(userProfileRawValue.createdDate),
       modifiedDate: new FormControl(userProfileRawValue.modifiedDate),
       deleted: new FormControl(userProfileRawValue.deleted),
+      firstName: new FormControl(userProfileRawValue.firstName, {
+        validators: [Validators.required],
+      }),
+      lastName: new FormControl(userProfileRawValue.lastName, {
+        validators: [Validators.required],
+      }),
+      active: new FormControl(userProfileRawValue.active),
+      email: new FormControl(userProfileRawValue.email),
+      phoneNumber: new FormControl(userProfileRawValue.phoneNumber),
+      addressLine1: new FormControl(userProfileRawValue.addressLine1),
+      addressLine2: new FormControl(userProfileRawValue.addressLine2),
+      city: new FormControl(userProfileRawValue.city, {
+        validators: [Validators.required],
+      }),
+      zipCode: new FormControl(userProfileRawValue.zipCode, {
+        validators: [Validators.required],
+      }),
+      state: new FormControl(userProfileRawValue.state),
+      utmCampaign: new FormControl(userProfileRawValue.utmCampaign),
+      utmSource: new FormControl(userProfileRawValue.utmSource),
+      utmMedium: new FormControl(userProfileRawValue.utmMedium),
+      utmContent: new FormControl(userProfileRawValue.utmContent),
       user: new FormControl(userProfileRawValue.user),
     });
   }
@@ -84,6 +120,7 @@ export class UserProfileFormService {
       createdDate: currentTime,
       modifiedDate: currentTime,
       deleted: false,
+      active: false,
     };
   }
 

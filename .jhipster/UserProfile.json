@@ -16,6 +16,66 @@
     {
       "fieldName": "deleted",
       "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "firstName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "lastName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "active",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "phoneNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "addressLine1",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "addressLine2",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "city",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "zipCode",
+      "fieldType": "Integer",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "state",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "utmCampaign",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "utmSource",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "utmMedium",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "utmContent",
+      "fieldType": "String"
     }
   ],
   "name": "UserProfile",

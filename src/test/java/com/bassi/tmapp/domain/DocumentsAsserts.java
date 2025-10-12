@@ -64,7 +64,8 @@ public class DocumentsAsserts {
                     .usingComparator(zonedDataTimeSameInstant)
                     .isEqualTo(expected.getModifiedDate())
             )
-            .satisfies(a -> assertThat(a.getDeleted()).as("check deleted").isEqualTo(expected.getDeleted()));
+            .satisfies(a -> assertThat(a.getDeleted()).as("check deleted").isEqualTo(expected.getDeleted()))
+            .satisfies(a -> assertThat(a.getStatus()).as("check status").isEqualTo(expected.getStatus()));
     }
 
     /**

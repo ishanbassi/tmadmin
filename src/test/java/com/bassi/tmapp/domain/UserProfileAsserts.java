@@ -60,7 +60,21 @@ public class UserProfileAsserts {
                     .usingComparator(zonedDataTimeSameInstant)
                     .isEqualTo(expected.getModifiedDate())
             )
-            .satisfies(a -> assertThat(a.getDeleted()).as("check deleted").isEqualTo(expected.getDeleted()));
+            .satisfies(a -> assertThat(a.getDeleted()).as("check deleted").isEqualTo(expected.getDeleted()))
+            .satisfies(a -> assertThat(a.getFirstName()).as("check firstName").isEqualTo(expected.getFirstName()))
+            .satisfies(a -> assertThat(a.getLastName()).as("check lastName").isEqualTo(expected.getLastName()))
+            .satisfies(a -> assertThat(a.getActive()).as("check active").isEqualTo(expected.getActive()))
+            .satisfies(a -> assertThat(a.getEmail()).as("check email").isEqualTo(expected.getEmail()))
+            .satisfies(a -> assertThat(a.getPhoneNumber()).as("check phoneNumber").isEqualTo(expected.getPhoneNumber()))
+            .satisfies(a -> assertThat(a.getAddressLine1()).as("check addressLine1").isEqualTo(expected.getAddressLine1()))
+            .satisfies(a -> assertThat(a.getAddressLine2()).as("check addressLine2").isEqualTo(expected.getAddressLine2()))
+            .satisfies(a -> assertThat(a.getCity()).as("check city").isEqualTo(expected.getCity()))
+            .satisfies(a -> assertThat(a.getZipCode()).as("check zipCode").isEqualTo(expected.getZipCode()))
+            .satisfies(a -> assertThat(a.getState()).as("check state").isEqualTo(expected.getState()))
+            .satisfies(a -> assertThat(a.getUtmCampaign()).as("check utmCampaign").isEqualTo(expected.getUtmCampaign()))
+            .satisfies(a -> assertThat(a.getUtmSource()).as("check utmSource").isEqualTo(expected.getUtmSource()))
+            .satisfies(a -> assertThat(a.getUtmMedium()).as("check utmMedium").isEqualTo(expected.getUtmMedium()))
+            .satisfies(a -> assertThat(a.getUtmContent()).as("check utmContent").isEqualTo(expected.getUtmContent()));
     }
 
     /**
