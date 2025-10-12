@@ -27,6 +27,7 @@ describe('Documents Form Service', () => {
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
+            status: expect.any(Object),
             trademark: expect.any(Object),
           }),
         );
@@ -45,6 +46,7 @@ describe('Documents Form Service', () => {
             createdDate: expect.any(Object),
             modifiedDate: expect.any(Object),
             deleted: expect.any(Object),
+            status: expect.any(Object),
             trademark: expect.any(Object),
           }),
         );

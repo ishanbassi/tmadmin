@@ -33,6 +33,10 @@
     {
       "fieldName": "deleted",
       "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
     }
   ],
   "name": "Documents",

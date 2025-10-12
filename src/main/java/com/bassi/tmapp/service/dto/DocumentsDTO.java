@@ -27,6 +27,8 @@ public class DocumentsDTO implements Serializable {
 
     private Boolean deleted;
 
+    private String status;
+
     private TrademarkDTO trademark;
 
     public Long getId() {
@@ -93,6 +95,14 @@ public class DocumentsDTO implements Serializable {
         this.deleted = deleted;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public TrademarkDTO getTrademark() {
         return trademark;
     }
@@ -134,6 +144,7 @@ public class DocumentsDTO implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", modifiedDate='" + getModifiedDate() + "'" +
             ", deleted='" + getDeleted() + "'" +
+            ", status='" + getStatus() + "'" +
             ", trademark=" + getTrademark() +
             "}";
     }

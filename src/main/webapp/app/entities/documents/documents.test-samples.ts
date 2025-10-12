@@ -7,10 +7,11 @@ export const sampleWithRequiredData: IDocuments = {
 };
 
 export const sampleWithPartialData: IDocuments = {
-  id: 13152,
-  documentType: 'OTHERS',
-  fileName: 'and off circa',
+  id: 463,
+  documentType: 'SIGNED_POA',
+  fileName: 'enthusiastically inside patiently',
   deleted: false,
+  status: 'till overheard',
 };
 
 export const sampleWithFullData: IDocuments = {
@@ -22,6 +23,7 @@ export const sampleWithFullData: IDocuments = {
   createdDate: dayjs('2025-06-13T14:27'),
   modifiedDate: dayjs('2025-06-13T10:51'),
   deleted: false,
+  status: 'phew hello',
 };
 
 export const sampleWithNewData: NewDocuments = {

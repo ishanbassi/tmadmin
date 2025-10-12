@@ -49,6 +49,48 @@ class UserProfileResourceIT {
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
 
+    private static final String DEFAULT_FIRST_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_FIRST_NAME = "BBBBBBBBBB";
+
+    private static final String DEFAULT_LAST_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_LAST_NAME = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_ACTIVE = false;
+    private static final Boolean UPDATED_ACTIVE = true;
+
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+
+    private static final String DEFAULT_PHONE_NUMBER = "AAAAAAAAAA";
+    private static final String UPDATED_PHONE_NUMBER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ADDRESS_LINE_1 = "AAAAAAAAAA";
+    private static final String UPDATED_ADDRESS_LINE_1 = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ADDRESS_LINE_2 = "AAAAAAAAAA";
+    private static final String UPDATED_ADDRESS_LINE_2 = "BBBBBBBBBB";
+
+    private static final String DEFAULT_CITY = "AAAAAAAAAA";
+    private static final String UPDATED_CITY = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_ZIP_CODE = 1;
+    private static final Integer UPDATED_ZIP_CODE = 2;
+
+    private static final String DEFAULT_STATE = "AAAAAAAAAA";
+    private static final String UPDATED_STATE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UTM_CAMPAIGN = "AAAAAAAAAA";
+    private static final String UPDATED_UTM_CAMPAIGN = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UTM_SOURCE = "AAAAAAAAAA";
+    private static final String UPDATED_UTM_SOURCE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UTM_MEDIUM = "AAAAAAAAAA";
+    private static final String UPDATED_UTM_MEDIUM = "BBBBBBBBBB";
+
+    private static final String DEFAULT_UTM_CONTENT = "AAAAAAAAAA";
+    private static final String UPDATED_UTM_CONTENT = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/user-profiles";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -84,7 +126,24 @@ class UserProfileResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static UserProfile createEntity() {
-        return new UserProfile().createdDate(DEFAULT_CREATED_DATE).modifiedDate(DEFAULT_MODIFIED_DATE).deleted(DEFAULT_DELETED);
+        return new UserProfile()
+            .createdDate(DEFAULT_CREATED_DATE)
+            .modifiedDate(DEFAULT_MODIFIED_DATE)
+            .deleted(DEFAULT_DELETED)
+            .firstName(DEFAULT_FIRST_NAME)
+            .lastName(DEFAULT_LAST_NAME)
+            .active(DEFAULT_ACTIVE)
+            .email(DEFAULT_EMAIL)
+            .phoneNumber(DEFAULT_PHONE_NUMBER)
+            .addressLine1(DEFAULT_ADDRESS_LINE_1)
+            .addressLine2(DEFAULT_ADDRESS_LINE_2)
+            .city(DEFAULT_CITY)
+            .zipCode(DEFAULT_ZIP_CODE)
+            .state(DEFAULT_STATE)
+            .utmCampaign(DEFAULT_UTM_CAMPAIGN)
+            .utmSource(DEFAULT_UTM_SOURCE)
+            .utmMedium(DEFAULT_UTM_MEDIUM)
+            .utmContent(DEFAULT_UTM_CONTENT);
     }
 
     /**
@@ -94,7 +153,24 @@ class UserProfileResourceIT {
      * if they test an entity which requires the current entity.
      */
     public static UserProfile createUpdatedEntity() {
-        return new UserProfile().createdDate(UPDATED_CREATED_DATE).modifiedDate(UPDATED_MODIFIED_DATE).deleted(UPDATED_DELETED);
+        return new UserProfile()
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .firstName(UPDATED_FIRST_NAME)
+            .lastName(UPDATED_LAST_NAME)
+            .active(UPDATED_ACTIVE)
+            .email(UPDATED_EMAIL)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .addressLine1(UPDATED_ADDRESS_LINE_1)
+            .addressLine2(UPDATED_ADDRESS_LINE_2)
+            .city(UPDATED_CITY)
+            .zipCode(UPDATED_ZIP_CODE)
+            .state(UPDATED_STATE)
+            .utmCampaign(UPDATED_UTM_CAMPAIGN)
+            .utmSource(UPDATED_UTM_SOURCE)
+            .utmMedium(UPDATED_UTM_MEDIUM)
+            .utmContent(UPDATED_UTM_CONTENT);
     }
 
     @BeforeEach
@@ -154,6 +230,74 @@ class UserProfileResourceIT {
 
     @Test
     @Transactional
+    void checkFirstNameIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        userProfile.setFirstName(null);
+
+        // Create the UserProfile, which fails.
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
+        restUserProfileMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    void checkLastNameIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        userProfile.setLastName(null);
+
+        // Create the UserProfile, which fails.
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
+        restUserProfileMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    void checkCityIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        userProfile.setCity(null);
+
+        // Create the UserProfile, which fails.
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
+        restUserProfileMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    void checkZipCodeIsRequired() throws Exception {
+        long databaseSizeBeforeTest = getRepositoryCount();
+        // set the field null
+        userProfile.setZipCode(null);
+
+        // Create the UserProfile, which fails.
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
+
+        restUserProfileMockMvc
+            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
+            .andExpect(status().isBadRequest());
+
+        assertSameRepositoryCount(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
     void getAllUserProfiles() throws Exception {
         // Initialize the database
         insertedUserProfile = userProfileRepository.saveAndFlush(userProfile);
@@ -166,7 +310,21 @@ class UserProfileResourceIT {
             .andExpect(jsonPath("$.[*].id").value(hasItem(userProfile.getId().intValue())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
-            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)));
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
+            .andExpect(jsonPath("$.[*].firstName").value(hasItem(DEFAULT_FIRST_NAME)))
+            .andExpect(jsonPath("$.[*].lastName").value(hasItem(DEFAULT_LAST_NAME)))
+            .andExpect(jsonPath("$.[*].active").value(hasItem(DEFAULT_ACTIVE)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
+            .andExpect(jsonPath("$.[*].addressLine1").value(hasItem(DEFAULT_ADDRESS_LINE_1)))
+            .andExpect(jsonPath("$.[*].addressLine2").value(hasItem(DEFAULT_ADDRESS_LINE_2)))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY)))
+            .andExpect(jsonPath("$.[*].zipCode").value(hasItem(DEFAULT_ZIP_CODE)))
+            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE)))
+            .andExpect(jsonPath("$.[*].utmCampaign").value(hasItem(DEFAULT_UTM_CAMPAIGN)))
+            .andExpect(jsonPath("$.[*].utmSource").value(hasItem(DEFAULT_UTM_SOURCE)))
+            .andExpect(jsonPath("$.[*].utmMedium").value(hasItem(DEFAULT_UTM_MEDIUM)))
+            .andExpect(jsonPath("$.[*].utmContent").value(hasItem(DEFAULT_UTM_CONTENT)));
     }
 
     @Test
@@ -183,7 +341,21 @@ class UserProfileResourceIT {
             .andExpect(jsonPath("$.id").value(userProfile.getId().intValue()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
-            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED));
+            .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
+            .andExpect(jsonPath("$.firstName").value(DEFAULT_FIRST_NAME))
+            .andExpect(jsonPath("$.lastName").value(DEFAULT_LAST_NAME))
+            .andExpect(jsonPath("$.active").value(DEFAULT_ACTIVE))
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
+            .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER))
+            .andExpect(jsonPath("$.addressLine1").value(DEFAULT_ADDRESS_LINE_1))
+            .andExpect(jsonPath("$.addressLine2").value(DEFAULT_ADDRESS_LINE_2))
+            .andExpect(jsonPath("$.city").value(DEFAULT_CITY))
+            .andExpect(jsonPath("$.zipCode").value(DEFAULT_ZIP_CODE))
+            .andExpect(jsonPath("$.state").value(DEFAULT_STATE))
+            .andExpect(jsonPath("$.utmCampaign").value(DEFAULT_UTM_CAMPAIGN))
+            .andExpect(jsonPath("$.utmSource").value(DEFAULT_UTM_SOURCE))
+            .andExpect(jsonPath("$.utmMedium").value(DEFAULT_UTM_MEDIUM))
+            .andExpect(jsonPath("$.utmContent").value(DEFAULT_UTM_CONTENT));
     }
 
     @Test
@@ -205,7 +377,24 @@ class UserProfileResourceIT {
         UserProfile updatedUserProfile = userProfileRepository.findById(userProfile.getId()).orElseThrow();
         // Disconnect from session so that the updates on updatedUserProfile are not directly saved in db
         em.detach(updatedUserProfile);
-        updatedUserProfile.createdDate(UPDATED_CREATED_DATE).modifiedDate(UPDATED_MODIFIED_DATE).deleted(UPDATED_DELETED);
+        updatedUserProfile
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .firstName(UPDATED_FIRST_NAME)
+            .lastName(UPDATED_LAST_NAME)
+            .active(UPDATED_ACTIVE)
+            .email(UPDATED_EMAIL)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .addressLine1(UPDATED_ADDRESS_LINE_1)
+            .addressLine2(UPDATED_ADDRESS_LINE_2)
+            .city(UPDATED_CITY)
+            .zipCode(UPDATED_ZIP_CODE)
+            .state(UPDATED_STATE)
+            .utmCampaign(UPDATED_UTM_CAMPAIGN)
+            .utmSource(UPDATED_UTM_SOURCE)
+            .utmMedium(UPDATED_UTM_MEDIUM)
+            .utmContent(UPDATED_UTM_CONTENT);
         UserProfileDTO userProfileDTO = userProfileMapper.toDto(updatedUserProfile);
 
         restUserProfileMockMvc
@@ -295,7 +484,19 @@ class UserProfileResourceIT {
         UserProfile partialUpdatedUserProfile = new UserProfile();
         partialUpdatedUserProfile.setId(userProfile.getId());
 
-        partialUpdatedUserProfile.createdDate(UPDATED_CREATED_DATE).deleted(UPDATED_DELETED);
+        partialUpdatedUserProfile
+            .createdDate(UPDATED_CREATED_DATE)
+            .deleted(UPDATED_DELETED)
+            .firstName(UPDATED_FIRST_NAME)
+            .lastName(UPDATED_LAST_NAME)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .addressLine1(UPDATED_ADDRESS_LINE_1)
+            .addressLine2(UPDATED_ADDRESS_LINE_2)
+            .city(UPDATED_CITY)
+            .zipCode(UPDATED_ZIP_CODE)
+            .utmSource(UPDATED_UTM_SOURCE)
+            .utmMedium(UPDATED_UTM_MEDIUM)
+            .utmContent(UPDATED_UTM_CONTENT);
 
         restUserProfileMockMvc
             .perform(
@@ -326,7 +527,24 @@ class UserProfileResourceIT {
         UserProfile partialUpdatedUserProfile = new UserProfile();
         partialUpdatedUserProfile.setId(userProfile.getId());
 
-        partialUpdatedUserProfile.createdDate(UPDATED_CREATED_DATE).modifiedDate(UPDATED_MODIFIED_DATE).deleted(UPDATED_DELETED);
+        partialUpdatedUserProfile
+            .createdDate(UPDATED_CREATED_DATE)
+            .modifiedDate(UPDATED_MODIFIED_DATE)
+            .deleted(UPDATED_DELETED)
+            .firstName(UPDATED_FIRST_NAME)
+            .lastName(UPDATED_LAST_NAME)
+            .active(UPDATED_ACTIVE)
+            .email(UPDATED_EMAIL)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .addressLine1(UPDATED_ADDRESS_LINE_1)
+            .addressLine2(UPDATED_ADDRESS_LINE_2)
+            .city(UPDATED_CITY)
+            .zipCode(UPDATED_ZIP_CODE)
+            .state(UPDATED_STATE)
+            .utmCampaign(UPDATED_UTM_CAMPAIGN)
+            .utmSource(UPDATED_UTM_SOURCE)
+            .utmMedium(UPDATED_UTM_MEDIUM)
+            .utmContent(UPDATED_UTM_CONTENT);
 
         restUserProfileMockMvc
             .perform(
