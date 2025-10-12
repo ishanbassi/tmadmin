@@ -7,6 +7,7 @@ import com.bassi.tmapp.repository.DocumentsRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.mapper.DocumentsMapper;
+import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,9 +39,12 @@ public class DocumentsService {
 
     private final DocumentsMapper documentsMapper;
 
-    public DocumentsService(DocumentsRepository documentsRepository, DocumentsMapper documentsMapper) {
+    private final TrademarkMapper trademarkMapper;
+
+    public DocumentsService(DocumentsRepository documentsRepository, DocumentsMapper documentsMapper, TrademarkMapper trademarkMapper) {
         this.documentsRepository = documentsRepository;
         this.documentsMapper = documentsMapper;
+        this.trademarkMapper = trademarkMapper;
     }
 
     /**
@@ -172,6 +176,10 @@ public class DocumentsService {
 
     public Optional<DocumentsDTO> findByTrademark(Trademark trademark) {
         return documentsRepository.findByTrademark(trademark, DocumentType.LOGO).map(documentsMapper::toDto);
+    }
+
+    public Optional<DocumentsDTO> findByTrademark(TrademarkDTO trademarkDto) {
+        return findByTrademark(trademarkMapper.toEntity(trademarkDto));
     }
 
     private void deleteDocumentFile(String filePath) {

@@ -1,6 +1,7 @@
 package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.UserProfile;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -9,4 +10,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {}
+public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
+    @Query("SELECT up FROM userProfiel up WHERE  up.user.login= ?1")
+    Optional<UserProfile> findByUserEmail(String userLogin);
+}

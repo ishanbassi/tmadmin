@@ -1,11 +1,26 @@
 package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.TrademarkClass;
+import com.bassi.tmapp.domain.TrademarkPlan;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
+import com.bassi.tmapp.service.dto.PaymentDTO;
+import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
+import com.bassi.tmapp.service.dto.TrademarkOrderSummary.OrderSummary;
+import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
+import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,10 +44,18 @@ public class TrademarkService {
 
     private final DocumentsService documentsService;
 
-    public TrademarkService(TrademarkRepository trademarkRepository, TrademarkMapper trademarkMapper, DocumentsService documentsService) {
+    private final CurrentUserService currentUserService;
+
+    public TrademarkService(
+        TrademarkRepository trademarkRepository,
+        TrademarkMapper trademarkMapper,
+        DocumentsService documentsService,
+        CurrentUserService currentUserService
+    ) {
         this.trademarkRepository = trademarkRepository;
         this.trademarkMapper = trademarkMapper;
         this.documentsService = documentsService;
+        this.currentUserService = currentUserService;
     }
 
     /**
@@ -130,8 +153,9 @@ public class TrademarkService {
         return trademarkWithLogoDto;
     }
 
-    public int calculateTotalFees() {
-        // TODO Auto-generated method stub
-        return 0;
+    public List<TrademarkDTO> getTrademarkForCurrentUser() {
+        UserProfile userProfile = currentUserService.getCurrentUserProfile();
+        List<Trademark> trademarks = trademarkRepository.findByUser(userProfile);
+        return trademarkMapper.toDto(trademarks);
     }
 }

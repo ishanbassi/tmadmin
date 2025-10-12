@@ -107,7 +107,7 @@ public class Trademark implements Serializable {
     @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
     private UserProfile user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private TrademarkPlan trademarkPlan;
 
     @ManyToMany(fetch = FetchType.LAZY)

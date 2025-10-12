@@ -1,6 +1,7 @@
 package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
@@ -28,4 +29,6 @@ public interface TrademarkRepository
     default Page<Trademark> findAllWithEagerRelationships(Pageable pageable) {
         return this.fetchBagRelationships(this.findAll(pageable));
     }
+
+    List<Trademark> findByUser(UserProfile user);
 }

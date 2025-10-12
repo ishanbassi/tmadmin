@@ -93,10 +93,19 @@ public class ApplicationProperties {
 
     public static class RazorPay {
 
+        private String baseUrl;
         private String keyId;
         private String keySecret;
         private String companyName;
         private String currency;
+
+        public String getBaseUrl() {
+            return baseUrl;
+        }
+
+        public void setBaseUrl(String baseUrl) {
+            this.baseUrl = baseUrl;
+        }
 
         public String getKeyId() {
             return keyId;

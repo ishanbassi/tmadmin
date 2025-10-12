@@ -4,12 +4,14 @@ import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.repository.UserRepository;
 import com.bassi.tmapp.security.SecurityUtils;
 import com.bassi.tmapp.service.MailService;
+import com.bassi.tmapp.service.UserProfileService;
 import com.bassi.tmapp.service.UserService;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.PasswordChangeDTO;
 import com.bassi.tmapp.web.rest.errors.*;
 import com.bassi.tmapp.web.rest.vm.KeyAndPasswordVM;
 import com.bassi.tmapp.web.rest.vm.ManagedUserVM;
+import com.bassi.tmapp.web.rest.vm.extended.ManagedUserVMExtended;
 import jakarta.validation.Valid;
 import java.util.*;
 import org.apache.commons.lang3.StringUtils;
@@ -40,10 +42,18 @@ public class AccountResource {
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    private final UserProfileService userProfileService;
+
+    public AccountResource(
+        UserRepository userRepository,
+        UserService userService,
+        MailService mailService,
+        UserProfileService userProfileService
+    ) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
+        this.userProfileService = userProfileService;
     }
 
     /**
@@ -176,5 +186,15 @@ public class AccountResource {
             password.length() < ManagedUserVM.PASSWORD_MIN_LENGTH ||
             password.length() > ManagedUserVM.PASSWORD_MAX_LENGTH
         );
+    }
+
+    @PostMapping("/portal/register")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registerAccount(@Valid @RequestBody ManagedUserVMExtended managedUserVMExtended) {
+        if (isPasswordLengthInvalid(managedUserVMExtended.getPassword())) {
+            throw new InvalidPasswordException();
+        }
+        User user = userService.registerPortalUser(managedUserVMExtended, managedUserVMExtended.getPassword());
+        userProfileService.createUserProfile(user);
     }
 }

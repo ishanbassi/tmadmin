@@ -128,6 +128,10 @@ application:
     key-secret: S3TvQC6miKsJlK6dfz0t1Vr6
     company-name: Trademarx
     currency: INR
+    base-url: https://api.razorpay.com/v1
+  google-captcha:
+    site-key: 6LcTLeYrAAAAACoTM9NIteBSX7ucj0ZRqDmQJF82
+    secret-key: 6LcTLeYrAAAAAC1u_J-lffNhAIeLbdcG71JB3v4Z
 
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/

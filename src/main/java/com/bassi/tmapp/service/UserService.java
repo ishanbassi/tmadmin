@@ -9,6 +9,7 @@ import com.bassi.tmapp.security.AuthoritiesConstants;
 import com.bassi.tmapp.security.SecurityUtils;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.UserDTO;
+import com.bassi.tmapp.service.extended.dto.ApplicationUserDto;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -129,7 +130,7 @@ public class UserService {
         Set<Authority> authorities = new HashSet<>();
         authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
-        userRepository.save(newUser);
+        newUser = userRepository.save(newUser);
         this.clearUserCaches(newUser);
         LOG.debug("Created Information for User: {}", newUser);
         return newUser;
@@ -320,5 +321,14 @@ public class UserService {
         if (user.getEmail() != null) {
             Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evictIfPresent(user.getEmail());
         }
+    }
+
+    public User registerPortalUser(AdminUserDTO userDTO, String password) {
+        User user = registerUser(userDTO, password);
+        user.setActivated(true);
+        user.setActivationKey(null);
+        this.clearUserCaches(user);
+        LOG.debug("Activated user: {}", user);
+        return userRepository.save(user);
     }
 }

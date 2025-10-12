@@ -2,10 +2,27 @@ package com.bassi.tmapp.service.dto;
 
 public class CreateOrderResponse {
 
+    public CreateOrderResponse(String orderId, int amount, String currency, String status, String keyId) {
+        this.orderId = orderId;
+        this.amount = amount;
+        this.currency = currency;
+        this.status = status;
+        this.keyId = keyId;
+    }
+
     private String orderId;
     private int amount;
     private String currency;
+    private String status;
     private String keyId;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getOrderId() {
         return orderId;

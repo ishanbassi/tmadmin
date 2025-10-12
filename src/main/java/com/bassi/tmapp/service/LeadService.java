@@ -3,6 +3,7 @@ package com.bassi.tmapp.service;
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.enumeration.LeadStatus;
 import com.bassi.tmapp.repository.LeadRepository;
+import com.bassi.tmapp.service.dto.AdminUserDTO;
 import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.extended.MailServiceExtended;
 import com.bassi.tmapp.service.mapper.LeadMapper;
@@ -126,5 +127,32 @@ public class LeadService {
             LOG.info("{} emails sent", count);
             leadRepository.save(lead);
         }
+    }
+
+    public AdminUserDTO createAdminDtoFromLead(LeadDTO leadDTO) {
+        AdminUserDTO adminUserDTO = new AdminUserDTO();
+        String[] firstLastName = splitName(leadDTO.getFullName());
+        adminUserDTO.setLogin(leadDTO.getEmail());
+        adminUserDTO.setEmail(leadDTO.getEmail());
+        adminUserDTO.setFirstName(firstLastName[0]);
+        adminUserDTO.setLastName(firstLastName[1]);
+        return adminUserDTO;
+    }
+
+    public static String[] splitName(String fullName) {
+        if (fullName == null || fullName.trim().isEmpty()) {
+            return new String[] { "", "" };
+        }
+
+        String[] parts = fullName.trim().split("\\s+");
+
+        String firstName = parts[0];
+        String lastName = "";
+
+        if (parts.length > 1) {
+            lastName = parts[parts.length - 1];
+        }
+
+        return new String[] { firstName, lastName };
     }
 }

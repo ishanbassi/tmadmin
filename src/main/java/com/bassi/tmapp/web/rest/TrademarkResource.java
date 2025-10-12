@@ -5,6 +5,7 @@ import com.bassi.tmapp.service.DocumentsService;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
+import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
@@ -249,8 +250,9 @@ public class TrademarkResource {
         return ResponseEntity.ok().body(trademarkWithLogoDto);
     }
 
-    @GetMapping("order-summary")
-    public ResponseEntity<TrademarkOrderSummary> getOrderSummary(@RequestBody TrademarkDTO trademarkDTO) throws URISyntaxException {
-        return null;
+    @GetMapping("/current-user")
+    public ResponseEntity<List<TrademarkDTO>> getTrademarkForCurrentUser() {
+        List<TrademarkDTO> trademarks = trademarkService.getTrademarkForCurrentUser();
+        return ResponseEntity.ok().body(trademarks);
     }
 }

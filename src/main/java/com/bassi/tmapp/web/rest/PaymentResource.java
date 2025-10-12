@@ -5,10 +5,13 @@ import com.bassi.tmapp.service.PaymentQueryService;
 import com.bassi.tmapp.service.PaymentService;
 import com.bassi.tmapp.service.criteria.PaymentCriteria;
 import com.bassi.tmapp.service.dto.PaymentDTO;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -195,5 +198,21 @@ public class PaymentResource {
         return ResponseEntity.noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
+    }
+
+    @GetMapping("/order-summary/{orderId}")
+    public ResponseEntity<TrademarkOrderSummary> getOrderSummary(@PathVariable("orderId") String orderId) throws URISyntaxException {
+        TrademarkOrderSummary trademarkOrderSummary = paymentService.generateTrademarkOrderSummary(orderId);
+        return ResponseEntity.ok(trademarkOrderSummary);
+    }
+
+    @PostMapping("/create/{id}")
+    public ResponseEntity<PaymentDTO> updateTrademarkPlanAndCreatePayment(
+        @PathVariable("id") Long id,
+        @RequestBody TrademarkDTO trademarkDTO
+    ) {
+        LOG.debug("REST request to create Payment for Trademark with Id: {}", id);
+        PaymentDTO paymentDTO = paymentService.createPaymentFromTrademarkDTO(id);
+        return ResponseEntity.ok().body(paymentDTO);
     }
 }

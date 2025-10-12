@@ -41,6 +41,8 @@ public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Named("trademarkPlanId")
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "fees", source = "fees")
+    @Mapping(target = "name", source = "name")
     TrademarkPlanDTO toDtoTrademarkPlanId(TrademarkPlan trademarkPlan);
 
     @Named("trademarkClassId")
