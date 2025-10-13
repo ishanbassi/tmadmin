@@ -35,10 +35,8 @@ public class UserProfileDTO implements Serializable {
 
     private String addressLine2;
 
-    @NotNull
     private String city;
 
-    @NotNull
     private Integer zipCode;
 
     private String state;

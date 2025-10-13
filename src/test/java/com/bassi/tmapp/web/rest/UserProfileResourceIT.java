@@ -264,40 +264,6 @@ class UserProfileResourceIT {
 
     @Test
     @Transactional
-    void checkCityIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        userProfile.setCity(null);
-
-        // Create the UserProfile, which fails.
-        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
-
-        restUserProfileMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
-    void checkZipCodeIsRequired() throws Exception {
-        long databaseSizeBeforeTest = getRepositoryCount();
-        // set the field null
-        userProfile.setZipCode(null);
-
-        // Create the UserProfile, which fails.
-        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
-
-        restUserProfileMockMvc
-            .perform(post(ENTITY_API_URL).contentType(MediaType.APPLICATION_JSON).content(om.writeValueAsBytes(userProfileDTO)))
-            .andExpect(status().isBadRequest());
-
-        assertSameRepositoryCount(databaseSizeBeforeTest);
-    }
-
-    @Test
-    @Transactional
     void getAllUserProfiles() throws Exception {
         // Initialize the database
         insertedUserProfile = userProfileRepository.saveAndFlush(userProfile);

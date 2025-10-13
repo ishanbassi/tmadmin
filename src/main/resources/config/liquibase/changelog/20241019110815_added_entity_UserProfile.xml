@@ -45,10 +45,10 @@
                 <constraints nullable="true" />
             </column>
             <column name="city" type="varchar(255)">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="zip_code" type="integer">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="state" type="varchar(255)">
                 <constraints nullable="true" />

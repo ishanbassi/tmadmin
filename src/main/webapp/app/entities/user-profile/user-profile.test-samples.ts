@@ -6,23 +6,19 @@ export const sampleWithRequiredData: IUserProfile = {
   id: 4033,
   firstName: 'Tianna',
   lastName: 'Cruickshank',
-  city: 'Hellerland',
-  zipCode: 26375,
 };
 
 export const sampleWithPartialData: IUserProfile = {
-  id: 23224,
-  createdDate: dayjs('2024-10-18T23:57'),
-  modifiedDate: dayjs('2024-10-19T06:10'),
-  deleted: false,
-  firstName: 'Waylon',
-  lastName: 'Williamson',
-  city: 'Albuquerque',
-  zipCode: 19632,
-  state: 'unpleasant yearn',
-  utmCampaign: 'license scorn',
-  utmSource: 'supposing coop bulky',
-  utmContent: 'aside at',
+  id: 25987,
+  createdDate: dayjs('2024-10-19T01:04'),
+  modifiedDate: dayjs('2024-10-19T10:30'),
+  deleted: true,
+  firstName: 'Vesta',
+  lastName: 'Abshire',
+  city: 'Glennaside',
+  zipCode: 15972,
+  state: 'mortally',
+  utmSource: 'anti accidentally',
 };
 
 export const sampleWithFullData: IUserProfile = {
@@ -49,8 +45,6 @@ export const sampleWithFullData: IUserProfile = {
 export const sampleWithNewData: NewUserProfile = {
   firstName: 'Mertie',
   lastName: 'Tillman',
-  city: 'Mabellemouth',
-  zipCode: 4150,
   id: null,
 };
 
