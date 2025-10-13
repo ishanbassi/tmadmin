@@ -56,12 +56,10 @@ public class UserProfile implements Serializable {
     @Column(name = "address_line_2")
     private String addressLine2;
 
-    @NotNull
-    @Column(name = "city", nullable = false)
+    @Column(name = "city")
     private String city;
 
-    @NotNull
-    @Column(name = "zip_code", nullable = false)
+    @Column(name = "zip_code")
     private Integer zipCode;
 
     @Column(name = "state")

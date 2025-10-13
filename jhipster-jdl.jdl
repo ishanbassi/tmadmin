@@ -103,8 +103,8 @@ entity UserProfile{
     phoneNumber String
     addressLine1 String
     addressLine2 String
-    city String required
-    zipCode Integer required
+    city String
+    zipCode Integer
     State String
     utmCampaign String
     utmSource String

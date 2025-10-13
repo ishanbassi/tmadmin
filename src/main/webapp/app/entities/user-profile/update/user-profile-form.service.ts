@@ -83,12 +83,8 @@ export class UserProfileFormService {
       phoneNumber: new FormControl(userProfileRawValue.phoneNumber),
       addressLine1: new FormControl(userProfileRawValue.addressLine1),
       addressLine2: new FormControl(userProfileRawValue.addressLine2),
-      city: new FormControl(userProfileRawValue.city, {
-        validators: [Validators.required],
-      }),
-      zipCode: new FormControl(userProfileRawValue.zipCode, {
-        validators: [Validators.required],
-      }),
+      city: new FormControl(userProfileRawValue.city),
+      zipCode: new FormControl(userProfileRawValue.zipCode),
       state: new FormControl(userProfileRawValue.state),
       utmCampaign: new FormControl(userProfileRawValue.utmCampaign),
       utmSource: new FormControl(userProfileRawValue.utmSource),
