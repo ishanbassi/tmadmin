@@ -1,13 +1,18 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.config.ApplicationProperties;
 import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.repository.UserRepository;
 import com.bassi.tmapp.security.SecurityUtils;
+import com.bassi.tmapp.service.CurrentUserService;
 import com.bassi.tmapp.service.MailService;
 import com.bassi.tmapp.service.UserProfileService;
 import com.bassi.tmapp.service.UserService;
 import com.bassi.tmapp.service.dto.AdminUserDTO;
+import com.bassi.tmapp.service.dto.CaptchaResponse;
 import com.bassi.tmapp.service.dto.PasswordChangeDTO;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
+import com.bassi.tmapp.service.mapper.UserProfileMapper;
 import com.bassi.tmapp.web.rest.errors.*;
 import com.bassi.tmapp.web.rest.vm.KeyAndPasswordVM;
 import com.bassi.tmapp.web.rest.vm.ManagedUserVM;
@@ -18,7 +23,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * REST controller for managing the current user's account.
@@ -44,16 +51,32 @@ public class AccountResource {
 
     private final UserProfileService userProfileService;
 
+    private final ApplicationProperties applicationProperties;
+
+    private final RestTemplate restTemplate;
+
+    private final UserProfileMapper userProfileMapper;
+
+    private final CurrentUserService currentUserService;
+
     public AccountResource(
         UserRepository userRepository,
         UserService userService,
         MailService mailService,
-        UserProfileService userProfileService
+        UserProfileService userProfileService,
+        ApplicationProperties applicationProperties,
+        RestTemplate restTemplate,
+        UserProfileMapper userProfileMapper,
+        CurrentUserService currentUserService
     ) {
         this.userRepository = userRepository;
         this.userService = userService;
         this.mailService = mailService;
         this.userProfileService = userProfileService;
+        this.applicationProperties = applicationProperties;
+        this.restTemplate = restTemplate;
+        this.userProfileMapper = userProfileMapper;
+        this.currentUserService = currentUserService;
     }
 
     /**
@@ -190,11 +213,30 @@ public class AccountResource {
 
     @PostMapping("/portal/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void registerAccount(@Valid @RequestBody ManagedUserVMExtended managedUserVMExtended) {
+    public ResponseEntity<UserProfileDTO> registerAccount(@Valid @RequestBody ManagedUserVMExtended managedUserVMExtended) {
+        if (isGoogleCaptchaInvalid(managedUserVMExtended.getCaptchaResponse())) {
+            throw new InternalServerAlertException(
+                "reCAPTCHA verification failed. Our server could not validate your response. Please try again, and ensure you complete the reCAPTCHA challenge accurately."
+            );
+        }
+
         if (isPasswordLengthInvalid(managedUserVMExtended.getPassword())) {
             throw new InvalidPasswordException();
         }
         User user = userService.registerPortalUser(managedUserVMExtended, managedUserVMExtended.getPassword());
-        userProfileService.createUserProfile(user);
+        return ResponseEntity.ok(userProfileService.createUserProfile(user, managedUserVMExtended));
+    }
+
+    private boolean isGoogleCaptchaInvalid(String captcha) {
+        String params = "?secret=" + applicationProperties.getGoogleCaptcha().getSecretKey() + "&response=" + captcha;
+        String completeUrl = applicationProperties.getGoogleCaptcha().getServerVerifyUrl() + params;
+        CaptchaResponse resp = restTemplate.postForObject(completeUrl, null, CaptchaResponse.class);
+        return resp != null && !resp.isSuccess();
+    }
+
+    @GetMapping("/current-user")
+    public ResponseEntity<UserProfileDTO> getCurrentUser() {
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(currentUserService.getCurrentUserProfile());
+        return ResponseEntity.ok(userProfileDTO);
     }
 }

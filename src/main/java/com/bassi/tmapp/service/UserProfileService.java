@@ -9,6 +9,8 @@ import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.mapper.UserProfileMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
+import com.bassi.tmapp.web.rest.vm.extended.ManagedUserVMExtended;
+import jakarta.validation.Valid;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -143,8 +145,12 @@ public class UserProfileService {
         return userProfileRepository.findByUserEmail(userLogin);
     }
 
-    public UserProfileDTO createUserProfile(User user) {
+    public UserProfileDTO createUserProfile(User user, ManagedUserVMExtended managedUserVMExtended) {
         UserProfile userProfile = new UserProfile();
+        userProfile.setFirstName(managedUserVMExtended.getFirstName());
+        userProfile.setLastName(managedUserVMExtended.getLastName());
+        userProfile.setPhoneNumber(managedUserVMExtended.getPhoneNumber());
+        userProfile.setEmail(managedUserVMExtended.getEmail());
         userProfile.setUser(user);
         return save(userProfileMapper.toDto(userProfile));
     }

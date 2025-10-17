@@ -16,8 +16,17 @@ public class ApplicationProperties {
     private final Captcha captcha = new Captcha();
     private List<String> adminNotificationsEmailAddress;
     private RazorPay razorPay;
+    private GoogleCaptcha googleCaptcha;
 
     // jhipster-needle-application-properties-property
+
+    public GoogleCaptcha getGoogleCaptcha() {
+        return googleCaptcha;
+    }
+
+    public void setGoogleCaptcha(GoogleCaptcha googleCaptcha) {
+        this.googleCaptcha = googleCaptcha;
+    }
 
     public Liquibase getLiquibase() {
         return liquibase;
@@ -137,6 +146,37 @@ public class ApplicationProperties {
 
         public void setCurrency(String currency) {
             this.currency = currency;
+        }
+    }
+
+    public static class GoogleCaptcha {
+
+        private String siteKey;
+        private String secretKey;
+        private String serverVerifyUrl;
+
+        public String getSecretKey() {
+            return secretKey;
+        }
+
+        public void setSecretKey(String secretKey) {
+            this.secretKey = secretKey;
+        }
+
+        public String getServerVerifyUrl() {
+            return serverVerifyUrl;
+        }
+
+        public void setServerVerifyUrl(String serverVerifyUrl) {
+            this.serverVerifyUrl = serverVerifyUrl;
+        }
+
+        public String getSiteKey() {
+            return siteKey;
+        }
+
+        public void setSiteKey(String siteKey) {
+            this.siteKey = siteKey;
         }
     }
 }

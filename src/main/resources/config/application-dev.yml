@@ -132,7 +132,7 @@ application:
   google-captcha:
     site-key: 6LcTLeYrAAAAACoTM9NIteBSX7ucj0ZRqDmQJF82
     secret-key: 6LcTLeYrAAAAAC1u_J-lffNhAIeLbdcG71JB3v4Z
-
+    server-verify-url: https://www.google.com/recaptcha/api/siteverify
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/
 errors-file-base-path: /opt/application/staging/errors/
