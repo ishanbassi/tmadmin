@@ -16,6 +16,7 @@ import { TrademarkPlanService } from 'app/entities/trademark-plan/service/tradem
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
+import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
 import { TrademarkService } from '../service/trademark.service';
@@ -31,6 +32,7 @@ export class TrademarkUpdateComponent implements OnInit {
   isSaving = false;
   trademark: ITrademark | null = null;
   headOfficeValues = Object.keys(HeadOffice);
+  trademarkStatusValues = Object.keys(TrademarkStatus);
   trademarkTypeValues = Object.keys(TrademarkType);
   trademarkSourceValues = Object.keys(TrademarkSource);
 

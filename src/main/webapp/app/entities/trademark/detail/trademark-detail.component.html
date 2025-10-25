@@ -81,7 +81,25 @@
           </dd>
           <dt><span>Trademark Status</span></dt>
           <dd>
-            <span>{{ trademarkRef.trademarkStatus }}</span>
+            <span>{{
+              {
+                null: '',
+                DRAFT: 'DRAFT',
+                FILED: 'FILED',
+                UNDER_EXAMINATION: 'UNDER_EXAMINATION',
+                OBJECTED: 'OBJECTED',
+                EXAMINATION_REPLY_FILED: 'EXAMINATION_REPLY_FILED',
+                ACCEPTED_AND_ADVERTISED: 'ACCEPTED_AND_ADVERTISED',
+                OPPOSED: 'OPPOSED',
+                HEARING: 'HEARING',
+                REGISTERED: 'REGISTERED',
+                ABANDONED: 'ABANDONED',
+                WITHDRAWN: 'WITHDRAWN',
+                REJECTED: 'REJECTED',
+                EXPIRED: 'EXPIRED',
+                RENEWED: 'RENEWED',
+              }[trademarkRef.trademarkStatus ?? 'null']
+            }}</span>
           </dd>
           <dt><span>Created Date</span></dt>
           <dd>

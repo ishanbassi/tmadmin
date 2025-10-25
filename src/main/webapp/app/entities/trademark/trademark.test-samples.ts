@@ -36,12 +36,12 @@ export const sampleWithFullData: ITrademark = {
   deleted: false,
   usage: 'inasmuch',
   associatedTms: 'fess passport',
-  trademarkStatus: 'phew debut brr',
-  createdDate: dayjs('2024-05-21T22:48'),
-  modifiedDate: dayjs('2024-05-21T17:07'),
+  trademarkStatus: 'EXPIRED',
+  createdDate: dayjs('2024-05-21T21:24'),
+  modifiedDate: dayjs('2024-05-22T14:40'),
   renewalDate: dayjs('2024-05-22'),
-  type: 'TRADEMARK_WITH_IMAGE',
-  pageNo: 20941,
+  type: 'IMAGEMARK',
+  pageNo: 27416,
   source: 'MEMBER_PORTAL',
 };
 

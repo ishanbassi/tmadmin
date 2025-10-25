@@ -89,7 +89,7 @@ public class TrademarkQueryService extends QueryService<Trademark> {
                 buildSpecification(criteria.getDeleted(), Trademark_.deleted),
                 buildStringSpecification(criteria.getUsage(), Trademark_.usage),
                 buildStringSpecification(criteria.getAssociatedTms(), Trademark_.associatedTms),
-                buildStringSpecification(criteria.getTrademarkStatus(), Trademark_.trademarkStatus),
+                buildSpecification(criteria.getTrademarkStatus(), Trademark_.trademarkStatus),
                 buildRangeSpecification(criteria.getCreatedDate(), Trademark_.createdDate),
                 buildRangeSpecification(criteria.getModifiedDate(), Trademark_.modifiedDate),
                 buildRangeSpecification(criteria.getRenewalDate(), Trademark_.renewalDate),

@@ -17,6 +17,7 @@ import com.bassi.tmapp.domain.TrademarkPlan;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.TrademarkService;
@@ -105,8 +106,8 @@ class TrademarkResourceIT {
     private static final String DEFAULT_ASSOCIATED_TMS = "AAAAAAAAAA";
     private static final String UPDATED_ASSOCIATED_TMS = "BBBBBBBBBB";
 
-    private static final String DEFAULT_TRADEMARK_STATUS = "AAAAAAAAAA";
-    private static final String UPDATED_TRADEMARK_STATUS = "BBBBBBBBBB";
+    private static final TrademarkStatus DEFAULT_TRADEMARK_STATUS = TrademarkStatus.DRAFT;
+    private static final TrademarkStatus UPDATED_TRADEMARK_STATUS = TrademarkStatus.FILED;
 
     private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
@@ -307,7 +308,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
@@ -360,7 +361,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.usage").value(DEFAULT_USAGE))
             .andExpect(jsonPath("$.associatedTms").value(DEFAULT_ASSOCIATED_TMS))
-            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS))
+            .andExpect(jsonPath("$.trademarkStatus").value(DEFAULT_TRADEMARK_STATUS.toString()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
@@ -1281,32 +1282,6 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
-    void getAllTrademarksByTrademarkStatusContainsSomething() throws Exception {
-        // Initialize the database
-        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
-
-        // Get all the trademarkList where trademarkStatus contains
-        defaultTrademarkFiltering(
-            "trademarkStatus.contains=" + DEFAULT_TRADEMARK_STATUS,
-            "trademarkStatus.contains=" + UPDATED_TRADEMARK_STATUS
-        );
-    }
-
-    @Test
-    @Transactional
-    void getAllTrademarksByTrademarkStatusNotContainsSomething() throws Exception {
-        // Initialize the database
-        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
-
-        // Get all the trademarkList where trademarkStatus does not contain
-        defaultTrademarkFiltering(
-            "trademarkStatus.doesNotContain=" + UPDATED_TRADEMARK_STATUS,
-            "trademarkStatus.doesNotContain=" + DEFAULT_TRADEMARK_STATUS
-        );
-    }
-
-    @Test
-    @Transactional
     void getAllTrademarksByCreatedDateIsEqualToSomething() throws Exception {
         // Initialize the database
         insertedTrademark = trademarkRepository.saveAndFlush(trademark);
@@ -1789,7 +1764,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
             .andExpect(jsonPath("$.[*].usage").value(hasItem(DEFAULT_USAGE)))
             .andExpect(jsonPath("$.[*].associatedTms").value(hasItem(DEFAULT_ASSOCIATED_TMS)))
-            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS)))
+            .andExpect(jsonPath("$.[*].trademarkStatus").value(hasItem(DEFAULT_TRADEMARK_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))

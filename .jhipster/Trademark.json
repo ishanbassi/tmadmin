@@ -68,7 +68,8 @@
     },
     {
       "fieldName": "trademarkStatus",
-      "fieldType": "String"
+      "fieldType": "TrademarkStatus",
+      "fieldValues": "DRAFT,FILED,UNDER_EXAMINATION,OBJECTED,EXAMINATION_REPLY_FILED,ACCEPTED_AND_ADVERTISED,OPPOSED,HEARING,REGISTERED,ABANDONED,WITHDRAWN,REJECTED,EXPIRED,RENEWED"
     },
     {
       "fieldName": "createdDate",
