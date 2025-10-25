@@ -15,6 +15,16 @@ public class RazorPayOrderResponse {
 
     private LeadDTO leadDTO;
 
+    private UserProfileDTO userProfileDTO;
+
+    public UserProfileDTO getUserProfileDTO() {
+        return userProfileDTO;
+    }
+
+    public void setUserProfileDTO(UserProfileDTO userProfileDTO) {
+        this.userProfileDTO = userProfileDTO;
+    }
+
     public LeadDTO getLeadDTO() {
         return leadDTO;
     }

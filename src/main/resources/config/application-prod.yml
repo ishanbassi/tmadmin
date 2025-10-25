@@ -135,11 +135,25 @@ jhipster:
 # More documentation is available at:
 # https://www.jhipster.tech/common-application-properties/
 # ===================================================================
+
 application:
   captcha:
     url: ishanbassi23@gmail.com
     userId: Gm0iz1chYVbJ1En2QzG8
     apiKey: https://api.apitruecaptcha.org/one/gettext
   admin-notifications-email-address:
-    - support@trademarx.in
-# application:
+    - ishanbassi23@gmail.com
+  razorpay:
+    key-id: rzp_test_RGemw0gmJ3U08S
+    key-secret: S3TvQC6miKsJlK6dfz0t1Vr6
+    company-name: Trademarx
+    currency: INR
+    base-url: https://api.razorpay.com/v1
+  google-captcha:
+    site-key: 6LcTLeYrAAAAACoTM9NIteBSX7ucj0ZRqDmQJF82
+    secret-key: 6LcTLeYrAAAAAC1u_J-lffNhAIeLbdcG71JB3v4Z
+    server-verify-url: https://www.google.com/recaptcha/api/siteverify
+file-upload-base-path: /opt/application/staging/files/
+pdf-file-base-path: /opt/application/staging/pdfs/
+errors-file-base-path: /opt/application/staging/errors/
+document-base-path: /opt/application/staging/documents/

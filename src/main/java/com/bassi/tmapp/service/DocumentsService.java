@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,6 +181,10 @@ public class DocumentsService {
 
     public Optional<DocumentsDTO> findByTrademark(TrademarkDTO trademarkDto) {
         return findByTrademark(trademarkMapper.toEntity(trademarkDto));
+    }
+
+    public List<DocumentsDTO> findListByTrademark(TrademarkDTO trademarkDto) {
+        return documentsRepository.findByTrademark(trademarkMapper.toEntity(trademarkDto)).stream().map(documentsMapper::toDto).toList();
     }
 
     private void deleteDocumentFile(String filePath) {

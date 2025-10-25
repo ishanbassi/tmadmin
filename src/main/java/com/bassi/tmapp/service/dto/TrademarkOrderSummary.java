@@ -11,6 +11,15 @@ public class TrademarkOrderSummary {
     private List<OrderSummary> orderSummaries;
     private BigDecimal totalFees;
     private DocumentsDTO documentsDTO;
+    private UserProfileDTO userProfileDTO;
+
+    public UserProfileDTO getUserProfileDTO() {
+        return userProfileDTO;
+    }
+
+    public void setUserProfileDTO(UserProfileDTO userProfileDTO) {
+        this.userProfileDTO = userProfileDTO;
+    }
 
     public DocumentsDTO getDocumentsDTO() {
         return documentsDTO;

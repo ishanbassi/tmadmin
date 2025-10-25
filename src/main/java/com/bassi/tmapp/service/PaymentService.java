@@ -2,6 +2,7 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Payment;
 import com.bassi.tmapp.repository.PaymentRepository;
+import com.bassi.tmapp.repository.UserProfileRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.dto.PaymentDTO;
@@ -9,6 +10,7 @@ import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary.OrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.mapper.PaymentMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import java.math.BigDecimal;
@@ -45,18 +47,22 @@ public class PaymentService {
 
     private final DocumentsService documentsService;
 
+    private final UserProfileService userProfileService;
+
     public PaymentService(
         PaymentRepository paymentRepository,
         PaymentMapper paymentMapper,
         TrademarkService trademarkService,
         LeadService leadService,
-        DocumentsService documentsService
+        DocumentsService documentsService,
+        UserProfileService userProfileService
     ) {
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
         this.trademarkService = trademarkService;
         this.leadService = leadService;
         this.documentsService = documentsService;
+        this.userProfileService = userProfileService;
     }
 
     /**
@@ -161,6 +167,8 @@ public class PaymentService {
     }
 
     public TrademarkOrderSummary generateTrademarkOrderSummary(PaymentDTO paymentDTO) {
+        TrademarkOrderSummary trademarkOrderSummary = new TrademarkOrderSummary();
+
         if (paymentDTO.getTrademark() == null || paymentDTO.getTrademark().getId() == null) {
             throw new InternalServerAlertException("Trademark Entity is null");
         }
@@ -172,17 +180,21 @@ public class PaymentService {
         if (trademarkDTO == null || trademarkDTO.getId() == null) {
             throw new InternalServerAlertException("Error Generating Order Summary. Please contact.");
         }
-        if (trademarkDTO.getLead() == null) {
-            throw new InternalServerAlertException("Error Generating Order Summary. No lead detail found");
-        }
-        Optional<LeadDTO> optionalLeadDTO = leadService.findOne(trademarkDTO.getLead().getId());
-        if (optionalLeadDTO.isEmpty()) {
-            throw new InternalServerAlertException("Error Generating Order Summary. No lead detail found");
+        if (trademarkDTO.getLead() == null && trademarkDTO.getUser() == null) {
+            throw new InternalServerAlertException("Error Generating Order Summary. No lead or user detail found");
         }
 
-        TrademarkOrderSummary trademarkOrderSummary = new TrademarkOrderSummary();
+        if (trademarkDTO.getLead() != null) {
+            Optional<LeadDTO> optionalLeadDTO = leadService.findOne(trademarkDTO.getLead().getId());
+            trademarkOrderSummary.setLeadDTO(optionalLeadDTO.get());
+        }
+
+        if (trademarkDTO.getUser() != null) {
+            Optional<UserProfileDTO> userProfileDTO = userProfileService.findOne(trademarkDTO.getUser().getId());
+            userProfileDTO.ifPresent(trademarkOrderSummary::setUserProfileDTO);
+        }
+
         trademarkOrderSummary.setTrademarkDTO(trademarkDTO);
-        trademarkOrderSummary.setLeadDTO(optionalLeadDTO.get());
         trademarkOrderSummary.setPaymentDTO(paymentDTO);
 
         Optional<DocumentsDTO> optionalDocument = documentsService.findByTrademark(trademarkDTO);

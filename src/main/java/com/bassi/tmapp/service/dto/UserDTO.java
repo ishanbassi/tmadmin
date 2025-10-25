@@ -27,6 +27,8 @@ public class UserDTO implements Serializable {
 
     private Set<Authority> authorities;
 
+    private Set<String> authoritiesStr;
+
     public UserDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -92,6 +94,22 @@ public class UserDTO implements Serializable {
 
     public static long getSerialversionuid() {
         return serialVersionUID;
+    }
+
+    public Set<String> getAuthoritiesStr() {
+        return authoritiesStr;
+    }
+
+    public void setAuthoritiesStr(Set<String> authoritiesStr) {
+        this.authoritiesStr = authoritiesStr;
+    }
+
+    public Set<Authority> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override

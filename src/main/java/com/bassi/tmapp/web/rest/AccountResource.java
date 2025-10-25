@@ -2,6 +2,7 @@ package com.bassi.tmapp.web.rest;
 
 import com.bassi.tmapp.config.ApplicationProperties;
 import com.bassi.tmapp.domain.User;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.repository.UserRepository;
 import com.bassi.tmapp.security.SecurityUtils;
 import com.bassi.tmapp.service.CurrentUserService;
@@ -236,7 +237,8 @@ public class AccountResource {
 
     @GetMapping("/current-user")
     public ResponseEntity<UserProfileDTO> getCurrentUser() {
-        UserProfileDTO userProfileDTO = userProfileMapper.toDto(currentUserService.getCurrentUserProfile());
+        UserProfile userProfile = currentUserService.getCurrentUserProfile();
+        UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
         return ResponseEntity.ok(userProfileDTO);
     }
 }

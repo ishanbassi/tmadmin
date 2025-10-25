@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
+    @EntityGraph(attributePaths = "user")
     @Query("SELECT up FROM UserProfile up WHERE  up.user.login= ?1")
     Optional<UserProfile> findByUserEmail(String userLogin);
 }

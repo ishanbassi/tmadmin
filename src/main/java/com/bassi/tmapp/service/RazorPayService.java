@@ -133,13 +133,16 @@ public class RazorPayService {
             paymentService.save(payment);
         }
         payment = fetchPaymentStatus(razorPayOrderResponse, payment);
-        UserProfileDTO userProfileDTO = userProfileService.save(payment, razorPayOrderResponse.getLeadDTO());
-        JWTToken token = jwtTokenService.createTokenWithoutPassword(userProfileDTO.getUser());
-
         PaymentConfirmationDto paymentConfirmationDto = new PaymentConfirmationDto();
+        if (razorPayOrderResponse.getUserProfileDTO() == null) {
+            log.info("Creating a user profile for anonymous user using leadDto: {}", razorPayOrderResponse.getLeadDTO());
+            UserProfileDTO userProfileDTO = userProfileService.save(payment, razorPayOrderResponse.getLeadDTO());
+            JWTToken token = jwtTokenService.createTokenWithoutPassword(userProfileDTO.getUser());
+            paymentConfirmationDto.setToken(token);
+            paymentConfirmationDto.setUserProfileDTO(userProfileDTO);
+        }
+
         paymentConfirmationDto.setStatus(payment.getStatus());
-        paymentConfirmationDto.setToken(token);
-        paymentConfirmationDto.setUserProfileDTO(userProfileDTO);
         return paymentConfirmationDto;
     }
 
