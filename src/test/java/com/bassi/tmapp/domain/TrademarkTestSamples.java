@@ -26,7 +26,6 @@ public class TrademarkTestSamples {
             .journalNo(1)
             .usage("usage1")
             .associatedTms("associatedTms1")
-            .trademarkStatus("trademarkStatus1")
             .pageNo(1);
     }
 
@@ -45,7 +44,6 @@ public class TrademarkTestSamples {
             .journalNo(2)
             .usage("usage2")
             .associatedTms("associatedTms2")
-            .trademarkStatus("trademarkStatus2")
             .pageNo(2);
     }
 
@@ -64,7 +62,6 @@ public class TrademarkTestSamples {
             .journalNo(intCount.incrementAndGet())
             .usage(UUID.randomUUID().toString())
             .associatedTms(UUID.randomUUID().toString())
-            .trademarkStatus(UUID.randomUUID().toString())
             .pageNo(intCount.incrementAndGet());
     }
 }

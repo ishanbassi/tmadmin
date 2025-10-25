@@ -2,6 +2,7 @@ package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -48,7 +49,7 @@ public class TrademarkDTO implements Serializable {
 
     private String associatedTms;
 
-    private String trademarkStatus;
+    private TrademarkStatus trademarkStatus;
 
     private ZonedDateTime createdDate;
 
@@ -198,11 +199,11 @@ public class TrademarkDTO implements Serializable {
         this.associatedTms = associatedTms;
     }
 
-    public String getTrademarkStatus() {
+    public TrademarkStatus getTrademarkStatus() {
         return trademarkStatus;
     }
 
-    public void setTrademarkStatus(String trademarkStatus) {
+    public void setTrademarkStatus(TrademarkStatus trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
 
