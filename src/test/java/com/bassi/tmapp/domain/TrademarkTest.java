@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import static com.bassi.tmapp.domain.DocumentsTestSamples.*;
 import static com.bassi.tmapp.domain.LeadTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkClassTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkPlanTestSamples.*;
@@ -80,5 +81,27 @@ class TrademarkTest {
 
         trademark.setTrademarkClasses(new HashSet<>());
         assertThat(trademark.getTrademarkClasses()).doesNotContain(trademarkClassBack);
+    }
+
+    @Test
+    void documentsTest() {
+        Trademark trademark = getTrademarkRandomSampleGenerator();
+        Documents documentsBack = getDocumentsRandomSampleGenerator();
+
+        trademark.addDocuments(documentsBack);
+        assertThat(trademark.getDocuments()).containsOnly(documentsBack);
+        assertThat(documentsBack.getTrademark()).isEqualTo(trademark);
+
+        trademark.removeDocuments(documentsBack);
+        assertThat(trademark.getDocuments()).doesNotContain(documentsBack);
+        assertThat(documentsBack.getTrademark()).isNull();
+
+        trademark.documents(new HashSet<>(Set.of(documentsBack)));
+        assertThat(trademark.getDocuments()).containsOnly(documentsBack);
+        assertThat(documentsBack.getTrademark()).isEqualTo(trademark);
+
+        trademark.setDocuments(new HashSet<>());
+        assertThat(trademark.getDocuments()).doesNotContain(documentsBack);
+        assertThat(documentsBack.getTrademark()).isNull();
     }
 }

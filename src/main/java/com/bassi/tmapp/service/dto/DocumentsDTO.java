@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.dto;
 
+import com.bassi.tmapp.domain.enumeration.DocumentStatus;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
@@ -27,7 +28,7 @@ public class DocumentsDTO implements Serializable {
 
     private Boolean deleted;
 
-    private String status;
+    private DocumentStatus status;
 
     private TrademarkDTO trademark;
 
@@ -95,11 +96,11 @@ public class DocumentsDTO implements Serializable {
         this.deleted = deleted;
     }
 
-    public String getStatus() {
+    public DocumentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(DocumentStatus status) {
         this.status = status;
     }
 

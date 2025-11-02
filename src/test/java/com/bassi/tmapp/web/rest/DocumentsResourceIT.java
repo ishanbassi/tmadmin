@@ -10,6 +10,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Documents;
+import com.bassi.tmapp.domain.enumeration.DocumentStatus;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.bassi.tmapp.repository.DocumentsRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
@@ -61,8 +62,8 @@ class DocumentsResourceIT {
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
 
-    private static final String DEFAULT_STATUS = "AAAAAAAAAA";
-    private static final String UPDATED_STATUS = "BBBBBBBBBB";
+    private static final DocumentStatus DEFAULT_STATUS = DocumentStatus.UPLOADED;
+    private static final DocumentStatus UPDATED_STATUS = DocumentStatus.UNDER_REVIEW;
 
     private static final String ENTITY_API_URL = "/api/documents";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
@@ -199,7 +200,7 @@ class DocumentsResourceIT {
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
-            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS)));
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 
     @Test
@@ -221,7 +222,7 @@ class DocumentsResourceIT {
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
-            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS));
+            .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
 
     @Test

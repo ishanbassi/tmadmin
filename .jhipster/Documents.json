@@ -36,7 +36,8 @@
     },
     {
       "fieldName": "status",
-      "fieldType": "String"
+      "fieldType": "DocumentStatus",
+      "fieldValues": "UPLOADED,UNDER_REVIEW,APPROVED,REJECTED,REUPLOAD_REQUESTED,DELETED"
     }
   ],
   "name": "Documents",
@@ -48,6 +49,7 @@
         "onUpdate": "CASCADE"
       },
       "otherEntityName": "trademark",
+      "otherEntityRelationshipName": "documents",
       "relationshipName": "trademark",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"

@@ -103,7 +103,8 @@ public class TrademarkQueryService extends QueryService<Trademark> {
                 ),
                 buildSpecification(criteria.getTrademarkClassesId(), root ->
                     root.join(Trademark_.trademarkClasses, JoinType.LEFT).get(TrademarkClass_.id)
-                )
+                ),
+                buildSpecification(criteria.getDocumentsId(), root -> root.join(Trademark_.documents, JoinType.LEFT).get(Documents_.id))
             );
         }
         return specification;

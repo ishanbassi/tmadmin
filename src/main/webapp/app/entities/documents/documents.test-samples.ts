@@ -11,7 +11,7 @@ export const sampleWithPartialData: IDocuments = {
   documentType: 'SIGNED_POA',
   fileName: 'enthusiastically inside patiently',
   deleted: false,
-  status: 'till overheard',
+  status: 'APPROVED',
 };
 
 export const sampleWithFullData: IDocuments = {
@@ -23,7 +23,7 @@ export const sampleWithFullData: IDocuments = {
   createdDate: dayjs('2025-06-13T14:27'),
   modifiedDate: dayjs('2025-06-13T10:51'),
   deleted: false,
-  status: 'phew hello',
+  status: 'REJECTED',
 };
 
 export const sampleWithNewData: NewDocuments = {

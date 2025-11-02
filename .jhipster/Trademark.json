@@ -137,6 +137,13 @@
       "relationshipName": "trademarkClasses",
       "relationshipSide": "left",
       "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "documents",
+      "otherEntityRelationshipName": "trademark",
+      "relationshipName": "documents",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
     }
   ],
   "searchEngine": "no",

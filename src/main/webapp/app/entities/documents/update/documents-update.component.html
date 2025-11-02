@@ -84,7 +84,24 @@
 
         <div class="mb-3">
           <label class="form-label" for="field_status">Status</label>
-          <input type="text" class="form-control" name="status" id="field_status" data-cy="status" formControlName="status" />
+          <select class="form-control" name="status" formControlName="status" id="field_status" data-cy="status">
+            <option [ngValue]="null"></option>
+            @for (documentStatus of documentStatusValues; track $index) {
+              <option [value]="documentStatus">
+                {{
+                  {
+                    null: '',
+                    UPLOADED: 'UPLOADED',
+                    UNDER_REVIEW: 'UNDER_REVIEW',
+                    APPROVED: 'APPROVED',
+                    REJECTED: 'REJECTED',
+                    REUPLOAD_REQUESTED: 'REUPLOAD_REQUESTED',
+                    DELETED: 'DELETED',
+                  }[documentStatus]
+                }}
+              </option>
+            }
+          </select>
         </div>
 
         <div class="mb-3">

@@ -181,7 +181,7 @@ entity Documents{
 	createdDate ZonedDateTime
     modifiedDate ZonedDateTime
     deleted Boolean
-    status String
+    status DocumentStatus
 	
 }
 
@@ -284,6 +284,16 @@ enum DocumentType {
     SIGNED_POA
 }
 
+enum DocumentStatus {
+	UPLOADED,
+	UNDER_REVIEW,
+	APPROVED,
+	REJECTED,
+	REUPLOAD_REQUESTED,
+    DELETED
+
+}
+
 
 
 
@@ -293,7 +303,7 @@ relationship ManyToOne{
     PublishedTm { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
     Lead {assignedTo} to  @OnDelete("CASCADE") @OnUpdate("CASCADE") Employee
     Company { user } to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
-    Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
+    Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark{documents}
     Payment {trademark} to @OnUpdate("CASCADE") Trademark
     Trademark {trademarkPlan} to @OnUpdate("CASCADE") TrademarkPlan
 

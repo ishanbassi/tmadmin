@@ -49,7 +49,17 @@
           </dd>
           <dt><span>Status</span></dt>
           <dd>
-            <span>{{ documentsRef.status }}</span>
+            <span>{{
+              {
+                null: '',
+                UPLOADED: 'UPLOADED',
+                UNDER_REVIEW: 'UNDER_REVIEW',
+                APPROVED: 'APPROVED',
+                REJECTED: 'REJECTED',
+                REUPLOAD_REQUESTED: 'REUPLOAD_REQUESTED',
+                DELETED: 'DELETED',
+              }[documentsRef.status ?? 'null']
+            }}</span>
           </dd>
           <dt><span>Trademark</span></dt>
           <dd>
