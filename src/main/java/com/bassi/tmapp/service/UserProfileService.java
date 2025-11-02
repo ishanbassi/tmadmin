@@ -38,16 +38,20 @@ public class UserProfileService {
 
     private final LeadService leadService;
 
+    private final MailService mailService;
+
     public UserProfileService(
         UserProfileRepository userProfileRepository,
         UserProfileMapper userProfileMapper,
         UserService userService,
-        LeadService leadService
+        LeadService leadService,
+        MailService mailService
     ) {
         this.userProfileRepository = userProfileRepository;
         this.userProfileMapper = userProfileMapper;
         this.userService = userService;
         this.leadService = leadService;
+        this.mailService = mailService;
     }
 
     /**
@@ -152,6 +156,8 @@ public class UserProfileService {
         userProfile.setPhoneNumber(managedUserVMExtended.getPhoneNumber());
         userProfile.setEmail(managedUserVMExtended.getEmail());
         userProfile.setUser(user);
-        return save(userProfileMapper.toDto(userProfile));
+        UserProfileDTO userProfileDto = save(userProfileMapper.toDto(userProfile));
+        mailService.sendPortalMemberCreationEmail(userProfileMapper.toEntity(userProfileDto).getUser());
+        return userProfileDto;
     }
 }

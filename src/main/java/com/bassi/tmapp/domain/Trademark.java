@@ -538,6 +538,7 @@ public class Trademark implements Serializable {
     private void beforeSave() {
         this.createdDate = ZonedDateTime.now();
         this.modifiedDate = ZonedDateTime.now();
+        this.trademarkStatus = TrademarkStatus.DRAFT;
     }
 
     @PreUpdate

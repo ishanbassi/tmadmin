@@ -12,6 +12,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
     @EntityGraph(attributePaths = "user")
-    @Query("SELECT up FROM UserProfile up WHERE  up.user.login= ?1")
+    @Query("SELECT up FROM UserProfile up LEFT JOIN FETCH up.user u LEFT JOIN FETCH u.authorities WHERE  up.user.login= ?1 ")
     Optional<UserProfile> findByUserEmail(String userLogin);
 }

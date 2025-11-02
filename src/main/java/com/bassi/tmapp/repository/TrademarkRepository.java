@@ -2,7 +2,9 @@ package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.UserProfile;
+import com.bassi.tmapp.service.dto.StatusCountDTO;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -31,4 +33,12 @@ public interface TrademarkRepository
     }
 
     List<Trademark> findByUser(UserProfile user);
+
+    @Query(
+        value = "SELECT new com.bassi.tmapp.service.dto.StatusCountDTO(COALESCE(CAST(tm.trademarkStatus AS string), 'UNKNOWN') , CAST(COUNT(tm.id) AS long)) FROM Trademark tm WHERE tm.user = ?1 AND tm.deleted = false GROUP BY tm.trademarkStatus"
+    )
+    List<StatusCountDTO> countByUserGroupByStatus(UserProfile userProfile);
+
+    @Query(value = "SELECT tm FROM Trademark tm WHERE tm.user= ?1 AND deleted=false ORDER BY createdDate LIMIT 5")
+    List<Trademark> findRecentTrademarkApplications(UserProfile user);
 }

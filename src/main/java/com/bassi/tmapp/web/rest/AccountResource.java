@@ -241,4 +241,16 @@ public class AccountResource {
         UserProfileDTO userProfileDTO = userProfileMapper.toDto(userProfile);
         return ResponseEntity.ok(userProfileDTO);
     }
+
+    @PostMapping(path = "/portal/account/reset-password/init")
+    public void requestPortalPasswordReset(@RequestBody String mail) {
+        Optional<User> user = userService.requestPasswordReset(mail);
+        if (user.isPresent()) {
+            mailService.sendPortalPasswordResetMail(user.get());
+        } else {
+            // Pretend the request has been successful to prevent checking which emails really exist
+            // but log that an invalid attempt has been made
+            LOG.warn("Password reset requested for non existing mail");
+        }
+    }
 }

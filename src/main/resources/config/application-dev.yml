@@ -46,17 +46,22 @@ spring:
     contexts: dev
     enabled: true
   mail:
-    host: smtp.hostinger.com
-    port: 465
-    username: support@trademarx.in
-    password: Ish@n070720
+    host: smtp.zeptomail.in
+    port: 587
+    username: emailapikey
+    password: PHtE6r1YF+Hj2m57pkRRtPLtEM+iZ44p/+4xLAhP5t5DCaMDH00A/dwtkDfkrk1+B6RDR6OczN1q5L/KsriGczntN29PDWqyqK3sx/VYSPOZsbq6x00bsV4cdkPYVYTqc9Jj1SDeu9bTNA==
     protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
-          ssl:
+          connectiontimeout: 15000
+          timeout: 15000
+          writetimeout: 15000
+          starttls:
             enable: true
+            required: true
+    from: support@trademarx.in
   messages:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
@@ -98,7 +103,7 @@ jhipster:
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: http://127.0.0.1:8080
+    base-url: http://localhost:4200
     from: support@trademarx.in
   logging:
     use-json-format: false # By default, logs are not in Json format

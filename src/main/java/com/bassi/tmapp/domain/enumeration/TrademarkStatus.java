@@ -18,4 +18,5 @@ public enum TrademarkStatus {
     REJECTED,
     EXPIRED,
     RENEWED,
+    UNKNOWN,
 }

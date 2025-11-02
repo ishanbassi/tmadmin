@@ -158,4 +158,9 @@ public class TrademarkService {
         List<Trademark> trademarks = trademarkRepository.findByUser(userProfile);
         return trademarkMapper.toDto(trademarks);
     }
+
+    public List<TrademarkDTO> getTrademarkForCurrentUser(Boolean documents) {
+        if (documents) {}
+        return getTrademarkForCurrentUser();
+    }
 }

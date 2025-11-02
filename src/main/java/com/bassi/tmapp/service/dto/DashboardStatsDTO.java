@@ -2,37 +2,138 @@ package com.bassi.tmapp.service.dto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class DashboardStatsDTO {
 
     private UserSummaryDTO userSummary;
     private List<TrademarkDTO> recentApplications;
-    private ApplicationStatsDTO stats;
+    private List<StatusCountDTO> stats;
     private List<TaskDTO> pendingTasks;
 
-    public class UserSummaryDTO {
+    public List<StatusCountDTO> getStats() {
+        return stats;
+    }
 
-        private String name;
+    public void setStats(List<StatusCountDTO> stats) {
+        this.stats = stats;
+    }
+
+    public UserSummaryDTO getUserSummary() {
+        return userSummary;
+    }
+
+    public void setUserSummary(UserSummaryDTO userSummary) {
+        this.userSummary = userSummary;
+    }
+
+    public List<TrademarkDTO> getRecentApplications() {
+        return recentApplications;
+    }
+
+    public void setRecentApplications(List<TrademarkDTO> recentApplications) {
+        this.recentApplications = recentApplications;
+    }
+
+    public List<TaskDTO> getPendingTasks() {
+        return pendingTasks;
+    }
+
+    public void setPendingTasks(List<TaskDTO> pendingTasks) {
+        this.pendingTasks = pendingTasks;
+    }
+
+    public static class UserSummaryDTO {
+
+        private String firstName;
+        private String lastName;
         private String email;
         private LocalDate onboardingDate;
         private boolean profileComplete;
         private String planType;
+        private String phoneNumber;
 
-        UserSummaryDTO(String name, String email, LocalDate onboardingDate, boolean profileComplete, String planType) {
-            this.name = name;
+        public UserSummaryDTO() {}
+
+        public UserSummaryDTO(
+            String firstName,
+            String lastName,
+            String email,
+            LocalDate onboardingDate,
+            boolean profileComplete,
+            String planType
+        ) {
+            this.firstName = firstName;
+            this.lastName = lastName;
             this.email = email;
             this.onboardingDate = onboardingDate;
             this.profileComplete = profileComplete;
+            this.planType = planType;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public String getEmail() {
+            return email;
+        }
+
+        public void setEmail(String email) {
+            this.email = email;
+        }
+
+        public LocalDate getOnboardingDate() {
+            return onboardingDate;
+        }
+
+        public void setOnboardingDate(LocalDate onboardingDate) {
+            this.onboardingDate = onboardingDate;
+        }
+
+        public boolean isProfileComplete() {
+            return profileComplete;
+        }
+
+        public void setProfileComplete(boolean profileComplete) {
+            this.profileComplete = profileComplete;
+        }
+
+        public String getPlanType() {
+            return planType;
+        }
+
+        public void setPlanType(String planType) {
             this.planType = planType;
         }
     }
 
     public static class TaskDTO {
 
-        private String title; // "Upload Power of Attorney"
-        private String description; // "Please upload POA for Application #12345"
-        private String type; // "DOCUMENT_UPLOAD", "PAYMENT_PENDING", etc.
-        private String link; // frontend route
+        private String title;
+        private String description;
+        private String type;
+        private String link;
 
         public TaskDTO(String title, String description, String type, String link) {
             this.title = title;
@@ -40,14 +141,37 @@ public class DashboardStatsDTO {
             this.type = type;
             this.link = link;
         }
-    }
 
-    public class ApplicationStatsDTO {
+        public String getTitle() {
+            return title;
+        }
 
-        private long totalFiled;
-        private long underExamination;
-        private long objected;
-        private long registered;
-        private long abandoned;
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getLink() {
+            return link;
+        }
+
+        public void setLink(String link) {
+            this.link = link;
+        }
     }
 }

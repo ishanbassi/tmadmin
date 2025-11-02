@@ -1,0 +1,100 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" th:lang="${#locale.language}" lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="#{email.portal.activation.title}">Welcome to Trademarx</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+    <style>
+      body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        margin: 0;
+        padding: 0;
+      }
+      .email-wrapper {
+        max-width: 600px;
+        margin: 40px auto;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      }
+      .email-header {
+        background-color: #1b263b;
+        color: #ffffff;
+        text-align: center;
+        padding: 30px 20px;
+      }
+      .email-header h1 {
+        margin: 0;
+        font-size: 24px;
+      }
+      .email-body {
+        padding: 30px 25px;
+      }
+      .email-body h2 {
+        color: #1b263b;
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+      .email-body p {
+        font-size: 16px;
+        line-height: 1.6;
+        margin: 10px 0;
+      }
+      .btn {
+        display: inline-block;
+        background-color: #0078ff;
+        color: #ffffff !important;
+        text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 6px;
+        margin-top: 20px;
+        font-weight: 500;
+      }
+      .btn:hover {
+        background-color: #005dc1;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px;
+        font-size: 13px;
+        color: #777;
+        background: #f2f4f6;
+      }
+      .footer a {
+        color: #0078ff;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-wrapper">
+      <div class="email-header">
+        <h1>Welcome to Trademarx!</h1>
+      </div>
+      <div class="email-body">
+        <h2 th:text="${'Hi ' + user.firstName + ','}">Hi,</h2>
+        <p>
+          Thank you for creating your account on <strong>Trademarx.in</strong> — your trusted partner for simplified trademark registration
+          and management.
+        </p>
+        <p>You're just one step away from getting started. Please login from your email address by clicking the button below:</p>
+        <a th:with="url=(@{|${baseUrl}/login|})" th:href="${url}" class="btn">Login</a>
+        <p>If you didn’t create an account with Trademarx, you can safely ignore this email.</p>
+        <p>We’re excited to have you on board! 🚀</p>
+        <p>
+          Best regards,<br />
+          <strong>The Trademarx Team</strong>
+        </p>
+      </div>
+      <div class="footer">
+        <p>&copy; <span th:text="${date.year}">2025 </span>Trademarx.in. All rights reserved.</p>
+        <p><a href="https://trademarx.in">Visit Website</a> | <a href="mailto:support@trademarx.in">Contact Support</a></p>
+      </div>
+    </div>
+  </body>
+</html>

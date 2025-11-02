@@ -1,10 +1,14 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.config.Constants;
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.User;
+import com.bassi.tmapp.service.dto.UserDTO;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 import org.slf4j.Logger;
@@ -95,12 +99,16 @@ public class MailService {
             LOG.debug("Email doesn't exist for user '{}'", user.getLogin());
             return;
         }
-        Locale locale = Locale.forLanguageTag(user.getLangKey());
+        String langKey = Constants.DEFAULT_LANGUAGE;
+        Locale locale = Locale.forLanguageTag(langKey);
         Context context = new Context(locale);
+        LocalDate date = LocalDate.now();
         context.setVariable(USER, user);
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        context.setVariable("date", date);
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
+
         sendEmailSync(user.getEmail(), subject, content, false, true);
     }
 
@@ -148,5 +156,17 @@ public class MailService {
     public void sendPasswordResetMail(User user) {
         LOG.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplateSync(user, "mail/passwordResetEmail", "email.reset.title");
+    }
+
+    @Async
+    public void sendPortalMemberCreationEmail(User user) {
+        LOG.debug("Sending creation email to '{}'", user.getEmail());
+        sendEmailFromTemplateSync(user, "mail/portalCreationEmail", "email.portal.activation.title");
+    }
+
+    @Async
+    public void sendPortalPasswordResetMail(User user) {
+        LOG.debug("Sending password reset email to '{}'", user.getEmail());
+        sendEmailFromTemplateSync(user, "mail/portalPasswordResetEmail", "email.reset.title");
     }
 }

@@ -5,6 +5,7 @@ import com.bassi.tmapp.repository.UserProfileRepository;
 import com.bassi.tmapp.security.SecurityUtils;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CurrentUserService {
@@ -15,6 +16,7 @@ public class CurrentUserService {
         this.userProfileService = userProfileService;
     }
 
+    @Transactional(readOnly = true)
     public UserProfile getCurrentUserProfile() {
         String userLogin = SecurityUtils.getCurrentUserLogin()
             .orElseThrow(() -> new InternalServerAlertException("User could not be found"));
