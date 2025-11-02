@@ -52,7 +52,7 @@ public class TrademarkClass implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "trademarkClasses")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses", "documents" }, allowSetters = true)
     private Set<Trademark> trademarks = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

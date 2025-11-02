@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import com.bassi.tmapp.domain.enumeration.DocumentStatus;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
@@ -47,11 +48,12 @@ public class Documents implements Serializable {
     @Column(name = "deleted")
     private Boolean deleted;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private DocumentStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses", "documents" }, allowSetters = true)
     private Trademark trademark;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
@@ -160,16 +162,16 @@ public class Documents implements Serializable {
         this.deleted = deleted;
     }
 
-    public String getStatus() {
+    public DocumentStatus getStatus() {
         return this.status;
     }
 
-    public Documents status(String status) {
+    public Documents status(DocumentStatus status) {
         this.setStatus(status);
         return this;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(DocumentStatus status) {
         this.status = status;
     }
 

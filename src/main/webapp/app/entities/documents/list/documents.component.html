@@ -124,7 +124,19 @@
               <td>{{ documents.createdDate | formatMediumDatetime }}</td>
               <td>{{ documents.modifiedDate | formatMediumDatetime }}</td>
               <td>{{ documents.deleted }}</td>
-              <td>{{ documents.status }}</td>
+              <td>
+                {{
+                  {
+                    null: '',
+                    UPLOADED: 'UPLOADED',
+                    UNDER_REVIEW: 'UNDER_REVIEW',
+                    APPROVED: 'APPROVED',
+                    REJECTED: 'REJECTED',
+                    REUPLOAD_REQUESTED: 'REUPLOAD_REQUESTED',
+                    DELETED: 'DELETED',
+                  }[documents.status ?? 'null']
+                }}
+              </td>
               <td>
                 @if (documents.trademark) {
                   <div>

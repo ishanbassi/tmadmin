@@ -122,6 +122,11 @@ public class Trademark implements Serializable {
     @JsonIgnoreProperties(value = { "trademarks" }, allowSetters = true)
     private Set<TrademarkClass> trademarkClasses = new HashSet<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "trademark")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "trademark" }, allowSetters = true)
+    private Set<Documents> documents = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -482,6 +487,37 @@ public class Trademark implements Serializable {
 
     public Trademark removeTrademarkClasses(TrademarkClass trademarkClass) {
         this.trademarkClasses.remove(trademarkClass);
+        return this;
+    }
+
+    public Set<Documents> getDocuments() {
+        return this.documents;
+    }
+
+    public void setDocuments(Set<Documents> documents) {
+        if (this.documents != null) {
+            this.documents.forEach(i -> i.setTrademark(null));
+        }
+        if (documents != null) {
+            documents.forEach(i -> i.setTrademark(this));
+        }
+        this.documents = documents;
+    }
+
+    public Trademark documents(Set<Documents> documents) {
+        this.setDocuments(documents);
+        return this;
+    }
+
+    public Trademark addDocuments(Documents documents) {
+        this.documents.add(documents);
+        documents.setTrademark(this);
+        return this;
+    }
+
+    public Trademark removeDocuments(Documents documents) {
+        this.documents.remove(documents);
+        documents.setTrademark(null);
         return this;
     }
 
