@@ -71,6 +71,8 @@ public class TrademarkDTO implements Serializable {
 
     private Set<TrademarkClassDTO> trademarkClasses = new HashSet<>();
 
+    private Set<DocumentsDTO> documents = new HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -285,6 +287,14 @@ public class TrademarkDTO implements Serializable {
 
     public void setTrademarkClasses(Set<TrademarkClassDTO> trademarkClasses) {
         this.trademarkClasses = trademarkClasses;
+    }
+
+    public Set<DocumentsDTO> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(Set<DocumentsDTO> documents) {
+        this.documents = documents;
     }
 
     @Override

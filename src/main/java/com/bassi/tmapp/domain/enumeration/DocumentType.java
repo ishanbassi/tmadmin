@@ -8,4 +8,5 @@ public enum DocumentType {
     LOGO,
     ADDRESS_PROOF,
     SIGNED_POA,
+    APPLICANT_IDENTITY,
 }

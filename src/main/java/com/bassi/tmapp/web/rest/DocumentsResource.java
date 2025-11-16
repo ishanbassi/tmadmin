@@ -174,4 +174,16 @@ public class DocumentsResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @PostMapping("/save")
+    public ResponseEntity<DocumentsDTO> createDocumentsAndSaveFile(@RequestBody DocumentsDTO documentsDTO) throws URISyntaxException {
+        LOG.debug("REST request to save Documents : {}", documentsDTO);
+        if (documentsDTO.getId() != null) {
+            throw new BadRequestAlertException("A new documents cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        documentsDTO = documentsService.saveDocumentAndSaveFile(documentsDTO);
+        return ResponseEntity.created(new URI("/api/documents/" + documentsDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, documentsDTO.getId().toString()))
+            .body(documentsDTO);
+    }
 }

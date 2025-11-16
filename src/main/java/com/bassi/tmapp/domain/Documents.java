@@ -2,6 +2,7 @@ package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.DocumentStatus;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -221,5 +222,17 @@ public class Documents implements Serializable {
             ", deleted='" + getDeleted() + "'" +
             ", status='" + getStatus() + "'" +
             "}";
+    }
+
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+        this.status = DocumentStatus.UPLOADED;
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
     }
 }

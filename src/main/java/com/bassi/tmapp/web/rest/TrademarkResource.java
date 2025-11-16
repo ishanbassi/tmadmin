@@ -251,7 +251,9 @@ public class TrademarkResource {
     }
 
     @GetMapping("/current-user")
-    public ResponseEntity<List<TrademarkDTO>> getTrademarkForCurrentUser(@RequestParam(value = "false") Boolean documents) {
+    public ResponseEntity<List<TrademarkDTO>> getTrademarkForCurrentUser(
+        @RequestParam(value = "documents", defaultValue = "false") Boolean documents
+    ) {
         List<TrademarkDTO> trademarks = trademarkService.getTrademarkForCurrentUser(documents);
         return ResponseEntity.ok().body(trademarks);
     }

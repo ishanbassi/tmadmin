@@ -32,6 +32,8 @@ public class DocumentsDTO implements Serializable {
 
     private TrademarkDTO trademark;
 
+    private byte[] file;
+
     public Long getId() {
         return id;
     }
@@ -110,6 +112,14 @@ public class DocumentsDTO implements Serializable {
 
     public void setTrademark(TrademarkDTO trademark) {
         this.trademark = trademark;
+    }
+
+    public byte[] getFile() {
+        return file;
+    }
+
+    public void setFile(byte[] file) {
+        this.file = file;
     }
 
     @Override

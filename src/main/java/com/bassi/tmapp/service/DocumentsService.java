@@ -196,4 +196,8 @@ public class DocumentsService {
             LOG.error("Failed to delete bill File because file does not exist , filename:  {}", filePath);
         }
     }
+
+    public DocumentsDTO saveDocumentAndSaveFile(DocumentsDTO documentsDTO) {
+        return saveDocumentAndSaveFile(documentsDTO, documentsDTO.getFile());
+    }
 }

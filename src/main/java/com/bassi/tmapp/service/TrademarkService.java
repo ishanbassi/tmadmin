@@ -5,6 +5,7 @@ import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.TrademarkPlan;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import tech.jhipster.service.filter.LongFilter;
 
 /**
  * Service Implementation for managing {@link com.bassi.tmapp.domain.Trademark}.
@@ -46,16 +48,20 @@ public class TrademarkService {
 
     private final CurrentUserService currentUserService;
 
+    private final TrademarkQueryService trademarkQueryService;
+
     public TrademarkService(
         TrademarkRepository trademarkRepository,
         TrademarkMapper trademarkMapper,
         DocumentsService documentsService,
-        CurrentUserService currentUserService
+        CurrentUserService currentUserService,
+        TrademarkQueryService trademarkQueryService
     ) {
         this.trademarkRepository = trademarkRepository;
         this.trademarkMapper = trademarkMapper;
         this.documentsService = documentsService;
         this.currentUserService = currentUserService;
+        this.trademarkQueryService = trademarkQueryService;
     }
 
     /**
@@ -160,7 +166,14 @@ public class TrademarkService {
     }
 
     public List<TrademarkDTO> getTrademarkForCurrentUser(Boolean documents) {
-        if (documents) {}
-        return getTrademarkForCurrentUser();
+        if (Boolean.FALSE.equals(documents)) {
+            return getTrademarkForCurrentUser();
+        }
+        UserProfile userProfile = currentUserService.getCurrentUserProfile();
+        TrademarkCriteria criteria = new TrademarkCriteria();
+        LongFilter filter = new LongFilter();
+        filter.setEquals(userProfile.getId());
+        criteria.setUserId(filter);
+        return trademarkQueryService.findByCriteria(criteria, Pageable.ofSize(20)).toList();
     }
 }
