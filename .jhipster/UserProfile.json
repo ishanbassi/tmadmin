@@ -88,6 +88,13 @@
       "relationshipSide": "left",
       "relationshipType": "one-to-one",
       "relationshipWithBuiltInEntity": true
+    },
+    {
+      "otherEntityName": "documents",
+      "otherEntityRelationshipName": "userProfile",
+      "relationshipName": "documents",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
     }
   ],
   "searchEngine": "no",

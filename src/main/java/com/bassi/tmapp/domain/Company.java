@@ -61,7 +61,7 @@ public class Company implements Serializable {
     private Boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "documents" }, allowSetters = true)
     private UserProfile user;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

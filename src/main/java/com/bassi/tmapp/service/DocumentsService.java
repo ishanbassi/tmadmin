@@ -7,8 +7,6 @@ import com.bassi.tmapp.service.mapper.DocumentsMapper;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,18 +72,6 @@ public class DocumentsService {
             })
             .map(documentsRepository::save)
             .map(documentsMapper::toDto);
-    }
-
-    /**
-     * Get all the documents.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Page<DocumentsDTO> findAll(Pageable pageable) {
-        LOG.debug("Request to get all Documents");
-        return documentsRepository.findAll(pageable).map(documentsMapper::toDto);
     }
 
     /**

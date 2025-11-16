@@ -1,7 +1,9 @@
 package com.bassi.tmapp.web.rest;
 
 import com.bassi.tmapp.repository.DocumentsRepository;
+import com.bassi.tmapp.service.DocumentsQueryService;
 import com.bassi.tmapp.service.DocumentsService;
+import com.bassi.tmapp.service.criteria.DocumentsCriteria;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -40,9 +42,16 @@ public class DocumentsResource {
 
     private final DocumentsRepository documentsRepository;
 
-    public DocumentsResource(DocumentsService documentsService, DocumentsRepository documentsRepository) {
+    private final DocumentsQueryService documentsQueryService;
+
+    public DocumentsResource(
+        DocumentsService documentsService,
+        DocumentsRepository documentsRepository,
+        DocumentsQueryService documentsQueryService
+    ) {
         this.documentsService = documentsService;
         this.documentsRepository = documentsRepository;
+        this.documentsQueryService = documentsQueryService;
     }
 
     /**
@@ -137,14 +146,31 @@ public class DocumentsResource {
      * {@code GET  /documents} : get all the documents.
      *
      * @param pageable the pagination information.
+     * @param criteria the criteria which the requested entities should match.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of documents in body.
      */
     @GetMapping("")
-    public ResponseEntity<List<DocumentsDTO>> getAllDocuments(@org.springdoc.core.annotations.ParameterObject Pageable pageable) {
-        LOG.debug("REST request to get a page of Documents");
-        Page<DocumentsDTO> page = documentsService.findAll(pageable);
+    public ResponseEntity<List<DocumentsDTO>> getAllDocuments(
+        DocumentsCriteria criteria,
+        @org.springdoc.core.annotations.ParameterObject Pageable pageable
+    ) {
+        LOG.debug("REST request to get Documents by criteria: {}", criteria);
+
+        Page<DocumentsDTO> page = documentsQueryService.findByCriteria(criteria, pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+
+    /**
+     * {@code GET  /documents/count} : count all the documents.
+     *
+     * @param criteria the criteria which the requested entities should match.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the count in body.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> countDocuments(DocumentsCriteria criteria) {
+        LOG.debug("REST request to count Documents by criteria: {}", criteria);
+        return ResponseEntity.ok().body(documentsQueryService.countByCriteria(criteria));
     }
 
     /**

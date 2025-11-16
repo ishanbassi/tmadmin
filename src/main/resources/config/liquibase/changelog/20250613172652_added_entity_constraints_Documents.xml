@@ -18,5 +18,14 @@
                                  onDelete="CASCADE"
                                  onUpdate="CASCADE"
                                  />
+
+        <addForeignKeyConstraint baseColumnNames="user_profile_id"
+                                 baseTableName="documents"
+                                 constraintName="fk_documents__user_profile_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_profile"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 />
     </changeSet>
 </databaseChangeLog>

@@ -56,6 +56,10 @@ public class Documents implements Serializable {
     @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses", "documents" }, allowSetters = true)
     private Trademark trademark;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "user", "documents" }, allowSetters = true)
+    private UserProfile userProfile;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
     public Long getId() {
@@ -185,6 +189,19 @@ public class Documents implements Serializable {
 
     public Documents trademark(Trademark trademark) {
         this.setTrademark(trademark);
+        return this;
+    }
+
+    public UserProfile getUserProfile() {
+        return this.userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public Documents userProfile(UserProfile userProfile) {
+        this.setUserProfile(userProfile);
         return this;
     }
 

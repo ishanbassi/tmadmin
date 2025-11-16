@@ -106,7 +106,7 @@ public class Trademark implements Serializable {
     private Lead lead;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "user" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "user", "documents" }, allowSetters = true)
     private UserProfile user;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -124,7 +124,7 @@ public class Trademark implements Serializable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "trademark")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    @JsonIgnoreProperties(value = { "trademark" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "trademark", "userProfile" }, allowSetters = true)
     private Set<Documents> documents = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

@@ -8,7 +8,7 @@
     {
       "fieldName": "documentType",
       "fieldType": "DocumentType",
-      "fieldValues": "OTHERS,LOGO,ADDRESS_PROOF,SIGNED_POA"
+      "fieldValues": "OTHERS,LOGO,ADDRESS_PROOF,SIGNED_POA,APPLICANT_IDENTITY"
     },
     {
       "fieldName": "fileContentType",
@@ -40,6 +40,7 @@
       "fieldValues": "UPLOADED,UNDER_REVIEW,APPROVED,REJECTED,REUPLOAD_REQUESTED,DELETED"
     }
   ],
+  "jpaMetamodelFiltering": true,
   "name": "Documents",
   "pagination": "infinite-scroll",
   "relationships": [
@@ -51,6 +52,17 @@
       "otherEntityName": "trademark",
       "otherEntityRelationshipName": "documents",
       "relationshipName": "trademark",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "userProfile",
+      "otherEntityRelationshipName": "documents",
+      "relationshipName": "userProfile",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

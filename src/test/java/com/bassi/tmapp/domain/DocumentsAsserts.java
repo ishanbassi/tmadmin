@@ -77,6 +77,7 @@ public class DocumentsAsserts {
     public static void assertDocumentsUpdatableRelationshipsEquals(Documents expected, Documents actual) {
         assertThat(actual)
             .as("Verify Documents relationships")
-            .satisfies(a -> assertThat(a.getTrademark()).as("check trademark").isEqualTo(expected.getTrademark()));
+            .satisfies(a -> assertThat(a.getTrademark()).as("check trademark").isEqualTo(expected.getTrademark()))
+            .satisfies(a -> assertThat(a.getUserProfile()).as("check userProfile").isEqualTo(expected.getUserProfile()));
     }
 }

@@ -1,9 +1,12 @@
 package com.bassi.tmapp.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -80,6 +83,11 @@ public class UserProfile implements Serializable {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
     private User user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userProfile")
+    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    @JsonIgnoreProperties(value = { "trademark", "userProfile" }, allowSetters = true)
+    private Set<Documents> documents = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -327,6 +335,37 @@ public class UserProfile implements Serializable {
 
     public UserProfile user(User user) {
         this.setUser(user);
+        return this;
+    }
+
+    public Set<Documents> getDocuments() {
+        return this.documents;
+    }
+
+    public void setDocuments(Set<Documents> documents) {
+        if (this.documents != null) {
+            this.documents.forEach(i -> i.setUserProfile(null));
+        }
+        if (documents != null) {
+            documents.forEach(i -> i.setUserProfile(this));
+        }
+        this.documents = documents;
+    }
+
+    public UserProfile documents(Set<Documents> documents) {
+        this.setDocuments(documents);
+        return this;
+    }
+
+    public UserProfile addDocuments(Documents documents) {
+        this.documents.add(documents);
+        documents.setUserProfile(this);
+        return this;
+    }
+
+    public UserProfile removeDocuments(Documents documents) {
+        this.documents.remove(documents);
+        documents.setUserProfile(null);
         return this;
     }
 
