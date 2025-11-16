@@ -16,7 +16,7 @@ export const sampleWithPartialData: IDocuments = {
 
 export const sampleWithFullData: IDocuments = {
   id: 13607,
-  documentType: 'ADDRESS_PROOF',
+  documentType: 'SIGNED_POA',
   fileContentType: 'phew',
   fileName: 'inasmuch',
   fileUrl: 'hmph drat',

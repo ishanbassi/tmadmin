@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DocumentsRepository extends JpaRepository<Documents, Long> {
+public interface DocumentsRepository extends JpaRepository<Documents, Long>, JpaSpecificationExecutor<Documents> {
     @Query(value = "SELECT d from Documents d WHERE d.trademark = ?1 AND d.documentType = ?2 ORDER BY d.createdDate LIMIT 1")
     Optional<Documents> findByTrademark(Trademark trademark, DocumentType documentType);
 

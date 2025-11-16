@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Documents;
+import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.DocumentStatus;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.bassi.tmapp.repository.DocumentsRepository;
@@ -55,9 +57,11 @@ class DocumentsResourceIT {
 
     private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
     private static final ZonedDateTime DEFAULT_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final ZonedDateTime SMALLER_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(-1L), ZoneOffset.UTC);
 
     private static final Boolean DEFAULT_DELETED = false;
     private static final Boolean UPDATED_DELETED = true;
@@ -223,6 +227,528 @@ class DocumentsResourceIT {
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.deleted").value(DEFAULT_DELETED))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
+    }
+
+    @Test
+    @Transactional
+    void getDocumentsByIdFiltering() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        Long id = documents.getId();
+
+        defaultDocumentsFiltering("id.equals=" + id, "id.notEquals=" + id);
+
+        defaultDocumentsFiltering("id.greaterThanOrEqual=" + id, "id.greaterThan=" + id);
+
+        defaultDocumentsFiltering("id.lessThanOrEqual=" + id, "id.lessThan=" + id);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByDocumentTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where documentType equals to
+        defaultDocumentsFiltering("documentType.equals=" + DEFAULT_DOCUMENT_TYPE, "documentType.equals=" + UPDATED_DOCUMENT_TYPE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByDocumentTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where documentType in
+        defaultDocumentsFiltering(
+            "documentType.in=" + DEFAULT_DOCUMENT_TYPE + "," + UPDATED_DOCUMENT_TYPE,
+            "documentType.in=" + UPDATED_DOCUMENT_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByDocumentTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where documentType is not null
+        defaultDocumentsFiltering("documentType.specified=true", "documentType.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileContentTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileContentType equals to
+        defaultDocumentsFiltering(
+            "fileContentType.equals=" + DEFAULT_FILE_CONTENT_TYPE,
+            "fileContentType.equals=" + UPDATED_FILE_CONTENT_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileContentTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileContentType in
+        defaultDocumentsFiltering(
+            "fileContentType.in=" + DEFAULT_FILE_CONTENT_TYPE + "," + UPDATED_FILE_CONTENT_TYPE,
+            "fileContentType.in=" + UPDATED_FILE_CONTENT_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileContentTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileContentType is not null
+        defaultDocumentsFiltering("fileContentType.specified=true", "fileContentType.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileContentTypeContainsSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileContentType contains
+        defaultDocumentsFiltering(
+            "fileContentType.contains=" + DEFAULT_FILE_CONTENT_TYPE,
+            "fileContentType.contains=" + UPDATED_FILE_CONTENT_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileContentTypeNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileContentType does not contain
+        defaultDocumentsFiltering(
+            "fileContentType.doesNotContain=" + UPDATED_FILE_CONTENT_TYPE,
+            "fileContentType.doesNotContain=" + DEFAULT_FILE_CONTENT_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileName equals to
+        defaultDocumentsFiltering("fileName.equals=" + DEFAULT_FILE_NAME, "fileName.equals=" + UPDATED_FILE_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileName in
+        defaultDocumentsFiltering("fileName.in=" + DEFAULT_FILE_NAME + "," + UPDATED_FILE_NAME, "fileName.in=" + UPDATED_FILE_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileName is not null
+        defaultDocumentsFiltering("fileName.specified=true", "fileName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileNameContainsSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileName contains
+        defaultDocumentsFiltering("fileName.contains=" + DEFAULT_FILE_NAME, "fileName.contains=" + UPDATED_FILE_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileName does not contain
+        defaultDocumentsFiltering("fileName.doesNotContain=" + UPDATED_FILE_NAME, "fileName.doesNotContain=" + DEFAULT_FILE_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileUrlIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileUrl equals to
+        defaultDocumentsFiltering("fileUrl.equals=" + DEFAULT_FILE_URL, "fileUrl.equals=" + UPDATED_FILE_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileUrlIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileUrl in
+        defaultDocumentsFiltering("fileUrl.in=" + DEFAULT_FILE_URL + "," + UPDATED_FILE_URL, "fileUrl.in=" + UPDATED_FILE_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileUrlIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileUrl is not null
+        defaultDocumentsFiltering("fileUrl.specified=true", "fileUrl.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileUrlContainsSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileUrl contains
+        defaultDocumentsFiltering("fileUrl.contains=" + DEFAULT_FILE_URL, "fileUrl.contains=" + UPDATED_FILE_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByFileUrlNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where fileUrl does not contain
+        defaultDocumentsFiltering("fileUrl.doesNotContain=" + UPDATED_FILE_URL, "fileUrl.doesNotContain=" + DEFAULT_FILE_URL);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate equals to
+        defaultDocumentsFiltering("createdDate.equals=" + DEFAULT_CREATED_DATE, "createdDate.equals=" + UPDATED_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate in
+        defaultDocumentsFiltering(
+            "createdDate.in=" + DEFAULT_CREATED_DATE + "," + UPDATED_CREATED_DATE,
+            "createdDate.in=" + UPDATED_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate is not null
+        defaultDocumentsFiltering("createdDate.specified=true", "createdDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate is greater than or equal to
+        defaultDocumentsFiltering(
+            "createdDate.greaterThanOrEqual=" + DEFAULT_CREATED_DATE,
+            "createdDate.greaterThanOrEqual=" + UPDATED_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate is less than or equal to
+        defaultDocumentsFiltering(
+            "createdDate.lessThanOrEqual=" + DEFAULT_CREATED_DATE,
+            "createdDate.lessThanOrEqual=" + SMALLER_CREATED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate is less than
+        defaultDocumentsFiltering("createdDate.lessThan=" + UPDATED_CREATED_DATE, "createdDate.lessThan=" + DEFAULT_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByCreatedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where createdDate is greater than
+        defaultDocumentsFiltering("createdDate.greaterThan=" + SMALLER_CREATED_DATE, "createdDate.greaterThan=" + DEFAULT_CREATED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate equals to
+        defaultDocumentsFiltering("modifiedDate.equals=" + DEFAULT_MODIFIED_DATE, "modifiedDate.equals=" + UPDATED_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate in
+        defaultDocumentsFiltering(
+            "modifiedDate.in=" + DEFAULT_MODIFIED_DATE + "," + UPDATED_MODIFIED_DATE,
+            "modifiedDate.in=" + UPDATED_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate is not null
+        defaultDocumentsFiltering("modifiedDate.specified=true", "modifiedDate.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsGreaterThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate is greater than or equal to
+        defaultDocumentsFiltering(
+            "modifiedDate.greaterThanOrEqual=" + DEFAULT_MODIFIED_DATE,
+            "modifiedDate.greaterThanOrEqual=" + UPDATED_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsLessThanOrEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate is less than or equal to
+        defaultDocumentsFiltering(
+            "modifiedDate.lessThanOrEqual=" + DEFAULT_MODIFIED_DATE,
+            "modifiedDate.lessThanOrEqual=" + SMALLER_MODIFIED_DATE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsLessThanSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate is less than
+        defaultDocumentsFiltering("modifiedDate.lessThan=" + UPDATED_MODIFIED_DATE, "modifiedDate.lessThan=" + DEFAULT_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByModifiedDateIsGreaterThanSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where modifiedDate is greater than
+        defaultDocumentsFiltering("modifiedDate.greaterThan=" + SMALLER_MODIFIED_DATE, "modifiedDate.greaterThan=" + DEFAULT_MODIFIED_DATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByDeletedIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where deleted equals to
+        defaultDocumentsFiltering("deleted.equals=" + DEFAULT_DELETED, "deleted.equals=" + UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByDeletedIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where deleted in
+        defaultDocumentsFiltering("deleted.in=" + DEFAULT_DELETED + "," + UPDATED_DELETED, "deleted.in=" + UPDATED_DELETED);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByDeletedIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where deleted is not null
+        defaultDocumentsFiltering("deleted.specified=true", "deleted.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByStatusIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where status equals to
+        defaultDocumentsFiltering("status.equals=" + DEFAULT_STATUS, "status.equals=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByStatusIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where status in
+        defaultDocumentsFiltering("status.in=" + DEFAULT_STATUS + "," + UPDATED_STATUS, "status.in=" + UPDATED_STATUS);
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByStatusIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedDocuments = documentsRepository.saveAndFlush(documents);
+
+        // Get all the documentsList where status is not null
+        defaultDocumentsFiltering("status.specified=true", "status.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByTrademarkIsEqualToSomething() throws Exception {
+        Trademark trademark;
+        if (TestUtil.findAll(em, Trademark.class).isEmpty()) {
+            documentsRepository.saveAndFlush(documents);
+            trademark = TrademarkResourceIT.createEntity();
+        } else {
+            trademark = TestUtil.findAll(em, Trademark.class).get(0);
+        }
+        em.persist(trademark);
+        em.flush();
+        documents.setTrademark(trademark);
+        documentsRepository.saveAndFlush(documents);
+        Long trademarkId = trademark.getId();
+        // Get all the documentsList where trademark equals to trademarkId
+        defaultDocumentsShouldBeFound("trademarkId.equals=" + trademarkId);
+
+        // Get all the documentsList where trademark equals to (trademarkId + 1)
+        defaultDocumentsShouldNotBeFound("trademarkId.equals=" + (trademarkId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllDocumentsByUserProfileIsEqualToSomething() throws Exception {
+        UserProfile userProfile;
+        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
+            documentsRepository.saveAndFlush(documents);
+            userProfile = UserProfileResourceIT.createEntity();
+        } else {
+            userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
+        }
+        em.persist(userProfile);
+        em.flush();
+        documents.setUserProfile(userProfile);
+        documentsRepository.saveAndFlush(documents);
+        Long userProfileId = userProfile.getId();
+        // Get all the documentsList where userProfile equals to userProfileId
+        defaultDocumentsShouldBeFound("userProfileId.equals=" + userProfileId);
+
+        // Get all the documentsList where userProfile equals to (userProfileId + 1)
+        defaultDocumentsShouldNotBeFound("userProfileId.equals=" + (userProfileId + 1));
+    }
+
+    private void defaultDocumentsFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
+        defaultDocumentsShouldBeFound(shouldBeFound);
+        defaultDocumentsShouldNotBeFound(shouldNotBeFound);
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is returned.
+     */
+    private void defaultDocumentsShouldBeFound(String filter) throws Exception {
+        restDocumentsMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.[*].id").value(hasItem(documents.getId().intValue())))
+            .andExpect(jsonPath("$.[*].documentType").value(hasItem(DEFAULT_DOCUMENT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].fileContentType").value(hasItem(DEFAULT_FILE_CONTENT_TYPE)))
+            .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME)))
+            .andExpect(jsonPath("$.[*].fileUrl").value(hasItem(DEFAULT_FILE_URL)))
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
+            .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
+            .andExpect(jsonPath("$.[*].deleted").value(hasItem(DEFAULT_DELETED)))
+            .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
+
+        // Check, that the count call also returns 1
+        restDocumentsMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("1"));
+    }
+
+    /**
+     * Executes the search, and checks that the default entity is not returned.
+     */
+    private void defaultDocumentsShouldNotBeFound(String filter) throws Exception {
+        restDocumentsMockMvc
+            .perform(get(ENTITY_API_URL + "?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$").isArray())
+            .andExpect(jsonPath("$").isEmpty());
+
+        // Check, that the count call also returns 0
+        restDocumentsMockMvc
+            .perform(get(ENTITY_API_URL + "/count?sort=id,desc&" + filter))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(content().string("0"));
     }
 
     @Test

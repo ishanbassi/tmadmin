@@ -58,6 +58,7 @@ public class CacheConfiguration {
             createCache(cm, com.bassi.tmapp.domain.PublishedTm.class.getName());
             createCache(cm, com.bassi.tmapp.domain.TmAgent.class.getName());
             createCache(cm, com.bassi.tmapp.domain.UserProfile.class.getName());
+            createCache(cm, com.bassi.tmapp.domain.UserProfile.class.getName() + ".documents");
             createCache(cm, com.bassi.tmapp.domain.Lead.class.getName());
             createCache(cm, com.bassi.tmapp.domain.Employee.class.getName());
             createCache(cm, com.bassi.tmapp.domain.Company.class.getName());

@@ -102,6 +102,12 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="userProfile.id">
+              <div class="d-flex">
+                <span>User Profile</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -113,9 +119,14 @@
               </td>
               <td>
                 {{
-                  { null: '', OTHERS: 'OTHERS', LOGO: 'LOGO', ADDRESS_PROOF: 'ADDRESS_PROOF', SIGNED_POA: 'SIGNED_POA' }[
-                    documents.documentType ?? 'null'
-                  ]
+                  {
+                    null: '',
+                    OTHERS: 'OTHERS',
+                    LOGO: 'LOGO',
+                    ADDRESS_PROOF: 'ADDRESS_PROOF',
+                    SIGNED_POA: 'SIGNED_POA',
+                    APPLICANT_IDENTITY: 'APPLICANT_IDENTITY',
+                  }[documents.documentType ?? 'null']
                 }}
               </td>
               <td>{{ documents.fileContentType }}</td>
@@ -141,6 +152,13 @@
                 @if (documents.trademark) {
                   <div>
                     <a [routerLink]="['/trademark', documents.trademark.id, 'view']">{{ documents.trademark.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (documents.userProfile) {
+                  <div>
+                    <a [routerLink]="['/user-profile', documents.userProfile.id, 'view']">{{ documents.userProfile.id }}</a>
                   </div>
                 }
               </td>

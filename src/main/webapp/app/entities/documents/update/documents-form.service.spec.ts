@@ -29,6 +29,7 @@ describe('Documents Form Service', () => {
             deleted: expect.any(Object),
             status: expect.any(Object),
             trademark: expect.any(Object),
+            userProfile: expect.any(Object),
           }),
         );
       });
@@ -48,6 +49,7 @@ describe('Documents Form Service', () => {
             deleted: expect.any(Object),
             status: expect.any(Object),
             trademark: expect.any(Object),
+            userProfile: expect.any(Object),
           }),
         );
       });

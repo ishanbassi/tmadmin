@@ -18,9 +18,14 @@
           <dt><span>Document Type</span></dt>
           <dd>
             <span>{{
-              { null: '', OTHERS: 'OTHERS', LOGO: 'LOGO', ADDRESS_PROOF: 'ADDRESS_PROOF', SIGNED_POA: 'SIGNED_POA' }[
-                documentsRef.documentType ?? 'null'
-              ]
+              {
+                null: '',
+                OTHERS: 'OTHERS',
+                LOGO: 'LOGO',
+                ADDRESS_PROOF: 'ADDRESS_PROOF',
+                SIGNED_POA: 'SIGNED_POA',
+                APPLICANT_IDENTITY: 'APPLICANT_IDENTITY',
+              }[documentsRef.documentType ?? 'null']
             }}</span>
           </dd>
           <dt><span>File Content Type</span></dt>
@@ -66,6 +71,14 @@
             @if (documents()!.trademark) {
               <div>
                 <a [routerLink]="['/trademark', documents()!.trademark?.id, 'view']">{{ documentsRef.trademark?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span>User Profile</span></dt>
+          <dd>
+            @if (documents()!.userProfile) {
+              <div>
+                <a [routerLink]="['/user-profile', documents()!.userProfile?.id, 'view']">{{ documentsRef.userProfile?.id }}</a>
               </div>
             }
           </dd>

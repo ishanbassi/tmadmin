@@ -95,18 +95,6 @@ public class DocumentsService {
     }
 
     /**
-     * Get all the documents.
-     *
-     * @param pageable the pagination information.
-     * @return the list of entities.
-     */
-    @Transactional(readOnly = true)
-    public Page<DocumentsDTO> findAll(Pageable pageable) {
-        LOG.debug("Request to get all Documents");
-        return documentsRepository.findAll(pageable).map(documentsMapper::toDto);
-    }
-
-    /**
      * Get one documents by id.
      *
      * @param id the id of the entity.

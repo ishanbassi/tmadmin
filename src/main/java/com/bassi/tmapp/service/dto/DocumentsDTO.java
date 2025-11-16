@@ -33,6 +33,7 @@ public class DocumentsDTO implements Serializable {
     private TrademarkDTO trademark;
 
     private byte[] file;
+    private UserProfileDTO userProfile;
 
     public Long getId() {
         return id;
@@ -122,6 +123,14 @@ public class DocumentsDTO implements Serializable {
         this.file = file;
     }
 
+    public UserProfileDTO getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfileDTO userProfile) {
+        this.userProfile = userProfile;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -157,6 +166,7 @@ public class DocumentsDTO implements Serializable {
             ", deleted='" + getDeleted() + "'" +
             ", status='" + getStatus() + "'" +
             ", trademark=" + getTrademark() +
+            ", userProfile=" + getUserProfile() +
             "}";
     }
 }

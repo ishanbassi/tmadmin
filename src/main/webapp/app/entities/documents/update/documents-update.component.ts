@@ -9,6 +9,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ITrademark } from 'app/entities/trademark/trademark.model';
 import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
+import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { DocumentType } from 'app/entities/enumerations/document-type.model';
 import { DocumentStatus } from 'app/entities/enumerations/document-status.model';
 import { DocumentsService } from '../service/documents.service';
@@ -27,16 +29,20 @@ export class DocumentsUpdateComponent implements OnInit {
   documentStatusValues = Object.keys(DocumentStatus);
 
   trademarksSharedCollection: ITrademark[] = [];
+  userProfilesSharedCollection: IUserProfile[] = [];
 
   protected documentsService = inject(DocumentsService);
   protected documentsFormService = inject(DocumentsFormService);
   protected trademarkService = inject(TrademarkService);
+  protected userProfileService = inject(UserProfileService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: DocumentsFormGroup = this.documentsFormService.createDocumentsFormGroup();
 
   compareTrademark = (o1: ITrademark | null, o2: ITrademark | null): boolean => this.trademarkService.compareTrademark(o1, o2);
+
+  compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ documents }) => {
@@ -90,6 +96,10 @@ export class DocumentsUpdateComponent implements OnInit {
       this.trademarksSharedCollection,
       documents.trademark,
     );
+    this.userProfilesSharedCollection = this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(
+      this.userProfilesSharedCollection,
+      documents.userProfile,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -102,5 +112,15 @@ export class DocumentsUpdateComponent implements OnInit {
         ),
       )
       .subscribe((trademarks: ITrademark[]) => (this.trademarksSharedCollection = trademarks));
+
+    this.userProfileService
+      .query()
+      .pipe(map((res: HttpResponse<IUserProfile[]>) => res.body ?? []))
+      .pipe(
+        map((userProfiles: IUserProfile[]) =>
+          this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(userProfiles, this.documents?.userProfile),
+        ),
+      )
+      .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
   }
 }

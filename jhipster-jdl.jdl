@@ -278,10 +278,11 @@ enum TrademarkSource{
 }
 
 enum DocumentType {
-    OTHERS
-    LOGO
-    ADDRESS_PROOF
-    SIGNED_POA
+    OTHERS,
+    LOGO,
+    ADDRESS_PROOF,
+    SIGNED_POA,
+    APPLICANT_IDENTITY
 }
 
 enum DocumentStatus {
@@ -306,6 +307,8 @@ relationship ManyToOne{
     Documents {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark{documents}
     Payment {trademark} to @OnUpdate("CASCADE") Trademark
     Trademark {trademarkPlan} to @OnUpdate("CASCADE") TrademarkPlan
+    Documents {userProfile} to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile{documents}
+    
 
 
 	
@@ -327,6 +330,7 @@ filter Lead
 filter Company
 filter TrademarkClass
 filter Payment
+filter Documents
 
 
 paginate Trademark , PublishedTm , TmAgent,Company, Documents, TrademarkClass, Payment,Lead with infinite-scroll

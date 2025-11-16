@@ -41,6 +41,7 @@ type DocumentsFormGroupContent = {
   deleted: FormControl<DocumentsFormRawValue['deleted']>;
   status: FormControl<DocumentsFormRawValue['status']>;
   trademark: FormControl<DocumentsFormRawValue['trademark']>;
+  userProfile: FormControl<DocumentsFormRawValue['userProfile']>;
 };
 
 export type DocumentsFormGroup = FormGroup<DocumentsFormGroupContent>;
@@ -69,6 +70,7 @@ export class DocumentsFormService {
       deleted: new FormControl(documentsRawValue.deleted),
       status: new FormControl(documentsRawValue.status),
       trademark: new FormControl(documentsRawValue.trademark),
+      userProfile: new FormControl(documentsRawValue.userProfile),
     });
   }
 
