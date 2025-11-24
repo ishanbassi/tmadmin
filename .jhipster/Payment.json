@@ -52,6 +52,11 @@
     {
       "fieldName": "failureReason",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "purpose",
+      "fieldType": "PaymentPurpose",
+      "fieldValues": "PROFESSIONAL_FEES,GOVT_FEES,OTHER"
     }
   ],
   "jpaMetamodelFiltering": true,
@@ -64,6 +69,15 @@
       },
       "otherEntityName": "trademark",
       "relationshipName": "trademark",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "options": {
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "userProfile",
+      "relationshipName": "userProfile",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     }

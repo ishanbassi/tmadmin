@@ -86,7 +86,9 @@ public class PaymentQueryService extends QueryService<Payment> {
                 buildStringSpecification(criteria.getOrderId(), Payment_.orderId),
                 buildStringSpecification(criteria.getGatewayOrderId(), Payment_.gatewayOrderId),
                 buildStringSpecification(criteria.getFailureReason(), Payment_.failureReason),
-                buildSpecification(criteria.getTrademarkId(), root -> root.join(Payment_.trademark, JoinType.LEFT).get(Trademark_.id))
+                buildSpecification(criteria.getPurpose(), Payment_.purpose),
+                buildSpecification(criteria.getTrademarkId(), root -> root.join(Payment_.trademark, JoinType.LEFT).get(Trademark_.id)),
+                buildSpecification(criteria.getUserProfileId(), root -> root.join(Payment_.userProfile, JoinType.LEFT).get(UserProfile_.id))
             );
         }
         return specification;

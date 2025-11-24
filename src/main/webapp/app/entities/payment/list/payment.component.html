@@ -124,9 +124,22 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="purpose">
+              <div class="d-flex">
+                <span>Purpose</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="trademark.id">
               <div class="d-flex">
                 <span>Trademark</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="userProfile.id">
+              <div class="d-flex">
+                <span>User Profile</span>
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
@@ -152,9 +165,21 @@
               <td>{{ payment.gatewayOrderId }}</td>
               <td>{{ payment.failureReason }}</td>
               <td>
+                {{
+                  { null: '', PROFESSIONAL_FEES: 'PROFESSIONAL_FEES', GOVT_FEES: 'GOVT_FEES', OTHER: 'OTHER' }[payment.purpose ?? 'null']
+                }}
+              </td>
+              <td>
                 @if (payment.trademark) {
                   <div>
                     <a [routerLink]="['/trademark', payment.trademark.id, 'view']">{{ payment.trademark.id }}</a>
+                  </div>
+                }
+              </td>
+              <td>
+                @if (payment.userProfile) {
+                  <div>
+                    <a [routerLink]="['/user-profile', payment.userProfile.id, 'view']">{{ payment.userProfile.id }}</a>
                   </div>
                 }
               </td>

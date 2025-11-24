@@ -1,5 +1,6 @@
 package com.bassi.tmapp.domain;
 
+import com.bassi.tmapp.domain.enumeration.PaymentPurpose;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -61,9 +62,17 @@ public class Payment implements Serializable {
     @Column(name = "failure_reason")
     private String failureReason;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "purpose")
+    private PaymentPurpose purpose;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses", "documents" }, allowSetters = true)
     private Trademark trademark;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties(value = { "user", "documents" }, allowSetters = true)
+    private UserProfile userProfile;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -236,6 +245,19 @@ public class Payment implements Serializable {
         this.failureReason = failureReason;
     }
 
+    public PaymentPurpose getPurpose() {
+        return this.purpose;
+    }
+
+    public Payment purpose(PaymentPurpose purpose) {
+        this.setPurpose(purpose);
+        return this;
+    }
+
+    public void setPurpose(PaymentPurpose purpose) {
+        this.purpose = purpose;
+    }
+
     public Trademark getTrademark() {
         return this.trademark;
     }
@@ -246,6 +268,19 @@ public class Payment implements Serializable {
 
     public Payment trademark(Trademark trademark) {
         this.setTrademark(trademark);
+        return this;
+    }
+
+    public UserProfile getUserProfile() {
+        return this.userProfile;
+    }
+
+    public void setUserProfile(UserProfile userProfile) {
+        this.userProfile = userProfile;
+    }
+
+    public Payment userProfile(UserProfile userProfile) {
+        this.setUserProfile(userProfile);
         return this;
     }
 
@@ -285,6 +320,7 @@ public class Payment implements Serializable {
             ", orderId='" + getOrderId() + "'" +
             ", gatewayOrderId='" + getGatewayOrderId() + "'" +
             ", failureReason='" + getFailureReason() + "'" +
+            ", purpose='" + getPurpose() + "'" +
             "}";
     }
 }

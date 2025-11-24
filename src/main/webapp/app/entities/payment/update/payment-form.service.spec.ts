@@ -32,7 +32,9 @@ describe('Payment Form Service', () => {
             orderId: expect.any(Object),
             gatewayOrderId: expect.any(Object),
             failureReason: expect.any(Object),
+            purpose: expect.any(Object),
             trademark: expect.any(Object),
+            userProfile: expect.any(Object),
           }),
         );
       });
@@ -55,7 +57,9 @@ describe('Payment Form Service', () => {
             orderId: expect.any(Object),
             gatewayOrderId: expect.any(Object),
             failureReason: expect.any(Object),
+            purpose: expect.any(Object),
             trademark: expect.any(Object),
+            userProfile: expect.any(Object),
           }),
         );
       });

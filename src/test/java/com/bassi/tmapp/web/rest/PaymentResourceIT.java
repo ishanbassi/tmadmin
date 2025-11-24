@@ -12,6 +12,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Payment;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
+import com.bassi.tmapp.domain.enumeration.PaymentPurpose;
 import com.bassi.tmapp.repository.PaymentRepository;
 import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.mapper.PaymentMapper;
@@ -81,6 +83,9 @@ class PaymentResourceIT {
     private static final String DEFAULT_FAILURE_REASON = "AAAAAAAAAA";
     private static final String UPDATED_FAILURE_REASON = "BBBBBBBBBB";
 
+    private static final PaymentPurpose DEFAULT_PURPOSE = PaymentPurpose.PROFESSIONAL_FEES;
+    private static final PaymentPurpose UPDATED_PURPOSE = PaymentPurpose.GOVT_FEES;
+
     private static final String ENTITY_API_URL = "/api/payments";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -125,7 +130,8 @@ class PaymentResourceIT {
             .modifiedDate(DEFAULT_MODIFIED_DATE)
             .orderId(DEFAULT_ORDER_ID)
             .gatewayOrderId(DEFAULT_GATEWAY_ORDER_ID)
-            .failureReason(DEFAULT_FAILURE_REASON);
+            .failureReason(DEFAULT_FAILURE_REASON)
+            .purpose(DEFAULT_PURPOSE);
     }
 
     /**
@@ -147,7 +153,8 @@ class PaymentResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .orderId(UPDATED_ORDER_ID)
             .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID)
-            .failureReason(UPDATED_FAILURE_REASON);
+            .failureReason(UPDATED_FAILURE_REASON)
+            .purpose(UPDATED_PURPOSE);
     }
 
     @BeforeEach
@@ -228,7 +235,8 @@ class PaymentResourceIT {
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID)))
             .andExpect(jsonPath("$.[*].gatewayOrderId").value(hasItem(DEFAULT_GATEWAY_ORDER_ID)))
-            .andExpect(jsonPath("$.[*].failureReason").value(hasItem(DEFAULT_FAILURE_REASON)));
+            .andExpect(jsonPath("$.[*].failureReason").value(hasItem(DEFAULT_FAILURE_REASON)))
+            .andExpect(jsonPath("$.[*].purpose").value(hasItem(DEFAULT_PURPOSE.toString())));
     }
 
     @Test
@@ -254,7 +262,8 @@ class PaymentResourceIT {
             .andExpect(jsonPath("$.modifiedDate").value(sameInstant(DEFAULT_MODIFIED_DATE)))
             .andExpect(jsonPath("$.orderId").value(DEFAULT_ORDER_ID))
             .andExpect(jsonPath("$.gatewayOrderId").value(DEFAULT_GATEWAY_ORDER_ID))
-            .andExpect(jsonPath("$.failureReason").value(DEFAULT_FAILURE_REASON));
+            .andExpect(jsonPath("$.failureReason").value(DEFAULT_FAILURE_REASON))
+            .andExpect(jsonPath("$.purpose").value(DEFAULT_PURPOSE.toString()));
     }
 
     @Test
@@ -965,6 +974,36 @@ class PaymentResourceIT {
 
     @Test
     @Transactional
+    void getAllPaymentsByPurposeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where purpose equals to
+        defaultPaymentFiltering("purpose.equals=" + DEFAULT_PURPOSE, "purpose.equals=" + UPDATED_PURPOSE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByPurposeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where purpose in
+        defaultPaymentFiltering("purpose.in=" + DEFAULT_PURPOSE + "," + UPDATED_PURPOSE, "purpose.in=" + UPDATED_PURPOSE);
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByPurposeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedPayment = paymentRepository.saveAndFlush(payment);
+
+        // Get all the paymentList where purpose is not null
+        defaultPaymentFiltering("purpose.specified=true", "purpose.specified=false");
+    }
+
+    @Test
+    @Transactional
     void getAllPaymentsByTrademarkIsEqualToSomething() throws Exception {
         Trademark trademark;
         if (TestUtil.findAll(em, Trademark.class).isEmpty()) {
@@ -983,6 +1022,28 @@ class PaymentResourceIT {
 
         // Get all the paymentList where trademark equals to (trademarkId + 1)
         defaultPaymentShouldNotBeFound("trademarkId.equals=" + (trademarkId + 1));
+    }
+
+    @Test
+    @Transactional
+    void getAllPaymentsByUserProfileIsEqualToSomething() throws Exception {
+        UserProfile userProfile;
+        if (TestUtil.findAll(em, UserProfile.class).isEmpty()) {
+            paymentRepository.saveAndFlush(payment);
+            userProfile = UserProfileResourceIT.createEntity();
+        } else {
+            userProfile = TestUtil.findAll(em, UserProfile.class).get(0);
+        }
+        em.persist(userProfile);
+        em.flush();
+        payment.setUserProfile(userProfile);
+        paymentRepository.saveAndFlush(payment);
+        Long userProfileId = userProfile.getId();
+        // Get all the paymentList where userProfile equals to userProfileId
+        defaultPaymentShouldBeFound("userProfileId.equals=" + userProfileId);
+
+        // Get all the paymentList where userProfile equals to (userProfileId + 1)
+        defaultPaymentShouldNotBeFound("userProfileId.equals=" + (userProfileId + 1));
     }
 
     private void defaultPaymentFiltering(String shouldBeFound, String shouldNotBeFound) throws Exception {
@@ -1010,7 +1071,8 @@ class PaymentResourceIT {
             .andExpect(jsonPath("$.[*].modifiedDate").value(hasItem(sameInstant(DEFAULT_MODIFIED_DATE))))
             .andExpect(jsonPath("$.[*].orderId").value(hasItem(DEFAULT_ORDER_ID)))
             .andExpect(jsonPath("$.[*].gatewayOrderId").value(hasItem(DEFAULT_GATEWAY_ORDER_ID)))
-            .andExpect(jsonPath("$.[*].failureReason").value(hasItem(DEFAULT_FAILURE_REASON)));
+            .andExpect(jsonPath("$.[*].failureReason").value(hasItem(DEFAULT_FAILURE_REASON)))
+            .andExpect(jsonPath("$.[*].purpose").value(hasItem(DEFAULT_PURPOSE.toString())));
 
         // Check, that the count call also returns 1
         restPaymentMockMvc
@@ -1070,7 +1132,8 @@ class PaymentResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .orderId(UPDATED_ORDER_ID)
             .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID)
-            .failureReason(UPDATED_FAILURE_REASON);
+            .failureReason(UPDATED_FAILURE_REASON)
+            .purpose(UPDATED_PURPOSE);
         PaymentDTO paymentDTO = paymentMapper.toDto(updatedPayment);
 
         restPaymentMockMvc
@@ -1200,7 +1263,8 @@ class PaymentResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .orderId(UPDATED_ORDER_ID)
             .gatewayOrderId(UPDATED_GATEWAY_ORDER_ID)
-            .failureReason(UPDATED_FAILURE_REASON);
+            .failureReason(UPDATED_FAILURE_REASON)
+            .purpose(UPDATED_PURPOSE);
 
         restPaymentMockMvc
             .perform(

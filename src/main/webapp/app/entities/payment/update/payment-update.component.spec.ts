@@ -6,8 +6,10 @@ import { Subject, from, of } from 'rxjs';
 
 import { ITrademark } from 'app/entities/trademark/trademark.model';
 import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
-import { PaymentService } from '../service/payment.service';
+import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { IPayment } from '../payment.model';
+import { PaymentService } from '../service/payment.service';
 import { PaymentFormService } from './payment-form.service';
 
 import { PaymentUpdateComponent } from './payment-update.component';
@@ -19,6 +21,7 @@ describe('Payment Management Update Component', () => {
   let paymentFormService: PaymentFormService;
   let paymentService: PaymentService;
   let trademarkService: TrademarkService;
+  let userProfileService: UserProfileService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -42,6 +45,7 @@ describe('Payment Management Update Component', () => {
     paymentFormService = TestBed.inject(PaymentFormService);
     paymentService = TestBed.inject(PaymentService);
     trademarkService = TestBed.inject(TrademarkService);
+    userProfileService = TestBed.inject(UserProfileService);
 
     comp = fixture.componentInstance;
   });
@@ -69,15 +73,40 @@ describe('Payment Management Update Component', () => {
       expect(comp.trademarksSharedCollection).toEqual(expectedCollection);
     });
 
+    it('should call UserProfile query and add missing value', () => {
+      const payment: IPayment = { id: 31232 };
+      const userProfile: IUserProfile = { id: 22058 };
+      payment.userProfile = userProfile;
+
+      const userProfileCollection: IUserProfile[] = [{ id: 22058 }];
+      jest.spyOn(userProfileService, 'query').mockReturnValue(of(new HttpResponse({ body: userProfileCollection })));
+      const additionalUserProfiles = [userProfile];
+      const expectedCollection: IUserProfile[] = [...additionalUserProfiles, ...userProfileCollection];
+      jest.spyOn(userProfileService, 'addUserProfileToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ payment });
+      comp.ngOnInit();
+
+      expect(userProfileService.query).toHaveBeenCalled();
+      expect(userProfileService.addUserProfileToCollectionIfMissing).toHaveBeenCalledWith(
+        userProfileCollection,
+        ...additionalUserProfiles.map(expect.objectContaining),
+      );
+      expect(comp.userProfilesSharedCollection).toEqual(expectedCollection);
+    });
+
     it('should update editForm', () => {
       const payment: IPayment = { id: 31232 };
       const trademark: ITrademark = { id: 4352 };
       payment.trademark = trademark;
+      const userProfile: IUserProfile = { id: 22058 };
+      payment.userProfile = userProfile;
 
       activatedRoute.data = of({ payment });
       comp.ngOnInit();
 
       expect(comp.trademarksSharedCollection).toContainEqual(trademark);
+      expect(comp.userProfilesSharedCollection).toContainEqual(userProfile);
       expect(comp.payment).toEqual(payment);
     });
   });
@@ -158,6 +187,16 @@ describe('Payment Management Update Component', () => {
         jest.spyOn(trademarkService, 'compareTrademark');
         comp.compareTrademark(entity, entity2);
         expect(trademarkService.compareTrademark).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareUserProfile', () => {
+      it('should forward to userProfileService', () => {
+        const entity = { id: 22058 };
+        const entity2 = { id: 9009 };
+        jest.spyOn(userProfileService, 'compareUserProfile');
+        comp.compareUserProfile(entity, entity2);
+        expect(userProfileService.compareUserProfile).toHaveBeenCalledWith(entity, entity2);
       });
     });
   });

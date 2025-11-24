@@ -44,7 +44,9 @@ type PaymentFormGroupContent = {
   orderId: FormControl<PaymentFormRawValue['orderId']>;
   gatewayOrderId: FormControl<PaymentFormRawValue['gatewayOrderId']>;
   failureReason: FormControl<PaymentFormRawValue['failureReason']>;
+  purpose: FormControl<PaymentFormRawValue['purpose']>;
   trademark: FormControl<PaymentFormRawValue['trademark']>;
+  userProfile: FormControl<PaymentFormRawValue['userProfile']>;
 };
 
 export type PaymentFormGroup = FormGroup<PaymentFormGroupContent>;
@@ -76,7 +78,9 @@ export class PaymentFormService {
       orderId: new FormControl(paymentRawValue.orderId),
       gatewayOrderId: new FormControl(paymentRawValue.gatewayOrderId),
       failureReason: new FormControl(paymentRawValue.failureReason),
+      purpose: new FormControl(paymentRawValue.purpose),
       trademark: new FormControl(paymentRawValue.trademark),
+      userProfile: new FormControl(paymentRawValue.userProfile),
     });
   }
 

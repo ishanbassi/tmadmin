@@ -63,11 +63,25 @@
           <dd>
             <span>{{ paymentRef.failureReason }}</span>
           </dd>
+          <dt><span>Purpose</span></dt>
+          <dd>
+            <span>{{
+              { null: '', PROFESSIONAL_FEES: 'PROFESSIONAL_FEES', GOVT_FEES: 'GOVT_FEES', OTHER: 'OTHER' }[paymentRef.purpose ?? 'null']
+            }}</span>
+          </dd>
           <dt><span>Trademark</span></dt>
           <dd>
             @if (payment()!.trademark) {
               <div>
                 <a [routerLink]="['/trademark', payment()!.trademark?.id, 'view']">{{ paymentRef.trademark?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span>User Profile</span></dt>
+          <dd>
+            @if (payment()!.userProfile) {
+              <div>
+                <a [routerLink]="['/user-profile', payment()!.userProfile?.id, 'view']">{{ paymentRef.userProfile?.id }}</a>
               </div>
             }
           </dd>

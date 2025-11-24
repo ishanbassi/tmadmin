@@ -9,8 +9,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { ITrademark } from 'app/entities/trademark/trademark.model';
 import { TrademarkService } from 'app/entities/trademark/service/trademark.service';
-import { IPayment } from '../payment.model';
+import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
+import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
+import { PaymentPurpose } from 'app/entities/enumerations/payment-purpose.model';
 import { PaymentService } from '../service/payment.service';
+import { IPayment } from '../payment.model';
 import { PaymentFormGroup, PaymentFormService } from './payment-form.service';
 
 @Component({
@@ -21,18 +24,23 @@ import { PaymentFormGroup, PaymentFormService } from './payment-form.service';
 export class PaymentUpdateComponent implements OnInit {
   isSaving = false;
   payment: IPayment | null = null;
+  paymentPurposeValues = Object.keys(PaymentPurpose);
 
   trademarksSharedCollection: ITrademark[] = [];
+  userProfilesSharedCollection: IUserProfile[] = [];
 
   protected paymentService = inject(PaymentService);
   protected paymentFormService = inject(PaymentFormService);
   protected trademarkService = inject(TrademarkService);
+  protected userProfileService = inject(UserProfileService);
   protected activatedRoute = inject(ActivatedRoute);
 
   // eslint-disable-next-line @typescript-eslint/member-ordering
   editForm: PaymentFormGroup = this.paymentFormService.createPaymentFormGroup();
 
   compareTrademark = (o1: ITrademark | null, o2: ITrademark | null): boolean => this.trademarkService.compareTrademark(o1, o2);
+
+  compareUserProfile = (o1: IUserProfile | null, o2: IUserProfile | null): boolean => this.userProfileService.compareUserProfile(o1, o2);
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(({ payment }) => {
@@ -86,6 +94,10 @@ export class PaymentUpdateComponent implements OnInit {
       this.trademarksSharedCollection,
       payment.trademark,
     );
+    this.userProfilesSharedCollection = this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(
+      this.userProfilesSharedCollection,
+      payment.userProfile,
+    );
   }
 
   protected loadRelationshipsOptions(): void {
@@ -98,5 +110,15 @@ export class PaymentUpdateComponent implements OnInit {
         ),
       )
       .subscribe((trademarks: ITrademark[]) => (this.trademarksSharedCollection = trademarks));
+
+    this.userProfileService
+      .query()
+      .pipe(map((res: HttpResponse<IUserProfile[]>) => res.body ?? []))
+      .pipe(
+        map((userProfiles: IUserProfile[]) =>
+          this.userProfileService.addUserProfileToCollectionIfMissing<IUserProfile>(userProfiles, this.payment?.userProfile),
+        ),
+      )
+      .subscribe((userProfiles: IUserProfile[]) => (this.userProfilesSharedCollection = userProfiles));
   }
 }

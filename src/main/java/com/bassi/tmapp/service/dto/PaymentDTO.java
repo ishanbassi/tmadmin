@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.dto;
 
+import com.bassi.tmapp.domain.enumeration.PaymentPurpose;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -37,7 +38,11 @@ public class PaymentDTO implements Serializable {
 
     private String failureReason;
 
+    private PaymentPurpose purpose;
+
     private TrademarkDTO trademark;
+
+    private UserProfileDTO userProfile;
 
     public Long getId() {
         return id;
@@ -143,12 +148,28 @@ public class PaymentDTO implements Serializable {
         this.failureReason = failureReason;
     }
 
+    public PaymentPurpose getPurpose() {
+        return purpose;
+    }
+
+    public void setPurpose(PaymentPurpose purpose) {
+        this.purpose = purpose;
+    }
+
     public TrademarkDTO getTrademark() {
         return trademark;
     }
 
     public void setTrademark(TrademarkDTO trademark) {
         this.trademark = trademark;
+    }
+
+    public UserProfileDTO getUserProfile() {
+        return userProfile;
+    }
+
+    public void setUserProfile(UserProfileDTO userProfile) {
+        this.userProfile = userProfile;
     }
 
     @Override
@@ -189,7 +210,9 @@ public class PaymentDTO implements Serializable {
             ", orderId='" + getOrderId() + "'" +
             ", gatewayOrderId='" + getGatewayOrderId() + "'" +
             ", failureReason='" + getFailureReason() + "'" +
+            ", purpose='" + getPurpose() + "'" +
             ", trademark=" + getTrademark() +
+            ", userProfile=" + getUserProfile() +
             "}";
     }
 }

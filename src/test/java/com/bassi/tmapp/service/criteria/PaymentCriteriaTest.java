@@ -88,7 +88,9 @@ class PaymentCriteriaTest {
         paymentCriteria.orderId();
         paymentCriteria.gatewayOrderId();
         paymentCriteria.failureReason();
+        paymentCriteria.purpose();
         paymentCriteria.trademarkId();
+        paymentCriteria.userProfileId();
         paymentCriteria.distinct();
     }
 
@@ -108,7 +110,9 @@ class PaymentCriteriaTest {
                 condition.apply(criteria.getOrderId()) &&
                 condition.apply(criteria.getGatewayOrderId()) &&
                 condition.apply(criteria.getFailureReason()) &&
+                condition.apply(criteria.getPurpose()) &&
                 condition.apply(criteria.getTrademarkId()) &&
+                condition.apply(criteria.getUserProfileId()) &&
                 condition.apply(criteria.getDistinct()),
             "every filter matches"
         );
@@ -130,7 +134,9 @@ class PaymentCriteriaTest {
                 condition.apply(criteria.getOrderId(), copy.getOrderId()) &&
                 condition.apply(criteria.getGatewayOrderId(), copy.getGatewayOrderId()) &&
                 condition.apply(criteria.getFailureReason(), copy.getFailureReason()) &&
+                condition.apply(criteria.getPurpose(), copy.getPurpose()) &&
                 condition.apply(criteria.getTrademarkId(), copy.getTrademarkId()) &&
+                condition.apply(criteria.getUserProfileId(), copy.getUserProfileId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),
             "every filter matches"
         );
