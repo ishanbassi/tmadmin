@@ -72,7 +72,8 @@ public class PaymentAsserts {
             )
             .satisfies(a -> assertThat(a.getOrderId()).as("check orderId").isEqualTo(expected.getOrderId()))
             .satisfies(a -> assertThat(a.getGatewayOrderId()).as("check gatewayOrderId").isEqualTo(expected.getGatewayOrderId()))
-            .satisfies(a -> assertThat(a.getFailureReason()).as("check failureReason").isEqualTo(expected.getFailureReason()));
+            .satisfies(a -> assertThat(a.getFailureReason()).as("check failureReason").isEqualTo(expected.getFailureReason()))
+            .satisfies(a -> assertThat(a.getPurpose()).as("check purpose").isEqualTo(expected.getPurpose()));
     }
 
     /**
@@ -84,6 +85,7 @@ public class PaymentAsserts {
     public static void assertPaymentUpdatableRelationshipsEquals(Payment expected, Payment actual) {
         assertThat(actual)
             .as("Verify Payment relationships")
-            .satisfies(a -> assertThat(a.getTrademark()).as("check trademark").isEqualTo(expected.getTrademark()));
+            .satisfies(a -> assertThat(a.getTrademark()).as("check trademark").isEqualTo(expected.getTrademark()))
+            .satisfies(a -> assertThat(a.getUserProfile()).as("check userProfile").isEqualTo(expected.getUserProfile()));
     }
 }

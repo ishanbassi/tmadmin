@@ -17,5 +17,13 @@
                                  referencedTableName="trademark"
                                  onUpdate="CASCADE"
                                  />
+
+        <addForeignKeyConstraint baseColumnNames="user_profile_id"
+                                 baseTableName="payment"
+                                 constraintName="fk_payment__user_profile_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user_profile"
+                                 onUpdate="CASCADE"
+                                 />
     </changeSet>
 </databaseChangeLog>

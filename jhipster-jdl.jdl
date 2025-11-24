@@ -197,6 +197,7 @@ entity Payment{
     orderId String
     gatewayOrderId String
     failureReason String
+    purpose PaymentPurpose
 }
 
 entity TrademarkPlan{
@@ -283,6 +284,12 @@ enum DocumentStatus {
 
 }
 
+enum  PaymentPurpose{
+	PROFESSIONAL_FEES,
+	GOVT_FEES,
+	OTHER
+}
+
 
 
 
@@ -296,6 +303,7 @@ relationship ManyToOne{
     Payment {trademark} to @OnUpdate("CASCADE") Trademark
     Trademark {trademarkPlan} to @OnUpdate("CASCADE") TrademarkPlan
     Documents {userProfile} to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile{documents}
+    Payment {userProfile} to @OnUpdate("CASCADE") UserProfile
     
 
 

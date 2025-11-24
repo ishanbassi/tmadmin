@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.criteria;
 
+import com.bassi.tmapp.domain.enumeration.PaymentPurpose;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,6 +20,23 @@ import tech.jhipster.service.filter.*;
 @ParameterObject
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class PaymentCriteria implements Serializable, Criteria {
+
+    /**
+     * Class for filtering PaymentPurpose
+     */
+    public static class PaymentPurposeFilter extends Filter<PaymentPurpose> {
+
+        public PaymentPurposeFilter() {}
+
+        public PaymentPurposeFilter(PaymentPurposeFilter filter) {
+            super(filter);
+        }
+
+        @Override
+        public PaymentPurposeFilter copy() {
+            return new PaymentPurposeFilter(this);
+        }
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -48,7 +66,11 @@ public class PaymentCriteria implements Serializable, Criteria {
 
     private StringFilter failureReason;
 
+    private PaymentPurposeFilter purpose;
+
     private LongFilter trademarkId;
+
+    private LongFilter userProfileId;
 
     private Boolean distinct;
 
@@ -68,7 +90,9 @@ public class PaymentCriteria implements Serializable, Criteria {
         this.orderId = other.optionalOrderId().map(StringFilter::copy).orElse(null);
         this.gatewayOrderId = other.optionalGatewayOrderId().map(StringFilter::copy).orElse(null);
         this.failureReason = other.optionalFailureReason().map(StringFilter::copy).orElse(null);
+        this.purpose = other.optionalPurpose().map(PaymentPurposeFilter::copy).orElse(null);
         this.trademarkId = other.optionalTrademarkId().map(LongFilter::copy).orElse(null);
+        this.userProfileId = other.optionalUserProfileId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
     }
 
@@ -324,6 +348,25 @@ public class PaymentCriteria implements Serializable, Criteria {
         this.failureReason = failureReason;
     }
 
+    public PaymentPurposeFilter getPurpose() {
+        return purpose;
+    }
+
+    public Optional<PaymentPurposeFilter> optionalPurpose() {
+        return Optional.ofNullable(purpose);
+    }
+
+    public PaymentPurposeFilter purpose() {
+        if (purpose == null) {
+            setPurpose(new PaymentPurposeFilter());
+        }
+        return purpose;
+    }
+
+    public void setPurpose(PaymentPurposeFilter purpose) {
+        this.purpose = purpose;
+    }
+
     public LongFilter getTrademarkId() {
         return trademarkId;
     }
@@ -341,6 +384,25 @@ public class PaymentCriteria implements Serializable, Criteria {
 
     public void setTrademarkId(LongFilter trademarkId) {
         this.trademarkId = trademarkId;
+    }
+
+    public LongFilter getUserProfileId() {
+        return userProfileId;
+    }
+
+    public Optional<LongFilter> optionalUserProfileId() {
+        return Optional.ofNullable(userProfileId);
+    }
+
+    public LongFilter userProfileId() {
+        if (userProfileId == null) {
+            setUserProfileId(new LongFilter());
+        }
+        return userProfileId;
+    }
+
+    public void setUserProfileId(LongFilter userProfileId) {
+        this.userProfileId = userProfileId;
     }
 
     public Boolean getDistinct() {
@@ -385,7 +447,9 @@ public class PaymentCriteria implements Serializable, Criteria {
             Objects.equals(orderId, that.orderId) &&
             Objects.equals(gatewayOrderId, that.gatewayOrderId) &&
             Objects.equals(failureReason, that.failureReason) &&
+            Objects.equals(purpose, that.purpose) &&
             Objects.equals(trademarkId, that.trademarkId) &&
+            Objects.equals(userProfileId, that.userProfileId) &&
             Objects.equals(distinct, that.distinct)
         );
     }
@@ -406,7 +470,9 @@ public class PaymentCriteria implements Serializable, Criteria {
             orderId,
             gatewayOrderId,
             failureReason,
+            purpose,
             trademarkId,
+            userProfileId,
             distinct
         );
     }
@@ -428,7 +494,9 @@ public class PaymentCriteria implements Serializable, Criteria {
             optionalOrderId().map(f -> "orderId=" + f + ", ").orElse("") +
             optionalGatewayOrderId().map(f -> "gatewayOrderId=" + f + ", ").orElse("") +
             optionalFailureReason().map(f -> "failureReason=" + f + ", ").orElse("") +
+            optionalPurpose().map(f -> "purpose=" + f + ", ").orElse("") +
             optionalTrademarkId().map(f -> "trademarkId=" + f + ", ").orElse("") +
+            optionalUserProfileId().map(f -> "userProfileId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +
         "}";
     }

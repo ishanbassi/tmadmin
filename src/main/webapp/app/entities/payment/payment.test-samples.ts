@@ -7,12 +7,12 @@ export const sampleWithRequiredData: IPayment = {
 };
 
 export const sampleWithPartialData: IPayment = {
-  id: 22419,
-  gatewayPaymentId: 'kiddingly metal redact',
-  status: 'um',
-  modifiedDate: dayjs('2025-07-23T09:17'),
-  gatewayOrderId: 'without',
-  failureReason: 'shaft',
+  id: 31051,
+  gatewayPaymentId: 'less beneath',
+  status: 'transom round minor',
+  modifiedDate: dayjs('2025-07-23T14:44'),
+  gatewayOrderId: 'shaft',
+  failureReason: 'dearest oxidise',
 };
 
 export const sampleWithFullData: IPayment = {
@@ -29,6 +29,7 @@ export const sampleWithFullData: IPayment = {
   orderId: 'concentration knowledgeable',
   gatewayOrderId: 'er while ah',
   failureReason: 'fooey always unto',
+  purpose: 'GOVT_FEES',
 };
 
 export const sampleWithNewData: NewPayment = {
