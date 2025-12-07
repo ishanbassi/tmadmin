@@ -278,6 +278,35 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" for="field_phoneNumber">Phone Number</label>
+          <input
+            type="text"
+            class="form-control"
+            name="phoneNumber"
+            id="field_phoneNumber"
+            data-cy="phoneNumber"
+            formControlName="phoneNumber"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_email">Email</label>
+          <input type="text" class="form-control" name="email" id="field_email" data-cy="email" formControlName="email" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_organizationType">Organization Type</label>
+          <input
+            type="text"
+            class="form-control"
+            name="organizationType"
+            id="field_organizationType"
+            data-cy="organizationType"
+            formControlName="organizationType"
+          />
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="field_lead">Lead</label>
           <select class="form-control" id="field_lead" data-cy="lead" name="lead" formControlName="lead" [compareWith]="compareLead">
             <option [ngValue]="null"></option>

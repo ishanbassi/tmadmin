@@ -7,16 +7,17 @@ export const sampleWithRequiredData: ITrademark = {
 };
 
 export const sampleWithPartialData: ITrademark = {
-  id: 19482,
-  applicationNo: 14738,
-  agentName: 'ethyl drat strategy',
-  proprietorName: 'who',
-  proprietorAddress: 'memorable ew',
+  id: 29617,
+  applicationNo: 10413,
+  agentName: 'super woot',
+  proprietorName: 'that flustered',
+  proprietorAddress: 'unexpectedly',
   headOffice: 'DELHI',
-  tmClass: 26694,
-  journalNo: 17002,
-  createdDate: dayjs('2024-05-21T20:18'),
-  type: 'TRADEMARK_WITH_IMAGE',
+  tmClass: 20476,
+  journalNo: 25252,
+  createdDate: dayjs('2024-05-21T22:53'),
+  type: 'IMAGEMARK',
+  email: 'Josiah_Satterfield85@hotmail.com',
 };
 
 export const sampleWithFullData: ITrademark = {
@@ -43,6 +44,9 @@ export const sampleWithFullData: ITrademark = {
   type: 'IMAGEMARK',
   pageNo: 27416,
   source: 'MEMBER_PORTAL',
+  phoneNumber: 'debut brr athwart',
+  email: 'Jessie_Corkery77@yahoo.com',
+  organizationType: 'barring',
 };
 
 export const sampleWithNewData: NewTrademark = {

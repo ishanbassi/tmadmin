@@ -101,6 +101,15 @@ public class Trademark implements Serializable {
     @Column(name = "source")
     private TrademarkSource source;
 
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "organization_type")
+    private String organizationType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
     private Lead lead;
@@ -428,6 +437,45 @@ public class Trademark implements Serializable {
         this.source = source;
     }
 
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
+    public Trademark phoneNumber(String phoneNumber) {
+        this.setPhoneNumber(phoneNumber);
+        return this;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public Trademark email(String email) {
+        this.setEmail(email);
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getOrganizationType() {
+        return this.organizationType;
+    }
+
+    public Trademark organizationType(String organizationType) {
+        this.setOrganizationType(organizationType);
+        return this;
+    }
+
+    public void setOrganizationType(String organizationType) {
+        this.organizationType = organizationType;
+    }
+
     public Lead getLead() {
         return this.lead;
     }
@@ -567,6 +615,9 @@ public class Trademark implements Serializable {
             ", type='" + getType() + "'" +
             ", pageNo=" + getPageNo() +
             ", source='" + getSource() + "'" +
+            ", phoneNumber='" + getPhoneNumber() + "'" +
+            ", email='" + getEmail() + "'" +
+            ", organizationType='" + getOrganizationType() + "'" +
             "}";
     }
 }
