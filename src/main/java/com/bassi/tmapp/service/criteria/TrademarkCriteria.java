@@ -140,6 +140,12 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private TrademarkSourceFilter source;
 
+    private StringFilter phoneNumber;
+
+    private StringFilter email;
+
+    private StringFilter organizationType;
+
     private LongFilter leadId;
 
     private LongFilter userId;
@@ -178,6 +184,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.type = other.optionalType().map(TrademarkTypeFilter::copy).orElse(null);
         this.pageNo = other.optionalPageNo().map(IntegerFilter::copy).orElse(null);
         this.source = other.optionalSource().map(TrademarkSourceFilter::copy).orElse(null);
+        this.phoneNumber = other.optionalPhoneNumber().map(StringFilter::copy).orElse(null);
+        this.email = other.optionalEmail().map(StringFilter::copy).orElse(null);
+        this.organizationType = other.optionalOrganizationType().map(StringFilter::copy).orElse(null);
         this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.trademarkPlanId = other.optionalTrademarkPlanId().map(LongFilter::copy).orElse(null);
@@ -628,6 +637,63 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.source = source;
     }
 
+    public StringFilter getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public Optional<StringFilter> optionalPhoneNumber() {
+        return Optional.ofNullable(phoneNumber);
+    }
+
+    public StringFilter phoneNumber() {
+        if (phoneNumber == null) {
+            setPhoneNumber(new StringFilter());
+        }
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(StringFilter phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public StringFilter getEmail() {
+        return email;
+    }
+
+    public Optional<StringFilter> optionalEmail() {
+        return Optional.ofNullable(email);
+    }
+
+    public StringFilter email() {
+        if (email == null) {
+            setEmail(new StringFilter());
+        }
+        return email;
+    }
+
+    public void setEmail(StringFilter email) {
+        this.email = email;
+    }
+
+    public StringFilter getOrganizationType() {
+        return organizationType;
+    }
+
+    public Optional<StringFilter> optionalOrganizationType() {
+        return Optional.ofNullable(organizationType);
+    }
+
+    public StringFilter organizationType() {
+        if (organizationType == null) {
+            setOrganizationType(new StringFilter());
+        }
+        return organizationType;
+    }
+
+    public void setOrganizationType(StringFilter organizationType) {
+        this.organizationType = organizationType;
+    }
+
     public LongFilter getLeadId() {
         return leadId;
     }
@@ -775,6 +841,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(type, that.type) &&
             Objects.equals(pageNo, that.pageNo) &&
             Objects.equals(source, that.source) &&
+            Objects.equals(phoneNumber, that.phoneNumber) &&
+            Objects.equals(email, that.email) &&
+            Objects.equals(organizationType, that.organizationType) &&
             Objects.equals(leadId, that.leadId) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(trademarkPlanId, that.trademarkPlanId) &&
@@ -810,6 +879,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             type,
             pageNo,
             source,
+            phoneNumber,
+            email,
+            organizationType,
             leadId,
             userId,
             trademarkPlanId,
@@ -846,6 +918,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalType().map(f -> "type=" + f + ", ").orElse("") +
             optionalPageNo().map(f -> "pageNo=" + f + ", ").orElse("") +
             optionalSource().map(f -> "source=" + f + ", ").orElse("") +
+            optionalPhoneNumber().map(f -> "phoneNumber=" + f + ", ").orElse("") +
+            optionalEmail().map(f -> "email=" + f + ", ").orElse("") +
+            optionalOrganizationType().map(f -> "organizationType=" + f + ", ").orElse("") +
             optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalTrademarkPlanId().map(f -> "trademarkPlanId=" + f + ", ").orElse("") +

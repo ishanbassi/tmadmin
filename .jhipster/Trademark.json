@@ -96,6 +96,18 @@
       "fieldName": "source",
       "fieldType": "TrademarkSource",
       "fieldValues": "JOURNAL_PUBLICATION,EXCEL,ADMIN_PORTAL,MEMBER_PORTAL"
+    },
+    {
+      "fieldName": "phoneNumber",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "email",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "organizationType",
+      "fieldType": "String"
     }
   ],
   "jpaMetamodelFiltering": true,

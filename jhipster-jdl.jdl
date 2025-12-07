@@ -51,6 +51,10 @@ entity Trademark{
     type TrademarkType
     pageNo Integer
     source TrademarkSource
+    phoneNumber String
+	email String
+	organizationType String
+    
     
     
 }

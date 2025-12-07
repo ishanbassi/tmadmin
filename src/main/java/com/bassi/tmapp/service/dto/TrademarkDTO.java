@@ -63,6 +63,12 @@ public class TrademarkDTO implements Serializable {
 
     private TrademarkSource source;
 
+    private String phoneNumber;
+
+    private String email;
+
+    private String organizationType;
+
     private LeadDTO lead;
 
     private UserProfileDTO user;
@@ -257,6 +263,30 @@ public class TrademarkDTO implements Serializable {
         this.source = source;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getOrganizationType() {
+        return organizationType;
+    }
+
+    public void setOrganizationType(String organizationType) {
+        this.organizationType = organizationType;
+    }
+
     public LeadDTO getLead() {
         return lead;
     }
@@ -345,6 +375,9 @@ public class TrademarkDTO implements Serializable {
             ", type='" + getType() + "'" +
             ", pageNo=" + getPageNo() +
             ", source='" + getSource() + "'" +
+            ", phoneNumber='" + getPhoneNumber() + "'" +
+            ", email='" + getEmail() + "'" +
+            ", organizationType='" + getOrganizationType() + "'" +
             ", lead=" + getLead() +
             ", user=" + getUser() +
             ", trademarkPlan=" + getTrademarkPlan() +

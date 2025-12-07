@@ -32,6 +32,9 @@ export interface ITrademark {
   type?: keyof typeof TrademarkType | null;
   pageNo?: number | null;
   source?: keyof typeof TrademarkSource | null;
+  phoneNumber?: string | null;
+  email?: string | null;
+  organizationType?: string | null;
   lead?: Pick<ILead, 'id'> | null;
   user?: Pick<IUserProfile, 'id'> | null;
   trademarkPlan?: Pick<ITrademarkPlan, 'id'> | null;

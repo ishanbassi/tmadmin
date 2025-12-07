@@ -98,6 +98,9 @@ class TrademarkCriteriaTest {
         trademarkCriteria.type();
         trademarkCriteria.pageNo();
         trademarkCriteria.source();
+        trademarkCriteria.phoneNumber();
+        trademarkCriteria.email();
+        trademarkCriteria.organizationType();
         trademarkCriteria.leadId();
         trademarkCriteria.userId();
         trademarkCriteria.trademarkPlanId();
@@ -132,6 +135,9 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getType()) &&
                 condition.apply(criteria.getPageNo()) &&
                 condition.apply(criteria.getSource()) &&
+                condition.apply(criteria.getPhoneNumber()) &&
+                condition.apply(criteria.getEmail()) &&
+                condition.apply(criteria.getOrganizationType()) &&
                 condition.apply(criteria.getLeadId()) &&
                 condition.apply(criteria.getUserId()) &&
                 condition.apply(criteria.getTrademarkPlanId()) &&
@@ -168,6 +174,9 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getType(), copy.getType()) &&
                 condition.apply(criteria.getPageNo(), copy.getPageNo()) &&
                 condition.apply(criteria.getSource(), copy.getSource()) &&
+                condition.apply(criteria.getPhoneNumber(), copy.getPhoneNumber()) &&
+                condition.apply(criteria.getEmail(), copy.getEmail()) &&
+                condition.apply(criteria.getOrganizationType(), copy.getOrganizationType()) &&
                 condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
                 condition.apply(criteria.getUserId(), copy.getUserId()) &&
                 condition.apply(criteria.getTrademarkPlanId(), copy.getTrademarkPlanId()) &&

@@ -26,7 +26,10 @@ public class TrademarkTestSamples {
             .journalNo(1)
             .usage("usage1")
             .associatedTms("associatedTms1")
-            .pageNo(1);
+            .pageNo(1)
+            .phoneNumber("phoneNumber1")
+            .email("email1")
+            .organizationType("organizationType1");
     }
 
     public static Trademark getTrademarkSample2() {
@@ -44,7 +47,10 @@ public class TrademarkTestSamples {
             .journalNo(2)
             .usage("usage2")
             .associatedTms("associatedTms2")
-            .pageNo(2);
+            .pageNo(2)
+            .phoneNumber("phoneNumber2")
+            .email("email2")
+            .organizationType("organizationType2");
     }
 
     public static Trademark getTrademarkRandomSampleGenerator() {
@@ -62,6 +68,9 @@ public class TrademarkTestSamples {
             .journalNo(intCount.incrementAndGet())
             .usage(UUID.randomUUID().toString())
             .associatedTms(UUID.randomUUID().toString())
-            .pageNo(intCount.incrementAndGet());
+            .pageNo(intCount.incrementAndGet())
+            .phoneNumber(UUID.randomUUID().toString())
+            .email(UUID.randomUUID().toString())
+            .organizationType(UUID.randomUUID().toString());
     }
 }

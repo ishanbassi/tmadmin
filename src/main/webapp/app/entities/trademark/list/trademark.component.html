@@ -194,6 +194,27 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="phoneNumber">
+              <div class="d-flex">
+                <span>Phone Number</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="email">
+              <div class="d-flex">
+                <span>Email</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="organizationType">
+              <div class="d-flex">
+                <span>Organization Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="lead.id">
               <div class="d-flex">
                 <span>Lead</span>
@@ -290,6 +311,9 @@
                   }[trademark.source ?? 'null']
                 }}
               </td>
+              <td>{{ trademark.phoneNumber }}</td>
+              <td>{{ trademark.email }}</td>
+              <td>{{ trademark.organizationType }}</td>
               <td>
                 @if (trademark.lead) {
                   <div>

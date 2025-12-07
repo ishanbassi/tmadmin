@@ -131,6 +131,15 @@ class TrademarkResourceIT {
     private static final TrademarkSource DEFAULT_SOURCE = TrademarkSource.JOURNAL_PUBLICATION;
     private static final TrademarkSource UPDATED_SOURCE = TrademarkSource.EXCEL;
 
+    private static final String DEFAULT_PHONE_NUMBER = "AAAAAAAAAA";
+    private static final String UPDATED_PHONE_NUMBER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
+
+    private static final String DEFAULT_ORGANIZATION_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_ORGANIZATION_TYPE = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -191,7 +200,10 @@ class TrademarkResourceIT {
             .renewalDate(DEFAULT_RENEWAL_DATE)
             .type(DEFAULT_TYPE)
             .pageNo(DEFAULT_PAGE_NO)
-            .source(DEFAULT_SOURCE);
+            .source(DEFAULT_SOURCE)
+            .phoneNumber(DEFAULT_PHONE_NUMBER)
+            .email(DEFAULT_EMAIL)
+            .organizationType(DEFAULT_ORGANIZATION_TYPE);
     }
 
     /**
@@ -223,7 +235,10 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .email(UPDATED_EMAIL)
+            .organizationType(UPDATED_ORGANIZATION_TYPE);
     }
 
     @BeforeEach
@@ -314,7 +329,10 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
-            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -367,7 +385,10 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.renewalDate").value(DEFAULT_RENEWAL_DATE.toString()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.pageNo").value(DEFAULT_PAGE_NO))
-            .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()));
+            .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()))
+            .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER))
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
+            .andExpect(jsonPath("$.organizationType").value(DEFAULT_ORGANIZATION_TYPE));
     }
 
     @Test
@@ -1649,6 +1670,174 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByPhoneNumberIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where phoneNumber equals to
+        defaultTrademarkFiltering("phoneNumber.equals=" + DEFAULT_PHONE_NUMBER, "phoneNumber.equals=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPhoneNumberIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where phoneNumber in
+        defaultTrademarkFiltering(
+            "phoneNumber.in=" + DEFAULT_PHONE_NUMBER + "," + UPDATED_PHONE_NUMBER,
+            "phoneNumber.in=" + UPDATED_PHONE_NUMBER
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPhoneNumberIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where phoneNumber is not null
+        defaultTrademarkFiltering("phoneNumber.specified=true", "phoneNumber.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPhoneNumberContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where phoneNumber contains
+        defaultTrademarkFiltering("phoneNumber.contains=" + DEFAULT_PHONE_NUMBER, "phoneNumber.contains=" + UPDATED_PHONE_NUMBER);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByPhoneNumberNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where phoneNumber does not contain
+        defaultTrademarkFiltering(
+            "phoneNumber.doesNotContain=" + UPDATED_PHONE_NUMBER,
+            "phoneNumber.doesNotContain=" + DEFAULT_PHONE_NUMBER
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByEmailIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where email equals to
+        defaultTrademarkFiltering("email.equals=" + DEFAULT_EMAIL, "email.equals=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByEmailIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where email in
+        defaultTrademarkFiltering("email.in=" + DEFAULT_EMAIL + "," + UPDATED_EMAIL, "email.in=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByEmailIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where email is not null
+        defaultTrademarkFiltering("email.specified=true", "email.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByEmailContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where email contains
+        defaultTrademarkFiltering("email.contains=" + DEFAULT_EMAIL, "email.contains=" + UPDATED_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByEmailNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where email does not contain
+        defaultTrademarkFiltering("email.doesNotContain=" + UPDATED_EMAIL, "email.doesNotContain=" + DEFAULT_EMAIL);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByOrganizationTypeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where organizationType equals to
+        defaultTrademarkFiltering(
+            "organizationType.equals=" + DEFAULT_ORGANIZATION_TYPE,
+            "organizationType.equals=" + UPDATED_ORGANIZATION_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByOrganizationTypeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where organizationType in
+        defaultTrademarkFiltering(
+            "organizationType.in=" + DEFAULT_ORGANIZATION_TYPE + "," + UPDATED_ORGANIZATION_TYPE,
+            "organizationType.in=" + UPDATED_ORGANIZATION_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByOrganizationTypeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where organizationType is not null
+        defaultTrademarkFiltering("organizationType.specified=true", "organizationType.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByOrganizationTypeContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where organizationType contains
+        defaultTrademarkFiltering(
+            "organizationType.contains=" + DEFAULT_ORGANIZATION_TYPE,
+            "organizationType.contains=" + UPDATED_ORGANIZATION_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByOrganizationTypeNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where organizationType does not contain
+        defaultTrademarkFiltering(
+            "organizationType.doesNotContain=" + UPDATED_ORGANIZATION_TYPE,
+            "organizationType.doesNotContain=" + DEFAULT_ORGANIZATION_TYPE
+        );
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByLeadIsEqualToSomething() throws Exception {
         Lead lead;
         if (TestUtil.findAll(em, Lead.class).isEmpty()) {
@@ -1770,7 +1959,10 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].renewalDate").value(hasItem(DEFAULT_RENEWAL_DATE.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].pageNo").value(hasItem(DEFAULT_PAGE_NO)))
-            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())));
+            .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
+            .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
+            .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -1840,7 +2032,10 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .email(UPDATED_EMAIL)
+            .organizationType(UPDATED_ORGANIZATION_TYPE);
         TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
@@ -1945,7 +2140,8 @@ class TrademarkResourceIT {
             .modifiedDate(UPDATED_MODIFIED_DATE)
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .phoneNumber(UPDATED_PHONE_NUMBER);
 
         restTrademarkMockMvc
             .perform(
@@ -1998,7 +2194,10 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .pageNo(UPDATED_PAGE_NO)
-            .source(UPDATED_SOURCE);
+            .source(UPDATED_SOURCE)
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .email(UPDATED_EMAIL)
+            .organizationType(UPDATED_ORGANIZATION_TYPE);
 
         restTrademarkMockMvc
             .perform(

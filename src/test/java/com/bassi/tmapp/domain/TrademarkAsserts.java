@@ -79,7 +79,10 @@ public class TrademarkAsserts {
             .satisfies(a -> assertThat(a.getRenewalDate()).as("check renewalDate").isEqualTo(expected.getRenewalDate()))
             .satisfies(a -> assertThat(a.getType()).as("check type").isEqualTo(expected.getType()))
             .satisfies(a -> assertThat(a.getPageNo()).as("check pageNo").isEqualTo(expected.getPageNo()))
-            .satisfies(a -> assertThat(a.getSource()).as("check source").isEqualTo(expected.getSource()));
+            .satisfies(a -> assertThat(a.getSource()).as("check source").isEqualTo(expected.getSource()))
+            .satisfies(a -> assertThat(a.getPhoneNumber()).as("check phoneNumber").isEqualTo(expected.getPhoneNumber()))
+            .satisfies(a -> assertThat(a.getEmail()).as("check email").isEqualTo(expected.getEmail()))
+            .satisfies(a -> assertThat(a.getOrganizationType()).as("check organizationType").isEqualTo(expected.getOrganizationType()));
     }
 
     /**
