@@ -167,6 +167,6 @@ public class MailService {
     @Async
     public void sendPortalPasswordResetMail(User user) {
         LOG.debug("Sending password reset email to '{}'", user.getEmail());
-        sendEmailFromTemplateSync(user, "mail/portalPasswordResetEmail", "email.reset.title");
+        sendEmailFromTemplateSync(user, "mail/portalPasswordResetEmail", "email.portal.reset.title");
     }
 }

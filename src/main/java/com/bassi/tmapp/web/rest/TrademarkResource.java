@@ -1,6 +1,7 @@
 package com.bassi.tmapp.web.rest;
 
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.service.CurrentUserService;
 import com.bassi.tmapp.service.DocumentsService;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -50,16 +52,20 @@ public class TrademarkResource {
 
     private final DocumentsService documentsService;
 
+    private final CurrentUserService currentUserService;
+
     public TrademarkResource(
         TrademarkService trademarkService,
         TrademarkRepository trademarkRepository,
         TrademarkQueryService trademarkQueryService,
-        DocumentsService documentsService
+        DocumentsService documentsService,
+        CurrentUserService currentUserService
     ) {
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
         this.trademarkQueryService = trademarkQueryService;
         this.documentsService = documentsService;
+        this.currentUserService = currentUserService;
     }
 
     /**
@@ -247,6 +253,13 @@ public class TrademarkResource {
     public ResponseEntity<TrademarkWithLogoDto> getTrademarkWithLogoDocument(@PathVariable("id") Long id) {
         LOG.debug("REST request to get Trademark : {}", id);
         TrademarkWithLogoDto trademarkWithLogoDto = trademarkService.findOneWithLogo(id);
+        if (
+            trademarkWithLogoDto != null &&
+            trademarkWithLogoDto.getTrademark() != null &&
+            !Objects.equals(trademarkWithLogoDto.getTrademark().getUser().getId(), currentUserService.getCurrentUserProfile().getId())
+        ) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok().body(trademarkWithLogoDto);
     }
 
@@ -256,5 +269,18 @@ public class TrademarkResource {
     ) {
         List<TrademarkDTO> trademarks = trademarkService.getTrademarkForCurrentUser(documents);
         return ResponseEntity.ok().body(trademarks);
+    }
+
+    @GetMapping("/get/{id}")
+    public ResponseEntity<TrademarkDTO> getTrademarkById(@PathVariable("id") Long id) {
+        LOG.debug("REST request to get Trademark : {}", id);
+        Optional<TrademarkDTO> trademarkDTO = trademarkService.findOne(id);
+        if (
+            trademarkDTO.isPresent() &&
+            !Objects.equals(trademarkDTO.get().getUser().getId(), currentUserService.getCurrentUserProfile().getId())
+        ) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseUtil.wrapOrNotFound(trademarkDTO);
     }
 }

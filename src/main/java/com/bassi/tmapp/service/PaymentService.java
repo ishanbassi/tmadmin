@@ -1,6 +1,8 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.config.Constants;
 import com.bassi.tmapp.domain.Payment;
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.PaymentRepository;
 import com.bassi.tmapp.repository.UserProfileRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
@@ -12,6 +14,7 @@ import com.bassi.tmapp.service.dto.TrademarkOrderSummary.OrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.mapper.PaymentMapper;
+import com.bassi.tmapp.service.mapper.UserProfileMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,13 +52,19 @@ public class PaymentService {
 
     private final UserProfileService userProfileService;
 
+    private final CurrentUserService currentUserService;
+
+    private final UserProfileMapper userProfileMapper;
+
     public PaymentService(
         PaymentRepository paymentRepository,
         PaymentMapper paymentMapper,
         TrademarkService trademarkService,
         LeadService leadService,
         DocumentsService documentsService,
-        UserProfileService userProfileService
+        UserProfileService userProfileService,
+        CurrentUserService currentUserService,
+        UserProfileMapper userProfileMapper
     ) {
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
@@ -63,6 +72,8 @@ public class PaymentService {
         this.leadService = leadService;
         this.documentsService = documentsService;
         this.userProfileService = userProfileService;
+        this.currentUserService = currentUserService;
+        this.userProfileMapper = userProfileMapper;
     }
 
     /**
@@ -146,6 +157,13 @@ public class PaymentService {
         paymentDTO = save(paymentDTO);
         paymentDTO.setOrderId(UUID.randomUUID().toString());
         paymentDTO.setAmount(calculateTotalFees(paymentDTO));
+        // surround with try catch because anonymous (lead) can pay
+        try {
+            paymentDTO.setUserProfile(userProfileMapper.toDto(currentUserService.getCurrentUserProfile()));
+        } catch (Exception ex) {
+            LOG.error(ex.getLocalizedMessage());
+        }
+
         save(paymentDTO);
         return paymentDTO;
     }
@@ -272,5 +290,25 @@ public class PaymentService {
 
     public Optional<Payment> findByRazorpayOrderId(String razorpayOrderId) {
         return paymentRepository.findPaymentByGatewayOrderId(razorpayOrderId);
+    }
+
+    public List<Payment> findByTrademark(Trademark dto) {
+        return paymentRepository.findByTrademark(dto);
+    }
+
+    public TrademarkOrderSummary generateTrademarkOrderSummary(Long trademarkId) {
+        Optional<Payment> payment = paymentRepository
+            .findByTrademarkIdAndStatusIn(trademarkId, List.of("pending", "created"))
+            .stream()
+            .findFirst();
+        if (payment.isEmpty()) {
+            return null;
+        }
+
+        return generateTrademarkOrderSummary(paymentMapper.toDto(payment.get()));
+    }
+
+    public List<Payment> findPendingPaymentForTm(TrademarkDTO app) {
+        return paymentRepository.findByTrademarkIdAndStatusIn(app.getId(), List.of("pending", "created"));
     }
 }

@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service.dto;
 
+import com.bassi.tmapp.domain.enumeration.DocumentType;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -134,12 +135,50 @@ public class DashboardStatsDTO {
         private String description;
         private String type;
         private String link;
+        private Long applicationId;
+        private DocumentType documentType;
+        private String orderId;
 
-        public TaskDTO(String title, String description, String type, String link) {
+        public TaskDTO(String title, String description, String type, String link, Long applicationId) {
             this.title = title;
             this.description = description;
             this.type = type;
             this.link = link;
+            this.applicationId = applicationId;
+        }
+
+        public TaskDTO(String title, String description, String type, String link, Long applicationId, DocumentType documentType) {
+            this.title = title;
+            this.description = description;
+            this.type = type;
+            this.link = link;
+            this.applicationId = applicationId;
+            this.documentType = documentType;
+        }
+
+        public TaskDTO(String title, String description, String type, String link, Long applicationId, String orderId) {
+            this.title = title;
+            this.description = description;
+            this.type = type;
+            this.link = link;
+            this.applicationId = applicationId;
+            this.orderId = orderId;
+        }
+
+        public Long getApplicationId() {
+            return applicationId;
+        }
+
+        public void setApplicationId(Long applicationId) {
+            this.applicationId = applicationId;
+        }
+
+        public DocumentType getDocumentType() {
+            return documentType;
+        }
+
+        public void setDocumentType(DocumentType documentType) {
+            this.documentType = documentType;
         }
 
         public String getTitle() {

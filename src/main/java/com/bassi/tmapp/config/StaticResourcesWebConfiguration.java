@@ -1,7 +1,10 @@
 package com.bassi.tmapp.config;
 
+import com.bassi.tmapp.service.DocumentsService;
 import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,6 +18,8 @@ import tech.jhipster.config.JHipsterProperties;
 @Configuration
 //@Profile({ JHipsterConstants.SPRING_PROFILE_PRODUCTION })
 public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
+
+    private static final Logger log = LoggerFactory.getLogger(StaticResourcesWebConfiguration.class);
 
     @Value("${document-base-path}")
     private String baseUploadDirectory;
@@ -52,8 +57,7 @@ public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
         resourceHandlerRegistration
             .addResourceLocations("file:///" + Paths.get(baseUploadDirectory).toAbsolutePath().toString() + "/")
             .setCacheControl(getCacheControl());
-
-        System.out.println("hi");
+        log.info("Serving static files from: {}", Paths.get(baseUploadDirectory).toAbsolutePath());
     }
 
     protected CacheControl getCacheControl() {

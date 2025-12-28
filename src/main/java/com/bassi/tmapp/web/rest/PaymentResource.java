@@ -207,12 +207,15 @@ public class PaymentResource {
     }
 
     @PostMapping("/create/{id}")
-    public ResponseEntity<PaymentDTO> updateTrademarkPlanAndCreatePayment(
-        @PathVariable("id") Long id,
-        @RequestBody TrademarkDTO trademarkDTO
-    ) {
+    public ResponseEntity<PaymentDTO> updateTrademarkPlanAndCreatePayment(@PathVariable("id") Long id) {
         LOG.debug("REST request to create Payment for Trademark with Id: {}", id);
         PaymentDTO paymentDTO = paymentService.createPaymentFromTrademarkDTO(id);
         return ResponseEntity.ok().body(paymentDTO);
+    }
+
+    @GetMapping("/order-summary/trademark/{trademarkId}")
+    public ResponseEntity<TrademarkOrderSummary> getOrderSummary(@PathVariable("trademarkId") Long orderId) throws URISyntaxException {
+        TrademarkOrderSummary trademarkOrderSummary = paymentService.generateTrademarkOrderSummary(orderId);
+        return ResponseEntity.ok(trademarkOrderSummary);
     }
 }

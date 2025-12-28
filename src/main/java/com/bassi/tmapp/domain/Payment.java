@@ -1,6 +1,7 @@
 package com.bassi.tmapp.domain;
 
 import com.bassi.tmapp.domain.enumeration.PaymentPurpose;
+import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.io.Serializable;
@@ -322,5 +323,19 @@ public class Payment implements Serializable {
             ", failureReason='" + getFailureReason() + "'" +
             ", purpose='" + getPurpose() + "'" +
             "}";
+    }
+
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+        if (this.status == null) {
+            this.status = "PENDING";
+        }
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
     }
 }

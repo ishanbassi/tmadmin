@@ -2,6 +2,7 @@ package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.Documents;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
 import java.util.List;
 import java.util.Optional;
@@ -18,4 +19,6 @@ public interface DocumentsRepository extends JpaRepository<Documents, Long>, Jpa
     Optional<Documents> findByTrademark(Trademark trademark, DocumentType documentType);
 
     List<Documents> findByTrademark(Trademark trademark);
+
+    List<Documents> findByUserProfile(UserProfile userProfile);
 }

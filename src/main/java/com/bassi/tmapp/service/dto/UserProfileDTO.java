@@ -203,6 +203,19 @@ public class UserProfileDTO implements Serializable {
         this.user = user;
     }
 
+    public String getFullName() {
+        if (firstName == null && lastName == null) {
+            return "";
+        }
+        if (firstName == null) {
+            return lastName;
+        }
+        if (lastName == null) {
+            return firstName;
+        }
+        return firstName + " " + lastName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

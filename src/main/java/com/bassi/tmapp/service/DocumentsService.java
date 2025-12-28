@@ -2,6 +2,7 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Documents;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.DocumentType;
 import com.bassi.tmapp.repository.DocumentsRepository;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
@@ -42,10 +43,18 @@ public class DocumentsService {
 
     private final TrademarkMapper trademarkMapper;
 
-    public DocumentsService(DocumentsRepository documentsRepository, DocumentsMapper documentsMapper, TrademarkMapper trademarkMapper) {
+    private final CurrentUserService currentUserService;
+
+    public DocumentsService(
+        DocumentsRepository documentsRepository,
+        DocumentsMapper documentsMapper,
+        TrademarkMapper trademarkMapper,
+        CurrentUserService currentUserService
+    ) {
         this.documentsRepository = documentsRepository;
         this.documentsMapper = documentsMapper;
         this.trademarkMapper = trademarkMapper;
+        this.currentUserService = currentUserService;
     }
 
     /**
@@ -113,6 +122,7 @@ public class DocumentsService {
      */
     public void delete(Long id) {
         LOG.debug("Request to delete Documents : {}", id);
+        documentsRepository.findById(id).ifPresent(d -> deleteDocumentFile(d.getFileUrl()));
         documentsRepository.deleteById(id);
     }
 
@@ -124,6 +134,8 @@ public class DocumentsService {
         }
 
         documents.setFileUrl(saveToFileSystem(documentsDTO, content));
+        UserProfile currentUser = currentUserService.getCurrentUserProfile();
+        documents.setUserProfile(currentUser);
         documents = documentsRepository.save(documents);
         return documentsMapper.toDto(documents);
     }
@@ -176,7 +188,8 @@ public class DocumentsService {
     }
 
     private void deleteDocumentFile(String filePath) {
-        LOG.info("Going to delete household bill file: {}", filePath);
+        if (filePath == null) return;
+        LOG.info("Going to delete document bill file: {}", filePath);
         try {
             Path path = Paths.get(documentBasePath, filePath);
             Files.delete(path);
@@ -187,5 +200,10 @@ public class DocumentsService {
 
     public DocumentsDTO saveDocumentAndSaveFile(DocumentsDTO documentsDTO) {
         return saveDocumentAndSaveFile(documentsDTO, documentsDTO.getFile());
+    }
+
+    public List<DocumentsDTO> getDocumentsForCurrentUser() {
+        UserProfile userProfile = currentUserService.getCurrentUserProfile();
+        return documentsMapper.toDto(documentsRepository.findByUserProfile(userProfile));
     }
 }

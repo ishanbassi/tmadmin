@@ -35,24 +35,33 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://localhost:5432/tmapp
     username: tmapp
-    password: admin
+    password: Ish@n@070720
     hikari:
       poolName: Hikari
       auto-commit: false
   # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
   liquibase:
     contexts: prod
+    enabled: true
   mail:
-    host: smtp.gmail.com
+    host: smtp.zeptomail.in
     port: 587
-    username: ishanbassi23@gmail.com
-    password: unjm nzwi qcwb issj
+    username: emailapikey
+    password: PHtE6r1YF+Hj2m57pkRRtPLtEM+iZ44p/+4xLAhP5t5DCaMDH00A/dwtkDfkrk1+B6RDR6OczN1q5L/KsriGczntN29PDWqyqK3sx/VYSPOZsbq6x00bsV4cdkPYVYTqc9Jj1SDeu9bTNA==
+    protocol: smtp
     properties:
       mail:
         smtp:
           auth: true
+          connectiontimeout: 15000
+          timeout: 15000
+          writetimeout: 15000
           starttls:
             enable: true
+            required: true
+      from: support@trademarx.in
+  messages:
+    cache-duration: PT1S
   thymeleaf:
     cache: true
 
@@ -99,7 +108,7 @@ jhipster:
       max-entries: 1000 # Number of objects in each cache entry
   cors:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
-    allowed-origins: 'https://www.trademarx.in, https://admin.trademarx.in'
+    allowed-origins: 'https://www.trademarx.in, https://admin.trademarx.in, http://localhost:6700, https://trademarx.in/'
     # Enable CORS when running in GitHub Codespaces
     allowed-methods: '*'
     allowed-headers: '*'
@@ -119,7 +128,8 @@ jhipster:
         token-validity-in-seconds: 86400
         token-validity-in-seconds-for-remember-me: 2592000
   mail: # specific JHipster mail property, for standard properties see MailProperties
-    base-url: https://admin.trademarx.in # Modify according to your server's URL
+    base-url: https://trademarx.in
+    from: support@trademarx.in
   logging:
     use-json-format: false # By default, logs are not in Json format
     logstash: # Forward logs to logstash over a socket, used by LoggingConfiguration
@@ -144,8 +154,8 @@ application:
   admin-notifications-email-address:
     - ishanbassi23@gmail.com
   razorpay:
-    key-id: rzp_test_RGemw0gmJ3U08S
-    key-secret: S3TvQC6miKsJlK6dfz0t1Vr6
+    key-id: rzp_live_RwevvfSjwehJIZ
+    key-secret: PGOl4mo6713JZTRok4K5X3AY
     company-name: Trademarx
     currency: INR
     base-url: https://api.razorpay.com/v1
@@ -153,7 +163,7 @@ application:
     site-key: 6LcTLeYrAAAAACoTM9NIteBSX7ucj0ZRqDmQJF82
     secret-key: 6LcTLeYrAAAAAC1u_J-lffNhAIeLbdcG71JB3v4Z
     server-verify-url: https://www.google.com/recaptcha/api/siteverify
-file-upload-base-path: /opt/application/staging/files/
-pdf-file-base-path: /opt/application/staging/pdfs/
-errors-file-base-path: /opt/application/staging/errors/
-document-base-path: /opt/application/staging/documents/
+file-upload-base-path: /opt/application/production/files/
+pdf-file-base-path: /opt/application/production/pdfs/
+errors-file-base-path: /opt/application/production/errors/
+document-base-path: /opt/application/production/documents/

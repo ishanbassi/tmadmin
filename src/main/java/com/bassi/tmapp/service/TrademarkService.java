@@ -13,6 +13,7 @@ import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary.OrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
+import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
@@ -50,18 +51,22 @@ public class TrademarkService {
 
     private final TrademarkQueryService trademarkQueryService;
 
+    private final UserProfileService userProfileService;
+
     public TrademarkService(
         TrademarkRepository trademarkRepository,
         TrademarkMapper trademarkMapper,
         DocumentsService documentsService,
         CurrentUserService currentUserService,
-        TrademarkQueryService trademarkQueryService
+        TrademarkQueryService trademarkQueryService,
+        UserProfileService userProfileService
     ) {
         this.trademarkRepository = trademarkRepository;
         this.trademarkMapper = trademarkMapper;
         this.documentsService = documentsService;
         this.currentUserService = currentUserService;
         this.trademarkQueryService = trademarkQueryService;
+        this.userProfileService = userProfileService;
     }
 
     /**
@@ -72,6 +77,20 @@ public class TrademarkService {
      */
     public TrademarkDTO save(TrademarkDTO trademarkDTO) {
         LOG.debug("Request to save Trademark : {}", trademarkDTO);
+        if (trademarkDTO.getUser() != null) {
+            Optional<UserProfileDTO> userProfileOptional = userProfileService.findOne(trademarkDTO.getUser().getId());
+            if (userProfileOptional.isPresent()) {
+                if (trademarkDTO.getProprietorName() == null) {
+                    trademarkDTO.setProprietorName(userProfileOptional.get().getFullName());
+                }
+                if (trademarkDTO.getEmail() == null) {
+                    trademarkDTO.setEmail(userProfileOptional.get().getEmail());
+                }
+                if (trademarkDTO.getPhoneNumber() == null) {
+                    trademarkDTO.setPhoneNumber(userProfileOptional.get().getPhoneNumber());
+                }
+            }
+        }
         Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
         trademark = trademarkRepository.save(trademark);
         return trademarkMapper.toDto(trademark);

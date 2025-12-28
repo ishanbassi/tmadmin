@@ -212,4 +212,12 @@ public class DocumentsResource {
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, documentsDTO.getId().toString()))
             .body(documentsDTO);
     }
+
+    @GetMapping("/current-user")
+    public ResponseEntity<List<DocumentsDTO>> getAllDocumentsForCurrentUser() {
+        LOG.debug("REST request to get Documents for current user");
+        List<DocumentsDTO> documentsDTOs = documentsService.getDocumentsForCurrentUser();
+
+        return ResponseEntity.ok().body(documentsDTOs);
+    }
 }

@@ -114,7 +114,7 @@ public class Trademark implements Serializable {
     @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
     private Lead lead;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JsonIgnoreProperties(value = { "user", "documents" }, allowSetters = true)
     private UserProfile user;
 
@@ -132,7 +132,6 @@ public class Trademark implements Serializable {
     private Set<TrademarkClass> trademarkClasses = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "trademark")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "trademark", "userProfile" }, allowSetters = true)
     private Set<Documents> documents = new HashSet<>();
 
