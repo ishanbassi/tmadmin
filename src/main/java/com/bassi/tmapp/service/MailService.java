@@ -1,8 +1,11 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.config.ApplicationProperties;
 import com.bassi.tmapp.config.Constants;
 import com.bassi.tmapp.domain.Lead;
+import com.bassi.tmapp.domain.Payment;
 import com.bassi.tmapp.domain.User;
+import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.service.dto.UserDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import jakarta.mail.MessagingException;
@@ -39,6 +42,10 @@ public class MailService {
 
     private static final String LEAD = "lead";
 
+    private static final String USER_PROFILE = "userProfile";
+
+    private static final String PAYMENT = "payment";
+
     private final JHipsterProperties jHipsterProperties;
 
     private final JavaMailSender javaMailSender;
@@ -47,16 +54,20 @@ public class MailService {
 
     private final SpringTemplateEngine templateEngine;
 
+    private final ApplicationProperties applicationProperties;
+
     public MailService(
         JHipsterProperties jHipsterProperties,
         JavaMailSender javaMailSender,
         MessageSource messageSource,
-        SpringTemplateEngine templateEngine
+        SpringTemplateEngine templateEngine,
+        ApplicationProperties applicationProperties
     ) {
         this.jHipsterProperties = jHipsterProperties;
         this.javaMailSender = javaMailSender;
         this.messageSource = messageSource;
         this.templateEngine = templateEngine;
+        this.applicationProperties = applicationProperties;
     }
 
     @Async
@@ -130,6 +141,46 @@ public class MailService {
         }
     }
 
+    public void sendNewAccountCreationMailToAdmin(
+        UserProfileDTO userProfile,
+        String templateName,
+        String titleKey,
+        List<String> adminEmails
+    ) {
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(USER_PROFILE, userProfile);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        context.setVariable(templateName, context);
+        context.setVariable("name", userProfile.getFullName());
+        context.setVariable("email", userProfile.getEmail());
+        context.setVariable("phone", userProfile.getPhoneNumber());
+        context.setVariable("id", userProfile.getId());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        for (String adminEmail : adminEmails) {
+            sendEmailSync(adminEmail, subject, content, false, true);
+        }
+    }
+
+    public void sendPaymentConfirmationEmailToAdmin(Payment payment, String templateName, String titleKey, List<String> adminEmails) {
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(PAYMENT, payment);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        context.setVariable(templateName, context);
+        context.setVariable("userId", payment.getUserProfile().getId());
+        context.setVariable("status", payment.getStatus());
+        context.setVariable("gatewayOrderId", payment.getGatewayOrderId());
+        context.setVariable("gatewayPaymentId", payment.getGatewayPaymentId());
+        context.setVariable("id", payment.getId());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        for (String adminEmail : adminEmails) {
+            sendEmailSync(adminEmail, subject, content, false, true);
+        }
+    }
+
     public void sendOfferMailToPharamas(Lead lead, String templateName, String titleKey, String leadEmail) {
         Locale locale = Locale.forLanguageTag("en");
         Context context = new Context(locale);
@@ -168,5 +219,27 @@ public class MailService {
     public void sendPortalPasswordResetMail(User user) {
         LOG.debug("Sending password reset email to '{}'", user.getEmail());
         sendEmailFromTemplateSync(user, "mail/portalPasswordResetEmail", "email.portal.reset.title");
+    }
+
+    @Async
+    public void sendPortalMemberCreationEmailToAdmin(UserProfileDTO user) {
+        LOG.info("Sending creation email to '{}'", user.getEmail());
+        sendNewAccountCreationMailToAdmin(
+            user,
+            "mail/portalCreationEmailToAdmin",
+            "email.portal.account.title",
+            applicationProperties.getAdminNotificationsEmailAddress()
+        );
+    }
+
+    @Async
+    public void sendPaymentSuccessfulEmailToAdmin(Payment payment) {
+        LOG.info("Sending Payment Successful email to admin");
+        sendPaymentConfirmationEmailToAdmin(
+            payment,
+            "mail/paymentSuccessfulEmailToAdmin",
+            "email.payment.success.title",
+            applicationProperties.getAdminNotificationsEmailAddress()
+        );
     }
 }

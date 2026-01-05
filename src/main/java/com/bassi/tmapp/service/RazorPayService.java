@@ -48,6 +48,7 @@ public class RazorPayService {
     private final RestTemplate restTemplate;
     private final UserProfileService userProfileService;
     private final JwtTokenService jwtTokenService;
+    private final MailService mailService;
 
     RazorPayService(
         ApplicationProperties applicationProperties,
@@ -55,7 +56,8 @@ public class RazorPayService {
         PaymentService paymentService,
         RestTemplate restTemplate,
         UserProfileService userProfileService,
-        JwtTokenService jwtTokenService
+        JwtTokenService jwtTokenService,
+        MailService mailService
     ) {
         this.applicationProperties = applicationProperties;
         this.trademarkService = trademarkService;
@@ -63,6 +65,7 @@ public class RazorPayService {
         this.restTemplate = restTemplate;
         this.userProfileService = userProfileService;
         this.jwtTokenService = jwtTokenService;
+        this.mailService = mailService;
     }
 
     public CreateOrderResponse createOrder(CreateOrderRequest request) throws RazorpayException {
@@ -143,6 +146,7 @@ public class RazorPayService {
         }
 
         paymentConfirmationDto.setStatus(payment.getStatus());
+        mailService.sendPaymentSuccessfulEmailToAdmin(payment);
         return paymentConfirmationDto;
     }
 

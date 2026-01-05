@@ -40,7 +40,7 @@ public class MailServiceExtended extends MailService {
         SpringTemplateEngine templateEngine,
         ApplicationProperties applicationProperties
     ) {
-        super(jHipsterProperties, javaMailSender, messageSource, templateEngine);
+        super(jHipsterProperties, javaMailSender, messageSource, templateEngine, applicationProperties);
         this.applicationProperties = applicationProperties;
     }
 

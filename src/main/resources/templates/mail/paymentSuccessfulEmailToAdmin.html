@@ -1,0 +1,21 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title th:text="#{email.payment.success.title}">Payment Successful</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="icon" th:href="@{|${baseUrl}/favicon.ico|}" />
+  </head>
+  <body>
+    <h2>Payment Successful</h2>
+    <p><strong>Status:</strong> <span th:text="${status}">not available</span></p>
+    <p><strong>User Id:</strong> <span th:text="${userId}">00</span></p>
+    <p><strong>Gateway OrderId:</strong> <span th:text="${gatewayOrderId}"></span></p>
+    <p><strong>Gateway PaymentId:</strong> <span th:text="${gatewayPaymentId}"></span></p>
+
+    <p>
+      To see more details, visit the link:
+      <a th:with="url=(@{|${baseUrl}/payment/${id}/view|})" th:href="${url}" th:text="${url}">Payment Successful</a>
+    </p>
+    <hr />
+  </body>
+</html>

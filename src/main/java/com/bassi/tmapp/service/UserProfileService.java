@@ -158,6 +158,7 @@ public class UserProfileService {
         userProfile.setUser(user);
         UserProfileDTO userProfileDto = save(userProfileMapper.toDto(userProfile));
         mailService.sendPortalMemberCreationEmail(userProfileMapper.toEntity(userProfileDto).getUser());
+        mailService.sendPortalMemberCreationEmailToAdmin(userProfileDto);
         return userProfileDto;
     }
 }
