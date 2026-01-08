@@ -1,0 +1,37 @@
+{
+  "annotations": {
+    "changelogDate": "20260108155006"
+  },
+  "applications": ["tmapp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "algorithm",
+      "fieldType": "PhoneticAlgorithmType",
+      "fieldValues": "SOUNDEX,METAPHONE,INDIAN_PHONETIC,DOUBLE_METAPHONE,TRIPLE_METAPHONE,OTHER"
+    },
+    {
+      "fieldName": "phoneticCode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "secondaryPhoneticCode",
+      "fieldType": "String"
+    }
+  ],
+  "name": "TokenPhonetic",
+  "relationships": [
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "trademarkToken",
+      "relationshipName": "trademarkToken",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

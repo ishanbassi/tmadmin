@@ -71,6 +71,16 @@ const routes: Routes = [
     data: { pageTitle: 'TrademarkPlans' },
     loadChildren: () => import('./trademark-plan/trademark-plan.routes'),
   },
+  {
+    path: 'trademark-token',
+    data: { pageTitle: 'TrademarkTokens' },
+    loadChildren: () => import('./trademark-token/trademark-token.routes'),
+  },
+  {
+    path: 'token-phonetic',
+    data: { pageTitle: 'TokenPhonetics' },
+    loadChildren: () => import('./token-phonetic/token-phonetic.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

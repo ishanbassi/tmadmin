@@ -1,0 +1,97 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-token-phonetic-heading" data-cy="TokenPhoneticCreateUpdateHeading">Create or edit a Token Phonetic</h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" for="field_algorithm">Algorithm</label>
+          <select class="form-control" name="algorithm" formControlName="algorithm" id="field_algorithm" data-cy="algorithm">
+            <option [ngValue]="null"></option>
+            @for (phoneticAlgorithmType of phoneticAlgorithmTypeValues; track $index) {
+              <option [value]="phoneticAlgorithmType">
+                {{
+                  {
+                    null: '',
+                    SOUNDEX: 'SOUNDEX',
+                    METAPHONE: 'METAPHONE',
+                    INDIAN_PHONETIC: 'INDIAN_PHONETIC',
+                    DOUBLE_METAPHONE: 'DOUBLE_METAPHONE',
+                    TRIPLE_METAPHONE: 'TRIPLE_METAPHONE',
+                    OTHER: 'OTHER',
+                  }[phoneticAlgorithmType]
+                }}
+              </option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_phoneticCode">Phonetic Code</label>
+          <input
+            type="text"
+            class="form-control"
+            name="phoneticCode"
+            id="field_phoneticCode"
+            data-cy="phoneticCode"
+            formControlName="phoneticCode"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_secondaryPhoneticCode">Secondary Phonetic Code</label>
+          <input
+            type="text"
+            class="form-control"
+            name="secondaryPhoneticCode"
+            id="field_secondaryPhoneticCode"
+            data-cy="secondaryPhoneticCode"
+            formControlName="secondaryPhoneticCode"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_trademarkToken">Trademark Token</label>
+          <select
+            class="form-control"
+            id="field_trademarkToken"
+            data-cy="trademarkToken"
+            name="trademarkToken"
+            formControlName="trademarkToken"
+            [compareWith]="compareTrademarkToken"
+          >
+            <option [ngValue]="null"></option>
+            @for (trademarkTokenOption of trademarkTokensSharedCollection; track $index) {
+              <option [ngValue]="trademarkTokenOption">{{ trademarkTokenOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span>Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
