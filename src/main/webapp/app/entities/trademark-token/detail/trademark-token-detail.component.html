@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (trademarkToken(); as trademarkTokenRef) {
+      <div>
+        <h2 data-cy="trademarkTokenDetailsHeading"><span>Trademark Token</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ trademarkTokenRef.id }}</span>
+          </dd>
+          <dt><span>Token Text</span></dt>
+          <dd>
+            <span>{{ trademarkTokenRef.tokenText }}</span>
+          </dd>
+          <dt><span>Token Type</span></dt>
+          <dd>
+            <span>{{
+              { null: '', CORE: 'CORE', DESCRIPTIVE: 'DESCRIPTIVE', STOPWORD: 'STOPWORD', OTHER: 'OTHER' }[
+                trademarkTokenRef.tokenType ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span>Position</span></dt>
+          <dd>
+            <span>{{ trademarkTokenRef.position }}</span>
+          </dd>
+          <dt><span>Trademark</span></dt>
+          <dd>
+            @if (trademarkToken()!.trademark) {
+              <div>
+                <a [routerLink]="['/trademark', trademarkToken()!.trademark?.id, 'view']">{{ trademarkTokenRef.trademark?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/trademark-token', trademarkTokenRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

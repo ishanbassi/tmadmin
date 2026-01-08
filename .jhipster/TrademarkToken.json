@@ -1,0 +1,37 @@
+{
+  "annotations": {
+    "changelogDate": "20260108155005"
+  },
+  "applications": ["tmapp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "tokenText",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "tokenType",
+      "fieldType": "TrademarkTokenType",
+      "fieldValues": "CORE,DESCRIPTIVE,STOPWORD,OTHER"
+    },
+    {
+      "fieldName": "position",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "TrademarkToken",
+  "relationships": [
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "trademark",
+      "relationshipName": "trademark",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

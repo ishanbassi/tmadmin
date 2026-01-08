@@ -59,6 +59,19 @@ entity Trademark{
     
 }
 
+entity TrademarkToken{
+	tokenText String
+	tokenType TrademarkTokenType
+	position Integer
+}
+entity TokenPhonetic{
+	
+	algorithm PhoneticAlgorithmType       
+	phoneticCode String
+	secondaryPhoneticCode String
+}
+
+
 entity PublishedTm{
 	name String
     details String
@@ -294,6 +307,22 @@ enum  PaymentPurpose{
 	OTHER
 }
 
+enum TrademarkTokenType{
+	CORE,
+	DESCRIPTIVE,
+	STOPWORD,
+	OTHER
+}
+
+enum PhoneticAlgorithmType{
+	SOUNDEX,
+	METAPHONE,
+	INDIAN_PHONETIC,
+	DOUBLE_METAPHONE,
+	TRIPLE_METAPHONE,
+	OTHER
+}
+
 
 
 
@@ -308,6 +337,8 @@ relationship ManyToOne{
     Trademark {trademarkPlan} to @OnUpdate("CASCADE") TrademarkPlan
     Documents {userProfile} to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile{documents}
     Payment {userProfile} to @OnUpdate("CASCADE") UserProfile
+    TrademarkToken {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
+    TokenPhonetic {trademarkToken} to @OnDelete("CASCADE") @OnUpdate("CASCADE") TrademarkToken  
     
 
 

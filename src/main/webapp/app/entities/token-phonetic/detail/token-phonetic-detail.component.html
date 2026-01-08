@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (tokenPhonetic(); as tokenPhoneticRef) {
+      <div>
+        <h2 data-cy="tokenPhoneticDetailsHeading"><span>Token Phonetic</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ tokenPhoneticRef.id }}</span>
+          </dd>
+          <dt><span>Algorithm</span></dt>
+          <dd>
+            <span>{{
+              {
+                null: '',
+                SOUNDEX: 'SOUNDEX',
+                METAPHONE: 'METAPHONE',
+                INDIAN_PHONETIC: 'INDIAN_PHONETIC',
+                DOUBLE_METAPHONE: 'DOUBLE_METAPHONE',
+                TRIPLE_METAPHONE: 'TRIPLE_METAPHONE',
+                OTHER: 'OTHER',
+              }[tokenPhoneticRef.algorithm ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span>Phonetic Code</span></dt>
+          <dd>
+            <span>{{ tokenPhoneticRef.phoneticCode }}</span>
+          </dd>
+          <dt><span>Secondary Phonetic Code</span></dt>
+          <dd>
+            <span>{{ tokenPhoneticRef.secondaryPhoneticCode }}</span>
+          </dd>
+          <dt><span>Trademark Token</span></dt>
+          <dd>
+            @if (tokenPhonetic()!.trademarkToken) {
+              <div>
+                <a [routerLink]="['/trademark-token', tokenPhonetic()!.trademarkToken?.id, 'view']">{{
+                  tokenPhoneticRef.trademarkToken?.id
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/token-phonetic', tokenPhoneticRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

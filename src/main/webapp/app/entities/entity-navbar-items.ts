@@ -53,4 +53,12 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'TrademarkPlan',
     route: '/trademark-plan',
   },
+  {
+    name: 'TrademarkToken',
+    route: '/trademark-token',
+  },
+  {
+    name: 'TokenPhonetic',
+    route: '/token-phonetic',
+  },
 ];
