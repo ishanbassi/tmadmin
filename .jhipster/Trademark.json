@@ -108,6 +108,10 @@
     {
       "fieldName": "organizationType",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "normalizedName",
+      "fieldType": "String"
     }
   ],
   "jpaMetamodelFiltering": true,
@@ -140,6 +144,16 @@
       },
       "otherEntityName": "trademarkPlan",
       "relationshipName": "trademarkPlan",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "options": {
+        "onDelete": "CASCADE",
+        "onUpdate": "CASCADE"
+      },
+      "otherEntityName": "tmAgent",
+      "relationshipName": "tmAgent",
       "relationshipSide": "left",
       "relationshipType": "many-to-one"
     },

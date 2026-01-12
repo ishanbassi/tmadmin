@@ -307,6 +307,18 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" for="field_normalizedName">Normalized Name</label>
+          <input
+            type="text"
+            class="form-control"
+            name="normalizedName"
+            id="field_normalizedName"
+            data-cy="normalizedName"
+            formControlName="normalizedName"
+          />
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="field_lead">Lead</label>
           <select class="form-control" id="field_lead" data-cy="lead" name="lead" formControlName="lead" [compareWith]="compareLead">
             <option [ngValue]="null"></option>
@@ -339,6 +351,23 @@
             <option [ngValue]="null"></option>
             @for (trademarkPlanOption of trademarkPlansSharedCollection; track $index) {
               <option [ngValue]="trademarkPlanOption">{{ trademarkPlanOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_tmAgent">Tm Agent</label>
+          <select
+            class="form-control"
+            id="field_tmAgent"
+            data-cy="tmAgent"
+            name="tmAgent"
+            formControlName="tmAgent"
+            [compareWith]="compareTmAgent"
+          >
+            <option [ngValue]="null"></option>
+            @for (tmAgentOption of tmAgentsSharedCollection; track $index) {
+              <option [ngValue]="tmAgentOption">{{ tmAgentOption.id }}</option>
             }
           </select>
         </div>

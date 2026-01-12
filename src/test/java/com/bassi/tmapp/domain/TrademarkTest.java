@@ -2,6 +2,7 @@ package com.bassi.tmapp.domain;
 
 import static com.bassi.tmapp.domain.DocumentsTestSamples.*;
 import static com.bassi.tmapp.domain.LeadTestSamples.*;
+import static com.bassi.tmapp.domain.TmAgentTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkClassTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkPlanTestSamples.*;
 import static com.bassi.tmapp.domain.TrademarkTestSamples.*;
@@ -63,6 +64,18 @@ class TrademarkTest {
 
         trademark.trademarkPlan(null);
         assertThat(trademark.getTrademarkPlan()).isNull();
+    }
+
+    @Test
+    void tmAgentTest() {
+        Trademark trademark = getTrademarkRandomSampleGenerator();
+        TmAgent tmAgentBack = getTmAgentRandomSampleGenerator();
+
+        trademark.setTmAgent(tmAgentBack);
+        assertThat(trademark.getTmAgent()).isEqualTo(tmAgentBack);
+
+        trademark.tmAgent(null);
+        assertThat(trademark.getTmAgent()).isNull();
     }
 
     @Test

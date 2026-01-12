@@ -13,6 +13,8 @@ import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model';
 import { TrademarkPlanService } from 'app/entities/trademark-plan/service/trademark-plan.service';
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
+import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
@@ -39,6 +41,7 @@ export class TrademarkUpdateComponent implements OnInit {
   leadsSharedCollection: ILead[] = [];
   userProfilesSharedCollection: IUserProfile[] = [];
   trademarkPlansSharedCollection: ITrademarkPlan[] = [];
+  tmAgentsSharedCollection: ITmAgent[] = [];
   trademarkClassesSharedCollection: ITrademarkClass[] = [];
 
   protected trademarkService = inject(TrademarkService);
@@ -46,6 +49,7 @@ export class TrademarkUpdateComponent implements OnInit {
   protected leadService = inject(LeadService);
   protected userProfileService = inject(UserProfileService);
   protected trademarkPlanService = inject(TrademarkPlanService);
+  protected tmAgentService = inject(TmAgentService);
   protected trademarkClassService = inject(TrademarkClassService);
   protected activatedRoute = inject(ActivatedRoute);
 
@@ -58,6 +62,8 @@ export class TrademarkUpdateComponent implements OnInit {
 
   compareTrademarkPlan = (o1: ITrademarkPlan | null, o2: ITrademarkPlan | null): boolean =>
     this.trademarkPlanService.compareTrademarkPlan(o1, o2);
+
+  compareTmAgent = (o1: ITmAgent | null, o2: ITmAgent | null): boolean => this.tmAgentService.compareTmAgent(o1, o2);
 
   compareTrademarkClass = (o1: ITrademarkClass | null, o2: ITrademarkClass | null): boolean =>
     this.trademarkClassService.compareTrademarkClass(o1, o2);
@@ -119,6 +125,10 @@ export class TrademarkUpdateComponent implements OnInit {
       this.trademarkPlansSharedCollection,
       trademark.trademarkPlan,
     );
+    this.tmAgentsSharedCollection = this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(
+      this.tmAgentsSharedCollection,
+      trademark.tmAgent,
+    );
     this.trademarkClassesSharedCollection = this.trademarkClassService.addTrademarkClassToCollectionIfMissing<ITrademarkClass>(
       this.trademarkClassesSharedCollection,
       ...(trademark.trademarkClasses ?? []),
@@ -151,6 +161,12 @@ export class TrademarkUpdateComponent implements OnInit {
         ),
       )
       .subscribe((trademarkPlans: ITrademarkPlan[]) => (this.trademarkPlansSharedCollection = trademarkPlans));
+
+    this.tmAgentService
+      .query()
+      .pipe(map((res: HttpResponse<ITmAgent[]>) => res.body ?? []))
+      .pipe(map((tmAgents: ITmAgent[]) => this.tmAgentService.addTmAgentToCollectionIfMissing<ITmAgent>(tmAgents, this.trademark?.tmAgent)))
+      .subscribe((tmAgents: ITmAgent[]) => (this.tmAgentsSharedCollection = tmAgents));
 
     this.trademarkClassService
       .query()

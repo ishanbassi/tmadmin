@@ -67,7 +67,7 @@ public class Payment implements Serializable {
     private PaymentPurpose purpose;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses", "documents" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "tmAgent", "trademarkClasses", "documents" }, allowSetters = true)
     private Trademark trademark;
 
     @ManyToOne(fetch = FetchType.LAZY)

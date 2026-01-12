@@ -81,6 +81,16 @@ const routes: Routes = [
     data: { pageTitle: 'TokenPhonetics' },
     loadChildren: () => import('./token-phonetic/token-phonetic.routes'),
   },
+  {
+    path: 'trademark-token-frequency',
+    data: { pageTitle: 'TrademarkTokenFrequencies' },
+    loadChildren: () => import('./trademark-token-frequency/trademark-token-frequency.routes'),
+  },
+  {
+    path: 'user-events-tracking',
+    data: { pageTitle: 'UserEventsTrackings' },
+    loadChildren: () => import('./user-events-tracking/user-events-tracking.routes'),
+  },
   /* jhipster-needle-add-entity-route - JHipster will add entity modules routes here */
 ];
 

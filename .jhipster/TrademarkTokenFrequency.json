@@ -1,0 +1,33 @@
+{
+  "annotations": {
+    "changelogDate": "20260112101722"
+  },
+  "applications": ["tmapp"],
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "frequency",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "word",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "deleted",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "modifiedDate",
+      "fieldType": "ZonedDateTime"
+    }
+  ],
+  "name": "TrademarkTokenFrequency",
+  "relationships": [],
+  "searchEngine": "no",
+  "service": "serviceClass"
+}

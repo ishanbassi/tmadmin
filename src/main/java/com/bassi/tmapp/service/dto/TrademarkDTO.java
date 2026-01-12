@@ -69,11 +69,15 @@ public class TrademarkDTO implements Serializable {
 
     private String organizationType;
 
+    private String normalizedName;
+
     private LeadDTO lead;
 
     private UserProfileDTO user;
 
     private TrademarkPlanDTO trademarkPlan;
+
+    private TmAgentDTO tmAgent;
 
     private Set<TrademarkClassDTO> trademarkClasses = new HashSet<>();
 
@@ -285,6 +289,14 @@ public class TrademarkDTO implements Serializable {
         this.organizationType = organizationType;
     }
 
+    public String getNormalizedName() {
+        return normalizedName;
+    }
+
+    public void setNormalizedName(String normalizedName) {
+        this.normalizedName = normalizedName;
+    }
+
     public LeadDTO getLead() {
         return lead;
     }
@@ -307,6 +319,14 @@ public class TrademarkDTO implements Serializable {
 
     public void setTrademarkPlan(TrademarkPlanDTO trademarkPlan) {
         this.trademarkPlan = trademarkPlan;
+    }
+
+    public TmAgentDTO getTmAgent() {
+        return tmAgent;
+    }
+
+    public void setTmAgent(TmAgentDTO tmAgent) {
+        this.tmAgent = tmAgent;
     }
 
     public Set<TrademarkClassDTO> getTrademarkClasses() {
@@ -368,9 +388,11 @@ public class TrademarkDTO implements Serializable {
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", email='" + getEmail() + "'" +
             ", organizationType='" + getOrganizationType() + "'" +
+            ", normalizedName='" + getNormalizedName() + "'" +
             ", lead=" + getLead() +
             ", user=" + getUser() +
             ", trademarkPlan=" + getTrademarkPlan() +
+            ", tmAgent=" + getTmAgent() +
             ", trademarkClasses=" + getTrademarkClasses() +
             "}";
     }

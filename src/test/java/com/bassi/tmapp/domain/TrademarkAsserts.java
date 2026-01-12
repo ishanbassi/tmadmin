@@ -82,7 +82,8 @@ public class TrademarkAsserts {
             .satisfies(a -> assertThat(a.getSource()).as("check source").isEqualTo(expected.getSource()))
             .satisfies(a -> assertThat(a.getPhoneNumber()).as("check phoneNumber").isEqualTo(expected.getPhoneNumber()))
             .satisfies(a -> assertThat(a.getEmail()).as("check email").isEqualTo(expected.getEmail()))
-            .satisfies(a -> assertThat(a.getOrganizationType()).as("check organizationType").isEqualTo(expected.getOrganizationType()));
+            .satisfies(a -> assertThat(a.getOrganizationType()).as("check organizationType").isEqualTo(expected.getOrganizationType()))
+            .satisfies(a -> assertThat(a.getNormalizedName()).as("check normalizedName").isEqualTo(expected.getNormalizedName()));
     }
 
     /**
@@ -97,6 +98,7 @@ public class TrademarkAsserts {
             .satisfies(a -> assertThat(a.getLead()).as("check lead").isEqualTo(expected.getLead()))
             .satisfies(a -> assertThat(a.getUser()).as("check user").isEqualTo(expected.getUser()))
             .satisfies(a -> assertThat(a.getTrademarkPlan()).as("check trademarkPlan").isEqualTo(expected.getTrademarkPlan()))
+            .satisfies(a -> assertThat(a.getTmAgent()).as("check tmAgent").isEqualTo(expected.getTmAgent()))
             .satisfies(a -> assertThat(a.getTrademarkClasses()).as("check trademarkClasses").isEqualTo(expected.getTrademarkClasses()));
     }
 }

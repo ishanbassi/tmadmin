@@ -1,0 +1,129 @@
+<div>
+  <h2 id="page-heading" data-cy="TrademarkTokenFrequencyHeading">
+    <span>Trademark Token Frequencies</span>
+
+    <div class="d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span>Refresh list</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-trademark-token-frequency"
+        [routerLink]="['/trademark-token-frequency/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span>Create a new Trademark Token Frequency</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (trademarkTokenFrequencies().length === 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Trademark Token Frequencies found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span>ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="frequency">
+              <div class="d-flex">
+                <span>Frequency</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="word">
+              <div class="d-flex">
+                <span>Word</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="createdDate">
+              <div class="d-flex">
+                <span>Created Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="deleted">
+              <div class="d-flex">
+                <span>Deleted</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="modifiedDate">
+              <div class="d-flex">
+                <span>Modified Date</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (trademarkTokenFrequency of trademarkTokenFrequencies(); track trackId(trademarkTokenFrequency)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/trademark-token-frequency', trademarkTokenFrequency.id, 'view']">{{ trademarkTokenFrequency.id }}</a>
+              </td>
+              <td>{{ trademarkTokenFrequency.frequency }}</td>
+              <td>{{ trademarkTokenFrequency.word }}</td>
+              <td>{{ trademarkTokenFrequency.createdDate | formatMediumDatetime }}</td>
+              <td>{{ trademarkTokenFrequency.deleted }}</td>
+              <td>{{ trademarkTokenFrequency.modifiedDate | formatMediumDatetime }}</td>
+              <td class="text-end">
+                <div class="btn-group">
+                  <a
+                    [routerLink]="['/trademark-token-frequency', trademarkTokenFrequency.id, 'view']"
+                    class="btn btn-info btn-sm"
+                    data-cy="entityDetailsButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">View</span>
+                  </a>
+
+                  <a
+                    [routerLink]="['/trademark-token-frequency', trademarkTokenFrequency.id, 'edit']"
+                    class="btn btn-primary btn-sm"
+                    data-cy="entityEditButton"
+                  >
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline">Edit</span>
+                  </a>
+
+                  <button
+                    type="submit"
+                    (click)="delete(trademarkTokenFrequency)"
+                    class="btn btn-danger btn-sm"
+                    data-cy="entityDeleteButton"
+                  >
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline">Delete</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

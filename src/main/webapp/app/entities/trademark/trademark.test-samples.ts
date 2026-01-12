@@ -7,17 +7,17 @@ export const sampleWithRequiredData: ITrademark = {
 };
 
 export const sampleWithPartialData: ITrademark = {
-  id: 29617,
-  applicationNo: 10413,
-  agentName: 'super woot',
-  proprietorName: 'that flustered',
-  proprietorAddress: 'unexpectedly',
-  headOffice: 'DELHI',
-  tmClass: 20476,
-  journalNo: 25252,
-  createdDate: dayjs('2024-05-21T22:53'),
-  type: 'IMAGEMARK',
-  email: 'Josiah_Satterfield85@hotmail.com',
+  id: 10413,
+  applicationNo: 11215,
+  agentName: 'grouchy flu that',
+  proprietorName: 'electrify unexpectedly',
+  proprietorAddress: 'boohoo',
+  headOffice: 'KOLKATA',
+  tmClass: 20712,
+  journalNo: 28032,
+  createdDate: dayjs('2024-05-21T16:26'),
+  type: 'SOUNDMARK',
+  email: 'Ebony32@hotmail.com',
 };
 
 export const sampleWithFullData: ITrademark = {
@@ -47,6 +47,7 @@ export const sampleWithFullData: ITrademark = {
   phoneNumber: 'debut brr athwart',
   email: 'Jessie_Corkery77@yahoo.com',
   organizationType: 'barring',
+  normalizedName: 'meh safe',
 };
 
 export const sampleWithNewData: NewTrademark = {
