@@ -408,6 +408,7 @@ public class StopWords {
         "top",
         "best",
         "finest",
-        "world-class"
+        "world-class",
+        "the"
     );
 }

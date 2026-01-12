@@ -15,27 +15,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class SimilarityScorerService {
 
-    private final TokenPhoneticRepository tokenPhoneticRepository;
-    private final TrademarkTokenRepository trademarkTokenRepository;
-
-    SimilarityScorerService(TokenPhoneticRepository tokenPhoneticRepository, TrademarkTokenRepository trademarkTokenRepository) {
-        this.tokenPhoneticRepository = tokenPhoneticRepository;
-        this.trademarkTokenRepository = trademarkTokenRepository;
-    }
+    SimilarityScorerService() {}
 
     private static final double CORE_MATCH_WEIGHT = 0.50;
     private static final double PHRASE_SIM_WEIGHT = 0.30;
     private static final double TOKEN_OVERLAP_WEIGHT = 0.15;
     private static final double POSITION_WEIGHT = 0.05;
 
-    private static final double MIN_SCORE_THRESHOLD = 0.65;
-
-    public double computeFinalScore(Trademark client, Trademark published) {
-        List<TrademarkToken> clientTrademarkTokens = trademarkTokenRepository.findByTrademark(client);
-
-        List<TrademarkToken> publishedTrademarkTokens = trademarkTokenRepository.findByTrademark(published);
-
-        double coreScore = computeCoreTokenScore(client, published, clientTrademarkTokens, publishedTrademarkTokens);
+    public double computeFinalScore(
+        Trademark client,
+        Trademark published,
+        List<TrademarkToken> clientTrademarkTokens,
+        List<TrademarkToken> publishedTrademarkTokens,
+        List<TokenPhonetic> clientPhonetics,
+        List<TokenPhonetic> publishedPhonetics
+    ) {
+        double coreScore = computeCoreTokenScore(
+            client,
+            published,
+            clientTrademarkTokens,
+            publishedTrademarkTokens,
+            clientPhonetics,
+            publishedPhonetics
+        );
         if (coreScore == 0.0) {
             return 0.0; // HARD STOP: no CORE phonetic match
         }
@@ -58,7 +60,9 @@ public class SimilarityScorerService {
         Trademark client,
         Trademark published,
         List<TrademarkToken> clientTrademarkTokens,
-        List<TrademarkToken> publishedTrademarkTokens
+        List<TrademarkToken> publishedTrademarkTokens,
+        List<TokenPhonetic> clientPhonetics,
+        List<TokenPhonetic> publishedTtPhonetics
     ) {
         List<TrademarkToken> clientCoreTokens = clientTrademarkTokens
             .stream()
@@ -71,19 +75,13 @@ public class SimilarityScorerService {
 
         Set<String> publishedPhonetics = publishedTrademarkTokens
             .stream()
-            .flatMap(t -> tokenPhoneticRepository.findByTrademarkToken(t).stream())
+            .flatMap(t -> publishedTtPhonetics.stream())
             .map(TokenPhonetic::getPhoneticCode)
             .collect(Collectors.toSet());
 
         long matched = clientCoreTokens
             .stream()
-            .filter(ct ->
-                tokenPhoneticRepository
-                    .findByTrademarkToken(ct)
-                    .stream()
-                    .map(TokenPhonetic::getPhoneticCode)
-                    .anyMatch(publishedPhonetics::contains)
-            )
+            .filter(ct -> clientPhonetics.stream().map(TokenPhonetic::getPhoneticCode).anyMatch(publishedPhonetics::contains))
             .count();
 
         return (double) matched / clientCoreTokens.size();

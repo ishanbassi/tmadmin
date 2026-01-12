@@ -1,37 +1,30 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.domain.TokenPhonetic;
 import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.TrademarkClass;
-import com.bassi.tmapp.domain.TrademarkPlan;
 import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
+import com.bassi.tmapp.repository.TokenPhoneticRepository;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.repository.TrademarkTokenRepository;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
-import com.bassi.tmapp.service.dto.DocumentsDTO;
-import com.bassi.tmapp.service.dto.PaymentDTO;
-import com.bassi.tmapp.service.dto.PublishedTmDTO;
-import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
-import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
-import com.bassi.tmapp.service.dto.TrademarkOrderSummary.OrderSummary;
-import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
 import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
-import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -68,6 +61,10 @@ public class TrademarkService {
     private final SimilarityScorerService similarityScorerService;
 
     private TmAgentServiceExtended agentServiceExtended;
+    private final TokenPhoneticRepository tokenPhoneticRepository;
+    private final TrademarkTokenRepository trademarkTokenRepository;
+
+    private static final double MIN_SCORE_THRESHOLD = 0.65;
 
     public TrademarkService(
         TrademarkRepository trademarkRepository,
@@ -79,7 +76,9 @@ public class TrademarkService {
         TrademarkTokenService trademarkTokenService,
         WordSanitizationService wordSanitizationService,
         TmAgentServiceExtended agentServiceExtended,
-        SimilarityScorerService similarityScorerService
+        SimilarityScorerService similarityScorerService,
+        TokenPhoneticRepository tokenPhoneticRepository,
+        TrademarkTokenRepository trademarkTokenRepository
     ) {
         this.trademarkRepository = trademarkRepository;
         this.trademarkMapper = trademarkMapper;
@@ -91,6 +90,8 @@ public class TrademarkService {
         this.wordSanitizationService = wordSanitizationService;
         this.agentServiceExtended = agentServiceExtended;
         this.similarityScorerService = similarityScorerService;
+        this.tokenPhoneticRepository = tokenPhoneticRepository;
+        this.trademarkTokenRepository = trademarkTokenRepository;
     }
 
     /**
@@ -235,6 +236,22 @@ public class TrademarkService {
     @Transactional
     public List<TrademarkSimiliarityResultDTO> runWeeklyComparison(int journalNo) {
         List<Object[]> pairs = trademarkRepository.findAllCandidatePairs(journalNo);
+        Set<Long> allTrademarkIds = new HashSet<>();
+
+        for (Object[] pair : pairs) {
+            allTrademarkIds.add((Long) pair[0]);
+            allTrademarkIds.add((Long) pair[1]);
+        }
+
+        List<TrademarkToken> allTokens = trademarkTokenRepository.findByTrademarkIds(allTrademarkIds);
+
+        List<TokenPhonetic> allPhonetics = tokenPhoneticRepository.findByTrademarkIds(allTrademarkIds);
+
+        Map<Long, List<TrademarkToken>> tokensByTmId = allTokens.stream().collect(Collectors.groupingBy(t -> t.getTrademark().getId()));
+
+        Map<Long, List<TokenPhonetic>> phoneticsByTmId = allPhonetics
+            .stream()
+            .collect(Collectors.groupingBy(p -> p.getTrademarkToken().getTrademark().getId()));
 
         List<TrademarkSimiliarityResultDTO> similiarityResultDTOs = new ArrayList<>();
 
@@ -248,17 +265,39 @@ public class TrademarkService {
 
             Trademark published = cache.computeIfAbsent(publishedId, id -> trademarkRepository.findById(id).orElseThrow());
 
-            double score = similarityScorerService.computeFinalScore(client, published);
-            TrademarkSimiliarityResultDTO trademarkSimiliarityResultDTO = new TrademarkSimiliarityResultDTO(
+            List<TrademarkToken> clientTokens = tokensByTmId.getOrDefault(clientId, List.of());
+
+            List<TrademarkToken> publishedTokens = tokensByTmId.getOrDefault(publishedId, List.of());
+
+            List<TokenPhonetic> clientPhonetics = phoneticsByTmId.getOrDefault(clientId, List.of());
+
+            List<TokenPhonetic> publishedPhonetics = phoneticsByTmId.getOrDefault(publishedId, List.of());
+
+            double score = similarityScorerService.computeFinalScore(
                 client,
                 published,
-                score,
-                journalNo
+                clientTokens,
+                publishedTokens,
+                clientPhonetics,
+                publishedPhonetics
             );
+            if (score > MIN_SCORE_THRESHOLD) {
+                TrademarkSimiliarityResultDTO trademarkSimiliarityResultDTO = new TrademarkSimiliarityResultDTO(
+                    client,
+                    published,
+                    score,
+                    journalNo
+                );
 
-            similiarityResultDTOs.add(trademarkSimiliarityResultDTO);
+                similiarityResultDTOs.add(trademarkSimiliarityResultDTO);
+            }
         }
 
+        similiarityResultDTOs.sort(
+            Comparator.comparingDouble(TrademarkSimiliarityResultDTO::getScore)
+                .reversed()
+                .thenComparing(r -> r.getPublishedTradmark().getTmClass())
+        );
         return similiarityResultDTOs;
     }
 }
