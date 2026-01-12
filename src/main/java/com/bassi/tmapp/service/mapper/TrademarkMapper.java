@@ -2,12 +2,14 @@ package com.bassi.tmapp.service.mapper;
 
 import com.bassi.tmapp.domain.Documents;
 import com.bassi.tmapp.domain.Lead;
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.TrademarkPlan;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.dto.LeadDTO;
+import com.bassi.tmapp.service.dto.TmAgentDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
@@ -26,6 +28,7 @@ public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Mapping(target = "trademarkClasses", source = "trademarkClasses", qualifiedByName = "trademarkClassSet")
     @Mapping(target = "trademarkPlan", source = "trademarkPlan", qualifiedByName = "trademarkPlanId")
     @Mapping(target = "documents", source = "documents", qualifiedByName = "documentSet")
+    @Mapping(target = "tmAgent", source = "tmAgent", qualifiedByName = "tmAgentId")
     TrademarkDTO toDto(Trademark s);
 
     @Mapping(target = "removeTrademarkClasses", ignore = true)
@@ -51,6 +54,11 @@ public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Mapping(target = "fees", source = "fees")
     @Mapping(target = "name", source = "name")
     TrademarkPlanDTO toDtoTrademarkPlanId(TrademarkPlan trademarkPlan);
+
+    @Named("tmAgentId")
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    TmAgentDTO toDtoTmAgentId(TmAgent tmAgent);
 
     @Named("trademarkClassId")
     @BeanMapping(ignoreByDefault = true)

@@ -45,9 +45,11 @@ describe('Trademark Form Service', () => {
             phoneNumber: expect.any(Object),
             email: expect.any(Object),
             organizationType: expect.any(Object),
+            normalizedName: expect.any(Object),
             lead: expect.any(Object),
             user: expect.any(Object),
             trademarkPlan: expect.any(Object),
+            tmAgent: expect.any(Object),
             trademarkClasses: expect.any(Object),
           }),
         );
@@ -84,9 +86,11 @@ describe('Trademark Form Service', () => {
             phoneNumber: expect.any(Object),
             email: expect.any(Object),
             organizationType: expect.any(Object),
+            normalizedName: expect.any(Object),
             lead: expect.any(Object),
             user: expect.any(Object),
             trademarkPlan: expect.any(Object),
+            tmAgent: expect.any(Object),
             trademarkClasses: expect.any(Object),
           }),
         );

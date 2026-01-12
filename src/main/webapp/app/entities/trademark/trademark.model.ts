@@ -2,6 +2,7 @@ import dayjs from 'dayjs/esm';
 import { ILead } from 'app/entities/lead/lead.model';
 import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model';
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
@@ -35,9 +36,11 @@ export interface ITrademark {
   phoneNumber?: string | null;
   email?: string | null;
   organizationType?: string | null;
+  normalizedName?: string | null;
   lead?: Pick<ILead, 'id'> | null;
   user?: Pick<IUserProfile, 'id'> | null;
   trademarkPlan?: Pick<ITrademarkPlan, 'id'> | null;
+  tmAgent?: Pick<ITmAgent, 'id'> | null;
   trademarkClasses?: Pick<ITrademarkClass, 'id'>[] | null;
 }
 

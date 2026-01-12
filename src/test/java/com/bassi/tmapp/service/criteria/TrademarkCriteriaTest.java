@@ -101,9 +101,11 @@ class TrademarkCriteriaTest {
         trademarkCriteria.phoneNumber();
         trademarkCriteria.email();
         trademarkCriteria.organizationType();
+        trademarkCriteria.normalizedName();
         trademarkCriteria.leadId();
         trademarkCriteria.userId();
         trademarkCriteria.trademarkPlanId();
+        trademarkCriteria.tmAgentId();
         trademarkCriteria.trademarkClassesId();
         trademarkCriteria.documentsId();
         trademarkCriteria.distinct();
@@ -138,9 +140,11 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getPhoneNumber()) &&
                 condition.apply(criteria.getEmail()) &&
                 condition.apply(criteria.getOrganizationType()) &&
+                condition.apply(criteria.getNormalizedName()) &&
                 condition.apply(criteria.getLeadId()) &&
                 condition.apply(criteria.getUserId()) &&
                 condition.apply(criteria.getTrademarkPlanId()) &&
+                condition.apply(criteria.getTmAgentId()) &&
                 condition.apply(criteria.getTrademarkClassesId()) &&
                 condition.apply(criteria.getDocumentsId()) &&
                 condition.apply(criteria.getDistinct()),
@@ -177,9 +181,11 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getPhoneNumber(), copy.getPhoneNumber()) &&
                 condition.apply(criteria.getEmail(), copy.getEmail()) &&
                 condition.apply(criteria.getOrganizationType(), copy.getOrganizationType()) &&
+                condition.apply(criteria.getNormalizedName(), copy.getNormalizedName()) &&
                 condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
                 condition.apply(criteria.getUserId(), copy.getUserId()) &&
                 condition.apply(criteria.getTrademarkPlanId(), copy.getTrademarkPlanId()) &&
+                condition.apply(criteria.getTmAgentId(), copy.getTmAgentId()) &&
                 condition.apply(criteria.getTrademarkClassesId(), copy.getTrademarkClassesId()) &&
                 condition.apply(criteria.getDocumentsId(), copy.getDocumentsId()) &&
                 condition.apply(criteria.getDistinct(), copy.getDistinct()),

@@ -10,6 +10,8 @@ import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { UserProfileService } from 'app/entities/user-profile/service/user-profile.service';
 import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model';
 import { TrademarkPlanService } from 'app/entities/trademark-plan/service/trademark-plan.service';
+import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
+import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
 import { ITrademark } from '../trademark.model';
@@ -27,6 +29,7 @@ describe('Trademark Management Update Component', () => {
   let leadService: LeadService;
   let userProfileService: UserProfileService;
   let trademarkPlanService: TrademarkPlanService;
+  let tmAgentService: TmAgentService;
   let trademarkClassService: TrademarkClassService;
 
   beforeEach(() => {
@@ -53,6 +56,7 @@ describe('Trademark Management Update Component', () => {
     leadService = TestBed.inject(LeadService);
     userProfileService = TestBed.inject(UserProfileService);
     trademarkPlanService = TestBed.inject(TrademarkPlanService);
+    tmAgentService = TestBed.inject(TmAgentService);
     trademarkClassService = TestBed.inject(TrademarkClassService);
 
     comp = fixture.componentInstance;
@@ -125,6 +129,28 @@ describe('Trademark Management Update Component', () => {
       expect(comp.trademarkPlansSharedCollection).toEqual(expectedCollection);
     });
 
+    it('should call TmAgent query and add missing value', () => {
+      const trademark: ITrademark = { id: 3769 };
+      const tmAgent: ITmAgent = { id: 9499 };
+      trademark.tmAgent = tmAgent;
+
+      const tmAgentCollection: ITmAgent[] = [{ id: 9499 }];
+      jest.spyOn(tmAgentService, 'query').mockReturnValue(of(new HttpResponse({ body: tmAgentCollection })));
+      const additionalTmAgents = [tmAgent];
+      const expectedCollection: ITmAgent[] = [...additionalTmAgents, ...tmAgentCollection];
+      jest.spyOn(tmAgentService, 'addTmAgentToCollectionIfMissing').mockReturnValue(expectedCollection);
+
+      activatedRoute.data = of({ trademark });
+      comp.ngOnInit();
+
+      expect(tmAgentService.query).toHaveBeenCalled();
+      expect(tmAgentService.addTmAgentToCollectionIfMissing).toHaveBeenCalledWith(
+        tmAgentCollection,
+        ...additionalTmAgents.map(expect.objectContaining),
+      );
+      expect(comp.tmAgentsSharedCollection).toEqual(expectedCollection);
+    });
+
     it('should call TrademarkClass query and add missing value', () => {
       const trademark: ITrademark = { id: 3769 };
       const trademarkClasses: ITrademarkClass[] = [{ id: 17567 }];
@@ -155,6 +181,8 @@ describe('Trademark Management Update Component', () => {
       trademark.user = user;
       const trademarkPlan: ITrademarkPlan = { id: 27639 };
       trademark.trademarkPlan = trademarkPlan;
+      const tmAgent: ITmAgent = { id: 9499 };
+      trademark.tmAgent = tmAgent;
       const trademarkClasses: ITrademarkClass = { id: 17567 };
       trademark.trademarkClasses = [trademarkClasses];
 
@@ -164,6 +192,7 @@ describe('Trademark Management Update Component', () => {
       expect(comp.leadsSharedCollection).toContainEqual(lead);
       expect(comp.userProfilesSharedCollection).toContainEqual(user);
       expect(comp.trademarkPlansSharedCollection).toContainEqual(trademarkPlan);
+      expect(comp.tmAgentsSharedCollection).toContainEqual(tmAgent);
       expect(comp.trademarkClassesSharedCollection).toContainEqual(trademarkClasses);
       expect(comp.trademark).toEqual(trademark);
     });
@@ -265,6 +294,16 @@ describe('Trademark Management Update Component', () => {
         jest.spyOn(trademarkPlanService, 'compareTrademarkPlan');
         comp.compareTrademarkPlan(entity, entity2);
         expect(trademarkPlanService.compareTrademarkPlan).toHaveBeenCalledWith(entity, entity2);
+      });
+    });
+
+    describe('compareTmAgent', () => {
+      it('should forward to tmAgentService', () => {
+        const entity = { id: 9499 };
+        const entity2 = { id: 30950 };
+        jest.spyOn(tmAgentService, 'compareTmAgent');
+        comp.compareTmAgent(entity, entity2);
+        expect(tmAgentService.compareTmAgent).toHaveBeenCalledWith(entity, entity2);
       });
     });
 

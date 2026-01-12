@@ -146,11 +146,15 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private StringFilter organizationType;
 
+    private StringFilter normalizedName;
+
     private LongFilter leadId;
 
     private LongFilter userId;
 
     private LongFilter trademarkPlanId;
+
+    private LongFilter tmAgentId;
 
     private LongFilter trademarkClassesId;
 
@@ -187,9 +191,11 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.phoneNumber = other.optionalPhoneNumber().map(StringFilter::copy).orElse(null);
         this.email = other.optionalEmail().map(StringFilter::copy).orElse(null);
         this.organizationType = other.optionalOrganizationType().map(StringFilter::copy).orElse(null);
+        this.normalizedName = other.optionalNormalizedName().map(StringFilter::copy).orElse(null);
         this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.trademarkPlanId = other.optionalTrademarkPlanId().map(LongFilter::copy).orElse(null);
+        this.tmAgentId = other.optionalTmAgentId().map(LongFilter::copy).orElse(null);
         this.trademarkClassesId = other.optionalTrademarkClassesId().map(LongFilter::copy).orElse(null);
         this.documentsId = other.optionalDocumentsId().map(LongFilter::copy).orElse(null);
         this.distinct = other.distinct;
@@ -694,6 +700,25 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.organizationType = organizationType;
     }
 
+    public StringFilter getNormalizedName() {
+        return normalizedName;
+    }
+
+    public Optional<StringFilter> optionalNormalizedName() {
+        return Optional.ofNullable(normalizedName);
+    }
+
+    public StringFilter normalizedName() {
+        if (normalizedName == null) {
+            setNormalizedName(new StringFilter());
+        }
+        return normalizedName;
+    }
+
+    public void setNormalizedName(StringFilter normalizedName) {
+        this.normalizedName = normalizedName;
+    }
+
     public LongFilter getLeadId() {
         return leadId;
     }
@@ -749,6 +774,25 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     public void setTrademarkPlanId(LongFilter trademarkPlanId) {
         this.trademarkPlanId = trademarkPlanId;
+    }
+
+    public LongFilter getTmAgentId() {
+        return tmAgentId;
+    }
+
+    public Optional<LongFilter> optionalTmAgentId() {
+        return Optional.ofNullable(tmAgentId);
+    }
+
+    public LongFilter tmAgentId() {
+        if (tmAgentId == null) {
+            setTmAgentId(new LongFilter());
+        }
+        return tmAgentId;
+    }
+
+    public void setTmAgentId(LongFilter tmAgentId) {
+        this.tmAgentId = tmAgentId;
     }
 
     public LongFilter getTrademarkClassesId() {
@@ -844,9 +888,11 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(phoneNumber, that.phoneNumber) &&
             Objects.equals(email, that.email) &&
             Objects.equals(organizationType, that.organizationType) &&
+            Objects.equals(normalizedName, that.normalizedName) &&
             Objects.equals(leadId, that.leadId) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(trademarkPlanId, that.trademarkPlanId) &&
+            Objects.equals(tmAgentId, that.tmAgentId) &&
             Objects.equals(trademarkClassesId, that.trademarkClassesId) &&
             Objects.equals(documentsId, that.documentsId) &&
             Objects.equals(distinct, that.distinct)
@@ -882,9 +928,11 @@ public class TrademarkCriteria implements Serializable, Criteria {
             phoneNumber,
             email,
             organizationType,
+            normalizedName,
             leadId,
             userId,
             trademarkPlanId,
+            tmAgentId,
             trademarkClassesId,
             documentsId,
             distinct
@@ -921,9 +969,11 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalPhoneNumber().map(f -> "phoneNumber=" + f + ", ").orElse("") +
             optionalEmail().map(f -> "email=" + f + ", ").orElse("") +
             optionalOrganizationType().map(f -> "organizationType=" + f + ", ").orElse("") +
+            optionalNormalizedName().map(f -> "normalizedName=" + f + ", ").orElse("") +
             optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalTrademarkPlanId().map(f -> "trademarkPlanId=" + f + ", ").orElse("") +
+            optionalTmAgentId().map(f -> "tmAgentId=" + f + ", ").orElse("") +
             optionalTrademarkClassesId().map(f -> "trademarkClassesId=" + f + ", ").orElse("") +
             optionalDocumentsId().map(f -> "documentsId=" + f + ", ").orElse("") +
             optionalDistinct().map(f -> "distinct=" + f + ", ").orElse("") +

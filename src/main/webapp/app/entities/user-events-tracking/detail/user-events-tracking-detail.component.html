@@ -1,0 +1,64 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (userEventsTracking(); as userEventsTrackingRef) {
+      <div>
+        <h2 data-cy="userEventsTrackingDetailsHeading"><span>User Events Tracking</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span>ID</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.id }}</span>
+          </dd>
+          <dt><span>Event Type</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.eventType }}</span>
+          </dd>
+          <dt><span>Page Name</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.pageName }}</span>
+          </dd>
+          <dt><span>Device Type</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.deviceType }}</span>
+          </dd>
+          <dt><span>Created Date</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.createdDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>Deleted</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.deleted }}</span>
+          </dd>
+          <dt><span>Modified Date</span></dt>
+          <dd>
+            <span>{{ userEventsTrackingRef.modifiedDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span>User Profile</span></dt>
+          <dd>
+            @if (userEventsTracking()!.userProfile) {
+              <div>
+                <a [routerLink]="['/user-profile', userEventsTracking()!.userProfile?.id, 'view']">{{
+                  userEventsTrackingRef.userProfile?.id
+                }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span>Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/user-events-tracking', userEventsTrackingRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span>Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

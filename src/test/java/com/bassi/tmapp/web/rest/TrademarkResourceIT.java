@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import com.bassi.tmapp.IntegrationTest;
 import com.bassi.tmapp.domain.Lead;
+import com.bassi.tmapp.domain.TmAgent;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.TrademarkPlan;
@@ -140,6 +141,9 @@ class TrademarkResourceIT {
     private static final String DEFAULT_ORGANIZATION_TYPE = "AAAAAAAAAA";
     private static final String UPDATED_ORGANIZATION_TYPE = "BBBBBBBBBB";
 
+    private static final String DEFAULT_NORMALIZED_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_NORMALIZED_NAME = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -203,7 +207,8 @@ class TrademarkResourceIT {
             .source(DEFAULT_SOURCE)
             .phoneNumber(DEFAULT_PHONE_NUMBER)
             .email(DEFAULT_EMAIL)
-            .organizationType(DEFAULT_ORGANIZATION_TYPE);
+            .organizationType(DEFAULT_ORGANIZATION_TYPE)
+            .normalizedName(DEFAULT_NORMALIZED_NAME);
     }
 
     /**
@@ -238,7 +243,8 @@ class TrademarkResourceIT {
             .source(UPDATED_SOURCE)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
-            .organizationType(UPDATED_ORGANIZATION_TYPE);
+            .organizationType(UPDATED_ORGANIZATION_TYPE)
+            .normalizedName(UPDATED_NORMALIZED_NAME);
     }
 
     @BeforeEach
@@ -332,7 +338,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
-            .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)));
+            .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)))
+            .andExpect(jsonPath("$.[*].normalizedName").value(hasItem(DEFAULT_NORMALIZED_NAME)));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -388,7 +395,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.source").value(DEFAULT_SOURCE.toString()))
             .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
-            .andExpect(jsonPath("$.organizationType").value(DEFAULT_ORGANIZATION_TYPE));
+            .andExpect(jsonPath("$.organizationType").value(DEFAULT_ORGANIZATION_TYPE))
+            .andExpect(jsonPath("$.normalizedName").value(DEFAULT_NORMALIZED_NAME));
     }
 
     @Test
@@ -1838,6 +1846,65 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByNormalizedNameIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where normalizedName equals to
+        defaultTrademarkFiltering("normalizedName.equals=" + DEFAULT_NORMALIZED_NAME, "normalizedName.equals=" + UPDATED_NORMALIZED_NAME);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByNormalizedNameIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where normalizedName in
+        defaultTrademarkFiltering(
+            "normalizedName.in=" + DEFAULT_NORMALIZED_NAME + "," + UPDATED_NORMALIZED_NAME,
+            "normalizedName.in=" + UPDATED_NORMALIZED_NAME
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByNormalizedNameIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where normalizedName is not null
+        defaultTrademarkFiltering("normalizedName.specified=true", "normalizedName.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByNormalizedNameContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where normalizedName contains
+        defaultTrademarkFiltering(
+            "normalizedName.contains=" + DEFAULT_NORMALIZED_NAME,
+            "normalizedName.contains=" + UPDATED_NORMALIZED_NAME
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByNormalizedNameNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where normalizedName does not contain
+        defaultTrademarkFiltering(
+            "normalizedName.doesNotContain=" + UPDATED_NORMALIZED_NAME,
+            "normalizedName.doesNotContain=" + DEFAULT_NORMALIZED_NAME
+        );
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByLeadIsEqualToSomething() throws Exception {
         Lead lead;
         if (TestUtil.findAll(em, Lead.class).isEmpty()) {
@@ -1904,6 +1971,28 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByTmAgentIsEqualToSomething() throws Exception {
+        TmAgent tmAgent;
+        if (TestUtil.findAll(em, TmAgent.class).isEmpty()) {
+            trademarkRepository.saveAndFlush(trademark);
+            tmAgent = TmAgentResourceIT.createEntity();
+        } else {
+            tmAgent = TestUtil.findAll(em, TmAgent.class).get(0);
+        }
+        em.persist(tmAgent);
+        em.flush();
+        trademark.setTmAgent(tmAgent);
+        trademarkRepository.saveAndFlush(trademark);
+        Long tmAgentId = tmAgent.getId();
+        // Get all the trademarkList where tmAgent equals to tmAgentId
+        defaultTrademarkShouldBeFound("tmAgentId.equals=" + tmAgentId);
+
+        // Get all the trademarkList where tmAgent equals to (tmAgentId + 1)
+        defaultTrademarkShouldNotBeFound("tmAgentId.equals=" + (tmAgentId + 1));
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByTrademarkClassesIsEqualToSomething() throws Exception {
         TrademarkClass trademarkClasses;
         if (TestUtil.findAll(em, TrademarkClass.class).isEmpty()) {
@@ -1962,7 +2051,8 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].source").value(hasItem(DEFAULT_SOURCE.toString())))
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
-            .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)));
+            .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)))
+            .andExpect(jsonPath("$.[*].normalizedName").value(hasItem(DEFAULT_NORMALIZED_NAME)));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -2035,7 +2125,8 @@ class TrademarkResourceIT {
             .source(UPDATED_SOURCE)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
-            .organizationType(UPDATED_ORGANIZATION_TYPE);
+            .organizationType(UPDATED_ORGANIZATION_TYPE)
+            .normalizedName(UPDATED_NORMALIZED_NAME);
         TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
@@ -2197,7 +2288,8 @@ class TrademarkResourceIT {
             .source(UPDATED_SOURCE)
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
-            .organizationType(UPDATED_ORGANIZATION_TYPE);
+            .organizationType(UPDATED_ORGANIZATION_TYPE)
+            .normalizedName(UPDATED_NORMALIZED_NAME);
 
         restTrademarkMockMvc
             .perform(

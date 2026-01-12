@@ -61,4 +61,12 @@ export const EntityNavbarItems: NavbarItem[] = [
     name: 'TokenPhonetic',
     route: '/token-phonetic',
   },
+  {
+    name: 'TrademarkTokenFrequency',
+    route: '/trademark-token-frequency',
+  },
+  {
+    name: 'UserEventsTracking',
+    route: '/user-events-tracking',
+  },
 ];

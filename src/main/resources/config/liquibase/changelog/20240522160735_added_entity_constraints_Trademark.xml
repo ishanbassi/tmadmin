@@ -36,6 +36,15 @@
                                  onUpdate="CASCADE"
                                  />
 
+        <addForeignKeyConstraint baseColumnNames="tm_agent_id"
+                                 baseTableName="trademark"
+                                 constraintName="fk_trademark__tm_agent_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tm_agent"
+                                 onDelete="CASCADE"
+                                 onUpdate="CASCADE"
+                                 />
+
         <addForeignKeyConstraint baseColumnNames="trademark_id"
                                  baseTableName="rel_trademark__trademark_classes"
                                  constraintName="fk_rel_trademark__trademark_classes__trademark_id"

@@ -54,6 +54,7 @@ entity Trademark{
     phoneNumber String
 	email String
 	organizationType String
+	normalizedName String
     
     
     
@@ -227,6 +228,23 @@ entity TrademarkPlan{
 
 }
 
+entity TrademarkTokenFrequency{
+	frequency Integer
+	word String
+	createdDate ZonedDateTime
+    deleted Boolean	
+    modifiedDate ZonedDateTime
+}
+
+entity UserEventsTracking{
+	eventType String
+	pageName String
+	deviceType String
+	createdDate ZonedDateTime
+    deleted Boolean	
+    modifiedDate ZonedDateTime
+}
+
 enum ContactMethod{
 	CALL,
 	MESSAGE,
@@ -338,8 +356,9 @@ relationship ManyToOne{
     Documents {userProfile} to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile{documents}
     Payment {userProfile} to @OnUpdate("CASCADE") UserProfile
     TrademarkToken {trademark} to @OnDelete("CASCADE") @OnUpdate("CASCADE") Trademark
-    TokenPhonetic {trademarkToken} to @OnDelete("CASCADE") @OnUpdate("CASCADE") TrademarkToken  
-    
+    TokenPhonetic {trademarkToken} to @OnDelete("CASCADE") @OnUpdate("CASCADE") TrademarkToken
+    UserEventsTracking {userProfile}   to @OnDelete("CASCADE") @OnUpdate("CASCADE") UserProfile
+    Trademark { tmAgent}  to @OnDelete("CASCADE") @OnUpdate("CASCADE") TmAgent
 
 
 	

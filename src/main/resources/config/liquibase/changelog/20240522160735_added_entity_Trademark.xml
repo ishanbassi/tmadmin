@@ -89,6 +89,9 @@
             <column name="organization_type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            <column name="normalized_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
             <column name="lead_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -96,6 +99,9 @@
                 <constraints nullable="true" />
             </column>
             <column name="trademark_plan_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="tm_agent_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -160,6 +166,7 @@
             <column name="phone_number" type="string"/>
             <column name="email" type="string"/>
             <column name="organization_type" type="string"/>
+            <column name="normalized_name" type="string"/>
             <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
         </loadData>
     </changeSet>

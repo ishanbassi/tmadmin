@@ -35,7 +35,7 @@ public class TrademarkToken implements Serializable {
     private Integer position;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "trademarkClasses", "documents" }, allowSetters = true)
+    @JsonIgnoreProperties(value = { "lead", "user", "trademarkPlan", "tmAgent", "trademarkClasses", "documents" }, allowSetters = true)
     private Trademark trademark;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here

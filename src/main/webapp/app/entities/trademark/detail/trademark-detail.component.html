@@ -154,6 +154,10 @@
           <dd>
             <span>{{ trademarkRef.organizationType }}</span>
           </dd>
+          <dt><span>Normalized Name</span></dt>
+          <dd>
+            <span>{{ trademarkRef.normalizedName }}</span>
+          </dd>
           <dt><span>Lead</span></dt>
           <dd>
             @if (trademark()!.lead) {
@@ -175,6 +179,14 @@
             @if (trademark()!.trademarkPlan) {
               <div>
                 <a [routerLink]="['/trademark-plan', trademark()!.trademarkPlan?.id, 'view']">{{ trademarkRef.trademarkPlan?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span>Tm Agent</span></dt>
+          <dd>
+            @if (trademark()!.tmAgent) {
+              <div>
+                <a [routerLink]="['/tm-agent', trademark()!.tmAgent?.id, 'view']">{{ trademarkRef.tmAgent?.id }}</a>
               </div>
             }
           </dd>

@@ -110,6 +110,9 @@ public class Trademark implements Serializable {
     @Column(name = "organization_type")
     private String organizationType;
 
+    @Column(name = "normalized_name")
+    private String normalizedName;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
     private Lead lead;
@@ -120,6 +123,9 @@ public class Trademark implements Serializable {
 
     @ManyToOne(fetch = FetchType.EAGER)
     private TrademarkPlan trademarkPlan;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TmAgent tmAgent;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -475,6 +481,19 @@ public class Trademark implements Serializable {
         this.organizationType = organizationType;
     }
 
+    public String getNormalizedName() {
+        return this.normalizedName;
+    }
+
+    public Trademark normalizedName(String normalizedName) {
+        this.setNormalizedName(normalizedName);
+        return this;
+    }
+
+    public void setNormalizedName(String normalizedName) {
+        this.normalizedName = normalizedName;
+    }
+
     public Lead getLead() {
         return this.lead;
     }
@@ -511,6 +530,19 @@ public class Trademark implements Serializable {
 
     public Trademark trademarkPlan(TrademarkPlan trademarkPlan) {
         this.setTrademarkPlan(trademarkPlan);
+        return this;
+    }
+
+    public TmAgent getTmAgent() {
+        return this.tmAgent;
+    }
+
+    public void setTmAgent(TmAgent tmAgent) {
+        this.tmAgent = tmAgent;
+    }
+
+    public Trademark tmAgent(TmAgent tmAgent) {
+        this.setTmAgent(tmAgent);
         return this;
     }
 
@@ -617,6 +649,7 @@ public class Trademark implements Serializable {
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", email='" + getEmail() + "'" +
             ", organizationType='" + getOrganizationType() + "'" +
+            ", normalizedName='" + getNormalizedName() + "'" +
             "}";
     }
 
