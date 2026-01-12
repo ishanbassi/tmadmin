@@ -3,17 +3,23 @@ package com.bassi.tmapp.service;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.TrademarkPlan;
+import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.UserProfile;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.DocumentsDTO;
 import com.bassi.tmapp.service.dto.PaymentDTO;
+import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary.OrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkPlanDTO;
+import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
+import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
+import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
@@ -21,8 +27,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +61,25 @@ public class TrademarkService {
 
     private final UserProfileService userProfileService;
 
+    private final TrademarkTokenService trademarkTokenService;
+
+    private final WordSanitizationService wordSanitizationService;
+
+    private final SimilarityScorerService similarityScorerService;
+
+    private TmAgentServiceExtended agentServiceExtended;
+
     public TrademarkService(
         TrademarkRepository trademarkRepository,
         TrademarkMapper trademarkMapper,
         DocumentsService documentsService,
         CurrentUserService currentUserService,
         TrademarkQueryService trademarkQueryService,
-        UserProfileService userProfileService
+        UserProfileService userProfileService,
+        TrademarkTokenService trademarkTokenService,
+        WordSanitizationService wordSanitizationService,
+        TmAgentServiceExtended agentServiceExtended,
+        SimilarityScorerService similarityScorerService
     ) {
         this.trademarkRepository = trademarkRepository;
         this.trademarkMapper = trademarkMapper;
@@ -67,6 +87,10 @@ public class TrademarkService {
         this.currentUserService = currentUserService;
         this.trademarkQueryService = trademarkQueryService;
         this.userProfileService = userProfileService;
+        this.trademarkTokenService = trademarkTokenService;
+        this.wordSanitizationService = wordSanitizationService;
+        this.agentServiceExtended = agentServiceExtended;
+        this.similarityScorerService = similarityScorerService;
     }
 
     /**
@@ -194,5 +218,47 @@ public class TrademarkService {
         filter.setEquals(userProfile.getId());
         criteria.setUserId(filter);
         return trademarkQueryService.findByCriteria(criteria, Pageable.ofSize(20)).toList();
+    }
+
+    public void saveTrademarksAndGenerateTokens(List<Trademark> journalTrademarks) {
+        List<Trademark> trademarks = trademarkRepository.saveAll(journalTrademarks);
+        trademarkTokenService.saveTokensAndGeneratePhoneticCode(trademarks);
+    }
+
+    public void saveTrademarksAndGenerateTokens(Trademark tm, TrademarkSource trademarkSource) {
+        tm.setSource(trademarkSource);
+        Trademark trademarks = trademarkRepository.save(tm);
+        trademarkTokenService.saveTokensAndGeneratePhoneticCode(trademarks);
+        agentServiceExtended.saveTmAgentsFromTrademarks(trademarks);
+    }
+
+    @Transactional
+    public List<TrademarkSimiliarityResultDTO> runWeeklyComparison(int journalNo) {
+        List<Object[]> pairs = trademarkRepository.findAllCandidatePairs(journalNo);
+
+        List<TrademarkSimiliarityResultDTO> similiarityResultDTOs = new ArrayList<>();
+
+        Map<Long, Trademark> cache = new HashMap<>();
+
+        for (Object[] row : pairs) {
+            Long clientId = ((Number) row[0]).longValue();
+            Long publishedId = ((Number) row[1]).longValue();
+
+            Trademark client = cache.computeIfAbsent(clientId, id -> trademarkRepository.findById(id).orElseThrow());
+
+            Trademark published = cache.computeIfAbsent(publishedId, id -> trademarkRepository.findById(id).orElseThrow());
+
+            double score = similarityScorerService.computeFinalScore(client, published);
+            TrademarkSimiliarityResultDTO trademarkSimiliarityResultDTO = new TrademarkSimiliarityResultDTO(
+                client,
+                published,
+                score,
+                journalNo
+            );
+
+            similiarityResultDTOs.add(trademarkSimiliarityResultDTO);
+        }
+
+        return similiarityResultDTOs;
     }
 }

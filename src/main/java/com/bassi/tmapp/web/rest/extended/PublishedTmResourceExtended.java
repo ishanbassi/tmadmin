@@ -209,6 +209,12 @@ public class PublishedTmResourceExtended {
         return "Trademarks extraction has been initialized";
     }
 
+    @PostMapping("/extract/v2/{journalNo}")
+    public String extractPublishedTmV2(@PathVariable("journalNo") String journalNo) {
+        publishedTmServiceExtended.readPdfFileV2(journalNo);
+        return "Trademarks extraction has been initialized";
+    }
+
     @PostMapping("/generate-phonetics/{journalNo}")
     public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
         publishedTmServiceExtended.generateMissingPhonetics(journalNo);
@@ -261,5 +267,11 @@ public class PublishedTmResourceExtended {
     public String downloadJournalPdfs(@RequestParam("start") Integer start, @RequestParam("end") Integer end) {
         publishedTmServiceExtended.downloadJournalPdfs(start, end);
         return "Trademarks extraction has been initialized";
+    }
+
+    @PostMapping("/download/latest")
+    public String downloadLatestPdf() {
+        publishedTmServiceExtended.downloadLatestJournalPdfs();
+        return "Trademark download has started";
     }
 }

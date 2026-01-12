@@ -1,9 +1,18 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.domain.PublishedTmPhonetics;
+import com.bassi.tmapp.domain.TokenPhonetic;
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkToken;
+import com.bassi.tmapp.domain.enumeration.TrademarkTokenType;
 import com.bassi.tmapp.repository.TrademarkTokenRepository;
+import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
 import com.bassi.tmapp.service.dto.TrademarkTokenDTO;
+import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.TrademarkTokenMapper;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -26,9 +35,20 @@ public class TrademarkTokenService {
 
     private final TrademarkTokenMapper trademarkTokenMapper;
 
-    public TrademarkTokenService(TrademarkTokenRepository trademarkTokenRepository, TrademarkTokenMapper trademarkTokenMapper) {
+    private final WordSanitizationService wordSanitizationService;
+
+    private final TokenPhoneticService tokenPhoneticService;
+
+    public TrademarkTokenService(
+        TrademarkTokenRepository trademarkTokenRepository,
+        TrademarkTokenMapper trademarkTokenMapper,
+        WordSanitizationService wordSanitizationService,
+        TokenPhoneticService tokenPhoneticService
+    ) {
         this.trademarkTokenRepository = trademarkTokenRepository;
         this.trademarkTokenMapper = trademarkTokenMapper;
+        this.wordSanitizationService = wordSanitizationService;
+        this.tokenPhoneticService = tokenPhoneticService;
     }
 
     /**
@@ -112,5 +132,45 @@ public class TrademarkTokenService {
     public void delete(Long id) {
         LOG.debug("Request to delete TrademarkToken : {}", id);
         trademarkTokenRepository.deleteById(id);
+    }
+
+    public void saveTokensAndGeneratePhoneticCode(List<Trademark> trademarks) {
+        for (Trademark tm : trademarks) {
+            if (tm.getName() == null || tm.getName().isBlank()) {
+                return;
+            }
+            saveTokens(tm);
+        }
+    }
+
+    public void saveTokensAndGeneratePhoneticCode(Trademark tm) {
+        if (tm.getName() == null || tm.getName().isBlank()) {
+            return;
+        }
+        saveTokens(tm);
+    }
+
+    private void saveTokens(Trademark tm) {
+        String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(tm.getName().trim());
+        List<String> subWords = Arrays.asList(sanitizedTrademark.split(" "));
+        for (int i = 0; i < subWords.size(); i++) {
+            // i+1 refers to the position of the word
+            generateTrademarkToken(subWords.get(i), tm, i + 1);
+        }
+    }
+
+    private void generateTrademarkToken(String word, Trademark tm, int position) {
+        TrademarkToken token = new TrademarkToken();
+        token.setTokenText(word);
+        token.setTrademark(tm);
+        if (word.length() <= 2) {
+            token.setTokenType(TrademarkTokenType.DESCRIPTIVE);
+        } else {
+            token.setTokenType(TrademarkTokenType.CORE);
+        }
+
+        token.setPosition(position);
+        token = trademarkTokenRepository.save(token);
+        tokenPhoneticService.generateAndSavePhoneticToken(token);
     }
 }

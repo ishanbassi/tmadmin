@@ -2,11 +2,14 @@ package com.bassi.tmapp.service.extended.pdfService;
 
 import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.LeadService;
 import com.bassi.tmapp.service.TrademarkClassService;
+import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
@@ -15,6 +18,7 @@ import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
+import com.bassi.tmapp.service.mapper.JournalTrademarkMapper;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.service.mapper.TrademarkClassMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
@@ -52,9 +56,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ITextPdfReaderService {
+public class TrademarkJournalParserService {
 
-    private static final Logger log = LoggerFactory.getLogger(ITextPdfReaderService.class);
+    private static final Logger log = LoggerFactory.getLogger(TrademarkJournalParserService.class);
 
     private static final Pattern tmClassPattern = Pattern.compile(
         "Trade Marks Journal No:\\s*(\\d{4})\\s*,\\s+.+Class\\s+(\\d{1,2})",
@@ -65,6 +69,7 @@ public class ITextPdfReaderService {
         Pattern.CASE_INSENSITIVE
     );
     private static final Pattern multiTmClassPattern = Pattern.compile("Cl.(\\d{1,2});", Pattern.CASE_INSENSITIVE);
+    List<PublishedTmDTO> errors = new ArrayList<>();
 
     private PublishedTmDTO currentPublishedTmDto;
     private PhoneticsServiceExtended phoneticsServiceExtended;
@@ -76,10 +81,11 @@ public class ITextPdfReaderService {
     private final TrademarkClassMapper trademarkClassMapper;
     private CompanyDataProcessor companyDataProcessor;
     private LeadService leadService;
+    private TrademarkService trademarkService;
 
     @Autowired
     @Lazy
-    private ITextPdfReaderService self;
+    private TrademarkJournalParserService self;
 
     @Value("${file-upload-base-path}")
     private String baseUploadDirectory;
@@ -91,8 +97,9 @@ public class ITextPdfReaderService {
     private String baseErrorsDirectory;
 
     private PublishedTmMapper publishedTmMapper;
+    private JournalTrademarkMapper journalTrademarkMapper;
 
-    public ITextPdfReaderService(
+    public TrademarkJournalParserService(
         PhoneticsServiceExtended phoneticsServiceExtended,
         PublishedTmRepositoryExtended publishedTmRepositoryExtended,
         PublishedTmMapper publishedTmMapper,
@@ -102,7 +109,9 @@ public class ITextPdfReaderService {
         TrademarkClassService trademarkClassService,
         TrademarkClassMapper trademarkClassMapper,
         CompanyDataProcessor companyDataProcessor,
-        LeadService leadService
+        LeadService leadService,
+        JournalTrademarkMapper journalTrademarkMapper,
+        TrademarkService trademarkService
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
@@ -114,6 +123,8 @@ public class ITextPdfReaderService {
         this.trademarkClassMapper = trademarkClassMapper;
         this.companyDataProcessor = companyDataProcessor;
         this.leadService = leadService;
+        this.journalTrademarkMapper = journalTrademarkMapper;
+        this.trademarkService = trademarkService;
     }
 
     @Async
@@ -136,106 +147,6 @@ public class ITextPdfReaderService {
             }
 
             processTmClassPdf(file.getAbsolutePath(), null);
-        }
-    }
-
-    public void readPdfAndProcessLeads(String pdfDirectoryPath) {
-        File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + pdfDirectoryPath);
-        File[] files = fetchFilesFromDirectory(baseDirectory);
-        for (File file : files) {
-            processLeadsPdf(file.getAbsolutePath());
-        }
-    }
-
-    private void processLeadsPdf(String pdfFilePath) {
-        PdfDocument pdfDoc;
-        List<String> contactNameList = new ArrayList<>();
-        List<String> emailList = new ArrayList<>();
-        List<String> addressList = new ArrayList<>();
-        List<String> phoneNumberList = new ArrayList<>();
-        List<String> businessTypeList = new ArrayList<>();
-
-        try {
-            pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
-            for (int i = 45; i <= pdfDoc.getNumberOfPages(); i++) {
-                CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
-                PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
-                processor.processPageContent(pdfDoc.getPage(i));
-
-                List<LineInfo> lines = strategy.getLines();
-                for (LineInfo line : lines) {
-                    String words = line.getAllWordsFromSameLineWithInfo();
-                    words = words.replaceAll("[\\u00A0\\u2007\\u202F]", " "); // replaces non-breaking spaces
-                    words = words.trim(); // removes leading/trailing space
-
-                    Pattern contactNamePattern = Pattern.compile("Contact Name\\s*:\\s*(.*)");
-                    Pattern designationPattern = Pattern.compile("Designation\\s*:\\s*(.*)");
-                    Pattern addressPattern = Pattern.compile(
-                        "Address\\s*:\\s*(.*?)(?=Phone\\s*:|Fax\\s*:|Email\\s*:|Business Activities\\s*:|$)",
-                        Pattern.DOTALL
-                    );
-                    Pattern phonePattern = Pattern.compile("Phone\\s*:\\s*([\\d\\-\\+\\(\\) ]+)");
-                    Pattern faxPattern = Pattern.compile("Fax\\s*:\\s*([\\d\\-\\+\\(\\) ]+)");
-                    Pattern emailPattern = Pattern.compile("Email\\s*:\\s*([\\w\\.-]+@[\\w\\.-]+)", Pattern.CASE_INSENSITIVE);
-                    Pattern businessActivitiesPattern = Pattern.compile("Business Activities\\s*:\\s*(.*)", Pattern.DOTALL);
-
-                    // Extract values
-                    Matcher mContact = contactNamePattern.matcher(words);
-                    Matcher mDesignation = designationPattern.matcher(words);
-                    Matcher mAddress = addressPattern.matcher(words);
-                    Matcher mPhone = phonePattern.matcher(words);
-                    Matcher mFax = faxPattern.matcher(words);
-                    Matcher mEmail = emailPattern.matcher(words);
-                    Matcher mBusiness = businessActivitiesPattern.matcher(words);
-
-                    if (mContact.find()) {
-                        String contactName = mContact.group(1).trim();
-                        contactNameList.add(contactName);
-                    }
-                    if (mDesignation.find()) {
-                        String designation = mDesignation.group(1).trim();
-                        log.info("Designation: " + designation);
-                    }
-                    if (mAddress.find()) {
-                        String address = mAddress.group(1).replaceAll("[\\r\\n]+", " ").trim();
-                        addressList.add(address);
-                    }
-                    if (mPhone.find()) {
-                        String phone = mPhone.group(1).trim();
-                        phoneNumberList.add(phone);
-                    }
-                    if (mFax.find()) {
-                        String fax = mFax.group(1).trim();
-                        log.info("Fax: " + fax);
-                    }
-                    if (mEmail.find()) {
-                        String email = mEmail.group(1).trim();
-                        emailList.add(email);
-                    }
-                    if (mBusiness.find()) {
-                        String businessActivities = mBusiness.group(1).replaceAll("[\\r\\n]+", " ").trim();
-                        businessTypeList.add(businessActivities);
-                    }
-                }
-            }
-            emailList = emailList.stream().filter(email -> !email.equalsIgnoreCase("info@pharmexcil.com")).toList();
-
-            List<LeadDTO> leads = new ArrayList<>();
-            for (int i = 0; i < emailList.size(); i++) {
-                LeadDTO lead = new LeadDTO();
-                lead.setEmail(getValueOrNull(emailList, i));
-                lead.setLeadSource("Pharmexcil_Members_Directory_2008.pdf");
-                lead.setFullName(getValueOrNull(contactNameList, i));
-                lead.setComments(getValueOrNull(businessTypeList, i));
-                lead.setCity(getValueOrNull(addressList, i));
-                lead.setPhoneNumber(getValueOrNull(phoneNumberList, i));
-                leads.add(lead);
-            }
-            leadService.saveAll(leads);
-
-            pdfDoc.close();
-        } catch (IOException e) {
-            throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
         }
     }
 
@@ -310,16 +221,21 @@ public class ITextPdfReaderService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void readPdfAndSaveDetails(String path) {
         List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
-        List<PublishedTm> publishedTrademarks = publishedTmMapper.toEntity(publishedTrademarksDto);
-        savePublishedTmAndGeneratePhoneticsDto(publishedTrademarks);
-        publishedTrademarksDto = publishedTmMapper.toDto(publishedTrademarks);
-        agentServiceExtended.saveTmAgents(publishedTrademarksDto);
+        List<Trademark> trademarks = journalTrademarkMapper.toEntity(publishedTrademarksDto);
+        for (Trademark tm : trademarks) {
+            try {
+                trademarkService.saveTrademarksAndGenerateTokens(tm, TrademarkSource.JOURNAL_PUBLICATION);
+            } catch (Exception e) {
+                log.error("Failed to save trademark, Reason: {}", e.getLocalizedMessage());
+                errors.add(journalTrademarkMapper.toDto(tm));
+            }
+        }
     }
 
     public List<PublishedTmDTO> readPdf(String pdfFilePath) {
         log.info("Going to read pdf file: {}", pdfFilePath);
         List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
-        List<PublishedTmDTO> errors = new ArrayList<>();
+
         PdfDocument pdfDoc;
 
         try {
@@ -331,6 +247,7 @@ public class ITextPdfReaderService {
             try {
                 log.info("Going to process page number {}", i);
                 currentPublishedTmDto = new PublishedTmDTO();
+                currentPublishedTmDto.setSource(TrademarkSource.JOURNAL_PUBLICATION);
                 currentPublishedTmDto.setPageNo(i);
 
                 CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();

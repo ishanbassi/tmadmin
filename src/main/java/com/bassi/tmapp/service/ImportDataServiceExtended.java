@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.TrademarkServiceExtended;
@@ -25,15 +26,18 @@ public class ImportDataServiceExtended {
     private TrademarkServiceExtended trademarkServiceExtended;
     private PhoneticsServiceExtended phoneticsServiceExtended;
     private final TrademarkRepository trademarkRepository;
+    private TrademarkService trademarkService;
 
     ImportDataServiceExtended(
         TrademarkServiceExtended trademarkServiceExtended,
         PhoneticsServiceExtended phoneticsServiceExtended,
-        TrademarkRepository trademarkRepository
+        TrademarkRepository trademarkRepository,
+        TrademarkService trademarkService
     ) {
         this.trademarkServiceExtended = trademarkServiceExtended;
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.trademarkRepository = trademarkRepository;
+        this.trademarkService = trademarkService;
     }
 
     private final Logger log = LoggerFactory.getLogger(ImportDataServiceExtended.class);
@@ -65,7 +69,7 @@ public class ImportDataServiceExtended {
             errors.put(errors.size(), e.getMessage());
             e.printStackTrace();
         }
-        saveTrademarksAndGeneratePhonetics(trademarks);
+        saveTrademarksAndGenerateTokens(trademarks);
     }
 
     private void saveTrademarksAndGeneratePhonetics(List<Trademark> trademarks) {
@@ -73,25 +77,33 @@ public class ImportDataServiceExtended {
         phoneticsServiceExtended.saveAll(savedTrademarks);
     }
 
+    private void saveTrademarksAndGenerateTokens(List<Trademark> trademarks) {
+        for (Trademark tm : trademarks) {
+            trademarkService.saveTrademarksAndGenerateTokens(tm, TrademarkSource.EXCEL);
+        }
+    }
+
     private Trademark createTrademarkFromCsvLine(String[] line, Map<Integer, String> errors, int row) {
         try {
             Trademark trademark = new Trademark();
             trademark.setName(line[2]);
-            //			Long applicationNo = Long.valueOf(line[1]);
-            //			trademark.setApplicationNo(applicationNo);
+            Long applicationNo = extractNumbers(line[1]);
+            trademark.setApplicationNo(applicationNo);
+
             Integer tmClass = Integer.valueOf(line[1]);
             trademark.setTmClass(tmClass);
+            trademark.setAgentName("BASSI AND ASSOCIATES");
+
             return trademark;
         } catch (Exception e) {
             log.error("Error at line no. {} , reason: {}", row, e.getMessage());
             errors.put(row, e.getMessage());
             return null;
         }
-        //		 trademarkDto = trademarkService.save(trademarkDto);
-        //
-        //		 log.info("going to save phonetics for the trademark");
-        //		 PhoneticsDTO phoneticDto = new PhoneticsDTO();
-        //
+    }
 
+    public static Long extractNumbers(String value) {
+        if (value == null) return null;
+        return Long.parseLong(value.replaceAll("\\D+", ""));
     }
 }

@@ -78,6 +78,11 @@ public class TrademarkScrapingService {
     }
 
     @Async
+    public void downloadLatestPdfAsync() throws IOException {
+        downloadLatestPdf();
+    }
+
+    @Async
     public void scrapeAndSetNameAndStatus(List<PublishedTm> publishedTmArr) {
         ChromeOptions chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--headless");

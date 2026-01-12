@@ -1,6 +1,8 @@
 package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.TokenPhonetic;
+import com.bassi.tmapp.domain.TrademarkToken;
+import com.bassi.tmapp.domain.enumeration.PhoneticAlgorithmType;
 import com.bassi.tmapp.repository.TokenPhoneticRepository;
 import com.bassi.tmapp.service.dto.TokenPhoneticDTO;
 import com.bassi.tmapp.service.mapper.TokenPhoneticMapper;
@@ -8,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.codec.language.DoubleMetaphone;
+import org.apache.commons.codec.language.Metaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -108,5 +112,26 @@ public class TokenPhoneticService {
     public void delete(Long id) {
         LOG.debug("Request to delete TokenPhonetic : {}", id);
         tokenPhoneticRepository.deleteById(id);
+    }
+
+    public void generateAndSavePhoneticToken(TrademarkToken token) {
+        TokenPhonetic tokenPhonetic = new TokenPhonetic();
+        tokenPhonetic.setAlgorithm(PhoneticAlgorithmType.DOUBLE_METAPHONE);
+        tokenPhonetic.setPhoneticCode(generateMetaphone(token.getTokenText()));
+        tokenPhonetic.setTrademarkToken(token);
+        tokenPhoneticRepository.save(tokenPhonetic);
+    }
+
+    public String generateDoubleMetaphone(String val) {
+        if (val == null || val.isBlank()) return null;
+        DoubleMetaphone dm = new DoubleMetaphone();
+        dm.setMaxCodeLen(100);
+        return dm.doubleMetaphone(val);
+    }
+
+    public String generateMetaphone(String val) {
+        if (val == null || val.isBlank()) return null;
+        Metaphone metaphone = new Metaphone();
+        return metaphone.metaphone(val);
     }
 }

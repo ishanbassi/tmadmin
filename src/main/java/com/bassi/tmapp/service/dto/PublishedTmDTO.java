@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -99,6 +100,8 @@ public class PublishedTmDTO implements Serializable {
     private String filePath;
 
     private TrademarkType trademarkType;
+
+    private TrademarkSource source;
 
     public String getFilePath() {
         return filePath;
@@ -342,6 +345,14 @@ public class PublishedTmDTO implements Serializable {
 
     public void setTrademarkType(TrademarkType trademarkType) {
         this.trademarkType = trademarkType;
+    }
+
+    public TrademarkSource getSource() {
+        return source;
+    }
+
+    public void setSource(TrademarkSource source) {
+        this.source = source;
     }
 
     @Override

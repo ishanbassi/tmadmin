@@ -7,6 +7,7 @@ import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.extended.pdfService.ITextPdfReaderService;
+import com.bassi.tmapp.service.extended.pdfService.TrademarkJournalParserService;
 import com.bassi.tmapp.service.mapper.PublishedTmMapper;
 import com.bassi.tmapp.service.mapper.PublishedTmMapperImpl;
 import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
@@ -47,6 +48,7 @@ public class PublishedTmServiceExtended {
     private final EntityManager em;
     private final PublishedTmQueryService publishedTmQueryService;
     private final TrademarkScrapingService trademarkScrapingService;
+    private final TrademarkJournalParserService journalParserService;
 
     @Value("${file-upload-base-path}")
     private String baseUploadDirectory;
@@ -61,7 +63,8 @@ public class PublishedTmServiceExtended {
         PublishedTmPhoneticsServiceExtended publishedTmPhoneticsService,
         EntityManager em,
         PublishedTmQueryService publishedTmQueryService,
-        TrademarkScrapingService trademarkScrapingService
+        TrademarkScrapingService trademarkScrapingService,
+        TrademarkJournalParserService journalParserService
     ) {
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
         this.publishedTmMapper = publishedTmMapper;
@@ -70,6 +73,7 @@ public class PublishedTmServiceExtended {
         this.em = em;
         this.publishedTmQueryService = publishedTmQueryService;
         this.trademarkScrapingService = trademarkScrapingService;
+        this.journalParserService = journalParserService;
     }
 
     /**
@@ -166,6 +170,10 @@ public class PublishedTmServiceExtended {
         pdfReaderService.readPdfFilesFromFileSystem(journalNo);
     }
 
+    public void readPdfFileV2(String journalNo) {
+        journalParserService.readPdfFilesFromFileSystem(journalNo);
+    }
+
     public void generateMissingPhonetics(int journalNo) {
         List<PublishedTm> trademarks = publishedTmRepositoryExtended.findTrademarksWherePhoneticsMissing(journalNo);
         publishedTmPhoneticsService.saveAll(trademarks);
@@ -260,6 +268,15 @@ public class PublishedTmServiceExtended {
         List<Integer> journalNo = trademarkScrapingService.downloadAllPdfs(start, end);
         if (journalNo == null) {
             throw new InternalServerAlertException("Process is aborted because journal No is null");
+        }
+    }
+
+    @Async
+    public void downloadLatestJournalPdfs() {
+        try {
+            trademarkScrapingService.downloadLatestPdf();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

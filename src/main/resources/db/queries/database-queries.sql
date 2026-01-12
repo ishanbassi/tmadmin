@@ -68,3 +68,19 @@ CREATE TABLE lead (
 
 
 
+ALTER table  trademark ALTER COLUMN proprietor_address  TYPE TEXT;
+ALTER table  trademark ALTER COLUMN agent_address TYPE TEXT;
+ALTER table  trademark ALTER COLUMN details TYPE TEXT;
+
+
+CREATE INDEX idx_tm_name_len
+ON trademark (name);
+
+CREATE INDEX idx_tm_class ON trademark (tm_class);
+CREATE INDEX idx_tm_source ON trademark (source);
+
+CREATE INDEX idx_token_type ON trademark_token (type);
+CREATE INDEX idx_token_tm ON trademark_token (trademark_id);
+
+CREATE INDEX idx_phonetic_code ON token_phonetic (phonetic_code);
+CREATE INDEX idx_tm_journal_no ON trademark (journal_no);

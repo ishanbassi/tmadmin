@@ -30,6 +30,16 @@ public class MatchingTrademarkResources {
         return ResponseEntity.ok().headers(headers).body(csvBytes);
     }
 
+    @GetMapping(path = "/download/v2/{journalNo}", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public ResponseEntity<byte[]> downloadV2(@PathVariable("journalNo") int journalNo) {
+        String fileName = "Trademark-Journal-No-" + journalNo + ".csv";
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", fileName);
+        byte[] csvBytes = matchingTrademarkService.exportTrademarksV2(journalNo);
+        return ResponseEntity.ok().headers(headers).body(csvBytes);
+    }
+
     @GetMapping(path = "/find/{class}/{journalNo}")
     public ResponseEntity<List<Object>> findAllMatchingTrademarksByClass(
         @PathVariable("class") int tmClass,
