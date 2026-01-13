@@ -260,7 +260,6 @@ public class TrademarkScrapingService {
     private void downloadPdfsForJournal(Element journalRow, Integer journalNo) throws IOException {
         Path journalDirectory = Files.createDirectories(Paths.get(basePdfDirectory + "/" + journalNo));
         Elements fileNameInput = journalRow.select("input[name=FileName]");
-        log.info("Found {} pdf files to download", fileNameInput.size());
 
         for (Element input : fileNameInput) {
             String pdfFileName = input.attr("value");

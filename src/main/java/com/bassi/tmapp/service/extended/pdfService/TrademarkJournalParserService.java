@@ -580,21 +580,6 @@ public class TrademarkJournalParserService {
         return subWords.stream().map(word -> phoneticsServiceExtended.generatePhonetics(word)).toList();
     }
 
-    private void savePublishedTmAndGeneratePhoneticsDto(List<PublishedTm> publishedTrademarks) {
-        //		for(PublishedTm publishedTm:publishedTrademarks) {
-        //				PublishedTm existingPublishedTm = publishedTmRepositoryExtended.findTrademarksByApplicationNoAndClassAndJournalNo(
-        //						publishedTm.getApplicationNo(), publishedTm.getTmClass(), publishedTm.getJournalNo());
-        //				if(existingPublishedTm != null) {
-        //					log.info("Skipping Saving the trademark because record already exists: {}",existingPublishedTm);
-        //					continue;
-        //				}
-        //				publishedTm = publishedTmRepositoryExtended.saveAndFlush(publishedTm);
-        //				publishedTmPhoneticsServiceExtended.save(publishedTm);
-        //			}
-        publishedTrademarks = publishedTmRepositoryExtended.saveAllAndFlush(publishedTrademarks);
-        publishedTmPhoneticsServiceExtended.saveAll(publishedTrademarks);
-    }
-
     private boolean isInfoMissing(PublishedTmDTO tm) {
         return !(
             tm != null &&
@@ -605,11 +590,6 @@ public class TrademarkJournalParserService {
             tm.getJournalNo() != null &&
             (tm.getName() != null || tm.getImgUrl() != null)
         );
-    }
-
-    private String trimExtraLetters(String word) {
-        if (word == null) return word;
-        return word.length() < 250 ? word : word.substring(0, 250);
     }
 
     private void writeErrorsToJson(List<PublishedTmDTO> errors) {

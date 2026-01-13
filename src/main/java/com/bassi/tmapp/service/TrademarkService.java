@@ -228,6 +228,9 @@ public class TrademarkService {
 
     public void saveTrademarksAndGenerateTokens(Trademark tm, TrademarkSource trademarkSource) {
         tm.setSource(trademarkSource);
+        if (tm.getName() != null) {
+            tm.setNormalizedName(wordSanitizationService.sanitizeWord(tm.getName()));
+        }
         Trademark trademarks = trademarkRepository.save(tm);
         trademarkTokenService.saveTokensAndGeneratePhoneticCode(trademarks);
         agentServiceExtended.saveTmAgentsFromTrademarks(trademarks);
