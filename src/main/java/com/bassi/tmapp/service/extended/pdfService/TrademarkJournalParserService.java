@@ -65,7 +65,7 @@ public class TrademarkJournalParserService {
         Pattern.CASE_INSENSITIVE
     );
     private static final Pattern applicationInfoPattern = Pattern.compile(
-        "(\\d{5,7})\s+(\\d\\d\\/\\d\\d\\/\\d\\d\\d\\d)",
+        "(\\d{5,7})[\\s\\u00A0]+(\\d{2}/\\d{2}/\\d{4})",
         Pattern.CASE_INSENSITIVE
     );
     private static final Pattern multiTmClassPattern = Pattern.compile("Cl.(\\d{1,2});", Pattern.CASE_INSENSITIVE);

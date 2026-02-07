@@ -11,7 +11,7 @@
     <p><strong>Name:</strong> <span th:text="${name}">John Doe</span></p>
     <p><strong>Email:</strong> <span th:text="${email}">johndoe@example.com</span></p>
     <p><strong>Phone:</strong> <span th:href="'tel:' + ${phone}" th:text="${phone}">123-456-7890</span></p>
-    <p><strong>City:</strong> <span th:text="${city}">City</span></p>
+    <p><strong>Purpose:</strong> <span th:text="${purpose}">Purpose</span></p>
     <p>
       To see more details, visit the link:
       <a th:with="url=(@{|${baseUrl}/lead/${id}/view|})" th:href="${url}" th:text="${url}">Lead</a>

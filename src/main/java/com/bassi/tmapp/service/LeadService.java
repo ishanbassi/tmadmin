@@ -45,6 +45,7 @@ public class LeadService {
         LOG.debug("Request to save Lead : {}", leadDTO);
         Lead lead = leadMapper.toEntity(leadDTO);
         lead = leadRepository.save(lead);
+        mailServiceExtended.sendNewLeadMailToAdmin(lead);
         return leadMapper.toDto(lead);
     }
 

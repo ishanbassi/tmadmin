@@ -134,6 +134,7 @@ public class MailService {
         context.setVariable("phone", lead.getPhoneNumber());
         context.setVariable("city", lead.getCity());
         context.setVariable("id", lead.getId());
+        context.setVariable("purpose", lead.getComments());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
         for (String adminEmail : leadAdminEmails) {

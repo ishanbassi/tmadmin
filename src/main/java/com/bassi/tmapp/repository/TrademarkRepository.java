@@ -43,11 +43,11 @@ public interface TrademarkRepository
     List<Trademark> findRecentTrademarkApplications(UserProfile user);
 
     @Query(
-        value = " SELECT DISTINCT t_client.id   AS client_id, t_pub.id      AS published_id FROM trademark t_client " +
+        value = " SELECT DISTINCT t_client.id   AS client_id, t_pub.id AS published_id FROM trademark t_client " +
         "JOIN trademark_token tt_client ON tt_client.trademark_id = t_client.id JOIN token_phonetic tp_client ON " +
         "tp_client.trademark_token_id = tt_client.id JOIN token_phonetic tp_pub ON tp_pub.phonetic_code = tp_client.phonetic_code" +
         " JOIN trademark_token tt_pub ON tt_pub.id = tp_pub.trademark_token_id JOIN trademark t_pub ON t_pub.id = tt_pub.trademark_id " +
-        "WHERE t_client.source = 'EXCEL' AND t_pub.source = 'JOURNAL_PUBLICATION' AND tt_client.token_type = 'CORE' AND t_client.tm_class = t_pub.tm_class AND t_client.id <> t_pub.tm_class " +
+        "WHERE t_client.source = 'EXCEL' AND t_pub.source = 'JOURNAL_PUBLICATION' AND tt_client.token_type = 'CORE' AND tt_pub.token_type = 'CORE' AND t_client.tm_class = t_pub.tm_class AND t_client.id <> t_pub.id " +
         "AND t_pub.journal_no = ?1 ",
         nativeQuery = true
     )
