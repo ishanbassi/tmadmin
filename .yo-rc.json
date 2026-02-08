@@ -19,6 +19,7 @@
     "enableHibernateCache": true,
     "enableSwaggerCodegen": false,
     "enableTranslation": false,
+    "incrementalChangelog": true,
     "entities": [
       "Trademark",
       "Phonetics",
