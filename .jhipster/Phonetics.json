@@ -21,6 +21,7 @@
       "fieldType": "Boolean"
     }
   ],
+  "incrementalChangelog": false,
   "name": "Phonetics",
   "relationships": [
     {

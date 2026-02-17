@@ -92,6 +92,7 @@
       "fieldType": "Integer"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "PublishedTm",
   "pagination": "infinite-scroll",

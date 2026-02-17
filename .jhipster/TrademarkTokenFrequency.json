@@ -26,6 +26,7 @@
       "fieldType": "ZonedDateTime"
     }
   ],
+  "incrementalChangelog": false,
   "name": "TrademarkTokenFrequency",
   "relationships": [],
   "searchEngine": "no",

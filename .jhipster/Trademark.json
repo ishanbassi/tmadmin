@@ -68,8 +68,7 @@
     },
     {
       "fieldName": "trademarkStatus",
-      "fieldType": "TrademarkStatus",
-      "fieldValues": "DRAFT,FILED,UNDER_EXAMINATION,OBJECTED,EXAMINATION_REPLY_FILED,ACCEPTED_AND_ADVERTISED,OPPOSED,HEARING,REGISTERED,ABANDONED,WITHDRAWN,REJECTED,EXPIRED,RENEWED"
+      "fieldType": "String"
     },
     {
       "fieldName": "createdDate",
@@ -114,6 +113,7 @@
       "fieldType": "String"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "Trademark",
   "pagination": "infinite-scroll",

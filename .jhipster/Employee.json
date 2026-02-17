@@ -38,6 +38,7 @@
       "fieldType": "LocalDate"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "Employee",
   "relationships": [],

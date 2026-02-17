@@ -30,6 +30,7 @@
       "fieldType": "ZonedDateTime"
     }
   ],
+  "incrementalChangelog": false,
   "name": "TrademarkPlan",
   "relationships": [],
   "searchEngine": "no",

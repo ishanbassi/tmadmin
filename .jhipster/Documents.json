@@ -40,6 +40,7 @@
       "fieldValues": "UPLOADED,UNDER_REVIEW,APPROVED,REJECTED,REUPLOAD_REQUESTED,DELETED"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "Documents",
   "pagination": "infinite-scroll",

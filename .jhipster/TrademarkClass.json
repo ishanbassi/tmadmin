@@ -38,6 +38,7 @@
       "fieldType": "Boolean"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "TrademarkClass",
   "pagination": "infinite-scroll",

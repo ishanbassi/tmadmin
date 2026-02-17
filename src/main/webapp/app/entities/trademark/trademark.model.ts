@@ -5,7 +5,6 @@ import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { HeadOffice } from 'app/entities/enumerations/head-office.model';
-import { TrademarkStatus } from 'app/entities/enumerations/trademark-status.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
 
@@ -26,7 +25,7 @@ export interface ITrademark {
   deleted?: boolean | null;
   usage?: string | null;
   associatedTms?: string | null;
-  trademarkStatus?: keyof typeof TrademarkStatus | null;
+  trademarkStatus?: string | null;
   createdDate?: dayjs.Dayjs | null;
   modifiedDate?: dayjs.Dayjs | null;
   renewalDate?: dayjs.Dayjs | null;

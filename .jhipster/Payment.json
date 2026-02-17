@@ -59,6 +59,7 @@
       "fieldValues": "PROFESSIONAL_FEES,GOVT_FEES,OTHER"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "Payment",
   "pagination": "infinite-scroll",
