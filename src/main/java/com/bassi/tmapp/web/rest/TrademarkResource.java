@@ -9,6 +9,7 @@ import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
+import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
@@ -282,5 +283,23 @@ public class TrademarkResource {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         return ResponseUtil.wrapOrNotFound(trademarkDTO);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<TrademarkSimiliarityResultDTO>> findSimiliarTrademarks(@RequestParam("trademark") String trademark) {
+        List<TrademarkSimiliarityResultDTO> results = trademarkService.findSimiliarTrademarks(trademark);
+        return ResponseEntity.ok().body(results);
+    }
+
+    @GetMapping("/live-search")
+    public ResponseEntity<List<TrademarkDTO>> liveSearch(@RequestParam("trademark") String trademark) {
+        List<TrademarkDTO> results = trademarkService.findLiveSuggestions(trademark);
+        return ResponseEntity.ok().body(results);
+    }
+
+    @GetMapping("/journals")
+    public ResponseEntity<List<Integer>> getJournalNumbers() {
+        List<Integer> results = trademarkService.getJournalNumbers();
+        return ResponseEntity.ok().body(results);
     }
 }

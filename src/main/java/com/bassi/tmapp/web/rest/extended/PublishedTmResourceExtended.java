@@ -215,6 +215,12 @@ public class PublishedTmResourceExtended {
         return "Trademarks extraction has been initialized";
     }
 
+    @PostMapping("/extract/range/v2")
+    public String extractPublishedTmWithinRangeV2(@RequestParam("start") Integer start, @RequestParam("end") Integer end) {
+        publishedTmServiceExtended.readPdfFileWithinRangeV2(start, end);
+        return "Trademarks extraction has been initialized";
+    }
+
     @PostMapping("/generate-phonetics/{journalNo}")
     public String generateMissingPhonetics(@PathVariable("journalNo") int journalNo) {
         publishedTmServiceExtended.generateMissingPhonetics(journalNo);

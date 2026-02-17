@@ -8,11 +8,13 @@ import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.enumeration.TrademarkTokenType;
 import com.bassi.tmapp.repository.TrademarkTokenRepository;
 import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkTokenDTO;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.mapper.TrademarkTokenMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
@@ -155,11 +157,38 @@ public class TrademarkTokenService {
         List<String> subWords = Arrays.asList(sanitizedTrademark.split(" "));
         for (int i = 0; i < subWords.size(); i++) {
             // i+1 refers to the position of the word
-            generateTrademarkToken(subWords.get(i), tm, i + 1);
+            TrademarkToken token = generateTrademarkToken(subWords.get(i), tm, i + 1);
+            token = trademarkTokenRepository.save(token);
+            tokenPhoneticService.generateAndSavePhoneticToken(token);
         }
     }
 
-    private void generateTrademarkToken(String word, Trademark tm, int position) {
+    public List<TokenPhonetic> generateTrademarkTokenPhonetics(String trademark) {
+        if (trademark == null) return Collections.emptyList();
+        List<TokenPhonetic> tokenPhonetics = new ArrayList<>();
+        String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(trademark);
+        List<String> subWords = Arrays.asList(sanitizedTrademark.split(" "));
+        for (int i = 0; i < subWords.size(); i++) {
+            TrademarkToken token = generateTrademarkToken(subWords.get(i), null, i + 1);
+            TokenPhonetic tokenPhonetic = tokenPhoneticService.generatePhoneticToken(token);
+            tokenPhonetics.add(tokenPhonetic);
+        }
+        return tokenPhonetics;
+    }
+
+    public List<TrademarkToken> generateTrademarkTokens(String trademark) {
+        if (trademark == null) return Collections.emptyList();
+        List<TrademarkToken> trademarkTokens = new ArrayList<>();
+        String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(trademark);
+        List<String> subWords = Arrays.asList(sanitizedTrademark.split(" "));
+        for (int i = 0; i < subWords.size(); i++) {
+            TrademarkToken token = generateTrademarkToken(subWords.get(i), null, i + 1);
+            trademarkTokens.add(token);
+        }
+        return trademarkTokens;
+    }
+
+    private TrademarkToken generateTrademarkToken(String word, Trademark tm, int position) {
         TrademarkToken token = new TrademarkToken();
         token.setTokenText(word);
         token.setTrademark(tm);
@@ -170,7 +199,11 @@ public class TrademarkTokenService {
         }
 
         token.setPosition(position);
-        token = trademarkTokenRepository.save(token);
-        tokenPhoneticService.generateAndSavePhoneticToken(token);
+        return token;
+    }
+
+    public void recreateTokens(Trademark trademark) {
+        trademarkTokenRepository.deleteByTrademark(trademark.getId());
+        saveTokensAndGeneratePhoneticCode(trademark);
     }
 }

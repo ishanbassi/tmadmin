@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { UserRouteAccessService } from 'app/core/auth/user-route-access.service';
 import { ASC } from 'app/config/navigation.constants';
 import TrademarkResolve from './route/trademark-routing-resolve.service';
+import { UpdateTrademarkNameComponent } from '../../update-trademark-name/update-trademark-name.component';
 
 const trademarkRoute: Routes = [
   {
@@ -34,6 +35,14 @@ const trademarkRoute: Routes = [
     loadComponent: () => import('./update/trademark-update.component').then(m => m.TrademarkUpdateComponent),
     resolve: {
       trademark: TrademarkResolve,
+    },
+    canActivate: [UserRouteAccessService],
+  },
+  {
+    path: 'update-names',
+    component: UpdateTrademarkNameComponent,
+    data: {
+      defaultSort: `id,${ASC}`,
     },
     canActivate: [UserRouteAccessService],
   },

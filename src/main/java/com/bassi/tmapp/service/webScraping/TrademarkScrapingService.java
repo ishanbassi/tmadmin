@@ -73,7 +73,7 @@ public class TrademarkScrapingService {
 
         log.info("Going to download pdfs for the journalNo : {}", journalNo);
 
-        downloadPdfsForJournal(journalElement, journalNo);
+        downloadPdfsForJournal(firstTr, journalNo);
         return journalNo;
     }
 
@@ -290,6 +290,11 @@ public class TrademarkScrapingService {
     }
 
     private void downloadPdfFile(String completeUrl, String pdfFileName, Path pdfFilePath, String sanitizedPdfFileName) throws IOException {
+        // ✅ Check if file already exists
+        if (Files.exists(pdfFilePath)) {
+            log.info("File {} already exists at {}. Skipping download.", sanitizedPdfFileName, pdfFilePath);
+            return;
+        }
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();

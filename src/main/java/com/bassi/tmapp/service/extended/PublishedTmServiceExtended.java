@@ -174,6 +174,10 @@ public class PublishedTmServiceExtended {
         journalParserService.readPdfFilesFromFileSystem(journalNo);
     }
 
+    public void readPdfFileWithinRangeV2(Integer start, Integer end) {
+        journalParserService.readPdfFilesFromFileSystem(start, end);
+    }
+
     public void generateMissingPhonetics(int journalNo) {
         List<PublishedTm> trademarks = publishedTmRepositoryExtended.findTrademarksWherePhoneticsMissing(journalNo);
         publishedTmPhoneticsService.saveAll(trademarks);

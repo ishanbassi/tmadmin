@@ -21,7 +21,7 @@ public class StaticResourcesWebConfiguration implements WebMvcConfigurer {
 
     private static final Logger log = LoggerFactory.getLogger(StaticResourcesWebConfiguration.class);
 
-    @Value("${document-base-path}")
+    @Value("${asset-base-path}")
     private String baseUploadDirectory;
 
     protected static final String[] RESOURCE_LOCATIONS = { "classpath:/static/", "classpath:/static/content/", "classpath:/static/i18n/" };

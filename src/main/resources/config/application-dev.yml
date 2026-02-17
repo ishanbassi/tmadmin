@@ -142,3 +142,4 @@ file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/
 errors-file-base-path: /opt/application/staging/errors/
 document-base-path: /opt/application/staging/documents/
+asset-base-path: /opt/application/staging/

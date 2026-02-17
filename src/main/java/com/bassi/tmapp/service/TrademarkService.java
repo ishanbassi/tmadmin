@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -114,6 +115,9 @@ public class TrademarkService {
                 if (trademarkDTO.getPhoneNumber() == null) {
                     trademarkDTO.setPhoneNumber(userProfileOptional.get().getPhoneNumber());
                 }
+                if (trademarkDTO.getName() != null) {
+                    trademarkTokenService.saveTokensAndGeneratePhoneticCode(trademarkMapper.toEntity(trademarkDTO));
+                }
             }
         }
         Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
@@ -146,8 +150,11 @@ public class TrademarkService {
         return trademarkRepository
             .findById(trademarkDTO.getId())
             .map(existingTrademark -> {
+                String oldName = existingTrademark.getName();
                 trademarkMapper.partialUpdate(existingTrademark, trademarkDTO);
-
+                if (!Objects.equals(oldName, trademarkDTO.getName())) {
+                    trademarkTokenService.recreateTokens(trademarkMapper.toEntity(trademarkDTO));
+                }
                 return existingTrademark;
             })
             .map(trademarkRepository::save)
@@ -302,5 +309,69 @@ public class TrademarkService {
                 .thenComparing(r -> r.getPublishedTradmark().getTmClass())
         );
         return similiarityResultDTOs;
+    }
+
+    public List<TrademarkSimiliarityResultDTO> findSimiliarTrademarks(String trademark) {
+        Trademark tm = new Trademark();
+        String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(trademark);
+        tm.setName(trademark);
+        tm.setNormalizedName(sanitizedTrademark);
+        List<TrademarkToken> searchTT = trademarkTokenService.generateTrademarkTokens(trademark);
+        List<TokenPhonetic> searchTP = trademarkTokenService.generateTrademarkTokenPhonetics(trademark);
+        List<String> phonetics = searchTP.stream().map(TokenPhonetic::getPhoneticCode).toList();
+        List<Long> candidateIds = trademarkRepository.findCandidatePublishedIds(phonetics, sanitizedTrademark);
+        if (candidateIds.isEmpty()) {
+            return List.of();
+        }
+
+        Set<Long> allTrademarkIds = new HashSet<>();
+
+        for (Long candidateId : candidateIds) {
+            allTrademarkIds.add(candidateId);
+        }
+        List<TrademarkToken> allTokens = trademarkTokenRepository.findByTrademarkIds(allTrademarkIds);
+
+        List<TokenPhonetic> allPhonetics = tokenPhoneticRepository.findByTrademarkIds(allTrademarkIds);
+
+        Map<Long, List<TrademarkToken>> tokensByTmId = allTokens.stream().collect(Collectors.groupingBy(t -> t.getTrademark().getId()));
+
+        Map<Long, List<TokenPhonetic>> phoneticsByTmId = allPhonetics
+            .stream()
+            .collect(Collectors.groupingBy(p -> p.getTrademarkToken().getTrademark().getId()));
+
+        Map<Long, Trademark> cache = new HashMap<>();
+        List<TrademarkSimiliarityResultDTO> similiarityResultDTOs = new ArrayList<>();
+        for (Long candidateId : candidateIds) {
+            Trademark savedTm = cache.computeIfAbsent(candidateId, id -> trademarkRepository.findById(id).orElseThrow());
+            List<TrademarkToken> savedTT = tokensByTmId.getOrDefault(candidateId, List.of());
+            List<TokenPhonetic> savedTP = phoneticsByTmId.getOrDefault(candidateId, List.of());
+
+            double score = similarityScorerService.computeFinalScore(tm, savedTm, searchTT, savedTT, searchTP, savedTP);
+            if (score > MIN_SCORE_THRESHOLD) {
+                TrademarkSimiliarityResultDTO trademarkSimiliarityResultDTO = new TrademarkSimiliarityResultDTO(tm, savedTm, score, null);
+
+                similiarityResultDTOs.add(trademarkSimiliarityResultDTO);
+            }
+        }
+
+        similiarityResultDTOs.sort(
+            Comparator.comparingDouble(TrademarkSimiliarityResultDTO::getScore)
+                .reversed()
+                .thenComparing(r -> r.getPublishedTradmark().getTmClass())
+        );
+        return similiarityResultDTOs;
+    }
+
+    public List<TrademarkDTO> findLiveSuggestions(String trademark) {
+        String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(trademark);
+        if (sanitizedTrademark == null || sanitizedTrademark.length() < 2) {
+            return List.of();
+        }
+
+        return trademarkMapper.toDto(trademarkRepository.findLiveSuggestions(sanitizedTrademark));
+    }
+
+    public List<Integer> getJournalNumbers() {
+        return trademarkRepository.getJournalNumbers();
     }
 }

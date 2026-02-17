@@ -28,4 +28,8 @@ public interface TrademarkTokenRepository extends JpaRepository<TrademarkToken, 
         """
     )
     List<TrademarkToken> findByTrademarkIds(@Param("tmIds") Set<Long> tmIds);
+
+    @Modifying
+    @Query(value = "DELETE FROM TrademarkToken tt WHERE  tt.trademark.id = ?1")
+    void deleteByTrademark(Long trademarId);
 }

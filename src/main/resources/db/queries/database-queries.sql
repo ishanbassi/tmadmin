@@ -84,6 +84,10 @@ CREATE INDEX idx_token_tm ON trademark_token (trademark_id);
 
 CREATE INDEX idx_phonetic_code ON token_phonetic (phonetic_code);
 CREATE INDEX idx_tm_journal_no ON trademark (journal_no);
+
+CREATE INDEX idx_normalized_name_prefix
+ON trademark (normalized_name text_pattern_ops);
+
 ALTER TABLE trademark ADD COLUMN normalized_name VARCHAR(255);
 ALTER TABLE trademark ADD COLUMN tm_agent_id BIGINT;
 ALTER TABLE trademark ADD CONSTRAINT fk_tm_agent FOREIGN KEY (tm_agent_id) REFERENCES tm_agent(id);

@@ -1,0 +1,45 @@
+<div>
+  <h2 id="page-heading" data-cy="TrademarkHeading">
+    <span>Trademarks</span>
+  </h2>
+  @if (trademarks?.length == 0) {
+    <div class="alert alert-warning" id="no-result">
+      <span>No Trademarks found</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities" id="entities" [formGroup]="form">
+      <table class="table table-striped" aria-describedby="page-heading">
+        <thead>
+          <th scope="col">
+            <div class="d-flex">
+              <span>No.</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Device</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Trademark</span>
+            </div>
+          </th>
+        </thead>
+        <tbody formArrayName="trademarks">
+          @for (trademark of trademarks; track trackId(trademark); let i = $index) {
+            <tr>
+              <td>{{ i + 1 }}</td>
+              <td>
+                <img class="tm-device" *ngIf="trademark.imgUrl" [src]="baseApiUrl + '/files/files/' + trademark.imgUrl" />
+              </td>
+              <td [formGroupName]="i">
+                <input type="text" formControlName="name" />
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

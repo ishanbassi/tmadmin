@@ -69,7 +69,6 @@ public class TrademarkJournalParserService {
         Pattern.CASE_INSENSITIVE
     );
     private static final Pattern multiTmClassPattern = Pattern.compile("Cl.(\\d{1,2});", Pattern.CASE_INSENSITIVE);
-    List<PublishedTmDTO> errors = new ArrayList<>();
 
     private PublishedTmDTO currentPublishedTmDto;
     private PhoneticsServiceExtended phoneticsServiceExtended;
@@ -227,7 +226,6 @@ public class TrademarkJournalParserService {
                 trademarkService.saveTrademarksAndGenerateTokens(tm, TrademarkSource.JOURNAL_PUBLICATION);
             } catch (Exception e) {
                 log.error("Failed to save trademark, Reason: {}", e.getLocalizedMessage());
-                errors.add(journalTrademarkMapper.toDto(tm));
             }
         }
     }
@@ -279,7 +277,6 @@ public class TrademarkJournalParserService {
                     if (currentPublishedTmDto != null) {
                         currentPublishedTmDto.setFilePath(pdfFilePath);
                     }
-                    errors.add(currentPublishedTmDto);
                     continue;
                 }
 
@@ -312,10 +309,7 @@ public class TrademarkJournalParserService {
         }
 
         pdfDoc.close();
-        // save the missing trademark information in the json file
-        if (!errors.isEmpty()) {
-            writeErrorsToJson(errors);
-        }
+
         return publishedTrademarks;
     }
 
@@ -723,5 +717,20 @@ public class TrademarkJournalParserService {
             }
         }
         pdfDoc.close();
+    }
+
+    @Async
+    public void readPdfFilesFromFileSystem(int start, int end) {
+        for (int i = start; i <= end; i++) {
+            Path path = Paths.get(basePdfDirectory, String.valueOf(i)).toAbsolutePath();
+            File baseDirectory = path.toFile();
+
+            if (baseDirectory.exists() && baseDirectory.isDirectory()) {
+                log.info("Processing directory: {}", baseDirectory.getAbsolutePath());
+                processDirectory(baseDirectory);
+            } else {
+                log.warn("Directory not found: {}", baseDirectory.getAbsolutePath());
+            }
+        }
     }
 }

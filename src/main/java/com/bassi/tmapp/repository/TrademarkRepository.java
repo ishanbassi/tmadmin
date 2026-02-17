@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -52,4 +53,37 @@ public interface TrademarkRepository
         nativeQuery = true
     )
     List<Object[]> findAllCandidatePairs(int journalNo);
+
+    @Query(
+        value = """
+            SELECT tm.id
+            FROM trademark tm
+            JOIN trademark_token tt_pub
+                 ON tt_pub.trademark_id = tm.id
+            LEFT JOIN token_phonetic tp_pub
+                 ON tp_pub.trademark_token_id = tt_pub.id
+            WHERE
+              (
+                    tp_pub.phonetic_code IN (:phonetics)
+                    OR tm.normalized_name LIKE CONCAT('%', :normalizedName, '%')
+                  )
+        """,
+        nativeQuery = true
+    )
+    List<Long> findCandidatePublishedIds(@Param("phonetics") List<String> phonetics, @Param("normalizedName") String normalizedName);
+
+    @Query(
+        value = """
+            SELECT *
+            FROM trademark t
+            WHERE t.normalized_name LIKE CONCAT(:prefix, '%')
+            ORDER BY t.normalized_name
+            LIMIT 10
+        """,
+        nativeQuery = true
+    )
+    List<Trademark> findLiveSuggestions(@Param("prefix") String prefix);
+
+    @Query(value = "SELECT DISTINCT t.journalNo FROM Trademark t ORDER BY t.journalNo DESC")
+    List<Integer> getJournalNumbers();
 }

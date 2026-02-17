@@ -115,10 +115,7 @@ public class TokenPhoneticService {
     }
 
     public void generateAndSavePhoneticToken(TrademarkToken token) {
-        TokenPhonetic tokenPhonetic = new TokenPhonetic();
-        tokenPhonetic.setAlgorithm(PhoneticAlgorithmType.DOUBLE_METAPHONE);
-        tokenPhonetic.setPhoneticCode(generateMetaphone(token.getTokenText()));
-        tokenPhonetic.setTrademarkToken(token);
+        TokenPhonetic tokenPhonetic = generatePhoneticToken(token);
         tokenPhoneticRepository.save(tokenPhonetic);
     }
 
@@ -133,5 +130,13 @@ public class TokenPhoneticService {
         if (val == null || val.isBlank()) return null;
         Metaphone metaphone = new Metaphone();
         return metaphone.metaphone(val);
+    }
+
+    public TokenPhonetic generatePhoneticToken(TrademarkToken token) {
+        TokenPhonetic tokenPhonetic = new TokenPhonetic();
+        tokenPhonetic.setAlgorithm(PhoneticAlgorithmType.DOUBLE_METAPHONE);
+        tokenPhonetic.setPhoneticCode(generateMetaphone(token.getTokenText()));
+        tokenPhonetic.setTrademarkToken(token);
+        return tokenPhonetic;
     }
 }

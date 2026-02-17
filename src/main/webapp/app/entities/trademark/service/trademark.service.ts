@@ -69,6 +69,10 @@ export class TrademarkService {
       .pipe(map(res => this.convertResponseArrayFromServer(res)));
   }
 
+  getJournalNumbers(): Observable<number[]> {
+    return this.http.get<number[]>(`${this.resourceUrl}/journals`, { observe: 'response' }).pipe(map(res => res.body || []));
+  }
+
   delete(id: number): Observable<HttpResponse<{}>> {
     return this.http.delete(`${this.resourceUrl}/${id}`, { observe: 'response' });
   }
