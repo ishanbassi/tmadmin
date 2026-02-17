@@ -38,6 +38,7 @@
       "fieldType": "String"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "TmAgent",
   "pagination": "infinite-scroll",

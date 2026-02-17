@@ -19,6 +19,7 @@
       "fieldType": "Integer"
     }
   ],
+  "incrementalChangelog": false,
   "name": "TrademarkToken",
   "relationships": [
     {

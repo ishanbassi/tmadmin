@@ -54,6 +54,7 @@
       "fieldType": "Boolean"
     }
   ],
+  "incrementalChangelog": false,
   "jpaMetamodelFiltering": true,
   "name": "Company",
   "pagination": "infinite-scroll",

@@ -19,6 +19,7 @@
       "fieldType": "String"
     }
   ],
+  "incrementalChangelog": false,
   "name": "TokenPhonetic",
   "relationships": [
     {

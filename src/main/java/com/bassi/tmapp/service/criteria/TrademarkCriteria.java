@@ -2,7 +2,6 @@ package com.bassi.tmapp.service.criteria;
 
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
-import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
 import java.util.Objects;
@@ -38,23 +37,6 @@ public class TrademarkCriteria implements Serializable, Criteria {
         @Override
         public HeadOfficeFilter copy() {
             return new HeadOfficeFilter(this);
-        }
-    }
-
-    /**
-     * Class for filtering TrademarkStatus
-     */
-    public static class TrademarkStatusFilter extends Filter<TrademarkStatus> {
-
-        public TrademarkStatusFilter() {}
-
-        public TrademarkStatusFilter(TrademarkStatusFilter filter) {
-            super(filter);
-        }
-
-        @Override
-        public TrademarkStatusFilter copy() {
-            return new TrademarkStatusFilter(this);
         }
     }
 
@@ -126,7 +108,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private StringFilter associatedTms;
 
-    private TrademarkStatusFilter trademarkStatus;
+    private StringFilter trademarkStatus;
 
     private ZonedDateTimeFilter createdDate;
 
@@ -181,7 +163,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.deleted = other.optionalDeleted().map(BooleanFilter::copy).orElse(null);
         this.usage = other.optionalUsage().map(StringFilter::copy).orElse(null);
         this.associatedTms = other.optionalAssociatedTms().map(StringFilter::copy).orElse(null);
-        this.trademarkStatus = other.optionalTrademarkStatus().map(TrademarkStatusFilter::copy).orElse(null);
+        this.trademarkStatus = other.optionalTrademarkStatus().map(StringFilter::copy).orElse(null);
         this.createdDate = other.optionalCreatedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.modifiedDate = other.optionalModifiedDate().map(ZonedDateTimeFilter::copy).orElse(null);
         this.renewalDate = other.optionalRenewalDate().map(LocalDateFilter::copy).orElse(null);
@@ -510,22 +492,22 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.associatedTms = associatedTms;
     }
 
-    public TrademarkStatusFilter getTrademarkStatus() {
+    public StringFilter getTrademarkStatus() {
         return trademarkStatus;
     }
 
-    public Optional<TrademarkStatusFilter> optionalTrademarkStatus() {
+    public Optional<StringFilter> optionalTrademarkStatus() {
         return Optional.ofNullable(trademarkStatus);
     }
 
-    public TrademarkStatusFilter trademarkStatus() {
+    public StringFilter trademarkStatus() {
         if (trademarkStatus == null) {
-            setTrademarkStatus(new TrademarkStatusFilter());
+            setTrademarkStatus(new StringFilter());
         }
         return trademarkStatus;
     }
 
-    public void setTrademarkStatus(TrademarkStatusFilter trademarkStatus) {
+    public void setTrademarkStatus(StringFilter trademarkStatus) {
         this.trademarkStatus = trademarkStatus;
     }
 
