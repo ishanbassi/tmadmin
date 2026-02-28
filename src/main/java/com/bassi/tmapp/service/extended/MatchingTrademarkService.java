@@ -4,6 +4,7 @@ import com.bassi.tmapp.repository.extended.PublishedTmPhoneticsRepositoryExtende
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
 import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 import java.util.List;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class MatchingTrademarkService {
 
     public byte[] exportTrademarksV2(Integer journalNo) {
         MatchingTmExportServiceV2 fileExportedExportService = new MatchingTmExportServiceV2("Trademark Journal");
-        List<TrademarkSimiliarityResultDTO> trademarkSimiliarityResultDTOs = trademarkService.runWeeklyComparison(journalNo);
+        List<TrademarkSimilarityCandidateWithPubTmDto> trademarkSimiliarityResultDTOs = trademarkService.runWeeklyComparison(journalNo);
         if (trademarkSimiliarityResultDTOs.isEmpty()) {
             return fileExportedExportService.export().toByteArray();
         }

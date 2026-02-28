@@ -3,6 +3,11 @@ package com.bassi.tmapp.repository;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.service.dto.StatusCountDTO;
+import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
+import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
+import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,8 +20,9 @@ import org.springframework.stereotype.Repository;
 /**
  * Spring Data JPA repository for the Trademark entity.
  *
- * When extending this class, extend TrademarkRepositoryWithBagRelationships too.
- * For more information refer to https://github.com/jhipster/generator-jhipster/issues/17990.
+ * When extending this class, extend TrademarkRepositoryWithBagRelationships
+ * too. For more information refer to
+ * https://github.com/jhipster/generator-jhipster/issues/17990.
  */
 @Repository
 public interface TrademarkRepository
@@ -44,19 +50,42 @@ public interface TrademarkRepository
     List<Trademark> findRecentTrademarkApplications(UserProfile user);
 
     @Query(
-        value = " SELECT DISTINCT t_client.id   AS client_id, t_pub.id AS published_id FROM trademark t_client " +
-        "JOIN trademark_token tt_client ON tt_client.trademark_id = t_client.id JOIN token_phonetic tp_client ON " +
-        "tp_client.trademark_token_id = tt_client.id JOIN token_phonetic tp_pub ON tp_pub.phonetic_code = tp_client.phonetic_code" +
-        " JOIN trademark_token tt_pub ON tt_pub.id = tp_pub.trademark_token_id JOIN trademark t_pub ON t_pub.id = tt_pub.trademark_id " +
-        "WHERE t_client.source = 'EXCEL' AND t_pub.source = 'JOURNAL_PUBLICATION' AND tt_client.token_type = 'CORE' AND tt_pub.token_type = 'CORE' AND t_client.tm_class = t_pub.tm_class AND t_client.id <> t_pub.id " +
-        "AND t_pub.journal_no = ?1 ",
+        value = """
+        WITH client_phonetics AS (
+            SELECT t.id AS client_id, t.tm_class, tp.phonetic_code
+            FROM trademark t
+            JOIN trademark_token tt ON tt.trademark_id = t.id
+            JOIN token_phonetic tp ON tp.trademark_token_id = tt.id
+            WHERE t.source = 'EXCEL' AND tt.token_type = 'CORE'
+        ),
+        pub_phonetics AS (
+            SELECT t.id AS pub_id, t.tm_class, tp.phonetic_code
+            FROM trademark t
+            JOIN trademark_token tt ON tt.trademark_id = t.id
+            JOIN token_phonetic tp ON tp.trademark_token_id = tt.id
+            WHERE t.source = 'JOURNAL_PUBLICATION' AND t.journal_no = ?1 AND tt.token_type = 'CORE'
+        ),
+        distinct_pairs AS (
+            SELECT DISTINCT cp.client_id, pp.pub_id
+            FROM client_phonetics cp
+            JOIN pub_phonetics pp
+                ON pp.phonetic_code = cp.phonetic_code
+               AND pp.tm_class = cp.tm_class
+        )
+        SELECT
+            dp.client_id, tc.name,tc.normalized_name,
+            dp.pub_id,tp.name, tp.normalized_name, tp.application_no, tp.tm_class,tp.img_url, tp.proprietor_name, tp.proprietor_address, tp.details
+        FROM distinct_pairs dp
+        JOIN trademark tc ON tc.id = dp.client_id
+        JOIN trademark tp ON tp.id = dp.pub_id;
+        """,
         nativeQuery = true
     )
-    List<Object[]> findAllCandidatePairs(int journalNo);
+    List<TrademarkSimilarityCandidateWithPubTmDto> findAllCandidatePairs(int journalNo);
 
     @Query(
         value = """
-            SELECT tm.id
+            SELECT tm.id, tm.normalized_name, tm.name, tm.application_no, tm.tm_class, tm.img_url, tm.proprietor_name, tm.application_date, tm.details, tm.type
             FROM trademark tm
             JOIN trademark_token tt_pub
                  ON tt_pub.trademark_id = tm.id
@@ -70,20 +99,39 @@ public interface TrademarkRepository
         """,
         nativeQuery = true
     )
-    List<Long> findCandidatePublishedIds(@Param("phonetics") List<String> phonetics, @Param("normalizedName") String normalizedName);
+    List<TrademarkSimilarityCandidateDto> findCandidatePublishedIds(
+        @Param("phonetics") List<String> phonetics,
+        @Param("normalizedName") String normalizedName
+    );
 
     @Query(
         value = """
-            SELECT *
+            SELECT t.name, t.details, t.application_no, t.tm_class, t.img_url, t.type,t.proprietor_name, t.application_date::date
             FROM trademark t
-            WHERE t.normalized_name LIKE CONCAT(:prefix, '%')
-            ORDER BY t.normalized_name
-            LIMIT 10
+            WHERE t.normalized_name LIKE CONCAT('%', :prefix, '%')
+            ORDER BY
+              CASE
+                  WHEN t.normalized_name = :prefix THEN 1
+                  WHEN t.normalized_name LIKE CONCAT(:prefix, '%') THEN 2
+                  WHEN t.normalized_name LIKE CONCAT('% ', :prefix, '%') THEN 3
+                  ELSE 4
+              END,
+              t.normalized_name
+            LIMIT :limit
         """,
         nativeQuery = true
     )
-    List<Trademark> findLiveSuggestions(@Param("prefix") String prefix);
+    List<TrademarkSuggestionDto> findLiveSuggestionsByLimit(@Param("prefix") String prefix, @Param("limit") Integer limit);
 
     @Query(value = "SELECT DISTINCT t.journalNo FROM Trademark t ORDER BY t.journalNo DESC")
     List<Integer> getJournalNumbers();
+
+    //	@Query(value="SELECT tm from Trademark left join fetch tm.trademarkClasses left join fetch tm.documents tm WHERE tm.applicationNo = ?1  ORDER BY tm.applicationNo LIMIT 1")
+    Optional<Trademark> findFirstByApplicationNoOrderById(Long appNo);
+
+    @Query(
+        value = "SELECT * FROM trademark tm WHERE tm.journal_no= ?1 AND normalized_name is null AND name is NOT NULL",
+        nativeQuery = true
+    )
+    List<Trademark> findByJournalNoAndNullNormalizedName(Integer journalNo);
 }

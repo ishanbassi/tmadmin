@@ -4,15 +4,20 @@ import com.bassi.tmapp.domain.Trademark;
 
 public class TrademarkSimiliarityResultDTO {
 
-    public TrademarkSimiliarityResultDTO(Trademark clientTrademark, Trademark publishedTrademark, double score, Integer journalNum) {
+    public TrademarkSimiliarityResultDTO(
+        Trademark clientTrademark,
+        TrademarkSimilarityCandidateDto candidateTrademark,
+        double score,
+        Integer journalNum
+    ) {
         this.clientTrademark = clientTrademark;
-        this.publishedTradmark = publishedTrademark;
+        this.candidateTrademark = candidateTrademark;
         this.score = score;
         this.journalNum = journalNum;
     }
 
     private Trademark clientTrademark;
-    private Trademark publishedTradmark;
+    private TrademarkSimilarityCandidateDto candidateTrademark;
     private double score;
     private Integer journalNum;
 
@@ -22,14 +27,6 @@ public class TrademarkSimiliarityResultDTO {
 
     public void setClientTrademark(Trademark clientTrademark) {
         this.clientTrademark = clientTrademark;
-    }
-
-    public Trademark getPublishedTradmark() {
-        return publishedTradmark;
-    }
-
-    public void setPublishedTradmark(Trademark publishedTradmark) {
-        this.publishedTradmark = publishedTradmark;
     }
 
     public double getScore() {
@@ -46,5 +43,13 @@ public class TrademarkSimiliarityResultDTO {
 
     public void setJournalNum(Integer journalNum) {
         this.journalNum = journalNum;
+    }
+
+    public TrademarkSimilarityCandidateDto getCandidateTrademark() {
+        return candidateTrademark;
+    }
+
+    public void setCandidateTrademark(TrademarkSimilarityCandidateDto candidateTrademark) {
+        this.candidateTrademark = candidateTrademark;
     }
 }

@@ -2,6 +2,7 @@
   <h2 id="page-heading" data-cy="TrademarkHeading">
     <span>Trademarks</span>
   </h2>
+  <input type="text" />
   @if (trademarks?.length == 0) {
     <div class="alert alert-warning" id="no-result">
       <span>No Trademarks found</span>
@@ -22,6 +23,16 @@
           </th>
           <th scope="col">
             <div class="d-flex">
+              <span>Class</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
+              <span>Application No.</span>
+            </div>
+          </th>
+          <th scope="col">
+            <div class="d-flex">
               <span>Trademark</span>
             </div>
           </th>
@@ -32,6 +43,15 @@
               <td>{{ i + 1 }}</td>
               <td>
                 <img class="tm-device" *ngIf="trademark.imgUrl" [src]="baseApiUrl + '/files/files/' + trademark.imgUrl" />
+              </td>
+              <td>
+                {{ trademark.tmClass }}
+              </td>
+              <td>
+                {{ trademark.applicationNo }}
+              </td>
+              <td [formGroupName]="i">
+                <input type="text" formControlName="trademarkStatus" />
               </td>
               <td [formGroupName]="i">
                 <input type="text" formControlName="name" />

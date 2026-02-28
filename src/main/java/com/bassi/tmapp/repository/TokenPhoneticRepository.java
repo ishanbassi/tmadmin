@@ -2,6 +2,7 @@ package com.bassi.tmapp.repository;
 
 import com.bassi.tmapp.domain.TokenPhonetic;
 import com.bassi.tmapp.domain.TrademarkToken;
+import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
 import java.util.List;
 import java.util.Set;
 import org.springframework.data.jpa.repository.*;
@@ -18,11 +19,15 @@ public interface TokenPhoneticRepository extends JpaRepository<TokenPhonetic, Lo
 
     @Query(
         """
-        SELECT p
-        FROM TokenPhonetic p
-        JOIN p.trademarkToken tok
-        WHERE tok.trademark.id IN :tmIds
+            SELECT new com.bassi.tmapp.service.dto.PartialTokenPhoneticDto(
+                p.algorithm,
+                p.phoneticCode,
+                p.secondaryPhoneticCode,
+                p.trademarkToken.trademark.id
+            )
+            FROM TokenPhonetic p
+            WHERE p.trademarkToken.trademark.id IN :tmIds
         """
     )
-    List<TokenPhonetic> findByTrademarkIds(@Param("tmIds") Set<Long> tmIds);
+    List<PartialTokenPhoneticDto> findByTrademarkIds(@Param("tmIds") Set<Long> tmIds);
 }

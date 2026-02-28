@@ -5,9 +5,10 @@ import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkStatus;
 import com.bassi.tmapp.service.CSVExportService;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
 import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 
-public class MatchingTmExportServiceV2 extends CSVExportService<TrademarkSimiliarityResultDTO> {
+public class MatchingTmExportServiceV2 extends CSVExportService<TrademarkSimilarityCandidateWithPubTmDto> {
 
     public MatchingTmExportServiceV2(String sheetName) {
         super(sheetName);
@@ -25,32 +26,26 @@ public class MatchingTmExportServiceV2 extends CSVExportService<TrademarkSimilia
             "Class",
             "Details",
             "Application Number",
-            "Agent Name",
-            "Agent Address",
             "Proprietor Name",
             "Proprietor Address",
             "Journal No.",
-            "Page No.",
             "Score",
         };
         csvWriter.writeNext(headers);
     }
 
     @Override
-    public void writeRow(TrademarkSimiliarityResultDTO element, int rowNr) {
+    public void writeRow(TrademarkSimilarityCandidateWithPubTmDto element, int rowNr) {
         csvWriter.writeNext(
             new String[] {
-                getTrademarkName(element.getPublishedTradmark()),
-                getTrademarkName(element.getClientTrademark()),
-                getTrademarkClass(element.getPublishedTradmark()),
-                getDetails(element.getPublishedTradmark()),
-                getApplicationNumber(element.getPublishedTradmark()),
-                getAgentName(element.getPublishedTradmark()),
-                getAgentAddress(element.getPublishedTradmark()),
-                getProprietorName(element.getPublishedTradmark()),
-                getProprietorAddress(element.getPublishedTradmark()),
-                getJournalNumber(element.getPublishedTradmark()),
-                getPageNumber(element.getPublishedTradmark()),
+                element.getPublishedTrademark(),
+                element.getClientTrademark(),
+                formatInteger(element.getPublishedTrademarkClass()),
+                element.getDetails(),
+                formatLong(element.getPublishedApplicationNo()),
+                element.getProprietorName(),
+                element.getProprietorAddress(),
+                formatInteger(element.getJournalNum()),
                 Double.toString(element.getScore()),
             }
         );

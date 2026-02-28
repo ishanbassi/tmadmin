@@ -1,11 +1,8 @@
 package com.bassi.tmapp.service;
 
-import com.bassi.tmapp.domain.TokenPhonetic;
-import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.enumeration.TrademarkTokenType;
-import com.bassi.tmapp.repository.TokenPhoneticRepository;
-import com.bassi.tmapp.repository.TrademarkTokenRepository;
+import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
+import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,30 +20,23 @@ public class SimilarityScorerService {
     private static final double POSITION_WEIGHT = 0.05;
 
     public double computeFinalScore(
-        Trademark client,
-        Trademark published,
-        List<TrademarkToken> clientTrademarkTokens,
-        List<TrademarkToken> publishedTrademarkTokens,
-        List<TokenPhonetic> clientPhonetics,
-        List<TokenPhonetic> publishedPhonetics
+        String clientTmNormalizedName,
+        String publishedTmNormalizedName,
+        List<PartialTrademarkTokenDto> clientTrademarkTokens,
+        List<PartialTrademarkTokenDto> savedTT,
+        List<PartialTokenPhoneticDto> clientPhonetics,
+        List<PartialTokenPhoneticDto> savedTP
     ) {
-        double coreScore = computeCoreTokenScore(
-            client,
-            published,
-            clientTrademarkTokens,
-            publishedTrademarkTokens,
-            clientPhonetics,
-            publishedPhonetics
-        );
+        double coreScore = computeCoreTokenScore(clientTrademarkTokens, savedTT, clientPhonetics, savedTP);
         if (coreScore == 0.0) {
             return 0.0; // HARD STOP: no CORE phonetic match
         }
 
-        double phraseScore = computePhraseSimilarity(normalize(client.getName()), normalize(published.getName()));
+        double phraseScore = computePhraseSimilarity(normalize(clientTmNormalizedName), normalize(publishedTmNormalizedName));
 
-        double overlapScore = computeTokenOverlap(client, published, clientTrademarkTokens, publishedTrademarkTokens);
+        double overlapScore = computeTokenOverlap(clientTrademarkTokens, savedTT);
 
-        double positionScore = computePositionScore(client, published, clientTrademarkTokens, publishedTrademarkTokens);
+        double positionScore = computePositionScore(clientTrademarkTokens, savedTT);
 
         return round(
             coreScore * CORE_MATCH_WEIGHT +
@@ -57,14 +47,12 @@ public class SimilarityScorerService {
     }
 
     private double computeCoreTokenScore(
-        Trademark client,
-        Trademark published,
-        List<TrademarkToken> clientTrademarkTokens,
-        List<TrademarkToken> publishedTrademarkTokens,
-        List<TokenPhonetic> clientPhonetics,
-        List<TokenPhonetic> publishedTtPhonetics
+        List<PartialTrademarkTokenDto> clientTrademarkTokens,
+        List<PartialTrademarkTokenDto> savedTT,
+        List<PartialTokenPhoneticDto> clientPhonetics,
+        List<PartialTokenPhoneticDto> savedTP
     ) {
-        List<TrademarkToken> clientCoreTokens = clientTrademarkTokens
+        List<PartialTrademarkTokenDto> clientCoreTokens = clientTrademarkTokens
             .stream()
             .filter(t -> t.getTokenType() == TrademarkTokenType.CORE)
             .toList();
@@ -73,15 +61,15 @@ public class SimilarityScorerService {
             return 0.0;
         }
 
-        Set<String> publishedPhonetics = publishedTrademarkTokens
+        Set<String> publishedPhonetics = savedTT
             .stream()
-            .flatMap(t -> publishedTtPhonetics.stream())
-            .map(TokenPhonetic::getPhoneticCode)
+            .flatMap(t -> savedTP.stream())
+            .map(PartialTokenPhoneticDto::getPhoneticCode)
             .collect(Collectors.toSet());
 
         long matched = clientCoreTokens
             .stream()
-            .filter(ct -> clientPhonetics.stream().map(TokenPhonetic::getPhoneticCode).anyMatch(publishedPhonetics::contains))
+            .filter(ct -> clientPhonetics.stream().map(PartialTokenPhoneticDto::getPhoneticCode).anyMatch(publishedPhonetics::contains))
             .count();
 
         return (double) matched / clientCoreTokens.size();
@@ -118,15 +106,10 @@ public class SimilarityScorerService {
         return prev[s2.length()];
     }
 
-    private double computeTokenOverlap(
-        Trademark a,
-        Trademark b,
-        List<TrademarkToken> clientTrademarkTokens,
-        List<TrademarkToken> publishedTrademarkTokens
-    ) {
-        Set<String> tokensA = clientTrademarkTokens.stream().map(TrademarkToken::getTokenText).collect(Collectors.toSet());
+    private double computeTokenOverlap(List<PartialTrademarkTokenDto> clientTrademarkTokens, List<PartialTrademarkTokenDto> savedTT) {
+        Set<String> tokensA = clientTrademarkTokens.stream().map(PartialTrademarkTokenDto::getTokenText).collect(Collectors.toSet());
 
-        Set<String> tokensB = publishedTrademarkTokens.stream().map(TrademarkToken::getTokenText).collect(Collectors.toSet());
+        Set<String> tokensB = savedTT.stream().map(PartialTrademarkTokenDto::getTokenText).collect(Collectors.toSet());
 
         if (tokensA.isEmpty() || tokensB.isEmpty()) {
             return 0.0;
@@ -141,16 +124,11 @@ public class SimilarityScorerService {
         return (double) intersection.size() / union.size();
     }
 
-    private double computePositionScore(
-        Trademark client,
-        Trademark published,
-        List<TrademarkToken> clientTrademarkTokens,
-        List<TrademarkToken> publishedTrademarkTokens
-    ) {
+    private double computePositionScore(List<PartialTrademarkTokenDto> clientTrademarkTokens, List<PartialTrademarkTokenDto> savedTT) {
         double score = 0.0;
 
-        for (TrademarkToken ct : clientTrademarkTokens) {
-            for (TrademarkToken pt : publishedTrademarkTokens) {
+        for (PartialTrademarkTokenDto ct : clientTrademarkTokens) {
+            for (PartialTrademarkTokenDto pt : savedTT) {
                 if (ct.getTokenText().equals(pt.getTokenText())) {
                     if (ct.getPosition() == 1 && pt.getPosition() == 1) {
                         score += 1.0;

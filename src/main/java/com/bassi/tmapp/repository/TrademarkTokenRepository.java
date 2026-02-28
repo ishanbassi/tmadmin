@@ -3,6 +3,7 @@ package com.bassi.tmapp.repository;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.enumeration.TrademarkTokenType;
+import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -22,12 +23,17 @@ public interface TrademarkTokenRepository extends JpaRepository<TrademarkToken, 
 
     @Query(
         """
-        SELECT t
-        FROM TrademarkToken t
-        WHERE t.trademark.id IN :tmIds
+            SELECT new com.bassi.tmapp.service.dto.PartialTrademarkTokenDto(
+                t.tokenText,
+                t.tokenType,
+                t.position,
+                t.trademark.id
+            )
+            FROM TrademarkToken t
+            WHERE t.trademark.id IN :tmIds
         """
     )
-    List<TrademarkToken> findByTrademarkIds(@Param("tmIds") Set<Long> tmIds);
+    List<PartialTrademarkTokenDto> findByTrademarkIds(@Param("tmIds") Set<Long> tmIds);
 
     @Modifying
     @Query(value = "DELETE FROM TrademarkToken tt WHERE  tt.trademark.id = ?1")

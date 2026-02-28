@@ -26,7 +26,7 @@ import org.mapstruct.*;
  * Mapper for the entity {@link Trademark} and its DTO {@link TrademarkDTO}.
  */
 @Mapper(componentModel = "spring")
-public interface TrademarkMapper extends EntityMapper<TrademarkDTO, Trademark> {
+public interface TrademarkSuggestionMapper extends EntityMapper<TrademarkDTO, Trademark> {
     @Mapping(target = "lead", source = "lead", qualifiedByName = "leadId")
     @Mapping(target = "user", source = "user", qualifiedByName = "userProfileId")
     @Mapping(target = "trademarkClasses", source = "trademarkClasses", qualifiedByName = "trademarkClassSet")

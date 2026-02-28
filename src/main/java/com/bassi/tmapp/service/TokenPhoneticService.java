@@ -4,6 +4,8 @@ import com.bassi.tmapp.domain.TokenPhonetic;
 import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.enumeration.PhoneticAlgorithmType;
 import com.bassi.tmapp.repository.TokenPhoneticRepository;
+import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
+import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
 import com.bassi.tmapp.service.dto.TokenPhoneticDTO;
 import com.bassi.tmapp.service.mapper.TokenPhoneticMapper;
 import java.util.LinkedList;
@@ -137,6 +139,14 @@ public class TokenPhoneticService {
         tokenPhonetic.setAlgorithm(PhoneticAlgorithmType.DOUBLE_METAPHONE);
         tokenPhonetic.setPhoneticCode(generateMetaphone(token.getTokenText()));
         tokenPhonetic.setTrademarkToken(token);
+        return tokenPhonetic;
+    }
+
+    public PartialTokenPhoneticDto generatePartialPhoneticToken(PartialTrademarkTokenDto token) {
+        PartialTokenPhoneticDto tokenPhonetic = new PartialTokenPhoneticDto();
+        tokenPhonetic.setAlgorithm(PhoneticAlgorithmType.DOUBLE_METAPHONE);
+        tokenPhonetic.setPhoneticCode(generateMetaphone(token.getTokenText()));
+        tokenPhonetic.setTrademarkId(token.getTrademarkId());
         return tokenPhonetic;
     }
 }

@@ -105,4 +105,18 @@ public abstract class CSVExportService<T> {
         }
         return accountId;
     }
+
+    protected String formatInteger(Integer val) {
+        if (val == null) {
+            return "";
+        }
+        return Integer.toString(val);
+    }
+
+    protected String formatLong(Long val) {
+        if (val == null) {
+            return "";
+        }
+        return Long.toString(val);
+    }
 }

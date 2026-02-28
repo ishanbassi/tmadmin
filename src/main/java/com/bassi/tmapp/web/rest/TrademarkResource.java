@@ -1,17 +1,24 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.CurrentUserService;
 import com.bassi.tmapp.service.DocumentsService;
+import com.bassi.tmapp.service.SlugUtil;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
 import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
+import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
+import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
+import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
+import jakarta.persistence.EntityNotFoundException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -25,6 +32,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
@@ -55,18 +63,22 @@ public class TrademarkResource {
 
     private final CurrentUserService currentUserService;
 
+    private final TrademarkMapper trademarkMapper;
+
     public TrademarkResource(
         TrademarkService trademarkService,
         TrademarkRepository trademarkRepository,
         TrademarkQueryService trademarkQueryService,
         DocumentsService documentsService,
-        CurrentUserService currentUserService
+        CurrentUserService currentUserService,
+        TrademarkMapper trademarkMapper
     ) {
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
         this.trademarkQueryService = trademarkQueryService;
         this.documentsService = documentsService;
         this.currentUserService = currentUserService;
+        this.trademarkMapper = trademarkMapper;
     }
 
     /**
@@ -286,14 +298,20 @@ public class TrademarkResource {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<TrademarkSimiliarityResultDTO>> findSimiliarTrademarks(@RequestParam("trademark") String trademark) {
-        List<TrademarkSimiliarityResultDTO> results = trademarkService.findSimiliarTrademarks(trademark);
+    public ResponseEntity<List<TrademarkSimilarityCandidateDto>> findSimiliarTrademarks(@RequestParam("trademark") String trademark) {
+        List<TrademarkSimilarityCandidateDto> results = trademarkService.findSimiliarTrademarks(trademark);
         return ResponseEntity.ok().body(results);
     }
 
     @GetMapping("/live-search")
-    public ResponseEntity<List<TrademarkDTO>> liveSearch(@RequestParam("trademark") String trademark) {
-        List<TrademarkDTO> results = trademarkService.findLiveSuggestions(trademark);
+    public ResponseEntity<List<TrademarkSuggestionDto>> liveSearch(@RequestParam("trademark") String trademark) {
+        List<TrademarkSuggestionDto> results = trademarkService.findLiveSuggestions(trademark, 10);
+        return ResponseEntity.ok().body(results);
+    }
+
+    @GetMapping("/quick-search")
+    public ResponseEntity<List<TrademarkSuggestionDto>> quickSearch(@RequestParam("trademark") String trademark) {
+        List<TrademarkSuggestionDto> results = trademarkService.findLiveSuggestions(trademark, 100);
         return ResponseEntity.ok().body(results);
     }
 
@@ -301,5 +319,34 @@ public class TrademarkResource {
     public ResponseEntity<List<Integer>> getJournalNumbers() {
         List<Integer> results = trademarkService.getJournalNumbers();
         return ResponseEntity.ok().body(results);
+    }
+
+    @GetMapping("/slug/{slug}")
+    @Transactional
+    public ResponseEntity<TrademarkDTO> getTrademark(@PathVariable("slug") String slug) {
+        String appNo = SlugUtil.extractApplicationNumber(slug);
+
+        if (appNo == null) {
+            throw new BadRequestAlertException("Invalid trademark URL", "trademark", "invalidslug");
+        }
+
+        Trademark tm = trademarkRepository
+            .findFirstByApplicationNoOrderById(Long.valueOf(appNo))
+            .orElseThrow(() -> new EntityNotFoundException("Trademark not found"));
+
+        TrademarkDTO dto = trademarkMapper.toDto(tm);
+
+        if (!slug.equals(dto.getSlug())) {
+            return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
+                .location(URI.create("/api/trademarks/slug/" + dto.getSlug()))
+                .build();
+        }
+
+        return ResponseEntity.ok(dto);
+    }
+
+    @GetMapping("/update/normalized-names/{journalNo}")
+    public void getJournalNumbers(@PathVariable("journalNo") Integer journalNo) {
+        trademarkService.updateNormalizedNamesForMissingTrademarks(journalNo);
     }
 }

@@ -9,8 +9,14 @@ import com.bassi.tmapp.repository.TokenPhoneticRepository;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.TrademarkTokenRepository;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
+import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
+import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
+import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
 import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
+import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
+import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
@@ -65,7 +71,7 @@ public class TrademarkService {
     private final TokenPhoneticRepository tokenPhoneticRepository;
     private final TrademarkTokenRepository trademarkTokenRepository;
 
-    private static final double MIN_SCORE_THRESHOLD = 0.65;
+    private static final double MIN_SCORE_THRESHOLD = 0.7;
 
     public TrademarkService(
         TrademarkRepository trademarkRepository,
@@ -153,6 +159,9 @@ public class TrademarkService {
                 String oldName = existingTrademark.getName();
                 trademarkMapper.partialUpdate(existingTrademark, trademarkDTO);
                 if (!Objects.equals(oldName, trademarkDTO.getName())) {
+                    if (trademarkDTO.getName() != null) {
+                        trademarkDTO.setNormalizedName(wordSanitizationService.sanitizeWord(trademarkDTO.getName()));
+                    }
                     trademarkTokenService.recreateTokens(trademarkMapper.toEntity(trademarkDTO));
                 }
                 return existingTrademark;
@@ -244,134 +253,164 @@ public class TrademarkService {
     }
 
     @Transactional
-    public List<TrademarkSimiliarityResultDTO> runWeeklyComparison(int journalNo) {
-        List<Object[]> pairs = trademarkRepository.findAllCandidatePairs(journalNo);
+    public List<TrademarkSimilarityCandidateWithPubTmDto> runWeeklyComparison(int journalNo) {
+        List<TrademarkSimilarityCandidateWithPubTmDto> pairs = trademarkRepository.findAllCandidatePairs(journalNo);
         Set<Long> allTrademarkIds = new HashSet<>();
 
-        for (Object[] pair : pairs) {
-            allTrademarkIds.add((Long) pair[0]);
-            allTrademarkIds.add((Long) pair[1]);
+        for (TrademarkSimilarityCandidateWithPubTmDto pair : pairs) {
+            allTrademarkIds.add(pair.getClientId());
+            allTrademarkIds.add(pair.getPublishedId());
         }
 
-        List<TrademarkToken> allTokens = trademarkTokenRepository.findByTrademarkIds(allTrademarkIds);
+        List<PartialTrademarkTokenDto> allTokens = trademarkTokenRepository.findByTrademarkIds(allTrademarkIds);
 
-        List<TokenPhonetic> allPhonetics = tokenPhoneticRepository.findByTrademarkIds(allTrademarkIds);
+        List<PartialTokenPhoneticDto> allPhonetics = tokenPhoneticRepository.findByTrademarkIds(allTrademarkIds);
 
-        Map<Long, List<TrademarkToken>> tokensByTmId = allTokens.stream().collect(Collectors.groupingBy(t -> t.getTrademark().getId()));
+        Map<Long, List<PartialTrademarkTokenDto>> tokensByTmId = allTokens.stream().collect(Collectors.groupingBy(t -> t.getTrademarkId()));
 
-        Map<Long, List<TokenPhonetic>> phoneticsByTmId = allPhonetics
+        Map<Long, List<PartialTokenPhoneticDto>> phoneticsByTmId = allPhonetics
             .stream()
-            .collect(Collectors.groupingBy(p -> p.getTrademarkToken().getTrademark().getId()));
+            .collect(Collectors.groupingBy(p -> p.getTrademarkId()));
 
-        List<TrademarkSimiliarityResultDTO> similiarityResultDTOs = new ArrayList<>();
+        List<TrademarkSimilarityCandidateWithPubTmDto> similiarityResultDTOs = new ArrayList<>();
 
         Map<Long, Trademark> cache = new HashMap<>();
 
-        for (Object[] row : pairs) {
-            Long clientId = ((Number) row[0]).longValue();
-            Long publishedId = ((Number) row[1]).longValue();
+        for (TrademarkSimilarityCandidateWithPubTmDto row : pairs) {
+            Long clientId = row.getClientId();
+            Long publishedId = row.getPublishedId();
 
-            Trademark client = cache.computeIfAbsent(clientId, id -> trademarkRepository.findById(id).orElseThrow());
+            List<PartialTrademarkTokenDto> clientTokens = tokensByTmId.getOrDefault(clientId, List.of());
 
-            Trademark published = cache.computeIfAbsent(publishedId, id -> trademarkRepository.findById(id).orElseThrow());
+            List<PartialTrademarkTokenDto> publishedTokens = tokensByTmId.getOrDefault(publishedId, List.of());
 
-            List<TrademarkToken> clientTokens = tokensByTmId.getOrDefault(clientId, List.of());
+            List<PartialTokenPhoneticDto> clientPhonetics = phoneticsByTmId.getOrDefault(clientId, List.of());
 
-            List<TrademarkToken> publishedTokens = tokensByTmId.getOrDefault(publishedId, List.of());
-
-            List<TokenPhonetic> clientPhonetics = phoneticsByTmId.getOrDefault(clientId, List.of());
-
-            List<TokenPhonetic> publishedPhonetics = phoneticsByTmId.getOrDefault(publishedId, List.of());
+            List<PartialTokenPhoneticDto> publishedPhonetics = phoneticsByTmId.getOrDefault(publishedId, List.of());
 
             double score = similarityScorerService.computeFinalScore(
-                client,
-                published,
+                row.getClientNormalizedTrademark(),
+                row.getPublishedNormalizedTrademark(),
                 clientTokens,
                 publishedTokens,
                 clientPhonetics,
                 publishedPhonetics
             );
             if (score > MIN_SCORE_THRESHOLD) {
-                TrademarkSimiliarityResultDTO trademarkSimiliarityResultDTO = new TrademarkSimiliarityResultDTO(
-                    client,
-                    published,
-                    score,
-                    journalNo
-                );
+                row.setScore(score);
+                row.setJournalNum(journalNo);
 
-                similiarityResultDTOs.add(trademarkSimiliarityResultDTO);
+                similiarityResultDTOs.add(row);
             }
         }
 
         similiarityResultDTOs.sort(
-            Comparator.comparingDouble(TrademarkSimiliarityResultDTO::getScore)
+            Comparator.comparingDouble(TrademarkSimilarityCandidateWithPubTmDto::getScore)
                 .reversed()
-                .thenComparing(r -> r.getPublishedTradmark().getTmClass())
+                .thenComparing(r -> r.getPublishedTrademarkClass())
         );
         return similiarityResultDTOs;
     }
 
-    public List<TrademarkSimiliarityResultDTO> findSimiliarTrademarks(String trademark) {
+    public List<TrademarkSimilarityCandidateDto> findSimiliarTrademarks(String trademark) {
         Trademark tm = new Trademark();
         String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(trademark);
         tm.setName(trademark);
         tm.setNormalizedName(sanitizedTrademark);
-        List<TrademarkToken> searchTT = trademarkTokenService.generateTrademarkTokens(trademark);
-        List<TokenPhonetic> searchTP = trademarkTokenService.generateTrademarkTokenPhonetics(trademark);
-        List<String> phonetics = searchTP.stream().map(TokenPhonetic::getPhoneticCode).toList();
-        List<Long> candidateIds = trademarkRepository.findCandidatePublishedIds(phonetics, sanitizedTrademark);
-        if (candidateIds.isEmpty()) {
+        List<PartialTrademarkTokenDto> searchTT = trademarkTokenService.generatePartialTrademarkTokens(trademark);
+        List<PartialTokenPhoneticDto> searchTP = trademarkTokenService.generatePartialTrademarkTokenPhonetics(trademark);
+        List<String> phonetics = searchTP.stream().map(PartialTokenPhoneticDto::getPhoneticCode).toList();
+        List<TrademarkSimilarityCandidateDto> candidates = trademarkRepository.findCandidatePublishedIds(phonetics, sanitizedTrademark);
+        if (candidates.isEmpty()) {
             return List.of();
         }
 
         Set<Long> allTrademarkIds = new HashSet<>();
 
-        for (Long candidateId : candidateIds) {
-            allTrademarkIds.add(candidateId);
+        for (TrademarkSimilarityCandidateDto candidate : candidates) {
+            allTrademarkIds.add(candidate.getId());
         }
-        List<TrademarkToken> allTokens = trademarkTokenRepository.findByTrademarkIds(allTrademarkIds);
+        List<PartialTrademarkTokenDto> allTokens = trademarkTokenRepository.findByTrademarkIds(allTrademarkIds);
 
-        List<TokenPhonetic> allPhonetics = tokenPhoneticRepository.findByTrademarkIds(allTrademarkIds);
+        List<PartialTokenPhoneticDto> allPhonetics = tokenPhoneticRepository.findByTrademarkIds(allTrademarkIds);
 
-        Map<Long, List<TrademarkToken>> tokensByTmId = allTokens.stream().collect(Collectors.groupingBy(t -> t.getTrademark().getId()));
+        Map<Long, List<PartialTrademarkTokenDto>> tokensByTmId = allTokens.stream().collect(Collectors.groupingBy(t -> t.getTrademarkId()));
 
-        Map<Long, List<TokenPhonetic>> phoneticsByTmId = allPhonetics
+        Map<Long, List<PartialTokenPhoneticDto>> phoneticsByTmId = allPhonetics
             .stream()
-            .collect(Collectors.groupingBy(p -> p.getTrademarkToken().getTrademark().getId()));
+            .collect(Collectors.groupingBy(p -> p.getTrademarkId()));
 
         Map<Long, Trademark> cache = new HashMap<>();
-        List<TrademarkSimiliarityResultDTO> similiarityResultDTOs = new ArrayList<>();
-        for (Long candidateId : candidateIds) {
-            Trademark savedTm = cache.computeIfAbsent(candidateId, id -> trademarkRepository.findById(id).orElseThrow());
-            List<TrademarkToken> savedTT = tokensByTmId.getOrDefault(candidateId, List.of());
-            List<TokenPhonetic> savedTP = phoneticsByTmId.getOrDefault(candidateId, List.of());
+        List<TrademarkSimilarityCandidateDto> similiarityResultDTOs = new ArrayList<>();
+        for (TrademarkSimilarityCandidateDto candidate : candidates) {
+            List<PartialTrademarkTokenDto> savedTT = tokensByTmId.getOrDefault(candidate.getId(), List.of());
+            List<PartialTokenPhoneticDto> savedTP = phoneticsByTmId.getOrDefault(candidate.getId(), List.of());
 
-            double score = similarityScorerService.computeFinalScore(tm, savedTm, searchTT, savedTT, searchTP, savedTP);
+            double score = similarityScorerService.computeFinalScore(
+                tm.getNormalizedName(),
+                candidate.getNormalizedName(),
+                searchTT,
+                savedTT,
+                searchTP,
+                savedTP
+            );
             if (score > MIN_SCORE_THRESHOLD) {
-                TrademarkSimiliarityResultDTO trademarkSimiliarityResultDTO = new TrademarkSimiliarityResultDTO(tm, savedTm, score, null);
-
-                similiarityResultDTOs.add(trademarkSimiliarityResultDTO);
+                candidate.setScore(score);
+                similiarityResultDTOs.add(candidate);
             }
         }
 
-        similiarityResultDTOs.sort(
-            Comparator.comparingDouble(TrademarkSimiliarityResultDTO::getScore)
-                .reversed()
-                .thenComparing(r -> r.getPublishedTradmark().getTmClass())
-        );
+        similiarityResultDTOs = similiarityResultDTOs
+            .stream()
+            .map(t -> {
+                String slug = SlugUtil.generate(t.getName(), t.getTmClass(), t.getApplicationNo(), t.getType());
+
+                t.setUrl("/trademarks/" + slug);
+                return t;
+            })
+            .sorted(
+                Comparator.comparingDouble(TrademarkSimilarityCandidateDto::getScore)
+                    .reversed()
+                    .thenComparing(TrademarkSimilarityCandidateDto::getTmClass)
+            )
+            .collect(Collectors.toList());
+
         return similiarityResultDTOs;
     }
 
-    public List<TrademarkDTO> findLiveSuggestions(String trademark) {
+    public List<TrademarkSuggestionDto> findLiveSuggestions(String trademark, Integer limit) {
         String sanitizedTrademark = this.wordSanitizationService.sanitizeWord(trademark);
         if (sanitizedTrademark == null || sanitizedTrademark.length() < 2) {
             return List.of();
         }
+        return trademarkRepository
+            .findLiveSuggestionsByLimit(sanitizedTrademark, limit)
+            .stream()
+            .map(tm -> {
+                String slug = SlugUtil.generate(tm.getName(), tm.getTmClass(), tm.getApplicationNo(), tm.getType());
 
-        return trademarkMapper.toDto(trademarkRepository.findLiveSuggestions(sanitizedTrademark));
+                tm.setUrl("/trademarks/" + slug);
+                return tm;
+            })
+            .toList();
     }
 
     public List<Integer> getJournalNumbers() {
         return trademarkRepository.getJournalNumbers();
+    }
+
+    public void updateNormalizedNamesForMissingTrademarks(Integer journalNo) {
+        List<Trademark> tms = trademarkRepository
+            .findByJournalNoAndNullNormalizedName(journalNo)
+            .stream()
+            .map(tm -> {
+                if (tm.getName() != null) {
+                    tm.setNormalizedName(wordSanitizationService.sanitizeWord(tm.getName()));
+                }
+                return tm;
+            })
+            .toList();
+
+        trademarkRepository.saveAll(tms);
     }
 }

@@ -34,6 +34,7 @@ export class UpdateTrademarkNameComponent implements OnInit {
     return this.fb.group({
       id: [trademark.id],
       name: [trademark.name],
+      trademarkStatus: [trademark.trademarkStatus],
     });
   }
 

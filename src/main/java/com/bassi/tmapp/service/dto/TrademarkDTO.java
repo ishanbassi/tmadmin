@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -81,6 +82,12 @@ public class TrademarkDTO implements Serializable {
     private Set<TrademarkClassDTO> trademarkClasses = new HashSet<>();
 
     private Set<DocumentsDTO> documents = new HashSet<>();
+
+    private String slug;
+
+    private String url;
+
+    private List<FaqItem> faqs;
 
     public Long getId() {
         return id;
@@ -344,6 +351,30 @@ public class TrademarkDTO implements Serializable {
 
     public void setDocuments(Set<DocumentsDTO> documents) {
         this.documents = documents;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public List<FaqItem> getFaqs() {
+        return faqs;
+    }
+
+    public void setFaqs(List<FaqItem> faqs) {
+        this.faqs = faqs;
     }
 
     @Override

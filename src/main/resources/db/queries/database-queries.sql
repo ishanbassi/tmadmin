@@ -78,8 +78,9 @@ ON trademark (name);
 
 CREATE INDEX idx_tm_class ON trademark (tm_class);
 CREATE INDEX idx_tm_source ON trademark (source);
+CREATE INDEX idx_tm_application_no ON trademark (application_no);
 
-CREATE INDEX idx_token_type ON trademark_token (type);
+CREATE INDEX idx_token_type ON trademark_token (token_type);
 CREATE INDEX idx_token_tm ON trademark_token (trademark_id);
 
 CREATE INDEX idx_phonetic_code ON token_phonetic (phonetic_code);
@@ -87,6 +88,12 @@ CREATE INDEX idx_tm_journal_no ON trademark (journal_no);
 
 CREATE INDEX idx_normalized_name_prefix
 ON trademark (normalized_name text_pattern_ops);
+
+CREATE INDEX idx_tp_phonetic_token ON token_phonetic(phonetic_code, trademark_token_id);
+CREATE INDEX idx_tm_journal_source_class  ON trademark(journal_no, source, tm_class)  WHERE source = 'JOURNAL_PUBLICATION';
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE INDEX idx_tm_normalized_name_trgm ON trademark USING GIN(normalized_name gin_trgm_ops);
 
 ALTER TABLE trademark ADD COLUMN normalized_name VARCHAR(255);
 ALTER TABLE trademark ADD COLUMN tm_agent_id BIGINT;
