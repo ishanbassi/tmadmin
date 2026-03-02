@@ -171,3 +171,4 @@ file-upload-base-path: /opt/application/production/files/
 pdf-file-base-path: /opt/application/production/pdfs/
 errors-file-base-path: /opt/application/production/errors/
 document-base-path: /opt/application/production/documents/
+asset-base-path: /opt/application/production/
