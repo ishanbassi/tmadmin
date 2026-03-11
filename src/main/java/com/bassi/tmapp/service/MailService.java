@@ -6,10 +6,12 @@ import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.Payment;
 import com.bassi.tmapp.domain.User;
 import com.bassi.tmapp.domain.UserProfile;
+import com.bassi.tmapp.service.dto.ContactDto;
 import com.bassi.tmapp.service.dto.UserDTO;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
@@ -45,6 +47,8 @@ public class MailService {
     private static final String USER_PROFILE = "userProfile";
 
     private static final String PAYMENT = "payment";
+
+    private static final String CONTACT = "contact";
 
     private final JHipsterProperties jHipsterProperties;
 
@@ -242,5 +246,25 @@ public class MailService {
             "email.payment.success.title",
             applicationProperties.getAdminNotificationsEmailAddress()
         );
+    }
+
+    @Async
+    public void sendContactUsMail(@Valid ContactDto contactDto, String toEmailAddress) {
+        LOG.info("Creating contact us request'{}'", contactDto.toString());
+        sendContactEmailFromTemplate(contactDto, toEmailAddress, "mail/userContactRequestEmail", "email.contact.title");
+    }
+
+    public void sendContactEmailFromTemplate(ContactDto contact, String toEmailAddress, String templateName, String titleKey) {
+        if (toEmailAddress == null) {
+            LOG.debug("Email doesn't exist for contact us '{}'", toEmailAddress);
+            return;
+        }
+        Locale locale = Locale.forLanguageTag("en");
+        Context context = new Context(locale);
+        context.setVariable(CONTACT, contact);
+        context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
+        String content = templateEngine.process(templateName, context);
+        String subject = messageSource.getMessage(titleKey, null, locale);
+        sendEmailSync(contact.getEmail(), subject, content, false, true);
     }
 }
