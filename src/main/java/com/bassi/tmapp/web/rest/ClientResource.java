@@ -27,6 +27,6 @@ public class ClientResource {
 
     @PostMapping("/hcvk/contact-us")
     public void registerAccount(@Valid @RequestBody ContactDto contactUsVM) {
-        mailService.sendContactUsMail(contactUsVM, "ishanbassi23@gmail.com");
+        mailService.sendContactUsMail(contactUsVM, "info@hcvkbolt.com");
     }
 }
