@@ -265,6 +265,6 @@ public class MailService {
         context.setVariable(BASE_URL, jHipsterProperties.getMail().getBaseUrl());
         String content = templateEngine.process(templateName, context);
         String subject = messageSource.getMessage(titleKey, null, locale);
-        sendEmailSync(contact.getEmail(), subject, content, false, true);
+        sendEmailSync(toEmailAddress, subject, content, false, true);
     }
 }
