@@ -29,4 +29,9 @@ public class ClientResource {
     public void registerAccount(@Valid @RequestBody ContactDto contactUsVM) {
         mailService.sendContactUsMail(contactUsVM, "info@hcvkbolt.com");
     }
+
+    @PostMapping("/senton/contact-us")
+    public void sendEmailToSenton(@Valid @RequestBody ContactDto contactUsVM) {
+        mailService.sendContactUsMail(contactUsVM, "ankushsports4@gmail.com");
+    }
 }
