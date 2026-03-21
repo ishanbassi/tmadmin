@@ -66,6 +66,10 @@ spring:
     cache-duration: PT1S # 1 second, see the ISO 8601 standard
   thymeleaf:
     cache: false
+  task:
+    scheduling:
+      pool:
+        size: 2
 
 server:
   port: 8080
@@ -143,3 +147,6 @@ pdf-file-base-path: /opt/application/staging/pdfs/
 errors-file-base-path: /opt/application/staging/errors/
 document-base-path: /opt/application/staging/documents/
 asset-base-path: /opt/application/staging/
+selenium:
+  asset: /opt/application/staging/selenium/
+  headless: true

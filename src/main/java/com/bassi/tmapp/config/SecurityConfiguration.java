@@ -86,6 +86,7 @@ public class SecurityConfiguration {
                     .requestMatchers(mvc.pattern(HttpMethod.GET,"/api/razor-pay/payments/order-id/*")).permitAll()
                     .requestMatchers(mvc.pattern(HttpMethod.POST,"/api/razor-pay/payments/create-order")).permitAll()
                     .requestMatchers(mvc.pattern(HttpMethod.POST,"/api/razor-pay/payments/verify-signature")).permitAll()
+                    .requestMatchers(mvc.pattern(HttpMethod.POST,"/api/otp/**")).permitAll()
                     .requestMatchers(mvc.pattern("/api/admin/**")).hasAuthority(AuthoritiesConstants.ADMIN)
                     .requestMatchers(mvc.pattern("/api/**")).authenticated()
                     .requestMatchers(mvc.pattern("/v3/api-docs/**")).hasAuthority(AuthoritiesConstants.ADMIN)

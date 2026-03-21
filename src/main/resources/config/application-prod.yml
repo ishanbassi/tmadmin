@@ -68,6 +68,10 @@ spring:
     cache-duration: PT1S
   thymeleaf:
     cache: true
+  task:
+    scheduling:
+      pool:
+        size: 2
 
 # ===================================================================
 # To enable TLS in production, generate a certificate using:
@@ -172,3 +176,6 @@ pdf-file-base-path: /opt/application/production/pdfs/
 errors-file-base-path: /opt/application/production/errors/
 document-base-path: /opt/application/production/documents/
 asset-base-path: /opt/application/production/
+selenium:
+  asset: /opt/application/production/selenium/
+  headless: true

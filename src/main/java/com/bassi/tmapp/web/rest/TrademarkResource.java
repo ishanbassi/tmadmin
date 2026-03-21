@@ -17,6 +17,7 @@ import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
+import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
 import com.bassi.tmapp.web.rest.errors.BadRequestAlertException;
 import jakarta.persistence.EntityNotFoundException;
 import java.net.URI;
@@ -64,6 +65,7 @@ public class TrademarkResource {
     private final CurrentUserService currentUserService;
 
     private final TrademarkMapper trademarkMapper;
+    private final TrademarkScrapingService trademarkScrapingService;
 
     public TrademarkResource(
         TrademarkService trademarkService,
@@ -71,7 +73,8 @@ public class TrademarkResource {
         TrademarkQueryService trademarkQueryService,
         DocumentsService documentsService,
         CurrentUserService currentUserService,
-        TrademarkMapper trademarkMapper
+        TrademarkMapper trademarkMapper,
+        TrademarkScrapingService trademarkScrapingService
     ) {
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
@@ -79,6 +82,7 @@ public class TrademarkResource {
         this.documentsService = documentsService;
         this.currentUserService = currentUserService;
         this.trademarkMapper = trademarkMapper;
+        this.trademarkScrapingService = trademarkScrapingService;
     }
 
     /**
@@ -335,6 +339,7 @@ public class TrademarkResource {
             .orElseThrow(() -> new EntityNotFoundException("Trademark not found"));
 
         TrademarkDTO dto = trademarkMapper.toDto(tm);
+        dto.setSchema(buildSchema(dto));
 
         if (!slug.equals(dto.getSlug())) {
             return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY)
@@ -348,5 +353,39 @@ public class TrademarkResource {
     @GetMapping("/update/normalized-names/{journalNo}")
     public void getJournalNumbers(@PathVariable("journalNo") Integer journalNo) {
         trademarkService.updateNormalizedNamesForMissingTrademarks(journalNo);
+    }
+
+    @PostMapping("/automate/scrape/{journalNo}")
+    public String executeTrademarkScrapingAutomation(@PathVariable("journalNo") Integer journalNo) {
+        trademarkScrapingService.fillAndSubmitOtp(journalNo, "6239771006");
+        return "Scraping Started";
+    }
+
+    private String buildSchema(TrademarkDTO trademark) {
+        return """
+        {
+          "@context": "https://schema.org",
+          "@type": "LegalService",
+          "name": "%s — Class %s Trademark",
+          "description": "Trademark details for %s under Class %s, application number %s.",
+          "url": "https://trademarx.in/%s",
+          "identifier": "%s",
+          "category": "Class %s",
+          "isPartOf": {
+            "@type": "WebApplication",
+            "name": "Trademarx",
+            "url": "https://trademarx.in"
+          }
+        }
+        """.formatted(
+                trademark.getName(),
+                trademark.getTmClass(),
+                trademark.getName(),
+                trademark.getTmClass(),
+                trademark.getApplicationNo(),
+                trademark.getSlug(),
+                trademark.getApplicationNo(),
+                trademark.getTmClass()
+            );
     }
 }

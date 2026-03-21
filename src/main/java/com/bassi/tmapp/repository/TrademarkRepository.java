@@ -1,5 +1,6 @@
 package com.bassi.tmapp.repository;
 
+import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.service.dto.StatusCountDTO;
@@ -134,4 +135,10 @@ public interface TrademarkRepository
         nativeQuery = true
     )
     List<Trademark> findByJournalNoAndNullNormalizedName(Integer journalNo);
+
+    @Query(value = "SELECT tm FROM Trademark tm WHERE tm.name IS NULL AND tm.journalNo = ?1")
+    List<Trademark> findTrademarksWhereNameIsNull(Integer journalNo);
+
+    @Query(value = "SELECT distinct tm.journalNo FROM Trademark tm where tm.name is null order by tm.journalNo desc limit 1")
+    Integer findLatestJournalNoWithMissingData();
 }

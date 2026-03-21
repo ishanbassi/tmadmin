@@ -1,0 +1,43 @@
+package com.bassi.tmapp.service;
+
+import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
+import java.time.LocalDateTime;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import tech.jhipster.config.JHipsterConstants;
+
+@Service
+@Profile({ JHipsterConstants.SPRING_PROFILE_PRODUCTION })
+public class TrademarkScheduler {
+
+    private static final Logger log = LoggerFactory.getLogger(TrademarkScrapingService.class);
+    private static final AtomicBoolean isAutomationRunning = new AtomicBoolean(false);
+
+    @Autowired
+    private TrademarkScrapingService trademarkScrapingService;
+
+    @Scheduled(cron = "0 0/30 10-21 * * *")
+    public void scheduledRun() {
+        if (isAutomationRunning.get()) {
+            log.warn("Previous session still running, skipping this trigger.");
+            return;
+        }
+
+        isAutomationRunning.set(true);
+        log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
+        trademarkScrapingService.executeTrademarkAutomationForUpdates("6239771006");
+    }
+
+    public static boolean isRunning() {
+        return isAutomationRunning.get();
+    }
+
+    public static void setRunning(boolean value) {
+        isAutomationRunning.set(value);
+    }
+}

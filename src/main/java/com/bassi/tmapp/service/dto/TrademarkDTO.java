@@ -89,6 +89,8 @@ public class TrademarkDTO implements Serializable {
 
     private List<FaqItem> faqs;
 
+    private String schema;
+
     public Long getId() {
         return id;
     }
@@ -375,6 +377,14 @@ public class TrademarkDTO implements Serializable {
 
     public void setFaqs(List<FaqItem> faqs) {
         this.faqs = faqs;
+    }
+
+    public String getSchema() {
+        return schema;
+    }
+
+    public void setSchema(String schema) {
+        this.schema = schema;
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.bassi.tmapp.service;
 
-import com.bassi.tmapp.domain.TokenPhonetic;
 import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.repository.TokenPhoneticRepository;
@@ -14,14 +12,13 @@ import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
-import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
-import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
+import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -37,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tech.jhipster.service.filter.LongFilter;
 
@@ -296,7 +294,7 @@ public class TrademarkService {
                 clientPhonetics,
                 publishedPhonetics
             );
-            if (score > MIN_SCORE_THRESHOLD) {
+            if (score >= MIN_SCORE_THRESHOLD) {
                 row.setScore(score);
                 row.setJournalNum(journalNo);
 
@@ -354,7 +352,7 @@ public class TrademarkService {
                 searchTP,
                 savedTP
             );
-            if (score > MIN_SCORE_THRESHOLD) {
+            if (score >= MIN_SCORE_THRESHOLD) {
                 candidate.setScore(score);
                 similiarityResultDTOs.add(candidate);
             }
@@ -412,5 +410,15 @@ public class TrademarkService {
             .toList();
 
         trademarkRepository.saveAll(tms);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void updateNameAndTrademarkStatusByIdOrApplicationNo(String name, String statusText, Trademark tm) {
+        String sanatizeName = wordSanitizationService.sanitizeWord(statusText);
+        tm.setName(name);
+        tm.setNormalizedName(sanatizeName);
+        tm.setTrademarkStatus(statusText);
+        trademarkRepository.save(tm);
+        trademarkTokenService.saveTokensAndGeneratePhoneticCode(tm);
     }
 }
