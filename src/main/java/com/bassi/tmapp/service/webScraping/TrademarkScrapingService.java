@@ -532,6 +532,7 @@ public class TrademarkScrapingService {
         int maxAttempts = 5; // safety guard
         int attempt = 0;
         while (!solved && attempt < maxAttempts) {
+            attempt++;
             WebElement labelElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("captchatext")));
             String labelExpressionText = labelElement.getText();
             log.info("input value found: " + labelExpressionText);
