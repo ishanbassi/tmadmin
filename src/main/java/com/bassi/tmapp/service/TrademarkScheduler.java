@@ -1,6 +1,8 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.service.extended.PublishedTmServiceExtended;
 import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
@@ -21,6 +23,9 @@ public class TrademarkScheduler {
     @Autowired
     private TrademarkScrapingService trademarkScrapingService;
 
+    @Autowired
+    private PublishedTmServiceExtended publishedTmServiceExtended;
+
     @Scheduled(cron = "0 0/30 10-21 * * *")
     public void scheduledRun() {
         if (isAutomationRunning.get()) {
@@ -31,6 +36,12 @@ public class TrademarkScheduler {
         isAutomationRunning.set(true);
         log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
         trademarkScrapingService.executeTrademarkAutomationForUpdates("6239771006");
+    }
+
+    @Scheduled(cron = "0 0 12 * * *")
+    public void downloadLatestJournal() throws IOException {
+        log.info("Journal pdf downloader Automation Scheduler triggered at: {}", LocalDateTime.now());
+        publishedTmServiceExtended.downloadLatestPdfAndreadPdfFileV2();
     }
 
     public static boolean isRunning() {

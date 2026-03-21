@@ -141,4 +141,6 @@ public interface TrademarkRepository
 
     @Query(value = "SELECT distinct tm.journalNo FROM Trademark tm where tm.name is null order by tm.journalNo desc limit 1")
     Integer findLatestJournalNoWithMissingData();
+
+    long countByJournalNo(int journalNo);
 }

@@ -520,7 +520,7 @@ public class TrademarkScrapingService {
         try {
             fillAndSubmitOtp(driver, wait, phoneNumber, journalNo);
         } finally {
-            //        	takeScreenshot(driver, "error");
+            takeScreenshot(driver, "error");
             driver.quit();
             TrademarkScheduler.setRunning(false);
         }

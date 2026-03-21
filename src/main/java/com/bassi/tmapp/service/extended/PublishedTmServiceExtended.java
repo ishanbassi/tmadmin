@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.extended;
 
 import com.bassi.tmapp.domain.PublishedTm;
+import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.PublishedTmQueryService;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
@@ -49,6 +50,7 @@ public class PublishedTmServiceExtended {
     private final PublishedTmQueryService publishedTmQueryService;
     private final TrademarkScrapingService trademarkScrapingService;
     private final TrademarkJournalParserService journalParserService;
+    private final TrademarkRepository trademarkRepository;
 
     @Value("${file-upload-base-path}")
     private String baseUploadDirectory;
@@ -64,7 +66,8 @@ public class PublishedTmServiceExtended {
         EntityManager em,
         PublishedTmQueryService publishedTmQueryService,
         TrademarkScrapingService trademarkScrapingService,
-        TrademarkJournalParserService journalParserService
+        TrademarkJournalParserService journalParserService,
+        TrademarkRepository trademarkRepository
     ) {
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
         this.publishedTmMapper = publishedTmMapper;
@@ -74,6 +77,7 @@ public class PublishedTmServiceExtended {
         this.publishedTmQueryService = publishedTmQueryService;
         this.trademarkScrapingService = trademarkScrapingService;
         this.journalParserService = journalParserService;
+        this.trademarkRepository = trademarkRepository;
     }
 
     /**
@@ -172,6 +176,20 @@ public class PublishedTmServiceExtended {
 
     public void readPdfFileV2(String journalNo) {
         journalParserService.readPdfFilesFromFileSystem(journalNo);
+    }
+
+    @Async
+    public void downloadLatestPdfAndreadPdfFileV2() throws IOException {
+        Integer journalNo = trademarkScrapingService.downloadLatestPdf();
+        if (journalNo == null) {
+            throw new InternalServerAlertException("Process is aborted because journal No is null");
+        }
+        Long count = trademarkRepository.countByJournalNo(journalNo);
+        if (count > 100) {
+            log.warn("{} Trademarks already exists for the journal No: {}.Skipping the process", count, journalNo);
+            return;
+        }
+        readPdfFileV2(journalNo.toString());
     }
 
     public void readPdfFileWithinRangeV2(Integer start, Integer end) {
