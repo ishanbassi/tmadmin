@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfPage;
 import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfCanvasProcessor;
 import com.itextpdf.kernel.pdf.canvas.parser.PdfTextExtractor;
@@ -173,8 +174,6 @@ public class TrademarkJournalParserService {
                     words = words.replaceAll("[\\u00A0\\u2007\\u202F]", " "); // replaces non-breaking spaces
                     words = words.trim(); // removes leading/trailing space
 
-                    log.info(words);
-
                     Pattern pattern = Pattern.compile("^\\s*(\\d{6})\\s+(.+)$");
                     Matcher matcher = pattern.matcher(words);
 
@@ -234,81 +233,74 @@ public class TrademarkJournalParserService {
         log.info("Going to read pdf file: {}", pdfFilePath);
         List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
 
-        PdfDocument pdfDoc;
+        try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(pdfFilePath))) {
+            for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
+                try {
+                    // check if international tm begins
+                    PdfPage page = pdfDoc.getPage(i);
+                    String pageContent = PdfTextExtractor.getTextFromPage(page);
+                    if (pageContent.contains("International Registration designating India")) {
+                        return publishedTrademarks;
+                    }
+                    currentPublishedTmDto = new PublishedTmDTO();
+                    currentPublishedTmDto.setSource(TrademarkSource.JOURNAL_PUBLICATION);
+                    currentPublishedTmDto.setPageNo(i);
 
-        try {
-            pdfDoc = new PdfDocument(new PdfReader(pdfFilePath));
+                    CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
+                    PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
+                    processor.processPageContent(page);
+
+                    //extract text
+                    List<LineInfo> lines = strategy.getLines();
+                    extractPublishedTrademark(lines);
+
+                    // extract images
+                    PdfImage pdfImage = strategy.getImage();
+                    if (pdfImage != null) {
+                        String path = saveToFileSystem(pdfImage);
+                        currentPublishedTmDto.setImgUrl(path);
+                    }
+
+                    if (isInfoMissing(currentPublishedTmDto)) {
+                        if (currentPublishedTmDto != null && currentPublishedTmDto.getImgUrl() != null) {
+                            deleteTmImg(currentPublishedTmDto.getImgUrl());
+                        }
+                        if (currentPublishedTmDto != null) {
+                            currentPublishedTmDto.setFilePath(pdfFilePath);
+                        }
+                        continue;
+                    }
+
+                    // if both image and trademark	 is present, remove the trademark
+                    if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
+                        currentPublishedTmDto.setName(null);
+                    }
+
+                    // check if trademark is multi class
+                    if (
+                        currentPublishedTmDto.getTmClass() != null &&
+                        currentPublishedTmDto.getTmClass() == 99 &&
+                        currentPublishedTmDto.getDetails() != null
+                    ) {
+                        List<PublishedTmDTO> class99Trademarks = processTmClass99(currentPublishedTmDto)
+                            .stream()
+                            .filter(x -> !isInfoMissing(x))
+                            .toList();
+                        publishedTrademarks.addAll(class99Trademarks);
+                    }
+                    publishedTrademarks.add(currentPublishedTmDto);
+                } catch (Exception e) {
+                    log.error(
+                        "Unable to process pdf file, page No : {} , Trademark Details: {}, Reason: {}",
+                        i,
+                        currentPublishedTmDto,
+                        e.getMessage()
+                    );
+                }
+            }
         } catch (IOException e) {
             throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
         }
-        for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
-            try {
-                log.info("Going to process page number {}", i);
-                currentPublishedTmDto = new PublishedTmDTO();
-                currentPublishedTmDto.setSource(TrademarkSource.JOURNAL_PUBLICATION);
-                currentPublishedTmDto.setPageNo(i);
-
-                CustomTextExtractionStrategy strategy = new CustomTextExtractionStrategy();
-                PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
-                processor.processPageContent(pdfDoc.getPage(i));
-
-                // check if international tm begins
-                String pageContent = PdfTextExtractor.getTextFromPage(pdfDoc.getPage(i));
-                if (pageContent.contains("International Registration designating India")) {
-                    pdfDoc.close();
-                    return publishedTrademarks;
-                }
-
-                //extract text
-                List<LineInfo> lines = strategy.getLines();
-                extractPublishedTrademark(lines);
-
-                // extract images
-                PdfImage pdfImage = strategy.getImage();
-                if (pdfImage != null) {
-                    String path = saveToFileSystem(pdfImage);
-                    currentPublishedTmDto.setImgUrl(path);
-                }
-
-                if (isInfoMissing(currentPublishedTmDto)) {
-                    if (currentPublishedTmDto != null && currentPublishedTmDto.getImgUrl() != null) {
-                        deleteTmImg(currentPublishedTmDto.getImgUrl());
-                    }
-                    if (currentPublishedTmDto != null) {
-                        currentPublishedTmDto.setFilePath(pdfFilePath);
-                    }
-                    continue;
-                }
-
-                // if both image and trademark	 is present, remove the trademark
-                if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
-                    currentPublishedTmDto.setName(null);
-                }
-
-                // check if trademark is multi class
-                if (
-                    currentPublishedTmDto.getTmClass() != null &&
-                    currentPublishedTmDto.getTmClass() == 99 &&
-                    currentPublishedTmDto.getDetails() != null
-                ) {
-                    List<PublishedTmDTO> class99Trademarks = processTmClass99(currentPublishedTmDto)
-                        .stream()
-                        .filter(x -> !isInfoMissing(x))
-                        .toList();
-                    publishedTrademarks.addAll(class99Trademarks);
-                }
-                publishedTrademarks.add(currentPublishedTmDto);
-            } catch (Exception e) {
-                log.error(
-                    "Unable to process pdf file, page No : {} , Trademark Details: {}, Reason: {}",
-                    i,
-                    currentPublishedTmDto,
-                    e.getMessage()
-                );
-            }
-        }
-
-        pdfDoc.close();
 
         return publishedTrademarks;
     }
@@ -411,7 +403,6 @@ public class TrademarkJournalParserService {
                 currentPublishedTmDto.setAgentName(agentName);
             }
 
-            log.info("Going to extract agent address");
             Optional<LineInfo> trademarkUsageLine = lines
                 .stream()
                 .filter(line -> {
@@ -432,7 +423,6 @@ public class TrademarkJournalParserService {
                 }
             }
 
-            log.info("Going to save the index so it can be used for proprietor name and address");
             currentPublishedTmDto.setTextIndexes(PublishedTmDTO.AGENT_NAME_ADDRESS, agentAddressLineIdx);
         }
     }
@@ -474,7 +464,6 @@ public class TrademarkJournalParserService {
                         currentPublishedTmDto.setApplicationNo(applicationNo);
                         currentPublishedTmDto.setApplicationDate(applicationDate);
 
-                        log.info("Going to save the index so it can be used for proprietor name and address");
                         currentPublishedTmDto.setTextIndexes(PublishedTmDTO.APPLICATION_NUMBER_DATE, lines.indexOf(line));
                         break;
                     }
@@ -494,7 +483,6 @@ public class TrademarkJournalParserService {
                 String words = line.getAllWordsFromSameLineWithInfo();
                 if (words != null) {
                     if (words.contains("mark u/s 71(1)") || words.contains("\0")) {
-                        log.info("Skipping the line because it is not name of the trademark");
                         continue;
                     }
                     String trademark = currentPublishedTmDto.getName();
@@ -510,7 +498,8 @@ public class TrademarkJournalParserService {
 
     private void extractJournalNoAndTrademarkClass(List<LineInfo> lines) {
         if (currentPublishedTmDto.getJournalNo() == null && currentPublishedTmDto.getTmClass() == null) {
-            for (LineInfo line : lines) {
+            for (int idx = 0; idx < lines.size(); idx++) {
+                LineInfo line = lines.get(idx);
                 String words = line.getAllWordsFromSameLineWithInfo();
                 if (words != null) {
                     Matcher matcher = tmClassPattern.matcher(words);
@@ -520,7 +509,7 @@ public class TrademarkJournalParserService {
                         int tmClass = Integer.parseInt(matcher.group(2));
                         currentPublishedTmDto.setJournalNo(journalNo);
                         currentPublishedTmDto.setTmClass(tmClass);
-                        currentPublishedTmDto.setTextIndexes(PublishedTmDTO.TM_CLASS, lines.indexOf(line));
+                        currentPublishedTmDto.setTextIndexes(PublishedTmDTO.TM_CLASS, idx);
                         break;
                     }
                 }
@@ -534,10 +523,8 @@ public class TrademarkJournalParserService {
             currentPublishedTmDto.getTmClass() == null ||
             currentPublishedTmDto.getJournalNo() == null
         ) {
-            log.info("Skipping because information is missing");
             return null;
         }
-        log.info("Going to save image : in the file system");
         byte[] content = pdfImage.getImageContent();
         String extensionType = pdfImage.getImageType();
         String applicationNumber = currentPublishedTmDto.getApplicationNo().toString();
@@ -546,7 +533,6 @@ public class TrademarkJournalParserService {
         String resourcesDir = Paths.get(baseUploadDirectory).toAbsolutePath().toString();
         String filePath = journalNo + "-" + tmClass + "-" + applicationNumber + "." + extensionType;
         Path newFile = Paths.get(resourcesDir, filePath);
-        log.info("Going to write image in the file system at: {}", newFile);
         try {
             Files.createDirectories(newFile.getParent());
             Files.write(newFile, content);
@@ -557,7 +543,6 @@ public class TrademarkJournalParserService {
     }
 
     private void deleteTmImg(String imgUrl) {
-        log.info("Going to delete tm image");
         String resourcesDir = Paths.get(baseUploadDirectory).toAbsolutePath().toString();
         Path imgPath = Paths.get(String.join("/", resourcesDir, imgUrl));
         try {
@@ -605,7 +590,6 @@ public class TrademarkJournalParserService {
     }
 
     private List<PublishedTmDTO> processTmClass99(PublishedTmDTO tm) {
-        log.info("Going to process multi class tm : {}", tm);
         List<String> tmClasses = new ArrayList<>();
         List<PublishedTmDTO> class99Trademarks = new ArrayList<>();
 
@@ -662,7 +646,6 @@ public class TrademarkJournalParserService {
                 !(pageContent.contains(renewalApplicationsExpectedPageContent) ||
                     pageContent.contains(registeredApplicationsExpectedPageContent))
             ) {
-                log.info("Skipping the page because page does not have the expected content");
                 continue;
             }
 
@@ -670,7 +653,6 @@ public class TrademarkJournalParserService {
             for (LineInfo line : lines) {
                 String words = line.getAllWordsFromSameLineWithInfo();
                 if (words == null) {
-                    log.info("Skipping the line because there are no words");
                     continue;
                 }
                 if (pageContent.contains(renewalApplicationsExpectedPageContent)) {
@@ -706,7 +688,6 @@ public class TrademarkJournalParserService {
                     // update the status to registered
                     for (String applicationNumber : applicationNumbers) {
                         Long applicationNo = Long.valueOf(applicationNumber);
-                        log.info("Going to fetch trademarks with application no: {}", applicationNo);
                         List<PublishedTm> publishedTms = publishedTmRepositoryExtended.findTrademarksByApplicationNo(applicationNo);
                         for (PublishedTm publishedTm : publishedTms) {
                             publishedTm.setTrademarkStatus("Registered");
@@ -728,6 +709,14 @@ public class TrademarkJournalParserService {
             if (baseDirectory.exists() && baseDirectory.isDirectory()) {
                 log.info("Processing directory: {}", baseDirectory.getAbsolutePath());
                 processDirectory(baseDirectory);
+
+                // ✅ Give GC a chance every 10 journals
+                if ((i - start) % 10 == 0) {
+                    System.gc(); // hint to JVM
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {} // breathing room
+                }
             } else {
                 log.warn("Directory not found: {}", baseDirectory.getAbsolutePath());
             }
