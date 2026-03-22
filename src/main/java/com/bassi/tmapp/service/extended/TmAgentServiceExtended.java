@@ -65,10 +65,8 @@ public class TmAgentServiceExtended {
             log.info("Skipping creation of new agent because agent name is missing");
             return;
         }
-        log.info("Going to process published trademarks to extract agents and trademarks");
         String agentName = Objects.requireNonNullElse(tm.getAgentName(), Constants.AGENT_MISSING);
         List<TmAgent> agents = tmAgentRepositoryExtended.findByFullName(agentName);
-        log.info("Found {} agents", agents.size());
         if (agents.isEmpty()) {
             TmAgent newAgent = new TmAgent();
             newAgent.setFullName(agentName);

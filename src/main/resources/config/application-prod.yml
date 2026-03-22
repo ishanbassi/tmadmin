@@ -22,6 +22,7 @@ logging:
     javax.management.remote.rmi: ERROR
     org.openqa.selenium: ERROR
     jdk.internal.httpclient: ERROR
+    com.itextpdf: WARN
 
 management:
   prometheus:
