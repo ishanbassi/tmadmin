@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -520,7 +522,8 @@ public class TrademarkScrapingService {
         try {
             fillAndSubmitOtp(driver, wait, phoneNumber, journalNo);
         } finally {
-            takeScreenshot(driver, "error");
+            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+            takeScreenshot(driver, timestamp);
             driver.quit();
             TrademarkScheduler.setRunning(false);
         }
