@@ -19,7 +19,7 @@ public class HumanTyping {
 
             // Occasionally pause mid-word (simulates thinking)
             if (random.nextInt(10) == 0) {
-                HumanDelay.between(100, 200);
+                HumanDelay.between(200, 500);
             }
         }
     }
@@ -33,7 +33,7 @@ public class HumanTyping {
         element.sendKeys(Keys.CONTROL + "a");
         HumanDelay.keystroke();
         element.sendKeys(Keys.DELETE);
-        HumanDelay.between(100, 150);
+        HumanDelay.between(100, 300);
 
         type(element, text);
     }

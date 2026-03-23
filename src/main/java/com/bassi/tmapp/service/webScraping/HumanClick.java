@@ -22,7 +22,7 @@ public class HumanClick {
 
         actions
             .moveToElement(element)
-            .pause(Duration.ofMillis(100 + new Random().nextInt(200))) // hover briefly
+            .pause(Duration.ofMillis(300 + new Random().nextInt(400))) // hover briefly
             .click()
             .perform();
 
