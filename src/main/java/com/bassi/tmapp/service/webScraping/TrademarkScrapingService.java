@@ -688,7 +688,7 @@ public class TrademarkScrapingService {
         // Server: block until OTP is POSTed to /api/otp/submit
         log.info("Server mode: waiting for OTP via REST API for {}", phoneNumber);
         try {
-            String otp = otpWaitingService.waitForOtp(phoneNumber, 120); // 2 min timeout
+            String otp = otpWaitingService.waitForOtp(phoneNumber, 300); // 5 min timeout
 
             HumanTyping.clearAndType(otpInput, otp);
 

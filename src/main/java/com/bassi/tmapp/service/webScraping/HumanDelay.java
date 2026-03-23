@@ -18,12 +18,12 @@ public class HumanDelay {
 
     // Pause before doing next action (1s - 3s)
     public static void betweenActions() {
-        sleep(1000 + random.nextInt(2000));
+        sleep(1000 + random.nextInt(1000));
     }
 
     // Longer pause like reading something (2s - 5s)
     public static void reading() {
-        sleep(2000 + random.nextInt(3000));
+        sleep(1000 + random.nextInt(1000));
     }
 
     // Custom range pause

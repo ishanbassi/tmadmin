@@ -357,7 +357,7 @@ public class TrademarkResource {
 
     @PostMapping("/automate/scrape/{journalNo}")
     public String executeTrademarkScrapingAutomation(@PathVariable("journalNo") Integer journalNo) {
-        trademarkScrapingService.fillAndSubmitOtp(journalNo, "6239771006");
+        trademarkScrapingService.fillAndSubmitOtp(journalNo, "9878987497");
         return "Scraping Started";
     }
 

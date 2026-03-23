@@ -18,7 +18,7 @@ logging:
     ROOT: INFO
     tech.jhipster: INFO
     org.hibernate.SQL: INFO
-    com.bassi.tmapp: DEBUG
+    com.bassi.tmapp: INFO
     javax.management.remote.rmi: ERROR
     org.openqa.selenium: ERROR
     jdk.internal.httpclient: ERROR
