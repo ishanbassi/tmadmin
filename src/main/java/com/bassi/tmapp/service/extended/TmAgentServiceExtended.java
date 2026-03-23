@@ -62,7 +62,7 @@ public class TmAgentServiceExtended {
 
     public void saveTmAgentsFromTrademarks(Trademark tm) {
         if (tm.getAgentName() == null || tm.getAgentName().isEmpty()) {
-            log.info("Skipping creation of new agent because agent name is missing");
+            log.debug("Skipping creation of new agent because agent name is missing");
             return;
         }
         String agentName = Objects.requireNonNullElse(tm.getAgentName(), Constants.AGENT_MISSING);

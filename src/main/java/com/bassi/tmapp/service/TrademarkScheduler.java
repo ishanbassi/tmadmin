@@ -26,7 +26,7 @@ public class TrademarkScheduler {
     @Autowired
     private PublishedTmServiceExtended publishedTmServiceExtended;
 
-    @Scheduled(cron = "0 0 10-21 * * *")
+    @Scheduled(cron = "0 0 10-21 * * *", zone = "Asia/Kolkata")
     public void scheduledRun() {
         if (isAutomationRunning.get()) {
             log.warn("Previous session still running, skipping this trigger.");
@@ -38,7 +38,7 @@ public class TrademarkScheduler {
         trademarkScrapingService.executeTrademarkAutomationForUpdates("6239771006");
     }
 
-    @Scheduled(cron = "0 0 12 * * *")
+    @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")
     public void downloadLatestJournal() throws IOException {
         log.info("Journal pdf downloader Automation Scheduler triggered at: {}", LocalDateTime.now());
         publishedTmServiceExtended.downloadLatestPdfAndreadPdfFileV2();
