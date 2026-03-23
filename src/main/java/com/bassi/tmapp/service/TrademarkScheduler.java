@@ -26,7 +26,7 @@ public class TrademarkScheduler {
     @Autowired
     private PublishedTmServiceExtended publishedTmServiceExtended;
 
-    @Scheduled(cron = "0 0 10-21 * * *", zone = "Asia/Kolkata")
+    @Scheduled(cron = "0 0 9-23 * * *", zone = "Asia/Kolkata")
     public void scheduledRun() {
         if (isAutomationRunning.get()) {
             log.warn("Previous session still running, skipping this trigger.");
