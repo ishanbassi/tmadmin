@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class WordSanitizationService {
 
-    private List<String> stopWords = StopWords.STOP_WORDS_LIST;
     POSModel posModel;
 
     public WordSanitizationService() {}
@@ -32,9 +31,8 @@ public class WordSanitizationService {
 
     public String sanitizeWord(String word) {
         word = removeSpecialCharacters(word);
-        word = removeStopWords(word);
 
-        return word;
+        return word.toLowerCase();
     }
 
     private void extractProperNouns(String name) {
@@ -60,13 +58,6 @@ public class WordSanitizationService {
 
         // Output the result
         System.out.println("Proper Nouns: " + properNouns);
-    }
-
-    private String removeStopWords(String word) {
-        ArrayList<String> allWords = Stream.of(word.toLowerCase().split(" ")).collect(Collectors.toCollection(ArrayList<String>::new));
-
-        allWords.removeAll(stopWords);
-        return allWords.stream().collect(Collectors.joining(" "));
     }
 
     private String removeSpecialCharacters(String word) {

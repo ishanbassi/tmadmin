@@ -1,6 +1,7 @@
 package com.bassi.tmapp.service.constants;
 
 import java.util.List;
+import java.util.Set;
 
 public class StopWords {
 
@@ -84,7 +85,6 @@ public class StopWords {
         "research",
         "moment",
         "force",
-        "education",
         "technologies",
         "inc.",
         "labs",
@@ -182,7 +182,6 @@ public class StopWords {
         "medical",
         "sciences",
         "scientific",
-        "research",
         "development",
         "r&d",
         "energy",
@@ -270,7 +269,6 @@ public class StopWords {
         "custom",
         "bespoke",
         "precision",
-        "advanced",
         "smart",
         "intelligent",
         "dynamic",
@@ -391,7 +389,6 @@ public class StopWords {
         "scientific",
         "technical",
         "specialized",
-        "expert",
         "professional",
         "skilled",
         "talented",
@@ -409,6 +406,32 @@ public class StopWords {
         "best",
         "finest",
         "world-class",
-        "the"
+        "the",
+        "furniture",
+        "toys",
+        "jewellers",
+        "clothing",
+        "namkeen",
+        "care",
+        "seeds",
+        "sports",
+        "associates",
+        "associate",
+        "hospital",
+        "construction",
+        "photography",
+        "eye",
+        "drop",
+        "medicine",
+        "tours",
+        "travels",
+        "and",
+        "life",
+        "age",
+        "logo",
+        "steels",
+        "pipes",
+        "center",
+        "centre"
     );
 }

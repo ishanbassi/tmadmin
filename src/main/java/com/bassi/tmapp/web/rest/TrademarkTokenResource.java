@@ -167,4 +167,22 @@ public class TrademarkTokenResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @DeleteMapping("/delete-by-journal/{journalNo}")
+    public ResponseEntity<Void> deleteTrademarkTokenByJournal(@PathVariable("journalNo") Integer journalNo) {
+        LOG.debug("REST request to delete Trademark Token by Journal No : {}", journalNo);
+        trademarkTokenService.deleteByTrademarkJournal(journalNo);
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, journalNo.toString()))
+            .build();
+    }
+
+    @PostMapping("/create-by-journal/{journalNo}")
+    public ResponseEntity<Void> createTrademarkTokenByJournal(@PathVariable("journalNo") Integer journalNo) {
+        LOG.debug("REST request to create Trademark Token by Journal No : {}", journalNo);
+        trademarkTokenService.createByTrademarkJournal(journalNo);
+        return ResponseEntity.noContent()
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, journalNo.toString()))
+            .build();
+    }
 }

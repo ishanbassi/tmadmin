@@ -139,8 +139,22 @@ public interface TrademarkRepository
     @Query(value = "SELECT tm FROM Trademark tm WHERE tm.name IS NULL AND tm.journalNo = ?1")
     List<Trademark> findTrademarksWhereNameIsNull(Integer journalNo);
 
+    @Query(value = "SELECT tm FROM Trademark tm WHERE tm.journalNo = ?1")
+    List<Trademark> findTrademarksByJournalNo(Integer journalNo);
+
     @Query(value = "SELECT distinct tm.journalNo FROM Trademark tm where tm.name is null order by tm.journalNo desc limit 1")
     Integer findLatestJournalNoWithMissingData();
 
     long countByJournalNo(int journalNo);
+
+    @Query(
+        """
+            SELECT t
+            FROM Trademark t
+            WHERE t.journalNo = :journalNo
+              AND t.id > :lastId
+            ORDER BY t.id ASC
+        """
+    )
+    List<Trademark> findByJournalNoAndIdGreaterThan(@Param("journalNo") Integer journalNo, @Param("lastId") Long lastId, Pageable pageable);
 }

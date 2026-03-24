@@ -31,6 +31,14 @@ management:
         enabled: false
 
 spring:
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 500
+          batch_versioned_data: true
+        order_inserts: true
+        order_updates: tru
   devtools:
     restart:
       enabled: false
@@ -44,6 +52,8 @@ spring:
     hikari:
       poolName: Hikari
       auto-commit: false
+      maximum-pool-size: 10
+      minimum-idle: 2
   # Replace by 'prod, faker' to add the faker context and have sample data loaded in production
   liquibase:
     contexts: prod

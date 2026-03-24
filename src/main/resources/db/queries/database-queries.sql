@@ -98,3 +98,14 @@ CREATE INDEX idx_tm_normalized_name_trgm ON trademark USING GIN(normalized_name 
 ALTER TABLE trademark ADD COLUMN normalized_name VARCHAR(255);
 ALTER TABLE trademark ADD COLUMN tm_agent_id BIGINT;
 ALTER TABLE trademark ADD CONSTRAINT fk_tm_agent FOREIGN KEY (tm_agent_id) REFERENCES tm_agent(id);
+
+
+-- drop these indexes on trademark_token & token_phonetic because of no usage of them
+-- trademark_token: remove 2 dead indexes
+DROP INDEX idx_tt_trademark_type;  -- only 8 uses, idx_token_tm covers trademark_id queries
+DROP INDEX idx_token_type;         -- 0 uses, completely dead
+
+-- token_phonetic: remove 3 dead indexes  
+DROP INDEX idx_phonetic_code;      -- 0 uses
+DROP INDEX idx_tp_phonetic_code;   -- 0 uses, exact duplicate
+DROP INDEX idx_tp_phonetic_token;  -- 0 uses

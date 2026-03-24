@@ -50,6 +50,13 @@ public class TrademarkQueryService extends QueryService<Trademark> {
         return trademarkRepository.fetchBagRelationships(trademarkRepository.findAll(specification, page)).map(trademarkMapper::toDto);
     }
 
+    @Transactional(readOnly = true)
+    public Page<Trademark> findTrademarkByCriteria(TrademarkCriteria criteria, Pageable page) {
+        LOG.debug("find by criteria : {}, page: {}", criteria, page);
+        final Specification<Trademark> specification = createSpecification(criteria);
+        return trademarkRepository.fetchBagRelationships(trademarkRepository.findAll(specification, page));
+    }
+
     /**
      * Return the number of matching entities in the database.
      * @param criteria The object which holds all the filters, which the entities should match.

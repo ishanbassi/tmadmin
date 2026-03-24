@@ -137,6 +137,19 @@ public class TrademarkService {
      */
     public TrademarkDTO update(TrademarkDTO trademarkDTO) {
         LOG.debug("Request to update Trademark : {}", trademarkDTO);
+        trademarkRepository
+            .findById(trademarkDTO.getId())
+            .map(existingTrademark -> {
+                String oldName = existingTrademark.getName();
+                trademarkMapper.partialUpdate(existingTrademark, trademarkDTO);
+                if (!Objects.equals(oldName, trademarkDTO.getName())) {
+                    if (trademarkDTO.getName() != null) {
+                        trademarkDTO.setNormalizedName(wordSanitizationService.sanitizeWord(trademarkDTO.getName()));
+                    }
+                    trademarkTokenService.recreateTokens(trademarkMapper.toEntity(trademarkDTO));
+                }
+                return existingTrademark;
+            });
         Trademark trademark = trademarkMapper.toEntity(trademarkDTO);
         trademark = trademarkRepository.save(trademark);
         return trademarkMapper.toDto(trademark);
