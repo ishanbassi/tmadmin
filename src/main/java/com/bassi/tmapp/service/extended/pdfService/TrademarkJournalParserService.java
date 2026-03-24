@@ -299,7 +299,7 @@ public class TrademarkJournalParserService {
                 }
             }
         } catch (Exception e) {
-            throw new InternalServerAlertException("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
+            log.error("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
         }
 
         return publishedTrademarks;
