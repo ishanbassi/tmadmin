@@ -23,6 +23,7 @@ logging:
     org.openqa.selenium: ERROR
     jdk.internal.httpclient: ERROR
     com.itextpdf: WARN
+    com.itextpdf.kernel.font.PdfType0Font: ERROR
 
 spring:
   jpa:

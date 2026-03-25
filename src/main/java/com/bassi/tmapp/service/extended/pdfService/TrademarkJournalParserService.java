@@ -290,12 +290,7 @@ public class TrademarkJournalParserService {
                     }
                     publishedTrademarks.add(currentPublishedTmDto);
                 } catch (Exception e) {
-                    log.error(
-                        "Unable to process pdf file, page No : {} , Trademark Details: {}, Reason: {}",
-                        i,
-                        currentPublishedTmDto,
-                        e.getMessage()
-                    );
+                    log.error("Unable to page No : {} , Trademark Details: {}, Reason: {}", i, currentPublishedTmDto, e.getMessage());
                 }
             }
         } catch (Exception e) {
