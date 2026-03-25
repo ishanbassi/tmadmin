@@ -250,7 +250,12 @@ public class TrademarkService {
 
     public void saveTrademarksAndGenerateTokens(List<Trademark> journalTrademarks) {
         List<Trademark> trademarks = trademarkRepository.saveAll(journalTrademarks);
+
         trademarkTokenService.saveTokensAndGeneratePhoneticCode(trademarks);
+    }
+
+    public void saveAllTrademarksAndGenerateTokensInBatch(List<Trademark> trademarks) {
+        trademarkTokenService.saveTokensAndGeneratePhoneticCodeInBatch(trademarks);
     }
 
     public void saveTrademarksAndGenerateTokens(Trademark tm, TrademarkSource trademarkSource) {

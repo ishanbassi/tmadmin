@@ -432,6 +432,15 @@ public class StopWords {
         "steels",
         "pipes",
         "center",
-        "centre"
+        "centre",
+        "an",
+        "&",
+        "gym",
+        "school",
+        "insitute",
+        "institution",
+        "academy",
+        "salon",
+        "private"
     );
 }

@@ -2,11 +2,14 @@ package com.bassi.tmapp.service;
 
 import com.bassi.tmapp.domain.TrademarkTokenFrequency;
 import com.bassi.tmapp.repository.TrademarkTokenFrequencyRepository;
+import com.bassi.tmapp.service.constants.StopWords;
 import com.bassi.tmapp.service.dto.TrademarkTokenFrequencyDTO;
 import com.bassi.tmapp.service.mapper.TrademarkTokenFrequencyMapper;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -115,5 +118,20 @@ public class TrademarkTokenFrequencyService {
     public void delete(Long id) {
         LOG.debug("Request to delete TrademarkTokenFrequency : {}", id);
         trademarkTokenFrequencyRepository.deleteById(id);
+    }
+
+    public void saveStopWordsInFrequencyTable() {
+        Set<TrademarkTokenFrequency> trademarkTokenFrequencies = new HashSet<>();
+        List<String> uniqueStopWords = StopWords.STOP_WORDS_LIST.stream()
+            .map(String::toLowerCase) // normalize case
+            .distinct() // ✅ removes duplicates
+            .collect(Collectors.toList());
+
+        for (String word : uniqueStopWords) {
+            TrademarkTokenFrequency token = new TrademarkTokenFrequency();
+            token.setWord(word);
+            trademarkTokenFrequencies.add(token);
+        }
+        trademarkTokenFrequencyRepository.saveAll(trademarkTokenFrequencies);
     }
 }

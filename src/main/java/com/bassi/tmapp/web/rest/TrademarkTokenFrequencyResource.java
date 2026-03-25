@@ -173,4 +173,10 @@ public class TrademarkTokenFrequencyResource {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
+
+    @PostMapping("/stop-words")
+    public ResponseEntity<Void> saveStopWordsInFrequencyTable() {
+        trademarkTokenFrequencyService.saveStopWordsInFrequencyTable();
+        return ResponseEntity.noContent().build();
+    }
 }

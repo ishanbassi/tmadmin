@@ -1,19 +1,15 @@
 package com.bassi.tmapp.service.extended.pdfService;
 
-import com.bassi.tmapp.domain.Lead;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
-import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.LeadService;
 import com.bassi.tmapp.service.TrademarkClassService;
 import com.bassi.tmapp.service.TrademarkService;
-import com.bassi.tmapp.service.dto.LeadDTO;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkClassDTO;
-import com.bassi.tmapp.service.extended.LeadServiceExtended;
 import com.bassi.tmapp.service.extended.PhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
@@ -71,16 +67,9 @@ public class TrademarkJournalParserService {
     );
     private static final Pattern multiTmClassPattern = Pattern.compile("Cl.(\\d{1,2});", Pattern.CASE_INSENSITIVE);
 
-    private PublishedTmDTO currentPublishedTmDto;
     private PhoneticsServiceExtended phoneticsServiceExtended;
     private PublishedTmRepositoryExtended publishedTmRepositoryExtended;
-    private PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
-    private WordSanitizationService wordSanitizationService;
-    private TmAgentServiceExtended agentServiceExtended;
     private TrademarkClassService trademarkClassService;
-    private final TrademarkClassMapper trademarkClassMapper;
-    private CompanyDataProcessor companyDataProcessor;
-    private LeadService leadService;
     private TrademarkService trademarkService;
 
     @Autowired
@@ -96,33 +85,18 @@ public class TrademarkJournalParserService {
     @Value("${errors-file-base-path}")
     private String baseErrorsDirectory;
 
-    private PublishedTmMapper publishedTmMapper;
     private JournalTrademarkMapper journalTrademarkMapper;
 
     public TrademarkJournalParserService(
         PhoneticsServiceExtended phoneticsServiceExtended,
         PublishedTmRepositoryExtended publishedTmRepositoryExtended,
-        PublishedTmMapper publishedTmMapper,
-        PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
-        WordSanitizationService wordSanitizationService,
-        TmAgentServiceExtended agentServiceExtended,
         TrademarkClassService trademarkClassService,
-        TrademarkClassMapper trademarkClassMapper,
-        CompanyDataProcessor companyDataProcessor,
-        LeadService leadService,
         JournalTrademarkMapper journalTrademarkMapper,
         TrademarkService trademarkService
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
-        this.publishedTmMapper = publishedTmMapper;
-        this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
-        this.wordSanitizationService = wordSanitizationService;
-        this.agentServiceExtended = agentServiceExtended;
         this.trademarkClassService = trademarkClassService;
-        this.trademarkClassMapper = trademarkClassMapper;
-        this.companyDataProcessor = companyDataProcessor;
-        this.leadService = leadService;
         this.journalTrademarkMapper = journalTrademarkMapper;
         this.trademarkService = trademarkService;
     }
@@ -220,16 +194,16 @@ public class TrademarkJournalParserService {
     public void readPdfAndSaveDetails(String path) {
         List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
         List<Trademark> trademarks = journalTrademarkMapper.toEntity(publishedTrademarksDto);
-        for (Trademark tm : trademarks) {
-            try {
-                trademarkService.saveTrademarksAndGenerateTokens(tm, TrademarkSource.JOURNAL_PUBLICATION);
-            } catch (Exception e) {
-                log.error("Failed to save trademark, Reason: {}", e.getLocalizedMessage());
-            }
+
+        try {
+            trademarkService.saveAllTrademarksAndGenerateTokensInBatch(trademarks);
+        } catch (Exception e) {
+            log.error("Failed to save trademark for the file : {}, Reason: {}", path, e.getLocalizedMessage());
         }
     }
 
     public List<PublishedTmDTO> readPdf(String pdfFilePath) {
+        PublishedTmDTO currentPublishedTmDto = new PublishedTmDTO();
         log.info("Going to read pdf file: {}", pdfFilePath);
         List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
 
@@ -252,12 +226,12 @@ public class TrademarkJournalParserService {
 
                     //extract text
                     List<LineInfo> lines = strategy.getLines();
-                    extractPublishedTrademark(lines);
+                    extractPublishedTrademark(lines, currentPublishedTmDto);
 
                     // extract images
                     PdfImage pdfImage = strategy.getImage();
                     if (pdfImage != null) {
-                        String path = saveToFileSystem(pdfImage);
+                        String path = saveToFileSystem(pdfImage, currentPublishedTmDto);
                         currentPublishedTmDto.setImgUrl(path);
                     }
 
@@ -294,29 +268,29 @@ public class TrademarkJournalParserService {
                 }
             }
         } catch (Exception e) {
-            log.error("Unable to read pdf file, " + pdfFilePath + " Reason: " + e.getLocalizedMessage());
+            log.error("Unable to read pdf file,{}, Reason: {} ", pdfFilePath, e.getLocalizedMessage());
         }
 
         return publishedTrademarks;
     }
 
-    public void extractPublishedTrademark(List<LineInfo> lines) {
-        extractJournalNoAndTrademarkClass(lines);
-        extractApplicationNumberAndDate(lines);
-        extractAgentNameAndAddress(lines);
-        extractUsage(lines);
-        extractTrademark(lines);
-        extractProprietorNameAndAddress(lines);
-        extractHeadOffice(lines);
-        extractDetails(lines);
-        extractAssociatedTm(lines);
+    public void extractPublishedTrademark(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
+        extractJournalNoAndTrademarkClass(lines, currentPublishedTmDto);
+        extractApplicationNumberAndDate(lines, currentPublishedTmDto);
+        extractAgentNameAndAddress(lines, currentPublishedTmDto);
+        extractUsage(lines, currentPublishedTmDto);
+        extractTrademark(lines, currentPublishedTmDto);
+        extractProprietorNameAndAddress(lines, currentPublishedTmDto);
+        extractHeadOffice(lines, currentPublishedTmDto);
+        extractDetails(lines, currentPublishedTmDto);
+        extractAssociatedTm(lines, currentPublishedTmDto);
 
         if (currentPublishedTmDto.getName() != null) {
             generatePhonetics(currentPublishedTmDto.getName());
         }
     }
 
-    private void extractHeadOffice(List<LineInfo> lines) {
+    private void extractHeadOffice(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         if (currentPublishedTmDto.getTextIndexMap().containsKey(PublishedTmDTO.TRADEMARK_USAGE)) {
             for (LineInfo line : lines) {
                 String words = line.getAllWordsFromSameLineWithInfo();
@@ -331,7 +305,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractAssociatedTm(List<LineInfo> lines) {
+    private void extractAssociatedTm(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         Optional<LineInfo> associatedTmLine = lines
             .stream()
             .filter(line -> {
@@ -353,7 +327,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractUsage(List<LineInfo> lines) {
+    private void extractUsage(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         if (currentPublishedTmDto.getUsage() == null) {
             for (LineInfo line : lines) {
                 String words = line.getAllWordsFromSameLineWithInfo();
@@ -366,7 +340,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractDetails(List<LineInfo> lines) {
+    private void extractDetails(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         Map<String, Integer> textIdxMap = currentPublishedTmDto.getTextIndexMap();
         if (textIdxMap.containsKey(PublishedTmDTO.HEAD_OFFICE)) {
             int headOfficeIdx = textIdxMap.get(PublishedTmDTO.HEAD_OFFICE);
@@ -382,7 +356,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractAgentNameAndAddress(List<LineInfo> lines) {
+    private void extractAgentNameAndAddress(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         Optional<LineInfo> agentAddressLine = lines
             .stream()
             .filter(line -> {
@@ -422,7 +396,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractProprietorNameAndAddress(List<LineInfo> lines) {
+    private void extractProprietorNameAndAddress(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         Map<String, Integer> textIndexMap = currentPublishedTmDto.getTextIndexMap();
         if (textIndexMap.containsKey(PublishedTmDTO.APPLICATION_NUMBER_DATE)) {
             int applicationNumberDateIdx = textIndexMap.get(PublishedTmDTO.APPLICATION_NUMBER_DATE);
@@ -445,7 +419,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractApplicationNumberAndDate(List<LineInfo> lines) {
+    private void extractApplicationNumberAndDate(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         if (currentPublishedTmDto.getApplicationNo() == null && currentPublishedTmDto.getApplicationDate() == null) {
             for (LineInfo line : lines) {
                 String words = line.getAllWordsFromSameLineWithInfo();
@@ -467,7 +441,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractTrademark(List<LineInfo> lines) {
+    private void extractTrademark(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         Map<String, Integer> textIndexMap = currentPublishedTmDto.getTextIndexMap();
         if (textIndexMap.containsKey(PublishedTmDTO.TM_CLASS) && textIndexMap.containsKey(PublishedTmDTO.APPLICATION_NUMBER_DATE)) {
             List<LineInfo> subLine = lines.subList(
@@ -491,7 +465,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private void extractJournalNoAndTrademarkClass(List<LineInfo> lines) {
+    private void extractJournalNoAndTrademarkClass(List<LineInfo> lines, PublishedTmDTO currentPublishedTmDto) {
         if (currentPublishedTmDto.getJournalNo() == null && currentPublishedTmDto.getTmClass() == null) {
             for (int idx = 0; idx < lines.size(); idx++) {
                 LineInfo line = lines.get(idx);
@@ -512,7 +486,7 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private String saveToFileSystem(PdfImage pdfImage) {
+    private String saveToFileSystem(PdfImage pdfImage, PublishedTmDTO currentPublishedTmDto) {
         if (
             currentPublishedTmDto.getApplicationNo() == null ||
             currentPublishedTmDto.getTmClass() == null ||

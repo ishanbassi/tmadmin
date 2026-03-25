@@ -149,4 +149,16 @@ public class TrademarkTokenFrequency implements Serializable {
             ", modifiedDate='" + getModifiedDate() + "'" +
             "}";
     }
+
+    @PrePersist
+    private void beforeSave() {
+        this.createdDate = ZonedDateTime.now();
+        this.modifiedDate = ZonedDateTime.now();
+        this.frequency = 1;
+    }
+
+    @PreUpdate
+    private void beforeUpdate() {
+        this.modifiedDate = ZonedDateTime.now();
+    }
 }

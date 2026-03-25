@@ -1,7 +1,5 @@
 package com.bassi.tmapp.service;
 
-import com.bassi.tmapp.domain.PublishedTm;
-import com.bassi.tmapp.domain.PublishedTmPhonetics;
 import com.bassi.tmapp.domain.TokenPhonetic;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkToken;
@@ -10,15 +8,12 @@ import com.bassi.tmapp.repository.TokenPhoneticRepository;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.TrademarkTokenRepository;
 import com.bassi.tmapp.service.constants.StopWords;
-import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
 import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
-import com.bassi.tmapp.service.dto.PublishedTmPhoneticsDTO;
-import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkTokenDTO;
 import com.bassi.tmapp.service.extended.WordSanitizationService;
-import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.service.mapper.TrademarkTokenMapper;
+import com.google.common.collect.Lists;
 import jakarta.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import tech.jhipster.service.filter.IntegerFilter;
 
 /**
  * Service Implementation for managing
@@ -376,5 +367,12 @@ public class TrademarkTokenService {
         tokenPhoneticRepository.saveAll(tpList);
         entityManager.flush();
         entityManager.clear(); // ✅ free RAM after phonetic save
+    }
+
+    public void saveTokensAndGeneratePhoneticCodeInBatch(List<Trademark> trademarks) {
+        List<Trademark> tms = trademarkRepository.saveAll(trademarks);
+        entityManager.flush();
+        entityManager.clear();
+        Lists.partition(tms, BATCH_SIZE).forEach(batch -> self.processBatch(batch));
     }
 }
