@@ -17,8 +17,9 @@ import tech.jhipster.config.JHipsterConstants;
 @Profile({ JHipsterConstants.SPRING_PROFILE_PRODUCTION })
 public class TrademarkScheduler {
 
-    private static final Logger log = LoggerFactory.getLogger(TrademarkScrapingService.class);
+    private static final Logger log = LoggerFactory.getLogger(TrademarkScheduler.class);
     private static final AtomicBoolean isAutomationRunning = new AtomicBoolean(false);
+    private final AtomicBoolean useFirstNumber = new AtomicBoolean(true);
 
     @Autowired
     private TrademarkScrapingService trademarkScrapingService;
@@ -34,8 +35,10 @@ public class TrademarkScheduler {
         }
 
         isAutomationRunning.set(true);
+        String phoneNumber = useFirstNumber.getAndSet(!useFirstNumber.get()) ? "9878987497" : "6239771006";
+
         log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
-        trademarkScrapingService.executeTrademarkAutomationForUpdates("6239771006");
+        trademarkScrapingService.executeTrademarkAutomationForUpdates(phoneNumber);
     }
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")
