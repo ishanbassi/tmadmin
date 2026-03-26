@@ -19,6 +19,7 @@ public class TrademarkScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(TrademarkScheduler.class);
     private static final AtomicBoolean isAutomationRunning = new AtomicBoolean(false);
+    private static final AtomicBoolean isPdfExtractionsAutomationRunning = new AtomicBoolean(false);
     private final AtomicBoolean useFirstNumber = new AtomicBoolean(true);
 
     @Autowired
@@ -47,11 +48,31 @@ public class TrademarkScheduler {
         publishedTmServiceExtended.downloadLatestPdfAndreadPdfFileV2();
     }
 
+    @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Kolkata")
+    public void processTmExtraction() {
+        if (isPdfExtractionsAutomationRunning.get()) {
+            log.warn("Previous pdf extractions session still running, skipping this trigger.");
+            return;
+        }
+
+        isPdfExtractionsAutomationRunning.set(true);
+        log.info("Journal pdf tm extraction Automation Scheduler triggered at: {}", LocalDateTime.now());
+        publishedTmServiceExtended.readMissingPdfFile();
+    }
+
     public static boolean isRunning() {
         return isAutomationRunning.get();
     }
 
     public static void setRunning(boolean value) {
         isAutomationRunning.set(value);
+    }
+
+    public static boolean getIspdfextractionsautomationrunning() {
+        return isPdfExtractionsAutomationRunning.get();
+    }
+
+    public static void setIspdfextractionsautomationrunning(boolean value) {
+        isPdfExtractionsAutomationRunning.set(value);
     }
 }

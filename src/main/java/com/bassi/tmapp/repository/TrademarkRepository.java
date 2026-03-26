@@ -3,6 +3,7 @@ package com.bassi.tmapp.repository;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.UserProfile;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.service.dto.StatusCountDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
@@ -127,6 +128,9 @@ public interface TrademarkRepository
     @Query(value = "SELECT DISTINCT t.journalNo FROM Trademark t ORDER BY t.journalNo DESC")
     List<Integer> getJournalNumbers();
 
+    @Query(value = "SELECT DISTINCT t.journalNo FROM Trademark t ORDER BY t.journalNo DESC LIMIT 1")
+    Integer getLatestJournalNumber();
+
     //	@Query(value="SELECT tm from Trademark left join fetch tm.trademarkClasses left join fetch tm.documents tm WHERE tm.applicationNo = ?1  ORDER BY tm.applicationNo LIMIT 1")
     Optional<Trademark> findFirstByApplicationNoOrderById(Long appNo);
 
@@ -145,7 +149,7 @@ public interface TrademarkRepository
     @Query(value = "SELECT distinct tm.journalNo FROM Trademark tm where tm.name is null order by tm.journalNo desc limit 1")
     Integer findLatestJournalNoWithMissingData();
 
-    long countByJournalNo(int journalNo);
+    long countByJournalNoAndSource(int journalNo, TrademarkSource source);
 
     @Query(
         """

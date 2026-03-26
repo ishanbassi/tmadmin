@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
+import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.LeadService;
 import com.bassi.tmapp.service.TrademarkClassService;
@@ -87,25 +88,35 @@ public class TrademarkJournalParserService {
 
     private JournalTrademarkMapper journalTrademarkMapper;
 
+    private final TrademarkRepository trademarkRepository;
+
     public TrademarkJournalParserService(
         PhoneticsServiceExtended phoneticsServiceExtended,
         PublishedTmRepositoryExtended publishedTmRepositoryExtended,
         TrademarkClassService trademarkClassService,
         JournalTrademarkMapper journalTrademarkMapper,
-        TrademarkService trademarkService
+        TrademarkService trademarkService,
+        TrademarkRepository trademarkRepository
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
         this.trademarkClassService = trademarkClassService;
         this.journalTrademarkMapper = journalTrademarkMapper;
         this.trademarkService = trademarkService;
+        this.trademarkRepository = trademarkRepository;
     }
 
     @Async
     public void readPdfFilesFromFileSystem(String journalNo) {
         File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
 
-        processDirectory(baseDirectory);
+        processDirectory(baseDirectory, journalNo);
+    }
+
+    public void readPdfFilesFromFileSystemSync(String journalNo) {
+        File baseDirectory = new File(Paths.get(basePdfDirectory).toAbsolutePath().toString() + "/" + journalNo);
+
+        processDirectory(baseDirectory, journalNo);
     }
 
     public void readPdfAndProcessTmClasses(String pdfDirectoryPath) {
@@ -174,15 +185,23 @@ public class TrademarkJournalParserService {
         return directory.listFiles();
     }
 
-    private void processDirectory(File directory) {
-        if (directory == null || !directory.exists()) return;
+    private void processDirectory(File directory, String journalNo) {
+        if (directory == null || !directory.exists()) {
+            log.error("Failed to process journal directory: {} because it does not exists", journalNo);
+            return;
+        }
+        Long count = trademarkRepository.countByJournalNoAndSource(Integer.valueOf(journalNo), TrademarkSource.JOURNAL_PUBLICATION);
+        if (count > 100) {
+            log.warn("{} Trademarks already exists for the journal No: {}.Skipping the process", count, journalNo);
+            return;
+        }
 
         File[] files = directory.listFiles();
         if (files == null) return;
 
         for (File file : files) {
             if (file.isDirectory()) {
-                processDirectory(file); // Recursively process subdirectories
+                processDirectory(file, journalNo); // Recursively process subdirectories
             } else if (file.getName().toLowerCase().endsWith(".pdf")) {
                 self.readPdfAndSaveDetails(file.getAbsolutePath()); // Process the PDF
                 //                self.updateTrademarkStatusFromJournal(file.getAbsolutePath());
@@ -677,7 +696,7 @@ public class TrademarkJournalParserService {
 
             if (baseDirectory.exists() && baseDirectory.isDirectory()) {
                 log.info("Processing directory: {}", baseDirectory.getAbsolutePath());
-                processDirectory(baseDirectory);
+                processDirectory(baseDirectory, String.valueOf(i));
 
                 // ✅ Give GC a chance every 10 journals
                 if ((i - start) % 10 == 0) {

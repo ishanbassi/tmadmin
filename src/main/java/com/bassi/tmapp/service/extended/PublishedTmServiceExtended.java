@@ -4,6 +4,7 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.PublishedTmQueryService;
+import com.bassi.tmapp.service.TrademarkScheduler;
 import com.bassi.tmapp.service.criteria.PublishedTmCriteria;
 import com.bassi.tmapp.service.dto.MatchingTrademarkDto;
 import com.bassi.tmapp.service.dto.PublishedTmDTO;
@@ -179,15 +180,20 @@ public class PublishedTmServiceExtended {
     }
 
     @Async
+    public void readMissingPdfFile() {
+        try {
+            Integer journalNo = trademarkRepository.getLatestJournalNumber() - 1;
+            journalParserService.readPdfFilesFromFileSystemSync(String.valueOf(journalNo));
+        } finally {
+            TrademarkScheduler.setIspdfextractionsautomationrunning(false);
+        }
+    }
+
+    @Async
     public void downloadLatestPdfAndreadPdfFileV2() throws IOException {
         Integer journalNo = trademarkScrapingService.downloadLatestPdf();
         if (journalNo == null) {
             throw new InternalServerAlertException("Process is aborted because journal No is null");
-        }
-        Long count = trademarkRepository.countByJournalNo(journalNo);
-        if (count > 100) {
-            log.warn("{} Trademarks already exists for the journal No: {}.Skipping the process", count, journalNo);
-            return;
         }
         readPdfFileV2(journalNo.toString());
     }
