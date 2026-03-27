@@ -43,5 +43,7 @@
     <include file="config/liquibase/changelog/20260108155006_added_entity_constraints_TokenPhonetic.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20260112101723_added_entity_constraints_UserEventsTracking.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
+    <include file="config/liquibase/changelog/20260327070036_updated_entity_Trademark.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20260327070036_updated_entity_migrate_Trademark.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

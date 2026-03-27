@@ -7,17 +7,19 @@ export const sampleWithRequiredData: ITrademark = {
 };
 
 export const sampleWithPartialData: ITrademark = {
-  id: 10413,
-  applicationNo: 11215,
-  agentName: 'grouchy flu that',
-  proprietorName: 'electrify unexpectedly',
-  proprietorAddress: 'boohoo',
+  id: 23274,
+  applicationNo: 8202,
+  agentName: 'drat',
+  proprietorName: 'brand',
+  proprietorAddress: 'notarize',
   headOffice: 'KOLKATA',
-  tmClass: 20712,
-  journalNo: 28032,
-  createdDate: dayjs('2024-05-21T16:26'),
-  type: 'SOUNDMARK',
-  email: 'Ebony32@hotmail.com',
+  tmClass: 9272,
+  journalNo: 9061,
+  createdDate: dayjs('2024-05-22T07:22'),
+  type: 'TRADEMARK_WITH_IMAGE',
+  email: 'Johnathan_Block@hotmail.com',
+  filingMode: 'bah unbearably while',
+  state: 'better catalog',
 };
 
 export const sampleWithFullData: ITrademark = {
@@ -48,6 +50,9 @@ export const sampleWithFullData: ITrademark = {
   email: 'Favian_Barton16@gmail.com',
   organizationType: 'substantiate',
   normalizedName: 'safe import',
+  filingMode: 'sheepishly',
+  state: 'misguided',
+  country: 'Kazakhstan',
 };
 
 export const sampleWithNewData: NewTrademark = {
