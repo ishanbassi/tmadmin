@@ -39,7 +39,7 @@ public class TrademarkScheduler {
         String phoneNumber = useFirstNumber.getAndSet(!useFirstNumber.get()) ? "9878987497" : "6239771006";
 
         log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
-        trademarkScrapingService.executeTrademarkAutomationForUpdates(phoneNumber);
+        trademarkScrapingService.executeTrademarkAutomationForUpdates(phoneNumber, true);
     }
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")

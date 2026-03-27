@@ -162,3 +162,19 @@ asset-base-path: /opt/application/staging/
 selenium:
   asset: /opt/application/staging/selenium/
   headless: false
+
+imap:
+  folder: INBOX
+  host: imap.hostinger.com
+  password: Ish@n070720
+  port: 993
+  username: support@trademarx.in
+otp:
+  sender:
+    email: delhi.tmr@nic.in
+  wait:
+    poll:
+      interval:
+        seconds: 10
+    timeout:
+      seconds: 300

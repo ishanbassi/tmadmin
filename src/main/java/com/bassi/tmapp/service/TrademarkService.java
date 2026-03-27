@@ -439,4 +439,9 @@ public class TrademarkService {
         trademarkRepository.save(tm);
         trademarkTokenService.saveTokensAndGeneratePhoneticCode(tm);
     }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveTrademarksAndGenerateTokensInNewTransaction(Trademark tm, TrademarkSource trademarkSource) {
+        saveTrademarksAndGenerateTokensInNewTransaction(tm, trademarkSource);
+    }
 }

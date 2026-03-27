@@ -161,4 +161,7 @@ public interface TrademarkRepository
         """
     )
     List<Trademark> findByJournalNoAndIdGreaterThan(@Param("journalNo") Integer journalNo, @Param("lastId") Long lastId, Pageable pageable);
+
+    @Query(value = "SELECT tm.applicationNo FROM Trademark tm  order by tm.applicationNo desc limit 1")
+    Long findLatestApplicationNo();
 }

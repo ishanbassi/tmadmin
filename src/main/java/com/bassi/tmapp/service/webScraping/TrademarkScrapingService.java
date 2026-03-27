@@ -2,6 +2,8 @@ package com.bassi.tmapp.service.webScraping;
 
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
+import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
 import com.bassi.tmapp.service.TrademarkScheduler;
@@ -18,10 +20,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -63,6 +70,7 @@ public class TrademarkScrapingService {
 
     private static final String TrademarkJournalBaseURL = "https://search.ipindia.gov.in/IPOJournal/Journal/";
     private static final String TrademarkStatusURL = "https://tmrsearch.ipindia.gov.in/estatus";
+    private static final int MAX_DAILY_FILINGS = 3000;
 
     private static final Logger log = LoggerFactory.getLogger(TrademarkScrapingService.class);
     private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
@@ -509,22 +517,25 @@ public class TrademarkScrapingService {
     }
 
     @Async
-    public void executeTrademarkAutomationForUpdates(String phoneNumber) {
+    public void executeTrademarkAutomationForUpdates(String optReceiverAddress, boolean isPhone) {
         Integer journalNo = trademarkRepository.findLatestJournalNoWithMissingData();
-        fillAndSubmitOtp(journalNo, phoneNumber);
+        fillAndSubmitOtp(journalNo, optReceiverAddress, isPhone);
     }
 
     @Async
-    public void fillAndSubmitOtp(Integer journalNo, String phoneNumber) {
-        WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
-
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+    public void fillAndSubmitOtp(Integer journalNo, String optReceiverAddress, boolean isPhone) {
         try {
-            fillAndSubmitOtp(driver, wait, phoneNumber, journalNo);
+            WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+            try {
+                fillAndSubmitOtp(driver, wait, optReceiverAddress, journalNo, isPhone);
+            } finally {
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+                takeScreenshot(driver, timestamp);
+                driver.quit();
+            }
         } finally {
-            String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
-            takeScreenshot(driver, timestamp);
-            driver.quit();
             TrademarkScheduler.setRunning(false);
         }
     }
@@ -590,16 +601,22 @@ public class TrademarkScrapingService {
         }
     }
 
-    public void fillAndSubmitOtp(WebDriver driver, WebDriverWait wait, String phoneNumber, Integer journalNo) {
+    public void executeInitialAutomation(WebDriver driver, WebDriverWait wait, String optReceiverAddress, boolean isPhone) {
         driver.get(TrademarkStatusURL);
 
         // --- STEP 1: Arrive on page, look around (reading delay) ---
         HumanDelay.reading();
 
-        // Step 2: Enter phone number
-        WebElement phoneInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("mobileidentifier")));
-        HumanTyping.clearAndType(phoneInput, phoneNumber);
-        HumanDelay.betweenActions();
+        // Step 2: Enter phone number or email
+        if (isPhone) {
+            WebElement phoneInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("mobileidentifier")));
+            HumanTyping.clearAndType(phoneInput, optReceiverAddress);
+            HumanDelay.betweenActions();
+        } else {
+            WebElement emailInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("emailidentifier")));
+            HumanTyping.clearAndType(emailInput, optReceiverAddress);
+            HumanDelay.betweenActions();
+        }
 
         // Step 2, 3,4
         WebElement sendBtn = driver.findElement(By.id("sendOtpBtn")); // adjust selector
@@ -611,10 +628,11 @@ public class TrademarkScrapingService {
         if (Boolean.FALSE.equals(isHeadless)) {
             waitForManualOtpEntry(driver, wait);
         } else {
-            resolveOtp(driver, wait, phoneNumber);
+            resolveOtp(driver, wait, optReceiverAddress);
         }
 
-        //    Step 6 : Click the button on the top left for trademark application number status
+        // Step 6 : Click the button on the top left for trademark application number
+        // status
         WebElement tmApplicationBtn = wait.until(
             ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Trade Mark Application/Registered Mark']"))
         );
@@ -623,6 +641,10 @@ public class TrademarkScrapingService {
         // Step 7 : Select the radio button
         WebElement radioButton = wait.until(ExpectedConditions.elementToBeClickable(By.id("NationalIRDINumber")));
         HumanClick.moveAndClick(driver, radioButton);
+    }
+
+    public void fillAndSubmitOtp(WebDriver driver, WebDriverWait wait, String optReceiverAddress, Integer journalNo, boolean isPhone) {
+        executeInitialAutomation(driver, wait, optReceiverAddress, isPhone);
 
         List<Trademark> tms = trademarkRepository.findTrademarksWhereNameIsNull(journalNo);
         for (Trademark tmToUpdate : tms) {
@@ -650,6 +672,7 @@ public class TrademarkScrapingService {
             String trademark = trademarkElement.getText();
 
             log.info(trademark);
+
             trademarkService.updateNameAndTrademarkStatusByIdOrApplicationNo(trademark, status, tmToUpdate);
 
             // Click the back button
@@ -683,12 +706,12 @@ public class TrademarkScrapingService {
         HumanClick.moveAndClick(driver, button);
     }
 
-    private void resolveOtp(WebDriver driver, WebDriverWait wait, String phoneNumber) {
+    private void resolveOtp(WebDriver driver, WebDriverWait wait, String optReceiverAddress) {
         WebElement otpInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("otp")));
         // Server: block until OTP is POSTed to /api/otp/submit
-        log.info("Server mode: waiting for OTP via REST API for {}", phoneNumber);
+        log.info("Server mode: waiting for OTP via REST API for {}", optReceiverAddress);
         try {
-            String otp = otpWaitingService.waitForOtp(phoneNumber, 300); // 5 min timeout
+            String otp = otpWaitingService.waitForOtp(optReceiverAddress, 300); // 5 min timeout
 
             HumanTyping.clearAndType(otpInput, otp);
 
@@ -721,10 +744,10 @@ public class TrademarkScrapingService {
         );
         String agent = userAgents.get(new Random().nextInt(userAgents.size()));
 
-        //	    Proxy proxy = new Proxy();
-        //	    proxy.setHttpProxy(proxyHost + ":" + proxyPort);
-        //	    proxy.setSslProxy(proxyHost + ":" + proxyPort);
-        //	    options.setProxy(proxy);
+        // Proxy proxy = new Proxy();
+        // proxy.setHttpProxy(proxyHost + ":" + proxyPort);
+        // proxy.setSslProxy(proxyHost + ":" + proxyPort);
+        // options.setProxy(proxy);
 
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--user-agent=" + agent);
@@ -733,7 +756,8 @@ public class TrademarkScrapingService {
         options.setExperimentalOption("useAutomationExtension", false);
         options.addArguments("--window-size=1920,1080");
         if (Boolean.TRUE.equals(isHeadless)) {
-            options.addArguments("--headless=new"); // use "new" headless (Chrome 112+), more stable than old "--headless"
+            options.addArguments("--headless=new"); // use "new" headless (Chrome 112+), more stable than old
+            // "--headless"
             options.addArguments("--disable-gpu");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
@@ -751,5 +775,175 @@ public class TrademarkScrapingService {
         } catch (IOException e) {
             throw new InternalServerAlertException("Unable to Save document file Reason: " + e.getLocalizedMessage());
         }
+    }
+
+    public void extractRecentApplications(WebDriver driver, WebDriverWait wait, String otpReceiverAddress, boolean isPhone) {
+        executeInitialAutomation(driver, wait, otpReceiverAddress, isPhone);
+        Long latestApplicationNo = findTodayLastApplicationNumber(driver, wait, otpReceiverAddress, isPhone);
+        ZonedDateTime istTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
+
+        log.info(" Latest application number at {} is {}", istTime, latestApplicationNo);
+
+        int scraped = 0;
+        for (Long appNo = latestApplicationNo; scraped >= 100; appNo--) {
+            scraped++;
+            boolean exists = isApplicationExists(driver, wait, appNo);
+            if (exists) {
+                createTrademarkFromScrapedData(driver, wait);
+            }
+            // Click the back button
+            WebElement backButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Back']")));
+            HumanClick.moveAndClick(driver, backButtonElement);
+        }
+    }
+
+    private void createTrademarkFromScrapedData(WebDriver driver, WebDriverWait wait) {
+        WebElement statusValue = wait.until(
+            ExpectedConditions.presenceOfElementLocated(
+                By.xpath("(//table)[1]//span[normalize-space()='Status:']/following-sibling::span[1]")
+            )
+        );
+        String status = statusValue.getText();
+
+        WebElement trademarkNoElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//table)[2]//tr[td]/td[1]//a")));
+        HumanClick.moveAndClick(driver, trademarkNoElement);
+
+        WebElement table = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("table.document-table")));
+
+        // get all rows
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+
+        Map<String, String> data = new LinkedHashMap<>();
+
+        for (WebElement row : rows) {
+            List<WebElement> cols = row.findElements(By.tagName("td"));
+
+            if (cols.size() >= 2) {
+                String key = cols.get(0).getText().trim();
+                String value = cols.get(1).getText().trim();
+
+                data.put(key, value);
+            }
+        }
+
+        data.put("Status", status);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        String trademark = data.getOrDefault("TM Applied For", null);
+        String applicationNo = data.getOrDefault("TM Application No.", null);
+        String tmClass = data.getOrDefault("Class", null);
+        String applicationDate = data.getOrDefault("Class", null);
+        String headOffice = data.getOrDefault("Appropriate Office", null);
+        String details = data.getOrDefault("Goods & Service Details", null);
+        String state = data.getOrDefault("State", null);
+        String country = data.getOrDefault("Country", null);
+        String filingMode = data.getOrDefault("Filing Mode", null);
+        String type = data.getOrDefault("Trade Mark Type", null);
+        String proprietorName = data.getOrDefault("Proprietor name", null);
+        String proprietorAddress = data.getOrDefault("Proprietor Address", null);
+        String agentName = data.getOrDefault("Attorney name", null);
+        String agentAddress = data.getOrDefault("Attorney Address", null);
+        String emailId = data.getOrDefault("Email Id", null);
+        String renewalDate = data.getOrDefault("Valid upto/ Renewed upto", null);
+
+        Trademark tm = new Trademark();
+        tm.setName(trademark);
+        tm.setDetails(details);
+        tm.setEmail(emailId);
+        tm.setProprietorAddress(proprietorAddress);
+        tm.setProprietorName(proprietorName);
+        tm.setAgentAddress(agentAddress);
+        tm.setAgentName(agentName);
+        if (applicationDate != null) {
+            tm.setApplicationDate(LocalDate.parse(applicationDate, formatter));
+        }
+        if (renewalDate != null) {
+            tm.setRenewalDate(LocalDate.parse(renewalDate, formatter));
+        }
+        if (applicationNo != null) {
+            tm.setApplicationNo(Long.valueOf(applicationNo));
+        }
+        if (tmClass != null) {
+            tm.setTmClass(Integer.valueOf(tmClass));
+        }
+        if (headOffice != null) {
+            tm.setHeadOffice(HeadOffice.valueOf(headOffice.trim()));
+        }
+        if (type != null) {
+            TrademarkType tmType = type.equals("WORD") ? TrademarkType.TRADEMARK : type.equals("DEVICE") ? TrademarkType.IMAGEMARK : null;
+            tm.setType(tmType);
+        }
+
+        trademarkService.saveTrademarksAndGenerateTokensInNewTransaction(tm, null);
+        trademarkRepository.save(tm);
+    }
+
+    public void scrapeLatestTrademarks(String optReceiverAddress, boolean isPhone) {
+        try {
+            WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
+
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+            try {
+                extractRecentApplications(driver, wait, optReceiverAddress, isPhone);
+            } finally {
+                String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
+                takeScreenshot(driver, timestamp);
+                driver.quit();
+            }
+        } finally {
+            TrademarkScheduler.setRunning(false);
+        }
+    }
+
+    /**
+     * Finds today's last application number using binary search. Only costs ~12
+     * requests.
+     */
+    public Long findTodayLastApplicationNumber(WebDriver driver, WebDriverWait wait, String otpReceiverAddress, boolean isPhone) {
+        Long yesterdayLast = trademarkRepository.findLatestApplicationNo(); // fetch from DB
+        Long low = yesterdayLast;
+        Long high = yesterdayLast + MAX_DAILY_FILINGS;
+
+        log.info("Binary search between #{} and #{}", low, high);
+
+        while (low < high - 1) {
+            Long mid = (low + high) / 2;
+
+            boolean exists = isApplicationExists(driver, wait, mid);
+
+            log.debug("Checking #{} → {}", mid, exists ? "EXISTS" : "NOT FOUND");
+
+            if (exists) {
+                low = mid;
+                createTrademarkFromScrapedData(driver, wait);
+            } else {
+                high = mid;
+            }
+
+            // Click the back button
+            WebElement backButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Back']")));
+            HumanClick.moveAndClick(driver, backButtonElement);
+        }
+
+        log.info("Today's last application number: #{}", low);
+        return low;
+    }
+
+    private boolean isApplicationExists(WebDriver driver, WebDriverWait wait, Long applicationNo) {
+        WebElement applNumberInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("ApplicationNumber")));
+        HumanTyping.clearAndType(applNumberInput, String.valueOf(applicationNo));
+        HumanDelay.betweenActions();
+
+        // solve the expression & fill the input
+        WebElement viewButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.id("btnView")));
+        solveExpression(driver, wait, viewButtonElement, false);
+
+        wait.until(
+            ExpectedConditions.or(
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("(//table)[1]//span[normalize-space()='Status:']")),
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[normalize-space()='Record Not Found']"))
+            )
+        );
+
+        return driver.findElements(By.xpath("//div[text()='Record Not Found']")).isEmpty();
     }
 }
