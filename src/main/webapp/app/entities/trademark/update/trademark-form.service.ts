@@ -58,6 +58,9 @@ type TrademarkFormGroupContent = {
   email: FormControl<TrademarkFormRawValue['email']>;
   organizationType: FormControl<TrademarkFormRawValue['organizationType']>;
   normalizedName: FormControl<TrademarkFormRawValue['normalizedName']>;
+  filingMode: FormControl<TrademarkFormRawValue['filingMode']>;
+  state: FormControl<TrademarkFormRawValue['state']>;
+  country: FormControl<TrademarkFormRawValue['country']>;
   lead: FormControl<TrademarkFormRawValue['lead']>;
   user: FormControl<TrademarkFormRawValue['user']>;
   trademarkPlan: FormControl<TrademarkFormRawValue['trademarkPlan']>;
@@ -108,6 +111,9 @@ export class TrademarkFormService {
       email: new FormControl(trademarkRawValue.email),
       organizationType: new FormControl(trademarkRawValue.organizationType),
       normalizedName: new FormControl(trademarkRawValue.normalizedName),
+      filingMode: new FormControl(trademarkRawValue.filingMode),
+      state: new FormControl(trademarkRawValue.state),
+      country: new FormControl(trademarkRawValue.country),
       lead: new FormControl(trademarkRawValue.lead),
       user: new FormControl(trademarkRawValue.user),
       trademarkPlan: new FormControl(trademarkRawValue.trademarkPlan),

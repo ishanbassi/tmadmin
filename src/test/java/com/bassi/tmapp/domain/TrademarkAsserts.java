@@ -83,7 +83,10 @@ public class TrademarkAsserts {
             .satisfies(a -> assertThat(a.getPhoneNumber()).as("check phoneNumber").isEqualTo(expected.getPhoneNumber()))
             .satisfies(a -> assertThat(a.getEmail()).as("check email").isEqualTo(expected.getEmail()))
             .satisfies(a -> assertThat(a.getOrganizationType()).as("check organizationType").isEqualTo(expected.getOrganizationType()))
-            .satisfies(a -> assertThat(a.getNormalizedName()).as("check normalizedName").isEqualTo(expected.getNormalizedName()));
+            .satisfies(a -> assertThat(a.getNormalizedName()).as("check normalizedName").isEqualTo(expected.getNormalizedName()))
+            .satisfies(a -> assertThat(a.getFilingMode()).as("check filingMode").isEqualTo(expected.getFilingMode()))
+            .satisfies(a -> assertThat(a.getState()).as("check state").isEqualTo(expected.getState()))
+            .satisfies(a -> assertThat(a.getCountry()).as("check country").isEqualTo(expected.getCountry()));
     }
 
     /**

@@ -102,6 +102,9 @@ class TrademarkCriteriaTest {
         trademarkCriteria.email();
         trademarkCriteria.organizationType();
         trademarkCriteria.normalizedName();
+        trademarkCriteria.filingMode();
+        trademarkCriteria.state();
+        trademarkCriteria.country();
         trademarkCriteria.leadId();
         trademarkCriteria.userId();
         trademarkCriteria.trademarkPlanId();
@@ -141,6 +144,9 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getEmail()) &&
                 condition.apply(criteria.getOrganizationType()) &&
                 condition.apply(criteria.getNormalizedName()) &&
+                condition.apply(criteria.getFilingMode()) &&
+                condition.apply(criteria.getState()) &&
+                condition.apply(criteria.getCountry()) &&
                 condition.apply(criteria.getLeadId()) &&
                 condition.apply(criteria.getUserId()) &&
                 condition.apply(criteria.getTrademarkPlanId()) &&
@@ -182,6 +188,9 @@ class TrademarkCriteriaTest {
                 condition.apply(criteria.getEmail(), copy.getEmail()) &&
                 condition.apply(criteria.getOrganizationType(), copy.getOrganizationType()) &&
                 condition.apply(criteria.getNormalizedName(), copy.getNormalizedName()) &&
+                condition.apply(criteria.getFilingMode(), copy.getFilingMode()) &&
+                condition.apply(criteria.getState(), copy.getState()) &&
+                condition.apply(criteria.getCountry(), copy.getCountry()) &&
                 condition.apply(criteria.getLeadId(), copy.getLeadId()) &&
                 condition.apply(criteria.getUserId(), copy.getUserId()) &&
                 condition.apply(criteria.getTrademarkPlanId(), copy.getTrademarkPlanId()) &&

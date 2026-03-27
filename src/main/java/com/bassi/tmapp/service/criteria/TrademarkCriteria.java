@@ -130,6 +130,12 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private StringFilter normalizedName;
 
+    private StringFilter filingMode;
+
+    private StringFilter state;
+
+    private StringFilter country;
+
     private LongFilter leadId;
 
     private LongFilter userId;
@@ -174,6 +180,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.email = other.optionalEmail().map(StringFilter::copy).orElse(null);
         this.organizationType = other.optionalOrganizationType().map(StringFilter::copy).orElse(null);
         this.normalizedName = other.optionalNormalizedName().map(StringFilter::copy).orElse(null);
+        this.filingMode = other.optionalFilingMode().map(StringFilter::copy).orElse(null);
+        this.state = other.optionalState().map(StringFilter::copy).orElse(null);
+        this.country = other.optionalCountry().map(StringFilter::copy).orElse(null);
         this.leadId = other.optionalLeadId().map(LongFilter::copy).orElse(null);
         this.userId = other.optionalUserId().map(LongFilter::copy).orElse(null);
         this.trademarkPlanId = other.optionalTrademarkPlanId().map(LongFilter::copy).orElse(null);
@@ -701,6 +710,63 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.normalizedName = normalizedName;
     }
 
+    public StringFilter getFilingMode() {
+        return filingMode;
+    }
+
+    public Optional<StringFilter> optionalFilingMode() {
+        return Optional.ofNullable(filingMode);
+    }
+
+    public StringFilter filingMode() {
+        if (filingMode == null) {
+            setFilingMode(new StringFilter());
+        }
+        return filingMode;
+    }
+
+    public void setFilingMode(StringFilter filingMode) {
+        this.filingMode = filingMode;
+    }
+
+    public StringFilter getState() {
+        return state;
+    }
+
+    public Optional<StringFilter> optionalState() {
+        return Optional.ofNullable(state);
+    }
+
+    public StringFilter state() {
+        if (state == null) {
+            setState(new StringFilter());
+        }
+        return state;
+    }
+
+    public void setState(StringFilter state) {
+        this.state = state;
+    }
+
+    public StringFilter getCountry() {
+        return country;
+    }
+
+    public Optional<StringFilter> optionalCountry() {
+        return Optional.ofNullable(country);
+    }
+
+    public StringFilter country() {
+        if (country == null) {
+            setCountry(new StringFilter());
+        }
+        return country;
+    }
+
+    public void setCountry(StringFilter country) {
+        this.country = country;
+    }
+
     public LongFilter getLeadId() {
         return leadId;
     }
@@ -871,6 +937,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             Objects.equals(email, that.email) &&
             Objects.equals(organizationType, that.organizationType) &&
             Objects.equals(normalizedName, that.normalizedName) &&
+            Objects.equals(filingMode, that.filingMode) &&
+            Objects.equals(state, that.state) &&
+            Objects.equals(country, that.country) &&
             Objects.equals(leadId, that.leadId) &&
             Objects.equals(userId, that.userId) &&
             Objects.equals(trademarkPlanId, that.trademarkPlanId) &&
@@ -911,6 +980,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             email,
             organizationType,
             normalizedName,
+            filingMode,
+            state,
+            country,
             leadId,
             userId,
             trademarkPlanId,
@@ -952,6 +1024,9 @@ public class TrademarkCriteria implements Serializable, Criteria {
             optionalEmail().map(f -> "email=" + f + ", ").orElse("") +
             optionalOrganizationType().map(f -> "organizationType=" + f + ", ").orElse("") +
             optionalNormalizedName().map(f -> "normalizedName=" + f + ", ").orElse("") +
+            optionalFilingMode().map(f -> "filingMode=" + f + ", ").orElse("") +
+            optionalState().map(f -> "state=" + f + ", ").orElse("") +
+            optionalCountry().map(f -> "country=" + f + ", ").orElse("") +
             optionalLeadId().map(f -> "leadId=" + f + ", ").orElse("") +
             optionalUserId().map(f -> "userId=" + f + ", ").orElse("") +
             optionalTrademarkPlanId().map(f -> "trademarkPlanId=" + f + ", ").orElse("") +

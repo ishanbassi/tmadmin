@@ -111,6 +111,18 @@
     {
       "fieldName": "normalizedName",
       "fieldType": "String"
+    },
+    {
+      "fieldName": "filingMode",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "state",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "country",
+      "fieldType": "String"
     }
   ],
   "incrementalChangelog": false,

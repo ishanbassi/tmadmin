@@ -70,6 +70,12 @@ public class TrademarkDTO implements Serializable {
 
     private String normalizedName;
 
+    private String filingMode;
+
+    private String state;
+
+    private String country;
+
     private LeadDTO lead;
 
     private UserProfileDTO user;
@@ -296,6 +302,30 @@ public class TrademarkDTO implements Serializable {
         this.normalizedName = normalizedName;
     }
 
+    public String getFilingMode() {
+        return filingMode;
+    }
+
+    public void setFilingMode(String filingMode) {
+        this.filingMode = filingMode;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public LeadDTO getLead() {
         return lead;
     }
@@ -388,6 +418,9 @@ public class TrademarkDTO implements Serializable {
             ", email='" + getEmail() + "'" +
             ", organizationType='" + getOrganizationType() + "'" +
             ", normalizedName='" + getNormalizedName() + "'" +
+            ", filingMode='" + getFilingMode() + "'" +
+            ", state='" + getState() + "'" +
+            ", country='" + getCountry() + "'" +
             ", lead=" + getLead() +
             ", user=" + getUser() +
             ", trademarkPlan=" + getTrademarkPlan() +

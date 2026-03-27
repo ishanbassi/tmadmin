@@ -295,6 +295,28 @@
         </div>
 
         <div class="mb-3">
+          <label class="form-label" for="field_filingMode">Filing Mode</label>
+          <input
+            type="text"
+            class="form-control"
+            name="filingMode"
+            id="field_filingMode"
+            data-cy="filingMode"
+            formControlName="filingMode"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_state">State</label>
+          <input type="text" class="form-control" name="state" id="field_state" data-cy="state" formControlName="state" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_country">Country</label>
+          <input type="text" class="form-control" name="country" id="field_country" data-cy="country" formControlName="country" />
+        </div>
+
+        <div class="mb-3">
           <label class="form-label" for="field_lead">Lead</label>
           <select class="form-control" id="field_lead" data-cy="lead" name="lead" formControlName="lead" [compareWith]="compareLead">
             <option [ngValue]="null"></option>

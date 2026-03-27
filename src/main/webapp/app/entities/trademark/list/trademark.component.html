@@ -222,6 +222,27 @@
                 <fa-icon class="p-1" icon="sort"></fa-icon>
               </div>
             </th>
+            <th scope="col" jhiSortBy="filingMode">
+              <div class="d-flex">
+                <span>Filing Mode</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="state">
+              <div class="d-flex">
+                <span>State</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="country">
+              <div class="d-flex">
+                <span>Country</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
             <th scope="col" jhiSortBy="lead.id">
               <div class="d-flex">
                 <span>Lead</span>
@@ -308,6 +329,9 @@
               <td>{{ trademark.email }}</td>
               <td>{{ trademark.organizationType }}</td>
               <td>{{ trademark.normalizedName }}</td>
+              <td>{{ trademark.filingMode }}</td>
+              <td>{{ trademark.state }}</td>
+              <td>{{ trademark.country }}</td>
               <td>
                 @if (trademark.lead) {
                   <div>

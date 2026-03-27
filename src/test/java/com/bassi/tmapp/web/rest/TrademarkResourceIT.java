@@ -143,6 +143,15 @@ class TrademarkResourceIT {
     private static final String DEFAULT_NORMALIZED_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NORMALIZED_NAME = "BBBBBBBBBB";
 
+    private static final String DEFAULT_FILING_MODE = "AAAAAAAAAA";
+    private static final String UPDATED_FILING_MODE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_STATE = "AAAAAAAAAA";
+    private static final String UPDATED_STATE = "BBBBBBBBBB";
+
+    private static final String DEFAULT_COUNTRY = "AAAAAAAAAA";
+    private static final String UPDATED_COUNTRY = "BBBBBBBBBB";
+
     private static final String ENTITY_API_URL = "/api/trademarks";
     private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
 
@@ -207,7 +216,10 @@ class TrademarkResourceIT {
             .phoneNumber(DEFAULT_PHONE_NUMBER)
             .email(DEFAULT_EMAIL)
             .organizationType(DEFAULT_ORGANIZATION_TYPE)
-            .normalizedName(DEFAULT_NORMALIZED_NAME);
+            .normalizedName(DEFAULT_NORMALIZED_NAME)
+            .filingMode(DEFAULT_FILING_MODE)
+            .state(DEFAULT_STATE)
+            .country(DEFAULT_COUNTRY);
     }
 
     /**
@@ -243,7 +255,10 @@ class TrademarkResourceIT {
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
             .organizationType(UPDATED_ORGANIZATION_TYPE)
-            .normalizedName(UPDATED_NORMALIZED_NAME);
+            .normalizedName(UPDATED_NORMALIZED_NAME)
+            .filingMode(UPDATED_FILING_MODE)
+            .state(UPDATED_STATE)
+            .country(UPDATED_COUNTRY);
     }
 
     @BeforeEach
@@ -338,7 +353,10 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)))
-            .andExpect(jsonPath("$.[*].normalizedName").value(hasItem(DEFAULT_NORMALIZED_NAME)));
+            .andExpect(jsonPath("$.[*].normalizedName").value(hasItem(DEFAULT_NORMALIZED_NAME)))
+            .andExpect(jsonPath("$.[*].filingMode").value(hasItem(DEFAULT_FILING_MODE)))
+            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE)))
+            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY)));
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -395,7 +413,10 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.phoneNumber").value(DEFAULT_PHONE_NUMBER))
             .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL))
             .andExpect(jsonPath("$.organizationType").value(DEFAULT_ORGANIZATION_TYPE))
-            .andExpect(jsonPath("$.normalizedName").value(DEFAULT_NORMALIZED_NAME));
+            .andExpect(jsonPath("$.normalizedName").value(DEFAULT_NORMALIZED_NAME))
+            .andExpect(jsonPath("$.filingMode").value(DEFAULT_FILING_MODE))
+            .andExpect(jsonPath("$.state").value(DEFAULT_STATE))
+            .andExpect(jsonPath("$.country").value(DEFAULT_COUNTRY));
     }
 
     @Test
@@ -1930,6 +1951,159 @@ class TrademarkResourceIT {
 
     @Test
     @Transactional
+    void getAllTrademarksByFilingModeIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where filingMode equals to
+        defaultTrademarkFiltering("filingMode.equals=" + DEFAULT_FILING_MODE, "filingMode.equals=" + UPDATED_FILING_MODE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByFilingModeIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where filingMode in
+        defaultTrademarkFiltering(
+            "filingMode.in=" + DEFAULT_FILING_MODE + "," + UPDATED_FILING_MODE,
+            "filingMode.in=" + UPDATED_FILING_MODE
+        );
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByFilingModeIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where filingMode is not null
+        defaultTrademarkFiltering("filingMode.specified=true", "filingMode.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByFilingModeContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where filingMode contains
+        defaultTrademarkFiltering("filingMode.contains=" + DEFAULT_FILING_MODE, "filingMode.contains=" + UPDATED_FILING_MODE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByFilingModeNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where filingMode does not contain
+        defaultTrademarkFiltering("filingMode.doesNotContain=" + UPDATED_FILING_MODE, "filingMode.doesNotContain=" + DEFAULT_FILING_MODE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByStateIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where state equals to
+        defaultTrademarkFiltering("state.equals=" + DEFAULT_STATE, "state.equals=" + UPDATED_STATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByStateIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where state in
+        defaultTrademarkFiltering("state.in=" + DEFAULT_STATE + "," + UPDATED_STATE, "state.in=" + UPDATED_STATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByStateIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where state is not null
+        defaultTrademarkFiltering("state.specified=true", "state.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByStateContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where state contains
+        defaultTrademarkFiltering("state.contains=" + DEFAULT_STATE, "state.contains=" + UPDATED_STATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByStateNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where state does not contain
+        defaultTrademarkFiltering("state.doesNotContain=" + UPDATED_STATE, "state.doesNotContain=" + DEFAULT_STATE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCountryIsEqualToSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where country equals to
+        defaultTrademarkFiltering("country.equals=" + DEFAULT_COUNTRY, "country.equals=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCountryIsInShouldWork() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where country in
+        defaultTrademarkFiltering("country.in=" + DEFAULT_COUNTRY + "," + UPDATED_COUNTRY, "country.in=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCountryIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where country is not null
+        defaultTrademarkFiltering("country.specified=true", "country.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCountryContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where country contains
+        defaultTrademarkFiltering("country.contains=" + DEFAULT_COUNTRY, "country.contains=" + UPDATED_COUNTRY);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByCountryNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where country does not contain
+        defaultTrademarkFiltering("country.doesNotContain=" + UPDATED_COUNTRY, "country.doesNotContain=" + DEFAULT_COUNTRY);
+    }
+
+    @Test
+    @Transactional
     void getAllTrademarksByLeadIsEqualToSomething() throws Exception {
         Lead lead;
         if (TestUtil.findAll(em, Lead.class).isEmpty()) {
@@ -2077,7 +2251,10 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].phoneNumber").value(hasItem(DEFAULT_PHONE_NUMBER)))
             .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL)))
             .andExpect(jsonPath("$.[*].organizationType").value(hasItem(DEFAULT_ORGANIZATION_TYPE)))
-            .andExpect(jsonPath("$.[*].normalizedName").value(hasItem(DEFAULT_NORMALIZED_NAME)));
+            .andExpect(jsonPath("$.[*].normalizedName").value(hasItem(DEFAULT_NORMALIZED_NAME)))
+            .andExpect(jsonPath("$.[*].filingMode").value(hasItem(DEFAULT_FILING_MODE)))
+            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE)))
+            .andExpect(jsonPath("$.[*].country").value(hasItem(DEFAULT_COUNTRY)));
 
         // Check, that the count call also returns 1
         restTrademarkMockMvc
@@ -2151,7 +2328,10 @@ class TrademarkResourceIT {
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
             .organizationType(UPDATED_ORGANIZATION_TYPE)
-            .normalizedName(UPDATED_NORMALIZED_NAME);
+            .normalizedName(UPDATED_NORMALIZED_NAME)
+            .filingMode(UPDATED_FILING_MODE)
+            .state(UPDATED_STATE)
+            .country(UPDATED_COUNTRY);
         TrademarkDTO trademarkDTO = trademarkMapper.toDto(updatedTrademark);
 
         restTrademarkMockMvc
@@ -2257,7 +2437,9 @@ class TrademarkResourceIT {
             .renewalDate(UPDATED_RENEWAL_DATE)
             .type(UPDATED_TYPE)
             .source(UPDATED_SOURCE)
-            .phoneNumber(UPDATED_PHONE_NUMBER);
+            .phoneNumber(UPDATED_PHONE_NUMBER)
+            .filingMode(UPDATED_FILING_MODE)
+            .country(UPDATED_COUNTRY);
 
         restTrademarkMockMvc
             .perform(
@@ -2314,7 +2496,10 @@ class TrademarkResourceIT {
             .phoneNumber(UPDATED_PHONE_NUMBER)
             .email(UPDATED_EMAIL)
             .organizationType(UPDATED_ORGANIZATION_TYPE)
-            .normalizedName(UPDATED_NORMALIZED_NAME);
+            .normalizedName(UPDATED_NORMALIZED_NAME)
+            .filingMode(UPDATED_FILING_MODE)
+            .state(UPDATED_STATE)
+            .country(UPDATED_COUNTRY);
 
         restTrademarkMockMvc
             .perform(

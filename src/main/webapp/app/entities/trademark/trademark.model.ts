@@ -36,6 +36,9 @@ export interface ITrademark {
   email?: string | null;
   organizationType?: string | null;
   normalizedName?: string | null;
+  filingMode?: string | null;
+  state?: string | null;
+  country?: string | null;
   lead?: Pick<ILead, 'id'> | null;
   user?: Pick<IUserProfile, 'id'> | null;
   trademarkPlan?: Pick<ITrademarkPlan, 'id'> | null;

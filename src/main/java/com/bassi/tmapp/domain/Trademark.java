@@ -111,6 +111,15 @@ public class Trademark implements Serializable {
     @Column(name = "normalized_name")
     private String normalizedName;
 
+    @Column(name = "filing_mode")
+    private String filingMode;
+
+    @Column(name = "state")
+    private String state;
+
+    @Column(name = "country")
+    private String country;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "assignedTo" }, allowSetters = true)
     private Lead lead;
@@ -493,6 +502,45 @@ public class Trademark implements Serializable {
         this.normalizedName = normalizedName;
     }
 
+    public String getFilingMode() {
+        return this.filingMode;
+    }
+
+    public Trademark filingMode(String filingMode) {
+        this.setFilingMode(filingMode);
+        return this;
+    }
+
+    public void setFilingMode(String filingMode) {
+        this.filingMode = filingMode;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public Trademark state(String state) {
+        this.setState(state);
+        return this;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCountry() {
+        return this.country;
+    }
+
+    public Trademark country(String country) {
+        this.setCountry(country);
+        return this;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public Lead getLead() {
         return this.lead;
     }
@@ -649,6 +697,9 @@ public class Trademark implements Serializable {
             ", email='" + getEmail() + "'" +
             ", organizationType='" + getOrganizationType() + "'" +
             ", normalizedName='" + getNormalizedName() + "'" +
+            ", filingMode='" + getFilingMode() + "'" +
+            ", state='" + getState() + "'" +
+            ", country='" + getCountry() + "'" +
             "}";
     }
 }

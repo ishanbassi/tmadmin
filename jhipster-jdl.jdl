@@ -55,6 +55,9 @@ entity Trademark{
 	email String
 	organizationType String
 	normalizedName String
+	filingMode String
+	state String
+	country String
     
     
     
