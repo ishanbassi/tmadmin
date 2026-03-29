@@ -442,6 +442,6 @@ public class TrademarkService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveTrademarksAndGenerateTokensInNewTransaction(Trademark tm, TrademarkSource trademarkSource) {
-        saveTrademarksAndGenerateTokensInNewTransaction(tm, trademarkSource);
+        saveTrademarksAndGenerateTokens(tm, trademarkSource);
     }
 }

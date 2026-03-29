@@ -154,6 +154,7 @@ application:
     site-key: 6LcTLeYrAAAAACoTM9NIteBSX7ucj0ZRqDmQJF82
     secret-key: 6LcTLeYrAAAAAC1u_J-lffNhAIeLbdcG71JB3v4Z
     server-verify-url: https://www.google.com/recaptcha/api/siteverify
+
 file-upload-base-path: /opt/application/staging/files/
 pdf-file-base-path: /opt/application/staging/pdfs/
 errors-file-base-path: /opt/application/staging/errors/
@@ -163,12 +164,6 @@ selenium:
   asset: /opt/application/staging/selenium/
   headless: false
 
-imap:
-  folder: INBOX
-  host: imap.hostinger.com
-  password: Ish@n070720
-  port: 993
-  username: support@trademarx.in
 otp:
   sender:
     email: delhi.tmr@nic.in
@@ -178,3 +173,27 @@ otp:
         seconds: 10
     timeout:
       seconds: 300
+imap:
+  accounts:
+    - type: EMAIL
+      username: bassitrademarx@gmail.com
+      password: lswo naix lrrd ndli
+      host: imap.gmail.com
+      port: 993
+      folder: INBOX
+    - type: EMAIL
+      username: support@trademarx.in
+      password: Ish@n070720
+      host: imap.hostinger.com
+      port: 993
+      folder: INBOX
+    - type: EMAIL
+      username: ishanbassi23@gmail.com
+      password: unjm nzwi qcwb issj
+      host: imap.gmail.com
+      port: 993
+      folder: INBOX
+    - type: PHONE
+      phoneNumber: 6239771006
+    - type: PHONE
+      phoneNumber: 9878987497

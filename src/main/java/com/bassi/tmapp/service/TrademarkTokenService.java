@@ -6,6 +6,7 @@ import com.bassi.tmapp.domain.TrademarkToken;
 import com.bassi.tmapp.domain.enumeration.TrademarkTokenType;
 import com.bassi.tmapp.repository.TokenPhoneticRepository;
 import com.bassi.tmapp.repository.TrademarkRepository;
+import com.bassi.tmapp.repository.TrademarkTokenFrequencyRepository;
 import com.bassi.tmapp.repository.TrademarkTokenRepository;
 import com.bassi.tmapp.service.constants.StopWords;
 import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
@@ -52,6 +53,8 @@ public class TrademarkTokenService {
 
     private final WordSanitizationService wordSanitizationService;
 
+    private final TrademarkTokenFrequencyRepository trademarkTokenFrequencyRepository;
+
     private final TokenPhoneticService tokenPhoneticService;
     private final TrademarkRepository trademarkRepository;
     private final TrademarkQueryService trademarkQueryService;
@@ -70,7 +73,8 @@ public class TrademarkTokenService {
         TrademarkRepository trademarkRepository,
         EntityManager entityManager,
         TrademarkQueryService trademarkQueryService,
-        TokenPhoneticRepository tokenPhoneticRepository
+        TokenPhoneticRepository tokenPhoneticRepository,
+        TrademarkTokenFrequencyRepository trademarkTokenFrequencyRepository
     ) {
         this.trademarkTokenRepository = trademarkTokenRepository;
         this.trademarkTokenMapper = trademarkTokenMapper;
@@ -80,6 +84,7 @@ public class TrademarkTokenService {
         this.tokenPhoneticRepository = tokenPhoneticRepository;
         this.trademarkQueryService = trademarkQueryService;
         this.entityManager = entityManager;
+        this.trademarkTokenFrequencyRepository = trademarkTokenFrequencyRepository;
     }
 
     /**
@@ -258,7 +263,7 @@ public class TrademarkTokenService {
         TrademarkToken token = new TrademarkToken();
         token.setTokenText(word);
         token.setTrademark(tm);
-        if (word.length() <= 2 || StopWords.STOP_WORDS_LIST.contains(word)) {
+        if (word.length() <= 2 || trademarkTokenFrequencyRepository.findByWord(word) != null) {
             token.setTokenType(TrademarkTokenType.DESCRIPTIVE);
         } else {
             token.setTokenType(TrademarkTokenType.CORE);
@@ -272,7 +277,7 @@ public class TrademarkTokenService {
         PartialTrademarkTokenDto token = new PartialTrademarkTokenDto();
         token.setTokenText(word);
         token.setTrademarkId(tm == null ? null : tm.getId());
-        if (word.length() <= 2 || StopWords.STOP_WORDS_LIST.contains(word)) {
+        if (word.length() <= 2 || trademarkTokenFrequencyRepository.findByWord(word) != null) {
             token.setTokenType(TrademarkTokenType.DESCRIPTIVE);
         } else {
             token.setTokenType(TrademarkTokenType.CORE);

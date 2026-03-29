@@ -1,21 +1,30 @@
 package com.bassi.tmapp.service.webScraping;
 
+import com.bassi.tmapp.config.ImapProperties.ImapAccount;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
+import com.bassi.tmapp.service.EmailOtpService;
+import com.bassi.tmapp.service.EmailRotatorService;
 import com.bassi.tmapp.service.TrademarkScheduler;
 import com.bassi.tmapp.service.TrademarkService;
+import com.bassi.tmapp.service.dto.PublishedTmDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.extended.PublishedTmPhoneticsServiceExtended;
+import com.bassi.tmapp.service.extended.pdfService.PdfImage;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.web.rest.errors.InternalServerAlertException;
+import com.bassi.tmapp.web.rest.errors.InvalidOtpException;
+import com.bassi.tmapp.web.rest.errors.OtpNotReceivedException;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.CookieStore;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,13 +40,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.OutputType;
@@ -57,6 +74,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -69,8 +88,8 @@ import org.springframework.web.client.RestTemplate;
 public class TrademarkScrapingService {
 
     private static final String TrademarkJournalBaseURL = "https://search.ipindia.gov.in/IPOJournal/Journal/";
-    private static final String TrademarkStatusURL = "https://tmrsearch.ipindia.gov.in/estatus";
-    private static final int MAX_DAILY_FILINGS = 3000;
+    private static final String TrademarkStatusURL = "https://tmrsearch.ipindia.gov.in";
+    private static final int MAX_HOURLY_FILINGS = 500;
 
     private static final Logger log = LoggerFactory.getLogger(TrademarkScrapingService.class);
     private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
@@ -79,13 +98,21 @@ public class TrademarkScrapingService {
     private final TrademarkService trademarkService;
     private final TrademarkMapper trademarkMapper;
     private final TrademarkRepository trademarkRepository;
+    private final EmailOtpService emailOtpService;
     private OtpWaitingService otpWaitingService;
+    private final EmailRotatorService emailRotatorService;
 
     @Value("${selenium.headless}")
     private Boolean isHeadless;
 
     @Value("${selenium.asset}")
     private String baseUploadDirectory;
+
+    @Value("${file-upload-base-path}")
+    private String baseFileUploadDirectory;
+
+    @Value("${otp.wait.timeout.seconds}")
+    private int timeoutSeconds;
 
     public TrademarkScrapingService(
         PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended,
@@ -94,7 +121,9 @@ public class TrademarkScrapingService {
         TrademarkService trademarkService,
         TrademarkMapper trademarkMapper,
         TrademarkRepository trademarkRepository,
-        OtpWaitingService otpWaitingService
+        OtpWaitingService otpWaitingService,
+        EmailOtpService emailOtpService,
+        EmailRotatorService emailRotatorService
     ) {
         this.restTemplate = restTemplate;
         this.publishedTmPhoneticsServiceExtended = publishedTmPhoneticsServiceExtended;
@@ -103,6 +132,8 @@ public class TrademarkScrapingService {
         this.trademarkMapper = trademarkMapper;
         this.trademarkRepository = trademarkRepository;
         this.otpWaitingService = otpWaitingService;
+        this.emailOtpService = emailOtpService;
+        this.emailRotatorService = emailRotatorService;
     }
 
     @Value("${pdf-file-base-path}")
@@ -517,19 +548,20 @@ public class TrademarkScrapingService {
     }
 
     @Async
-    public void executeTrademarkAutomationForUpdates(String optReceiverAddress, boolean isPhone) {
+    public void executeTrademarkAutomationForUpdates(ImapAccount account) throws Exception {
         Integer journalNo = trademarkRepository.findLatestJournalNoWithMissingData();
-        fillAndSubmitOtp(journalNo, optReceiverAddress, isPhone);
+        fillAndSubmitOtp(journalNo, account);
     }
 
     @Async
-    public void fillAndSubmitOtp(Integer journalNo, String optReceiverAddress, boolean isPhone) {
+    @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 5000))
+    public void fillAndSubmitOtp(Integer journalNo, ImapAccount account) throws Exception {
         try {
             WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
             try {
-                fillAndSubmitOtp(driver, wait, optReceiverAddress, journalNo, isPhone);
+                fillAndSubmitOtp(driver, wait, account, journalNo);
             } finally {
                 String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
                 takeScreenshot(driver, timestamp);
@@ -601,20 +633,20 @@ public class TrademarkScrapingService {
         }
     }
 
-    public void executeInitialAutomation(WebDriver driver, WebDriverWait wait, String optReceiverAddress, boolean isPhone) {
-        driver.get(TrademarkStatusURL);
+    public void executeInitialAutomation(WebDriver driver, WebDriverWait wait, ImapAccount account) throws Exception {
+        driver.get(TrademarkStatusURL + "/estatus");
 
         // --- STEP 1: Arrive on page, look around (reading delay) ---
         HumanDelay.reading();
 
         // Step 2: Enter phone number or email
-        if (isPhone) {
+        if (account.isPhone()) {
             WebElement phoneInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("mobileidentifier")));
-            HumanTyping.clearAndType(phoneInput, optReceiverAddress);
+            HumanTyping.clearAndType(phoneInput, account.getPhoneNumber());
             HumanDelay.betweenActions();
         } else {
             WebElement emailInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("emailidentifier")));
-            HumanTyping.clearAndType(emailInput, optReceiverAddress);
+            HumanTyping.clearAndType(emailInput, account.getUsername());
             HumanDelay.betweenActions();
         }
 
@@ -625,14 +657,33 @@ public class TrademarkScrapingService {
         // Step 5: Click Send OTP
 
         HumanDelay.reading();
-        if (Boolean.FALSE.equals(isHeadless)) {
+        if (account.isEmail()) {
+            // automatic otp filled from email
+            resolveEmailOtp(driver, wait, account);
+        } else if (Boolean.FALSE.equals(isHeadless)) {
             waitForManualOtpEntry(driver, wait);
         } else {
-            resolveOtp(driver, wait, optReceiverAddress);
+            resolveOtp(driver, wait, account.isEmail() ? account.getUsername() : account.getPhoneNumber());
+        }
+
+        wait.until(
+            ExpectedConditions.or(
+                ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//button[normalize-space()='Trade Mark Application/Registered Mark']")
+                ),
+                ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='swal2-html-container' and text()='Invalid OTP']"))
+            )
+        );
+
+        boolean isInvalidOtp = !driver
+            .findElements(By.xpath("//div[@id='swal2-html-container' and normalize-space()='Invalid OTP']"))
+            .isEmpty();
+        if (isInvalidOtp) {
+            throw new InvalidOtpException("INVALID OTP");
         }
 
         // Step 6 : Click the button on the top left for trademark application number
-        // status
+
         WebElement tmApplicationBtn = wait.until(
             ExpectedConditions.elementToBeClickable(By.xpath("//button[normalize-space()='Trade Mark Application/Registered Mark']"))
         );
@@ -643,8 +694,8 @@ public class TrademarkScrapingService {
         HumanClick.moveAndClick(driver, radioButton);
     }
 
-    public void fillAndSubmitOtp(WebDriver driver, WebDriverWait wait, String optReceiverAddress, Integer journalNo, boolean isPhone) {
-        executeInitialAutomation(driver, wait, optReceiverAddress, isPhone);
+    public void fillAndSubmitOtp(WebDriver driver, WebDriverWait wait, ImapAccount account, Integer journalNo) throws Exception {
+        executeInitialAutomation(driver, wait, account);
 
         List<Trademark> tms = trademarkRepository.findTrademarksWhereNameIsNull(journalNo);
         for (Trademark tmToUpdate : tms) {
@@ -686,7 +737,7 @@ public class TrademarkScrapingService {
 
     public void waitForManualOtpEntry(WebDriver driver, WebDriverWait wait) {
         // Find the OTP input field
-        WebDriverWait waitForOtp = new WebDriverWait(driver, Duration.ofSeconds(120));
+        WebDriverWait waitForOtp = new WebDriverWait(driver, Duration.ofSeconds(timeoutSeconds));
         WebElement otpInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("otp")));
 
         log.info("==============================================");
@@ -711,15 +762,24 @@ public class TrademarkScrapingService {
         // Server: block until OTP is POSTed to /api/otp/submit
         log.info("Server mode: waiting for OTP via REST API for {}", optReceiverAddress);
         try {
-            String otp = otpWaitingService.waitForOtp(optReceiverAddress, 300); // 5 min timeout
+            String otp = otpWaitingService.waitForOtp(optReceiverAddress, timeoutSeconds);
 
             HumanTyping.clearAndType(otpInput, otp);
 
             WebElement button = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#otpSection button")));
             HumanClick.moveAndClick(driver, button);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to receive OTP: " + e.getMessage());
+            throw new OtpNotReceivedException("Failed to receive OTP: " + e.getMessage());
         }
+    }
+
+    private void resolveEmailOtp(WebDriver driver, WebDriverWait wait, ImapAccount account) throws Exception {
+        String otp = emailOtpService.waitForOtp(account);
+        WebElement otpInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("otp")));
+        HumanTyping.clearAndType(otpInput, otp);
+
+        WebElement button = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#otpSection button")));
+        HumanClick.moveAndClick(driver, button);
     }
 
     public void resetSession(WebDriver driver) {
@@ -777,20 +837,25 @@ public class TrademarkScrapingService {
         }
     }
 
-    public void extractRecentApplications(WebDriver driver, WebDriverWait wait, String otpReceiverAddress, boolean isPhone) {
-        executeInitialAutomation(driver, wait, otpReceiverAddress, isPhone);
-        Long latestApplicationNo = findTodayLastApplicationNumber(driver, wait, otpReceiverAddress, isPhone);
+    public void extractRecentApplications(WebDriver driver, WebDriverWait wait, ImapAccount account) throws Exception {
+        executeInitialAutomation(driver, wait, account);
+        Long latestApplicationNo = findTodayLastApplicationNumber(driver, wait);
         ZonedDateTime istTime = ZonedDateTime.now(ZoneId.of("Asia/Kolkata"));
 
         log.info(" Latest application number at {} is {}", istTime, latestApplicationNo);
 
         int scraped = 0;
-        for (Long appNo = latestApplicationNo; scraped >= 100; appNo--) {
-            scraped++;
+        for (Long appNo = latestApplicationNo; scraped <= 100; appNo--, scraped++) {
+            Optional<Trademark> tm = trademarkRepository.findFirstByApplicationNoOrderById(appNo);
+            if (tm.isPresent()) {
+                log.info("Skipping scraping the application number: {} because it already exists in the database", appNo);
+                continue;
+            }
             boolean exists = isApplicationExists(driver, wait, appNo);
             if (exists) {
                 createTrademarkFromScrapedData(driver, wait);
             }
+
             // Click the back button
             WebElement backButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Back']")));
             HumanClick.moveAndClick(driver, backButtonElement);
@@ -831,7 +896,7 @@ public class TrademarkScrapingService {
         String trademark = data.getOrDefault("TM Applied For", null);
         String applicationNo = data.getOrDefault("TM Application No.", null);
         String tmClass = data.getOrDefault("Class", null);
-        String applicationDate = data.getOrDefault("Class", null);
+        String applicationDate = data.getOrDefault("Date of Application", null);
         String headOffice = data.getOrDefault("Appropriate Office", null);
         String details = data.getOrDefault("Goods & Service Details", null);
         String state = data.getOrDefault("State", null);
@@ -853,37 +918,51 @@ public class TrademarkScrapingService {
         tm.setProprietorName(proprietorName);
         tm.setAgentAddress(agentAddress);
         tm.setAgentName(agentName);
-        if (applicationDate != null) {
+        tm.setState(state);
+        tm.setCountry(country);
+        tm.setFilingMode(filingMode);
+        if (applicationDate != null && !applicationDate.isBlank()) {
             tm.setApplicationDate(LocalDate.parse(applicationDate, formatter));
         }
-        if (renewalDate != null) {
+        if (renewalDate != null && !renewalDate.isBlank()) {
             tm.setRenewalDate(LocalDate.parse(renewalDate, formatter));
         }
-        if (applicationNo != null) {
+        if (applicationNo != null && !applicationNo.isBlank()) {
             tm.setApplicationNo(Long.valueOf(applicationNo));
         }
-        if (tmClass != null) {
+        if (tmClass != null && !tmClass.isBlank()) {
             tm.setTmClass(Integer.valueOf(tmClass));
         }
-        if (headOffice != null) {
-            tm.setHeadOffice(HeadOffice.valueOf(headOffice.trim()));
+        if (headOffice != null && !headOffice.isBlank()) {
+            tm.setHeadOffice(HeadOffice.valueOf(headOffice.trim().toUpperCase()));
         }
-        if (type != null) {
+        if (type != null && !type.isBlank()) {
             TrademarkType tmType = type.equals("WORD") ? TrademarkType.TRADEMARK : type.equals("DEVICE") ? TrademarkType.IMAGEMARK : null;
             tm.setType(tmType);
         }
+        try {
+            String path = saveToFileSystem(downloadImage(driver), tm);
+            tm.setImgUrl(path);
+        } catch (Exception e) {
+            log.error("Unable to save trademark image, Reason: {}", e.getLocalizedMessage());
+        }
 
         trademarkService.saveTrademarksAndGenerateTokensInNewTransaction(tm, null);
-        trademarkRepository.save(tm);
+
+        // this back button click is actually closes the table modal as it overshadows the whole page
+        WebElement backButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Back']")));
+        HumanClick.moveAndClick(driver, backButtonElement);
     }
 
-    public void scrapeLatestTrademarks(String optReceiverAddress, boolean isPhone) {
+    @Async
+    @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 5000))
+    public void scrapeLatestTrademarks(ImapAccount account) throws Exception {
         try {
             WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
             try {
-                extractRecentApplications(driver, wait, optReceiverAddress, isPhone);
+                extractRecentApplications(driver, wait, account);
             } finally {
                 String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss"));
                 takeScreenshot(driver, timestamp);
@@ -898,10 +977,10 @@ public class TrademarkScrapingService {
      * Finds today's last application number using binary search. Only costs ~12
      * requests.
      */
-    public Long findTodayLastApplicationNumber(WebDriver driver, WebDriverWait wait, String otpReceiverAddress, boolean isPhone) {
+    public Long findTodayLastApplicationNumber(WebDriver driver, WebDriverWait wait) {
         Long yesterdayLast = trademarkRepository.findLatestApplicationNo(); // fetch from DB
         Long low = yesterdayLast;
-        Long high = yesterdayLast + MAX_DAILY_FILINGS;
+        Long high = yesterdayLast + MAX_HOURLY_FILINGS;
 
         log.info("Binary search between #{} and #{}", low, high);
 
@@ -918,7 +997,6 @@ public class TrademarkScrapingService {
             } else {
                 high = mid;
             }
-
             // Click the back button
             WebElement backButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Back']")));
             HumanClick.moveAndClick(driver, backButtonElement);
@@ -944,6 +1022,67 @@ public class TrademarkScrapingService {
             )
         );
 
-        return driver.findElements(By.xpath("//div[text()='Record Not Found']")).isEmpty();
+        boolean exists = driver.findElements(By.xpath("//div[text()='Record Not Found']")).isEmpty();
+        return exists;
+    }
+
+    private byte[] downloadImage(WebDriver driver) throws IOException {
+        // 1. Find the image element and extract the src
+
+        List<WebElement> elements = driver.findElements(By.cssSelector("img[alt='Trademark']"));
+        if (elements.isEmpty()) {
+            log.info("Image does not exists, skipping the download");
+            return null;
+        }
+        WebElement img = elements.get(0);
+        String relativeUrl = img.getAttribute("src"); // "/estatus/trademark/image"
+        String imageUrl = relativeUrl;
+
+        // 2. Transfer Selenium cookies to HttpClient
+        Set<Cookie> seleniumCookies = driver.manage().getCookies();
+
+        BasicCookieStore cookieStore = new BasicCookieStore();
+        for (Cookie seleniumCookie : seleniumCookies) {
+            BasicClientCookie httpCookie = new BasicClientCookie(seleniumCookie.getName(), seleniumCookie.getValue());
+            httpCookie.setDomain(seleniumCookie.getDomain());
+            httpCookie.setPath(seleniumCookie.getPath());
+            cookieStore.addCookie(httpCookie);
+        }
+
+        // 3. Build HttpClient with the cookie store
+        try (CloseableHttpClient httpClient = HttpClients.custom().setDefaultCookieStore(cookieStore).build()) {
+            HttpGet request = new HttpGet(imageUrl);
+
+            // Copy the User-Agent from the browser (important for anti-bot checks)
+            String userAgent = (String) ((JavascriptExecutor) driver).executeScript("return navigator.userAgent;");
+            request.setHeader("User-Agent", userAgent);
+            request.setHeader("Referer", driver.getCurrentUrl());
+
+            try (
+                CloseableHttpResponse response = httpClient.execute(request);
+                InputStream inputStream = response.getEntity().getContent()
+            ) {
+                return inputStream.readAllBytes();
+            }
+        }
+    }
+
+    private String saveToFileSystem(byte[] content, Trademark tm) {
+        if (content == null || tm.getApplicationNo() == null || tm.getTmClass() == null) {
+            return null;
+        }
+        String extensionType = ".jpg";
+        String applicationNumber = tm.getApplicationNo().toString();
+        String tmClass = tm.getTmClass().toString();
+        String resourcesDir = Paths.get(baseFileUploadDirectory).toAbsolutePath().toString();
+        String filePath = tmClass + "-" + applicationNumber + "." + extensionType;
+        Path newFile = Paths.get(resourcesDir, filePath);
+        try {
+            Files.createDirectories(newFile.getParent());
+            Files.write(newFile, content);
+        } catch (IOException e) {
+            log.error("unable to save image, Reason: {}", e.getLocalizedMessage());
+        }
+        return filePath;
     }
 }

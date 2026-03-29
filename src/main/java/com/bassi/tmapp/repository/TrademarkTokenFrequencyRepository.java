@@ -9,4 +9,7 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface TrademarkTokenFrequencyRepository extends JpaRepository<TrademarkTokenFrequency, Long> {}
+public interface TrademarkTokenFrequencyRepository extends JpaRepository<TrademarkTokenFrequency, Long> {
+    @Query("SELECT tf.word FROM TrademarkTokenFrequency tf WHERE tf.word = ?1 ORDER BY tf.word LIMIT 1")
+    String findByWord(String word);
+}

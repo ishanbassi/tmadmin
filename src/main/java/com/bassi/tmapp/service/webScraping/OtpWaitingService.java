@@ -33,8 +33,8 @@ public class OtpWaitingService {
     }
 
     // Called by REST endpoint when you submit OTP
-    public boolean submitOtp(String phoneNumber, String otp) {
-        CompletableFuture<String> future = pendingOtps.get(phoneNumber);
+    public boolean submitOtp(String optReceiverAddress, String otp) {
+        CompletableFuture<String> future = pendingOtps.get(optReceiverAddress);
         if (future != null) {
             future.complete(otp);
             return true;
@@ -42,7 +42,7 @@ public class OtpWaitingService {
         return false; // no pending request for this number
     }
 
-    public boolean hasPendingOtp(String phoneNumber) {
-        return pendingOtps.containsKey(phoneNumber);
+    public boolean hasPendingOtp(String optReceiverAddress) {
+        return pendingOtps.containsKey(optReceiverAddress);
     }
 }

@@ -1,5 +1,6 @@
 package com.bassi.tmapp.service;
 
+import com.bassi.tmapp.config.ImapProperties.ImapAccount;
 import com.bassi.tmapp.service.extended.PublishedTmServiceExtended;
 import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
 import java.io.IOException;
@@ -20,7 +21,6 @@ public class TrademarkScheduler {
     private static final Logger log = LoggerFactory.getLogger(TrademarkScheduler.class);
     private static final AtomicBoolean isAutomationRunning = new AtomicBoolean(false);
     private static final AtomicBoolean isPdfExtractionsAutomationRunning = new AtomicBoolean(false);
-    private final AtomicBoolean useFirstNumber = new AtomicBoolean(true);
 
     @Autowired
     private TrademarkScrapingService trademarkScrapingService;
@@ -28,36 +28,27 @@ public class TrademarkScheduler {
     @Autowired
     private PublishedTmServiceExtended publishedTmServiceExtended;
 
+    @Autowired
+    private EmailRotatorService emailRotatorService;
+
     @Scheduled(cron = "0 0 9-23 * * *", zone = "Asia/Kolkata")
-    public void scheduledRun() {
+    public void scheduledRun() throws Exception {
         if (isAutomationRunning.get()) {
             log.warn("Previous session still running, skipping this trigger.");
             return;
         }
 
         isAutomationRunning.set(true);
-        String phoneNumber = useFirstNumber.getAndSet(!useFirstNumber.get()) ? "9878987497" : "6239771006";
 
         log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
-        trademarkScrapingService.executeTrademarkAutomationForUpdates(phoneNumber, true);
+        ImapAccount account = emailRotatorService.getNextAccount();
+        trademarkScrapingService.scrapeLatestTrademarks(account);
     }
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")
     public void downloadLatestJournal() throws IOException {
         log.info("Journal pdf downloader Automation Scheduler triggered at: {}", LocalDateTime.now());
         publishedTmServiceExtended.downloadLatestPdfAndreadPdfFileV2();
-    }
-
-    @Scheduled(cron = "0 */5 * * * *", zone = "Asia/Kolkata")
-    public void processTmExtraction() {
-        if (isPdfExtractionsAutomationRunning.get()) {
-            log.warn("Previous pdf extractions session still running, skipping this trigger.");
-            return;
-        }
-
-        isPdfExtractionsAutomationRunning.set(true);
-        log.info("Journal pdf tm extraction Automation Scheduler triggered at: {}", LocalDateTime.now());
-        publishedTmServiceExtended.readMissingPdfFile();
     }
 
     public static boolean isRunning() {

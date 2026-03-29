@@ -1,20 +1,19 @@
 package com.bassi.tmapp.web.rest;
 
+import com.bassi.tmapp.config.ImapProperties.ImapAccount;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.service.CurrentUserService;
 import com.bassi.tmapp.service.DocumentsService;
+import com.bassi.tmapp.service.EmailOtpService;
+import com.bassi.tmapp.service.EmailRotatorService;
 import com.bassi.tmapp.service.SlugUtil;
 import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
-import com.bassi.tmapp.service.dto.PaymentDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
-import com.bassi.tmapp.service.dto.TrademarkOrderSummary;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
-import com.bassi.tmapp.service.dto.TrademarkSimiliarityResultDTO;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
-import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
@@ -34,7 +33,16 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.PaginationUtil;
@@ -66,6 +74,9 @@ public class TrademarkResource {
 
     private final TrademarkMapper trademarkMapper;
     private final TrademarkScrapingService trademarkScrapingService;
+    private final EmailOtpService emailOtpService;
+
+    private final EmailRotatorService emailRotatorService;
 
     public TrademarkResource(
         TrademarkService trademarkService,
@@ -74,7 +85,9 @@ public class TrademarkResource {
         DocumentsService documentsService,
         CurrentUserService currentUserService,
         TrademarkMapper trademarkMapper,
-        TrademarkScrapingService trademarkScrapingService
+        TrademarkScrapingService trademarkScrapingService,
+        EmailOtpService emailOtpService,
+        EmailRotatorService emailRotatorService
     ) {
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
@@ -83,6 +96,8 @@ public class TrademarkResource {
         this.currentUserService = currentUserService;
         this.trademarkMapper = trademarkMapper;
         this.trademarkScrapingService = trademarkScrapingService;
+        this.emailOtpService = emailOtpService;
+        this.emailRotatorService = emailRotatorService;
     }
 
     /**
@@ -356,9 +371,24 @@ public class TrademarkResource {
     }
 
     @PostMapping("/automate/scrape/{journalNo}")
-    public String executeTrademarkScrapingAutomation(@PathVariable("journalNo") Integer journalNo) {
-        trademarkScrapingService.fillAndSubmitOtp(journalNo, "9878987497", true);
+    public String executeTrademarkScrapingAutomation(@PathVariable("journalNo") Integer journalNo) throws Exception {
+        ImapAccount account = emailRotatorService.getNextAccount();
+        trademarkScrapingService.fillAndSubmitOtp(journalNo, account);
         return "Scraping Started";
+    }
+
+    @PostMapping("/automate/scrape/latest")
+    public String executeLatestTrademarkScrapingAutomation() throws Exception {
+        ImapAccount account = emailRotatorService.getNextAccount();
+        trademarkScrapingService.scrapeLatestTrademarks(account);
+        return "Scraping Started";
+    }
+
+    @PostMapping("/receive-email-otp")
+    public String readEmailOtp() throws Exception {
+        ImapAccount account = emailRotatorService.getNextAccount();
+        String otp = emailOtpService.waitForOtp(account);
+        return "Email Reading";
     }
 
     private String buildSchema(TrademarkDTO trademark) {

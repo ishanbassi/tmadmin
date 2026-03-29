@@ -191,3 +191,37 @@ asset-base-path: /opt/application/production/
 selenium:
   asset: /opt/application/production/selenium/
   headless: true
+
+otp:
+  sender:
+    email: delhi.tmr@nic.in
+  wait:
+    poll:
+      interval:
+        seconds: 10
+    timeout:
+      seconds: 300
+imap:
+  accounts:
+    - type: EMAIL
+      username: support@trademarx.in
+      password: Ish@n070720
+      host: imap.hostinger.com
+      port: 993
+      folder: INBOX
+    - type: EMAIL
+      username: ishanbassi23@gmail.com
+      password: unjm nzwi qcwb issj
+      host: imap.gmail.com
+      port: 993
+      folder: INBOX
+    - type: EMAIL
+      username: bassitrademarx@gmail.com
+      password: lswo naix lrrd ndli
+      host: imap.gmail.com
+      port: 993
+      folder: INBOX
+    - type: PHONE
+      phoneNumber: 6239771006
+    - type: PHONE
+      phoneNumber: 9878987497
