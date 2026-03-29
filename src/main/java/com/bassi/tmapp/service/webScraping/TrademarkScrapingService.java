@@ -949,8 +949,9 @@ public class TrademarkScrapingService {
 
         trademarkService.saveTrademarksAndGenerateTokensInNewTransaction(tm, null);
 
-        // this back button click is actually closes the table modal as it overshadows the whole page
-        WebElement backButtonElement = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Back']")));
+        WebElement backButtonElement = wait.until(
+            ExpectedConditions.elementToBeClickable(By.cssSelector("#ViewModel .modal-header .btn-close"))
+        );
         HumanClick.moveAndClick(driver, backButtonElement);
     }
 

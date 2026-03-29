@@ -45,6 +45,23 @@ public class TrademarkScheduler {
         trademarkScrapingService.scrapeLatestTrademarks(account);
     }
 
+    @Scheduled(cron = "0 0 0-8 * * *", zone = "Asia/Kolkata")
+    public void scheduledLateNightRun() throws Exception {
+        if (isAutomationRunning.get()) {
+            log.warn("Previous session still running, skipping this trigger.");
+            return;
+        }
+
+        isAutomationRunning.set(true);
+
+        log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
+        ImapAccount account = emailRotatorService.getNextAccount();
+        while (account.isPhone()) {
+            account = emailRotatorService.getNextAccount();
+        }
+        trademarkScrapingService.scrapeLatestTrademarks(account);
+    }
+
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")
     public void downloadLatestJournal() throws IOException {
         log.info("Journal pdf downloader Automation Scheduler triggered at: {}", LocalDateTime.now());
