@@ -4,6 +4,7 @@ import com.bassi.tmapp.config.ImapProperties.ImapAccount;
 import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.enumeration.HeadOffice;
+import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.extended.PublishedTmRepositoryExtended;
@@ -922,6 +923,7 @@ public class TrademarkScrapingService {
         tm.setCountry(country);
         tm.setFilingMode(filingMode);
         tm.setTrademarkStatus(status);
+        tm.setSource(TrademarkSource.SCRAPPER);
         if (applicationDate != null && !applicationDate.isBlank()) {
             tm.setApplicationDate(LocalDate.parse(applicationDate, formatter));
         }
