@@ -94,7 +94,7 @@
     {
       "fieldName": "source",
       "fieldType": "TrademarkSource",
-      "fieldValues": "JOURNAL_PUBLICATION,EXCEL,ADMIN_PORTAL,MEMBER_PORTAL"
+      "fieldValues": "JOURNAL_PUBLICATION,EXCEL,ADMIN_PORTAL,MEMBER_PORTAL,SCRAPPER"
     },
     {
       "fieldName": "phoneNumber",

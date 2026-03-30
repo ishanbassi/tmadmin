@@ -8,4 +8,5 @@ public enum TrademarkSource {
     EXCEL,
     ADMIN_PORTAL,
     MEMBER_PORTAL,
+    SCRAPPER,
 }

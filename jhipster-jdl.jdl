@@ -299,7 +299,8 @@ enum TrademarkSource{
     JOURNAL_PUBLICATION,
     EXCEL,
     ADMIN_PORTAL,
-    MEMBER_PORTAL
+    MEMBER_PORTAL,
+    SCRAPPER
 
 
 }

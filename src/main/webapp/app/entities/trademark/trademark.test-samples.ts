@@ -45,7 +45,7 @@ export const sampleWithFullData: ITrademark = {
   renewalDate: dayjs('2024-05-22'),
   type: 'TRADEMARK_WITH_IMAGE',
   pageNo: 20941,
-  source: 'MEMBER_PORTAL',
+  source: 'SCRAPPER',
   phoneNumber: 'curry',
   email: 'Favian_Barton16@gmail.com',
   organizationType: 'substantiate',
