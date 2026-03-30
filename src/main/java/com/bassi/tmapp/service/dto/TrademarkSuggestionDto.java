@@ -15,14 +15,20 @@ public class TrademarkSuggestionDto {
     private String proprietorName;
     private java.sql.Date applicationDate;
 
-    public TrademarkSuggestionDto(String name, String details, Long applicationNo, Integer tmClass, String imgUrl, TrademarkType type) {
+    public TrademarkSuggestionDto(String name, String details, Long applicationNo, Integer tmClass, String imgUrl, String type) {
         super();
         this.name = name;
         this.tmClass = tmClass;
         this.details = details;
         this.applicationNo = applicationNo;
         this.imgUrl = imgUrl;
-        this.type = type;
+        if (type != null) {
+            try {
+                this.type = TrademarkType.valueOf(type.toUpperCase());
+            } catch (Exception e) {
+                this.type = null;
+            }
+        }
     }
 
     public TrademarkSuggestionDto(
@@ -31,7 +37,7 @@ public class TrademarkSuggestionDto {
         Long applicationNo,
         Integer tmClass,
         String imgUrl,
-        TrademarkType type,
+        String type,
         String proprietorName,
         java.sql.Date applicationDate
     ) {
@@ -41,9 +47,15 @@ public class TrademarkSuggestionDto {
         this.details = details;
         this.applicationNo = applicationNo;
         this.imgUrl = imgUrl;
-        this.type = type;
         this.proprietorName = proprietorName;
         this.applicationDate = applicationDate;
+        if (type != null) {
+            try {
+                this.type = TrademarkType.valueOf(type.toUpperCase());
+            } catch (Exception e) {
+                this.type = null;
+            }
+        }
     }
 
     public String getName() {
