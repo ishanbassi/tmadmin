@@ -6,4 +6,6 @@ export enum TrademarkSource {
   ADMIN_PORTAL = 'ADMIN_PORTAL',
 
   MEMBER_PORTAL = 'MEMBER_PORTAL',
+
+  SCRAPPER = 'SCRAPPER',
 }
