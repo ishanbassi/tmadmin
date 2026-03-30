@@ -921,6 +921,7 @@ public class TrademarkScrapingService {
         tm.setState(state);
         tm.setCountry(country);
         tm.setFilingMode(filingMode);
+        tm.setTrademarkStatus(status);
         if (applicationDate != null && !applicationDate.isBlank()) {
             tm.setApplicationDate(LocalDate.parse(applicationDate, formatter));
         }
@@ -931,7 +932,17 @@ public class TrademarkScrapingService {
             tm.setApplicationNo(Long.valueOf(applicationNo));
         }
         if (tmClass != null && !tmClass.isBlank()) {
-            tm.setTmClass(Integer.valueOf(tmClass));
+            try {
+                Pattern pattern = Pattern.compile("^\\d+");
+                Matcher matcher = pattern.matcher(tmClass);
+
+                if (matcher.find()) {
+                    int result = Integer.parseInt(matcher.group());
+                    tm.setTmClass(result);
+                }
+            } catch (NumberFormatException ex) {
+                log.error("Class could not be parsed, reason: {}", ex.getLocalizedMessage());
+            }
         }
         if (headOffice != null && !headOffice.isBlank()) {
             tm.setHeadOffice(HeadOffice.valueOf(headOffice.trim().toUpperCase()));
