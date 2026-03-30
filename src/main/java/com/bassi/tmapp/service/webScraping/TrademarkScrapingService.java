@@ -555,7 +555,7 @@ public class TrademarkScrapingService {
     }
 
     @Async
-    @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 5000))
+    @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 300000))
     public void fillAndSubmitOtp(Integer journalNo, ImapAccount account) throws Exception {
         try {
             WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
@@ -672,7 +672,9 @@ public class TrademarkScrapingService {
                 ExpectedConditions.visibilityOfElementLocated(
                     By.xpath("//button[normalize-space()='Trade Mark Application/Registered Mark']")
                 ),
-                ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='swal2-html-container' and text()='Invalid OTP']"))
+                ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//div[@id='swal2-html-container' and normalize-space()='Invalid OTP']")
+                )
             )
         );
 
@@ -969,7 +971,7 @@ public class TrademarkScrapingService {
     }
 
     @Async
-    @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 5000))
+    @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 300000))
     public void scrapeLatestTrademarks(ImapAccount account) throws Exception {
         try {
             WebDriver driver = createDriverWithProxy("27.34.242.98", 80);

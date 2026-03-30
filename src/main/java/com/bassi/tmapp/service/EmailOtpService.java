@@ -58,12 +58,12 @@ public class EmailOtpService {
         long timeoutMs = timeoutSeconds * 1000L;
 
         // Record time before OTP was requested — ignore older emails
-        Date requestedAt = new Date(startTime - 200000); // 2m buffer
+        Date requestedAt = new Date(startTime - 300000); // 2m buffer
 
         while (System.currentTimeMillis() - startTime < timeoutMs) {
             String otp = fetchOtpFromInbox(account, requestedAt);
             if (otp != null) {
-                log.info("OTP received successfully");
+                log.info("OTP {} received successfully", otp);
                 return otp;
             }
             log.debug("OTP not found yet, retrying in {}s...", pollIntervalSeconds);
