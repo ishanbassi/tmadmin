@@ -352,7 +352,7 @@ public class TrademarkTokenService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void processBatch(List<Trademark> trademarks) {
         // ── Step 1: Build tokens (pure CPU, no DB) ─────────────────────────
         List<TrademarkToken> tokens = trademarks.stream().flatMap(tm -> generateTrademarkTokens(tm).stream()).collect(Collectors.toList());

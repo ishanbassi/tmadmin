@@ -128,7 +128,7 @@ jhipster:
       max-entries: 1000 # Number of objects in each cache entry
   cors:
     # Allow Ionic for JHipster by default (* no longer allowed in Spring Boot 2.4+)
-    allowed-origins: 'https://www.trademarx.in, https://admin.trademarx.in, http://localhost:6700, https://trademarx.in/, https://hcvkbolt.com , https://hcvkbolt.in, https://hcvkbolt.online, https://senton.in, http://localhost:8080'
+    allowed-origins: 'https://www.trademarx.in, https://admin.trademarx.in, http://localhost:6700, https://trademarx.in/, https://hcvkbolt.com , https://hcvkbolt.in, https://hcvkbolt.online, https://senton.in, http://localhost:8080, http://localhost:4200'
     # Enable CORS when running in GitHub Codespaces
     allowed-methods: '*'
     allowed-headers: '*'

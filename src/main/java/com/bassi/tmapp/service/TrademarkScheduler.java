@@ -59,7 +59,7 @@ public class TrademarkScheduler {
         while (account.isPhone()) {
             account = emailRotatorService.getNextAccount();
         }
-        trademarkScrapingService.scrapeLatestTrademarks(account);
+        trademarkScrapingService.executeTrademarkAutomationForUpdates(account);
     }
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")
