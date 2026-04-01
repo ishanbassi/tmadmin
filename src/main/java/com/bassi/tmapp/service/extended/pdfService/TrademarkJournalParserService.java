@@ -72,6 +72,7 @@ public class TrademarkJournalParserService {
     private PublishedTmRepositoryExtended publishedTmRepositoryExtended;
     private TrademarkClassService trademarkClassService;
     private TrademarkService trademarkService;
+    private WordSanitizationService wordSanitizationService;
 
     @Autowired
     @Lazy
@@ -211,20 +212,19 @@ public class TrademarkJournalParserService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void readPdfAndSaveDetails(String path) {
-        List<PublishedTmDTO> publishedTrademarksDto = readPdf(path);
-        List<Trademark> trademarks = journalTrademarkMapper.toEntity(publishedTrademarksDto);
+        List<Trademark> publishedTrademarksDto = readPdf(path);
 
         try {
-            trademarkService.saveAllTrademarksAndGenerateTokensInBatch(trademarks);
+            trademarkService.saveAllTrademarksAndGenerateTokensInBatch(publishedTrademarksDto);
         } catch (Exception e) {
             log.error("Failed to save trademark for the file : {}, Reason: {}", path, e.getLocalizedMessage());
         }
     }
 
-    public List<PublishedTmDTO> readPdf(String pdfFilePath) {
+    public List<Trademark> readPdf(String pdfFilePath) {
         PublishedTmDTO currentPublishedTmDto = new PublishedTmDTO();
         log.info("Going to read pdf file: {}", pdfFilePath);
-        List<PublishedTmDTO> publishedTrademarks = new ArrayList<>();
+        List<Trademark> publishedTrademarks = new ArrayList<>();
 
         try (PdfDocument pdfDoc = new PdfDocument(new PdfReader(pdfFilePath))) {
             for (int i = 1; i <= pdfDoc.getNumberOfPages(); i++) {
@@ -254,16 +254,6 @@ public class TrademarkJournalParserService {
                         currentPublishedTmDto.setImgUrl(path);
                     }
 
-                    if (isInfoMissing(currentPublishedTmDto)) {
-                        if (currentPublishedTmDto != null && currentPublishedTmDto.getImgUrl() != null) {
-                            deleteTmImg(currentPublishedTmDto.getImgUrl());
-                        }
-                        if (currentPublishedTmDto != null) {
-                            currentPublishedTmDto.setFilePath(pdfFilePath);
-                        }
-                        continue;
-                    }
-
                     // if both image and trademark	 is present, remove the trademark
                     if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
                         currentPublishedTmDto.setName(null);
@@ -275,13 +265,24 @@ public class TrademarkJournalParserService {
                         currentPublishedTmDto.getTmClass() == 99 &&
                         currentPublishedTmDto.getDetails() != null
                     ) {
-                        List<PublishedTmDTO> class99Trademarks = processTmClass99(currentPublishedTmDto)
+                        List<Trademark> class99Trademarks = processTmClass99(currentPublishedTmDto)
                             .stream()
                             .filter(x -> !isInfoMissing(x))
                             .toList();
                         publishedTrademarks.addAll(class99Trademarks);
                     }
-                    publishedTrademarks.add(currentPublishedTmDto);
+                    Trademark tm = journalTrademarkMapper.toEntity(currentPublishedTmDto);
+                    if (tm.getName() != null) {
+                        tm.setNormalizedName(wordSanitizationService.sanitizeWord(tm.getName()));
+                    }
+                    if (isInfoMissing(tm)) {
+                        if (tm != null && tm.getImgUrl() != null) {
+                            deleteTmImg(tm.getImgUrl());
+                        }
+                        continue;
+                    }
+
+                    publishedTrademarks.add(tm);
                 } catch (Exception e) {
                     log.error("Unable to page No : {} , Trademark Details: {}, Reason: {}", i, currentPublishedTmDto, e.getMessage());
                 }
@@ -547,7 +548,7 @@ public class TrademarkJournalParserService {
         return subWords.stream().map(word -> phoneticsServiceExtended.generatePhonetics(word)).toList();
     }
 
-    private boolean isInfoMissing(PublishedTmDTO tm) {
+    private boolean isInfoMissing(Trademark tm) {
         return !(
             tm != null &&
             tm.getTmClass() != null &&
@@ -577,9 +578,9 @@ public class TrademarkJournalParserService {
         }
     }
 
-    private List<PublishedTmDTO> processTmClass99(PublishedTmDTO tm) {
+    private List<Trademark> processTmClass99(PublishedTmDTO tm) {
         List<String> tmClasses = new ArrayList<>();
-        List<PublishedTmDTO> class99Trademarks = new ArrayList<>();
+        List<Trademark> class99Trademarks = new ArrayList<>();
 
         // this threshold is used to remove unwanted words in the details
         int subStringThreshold = 3;
@@ -604,7 +605,11 @@ public class TrademarkJournalParserService {
                 String details = trademarkDto.getDetails().substring(idx + subStringThreshold);
                 trademarkDto.setDetails(details);
             }
-            class99Trademarks.add(trademarkDto);
+            Trademark trademark = journalTrademarkMapper.toEntity(trademarkDto);
+            if (tm.getName() != null) {
+                trademark.setNormalizedName(wordSanitizationService.sanitizeWord(tm.getName()));
+            }
+            class99Trademarks.add(trademark);
 
             // Reset the matcher back to the end of the last match
             matcher.region(endOfCurrentMatch, tm.getDetails().length());

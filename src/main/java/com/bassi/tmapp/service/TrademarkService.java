@@ -7,11 +7,15 @@ import com.bassi.tmapp.repository.TokenPhoneticRepository;
 import com.bassi.tmapp.repository.TrademarkRepository;
 import com.bassi.tmapp.repository.TrademarkTokenRepository;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
+import com.bassi.tmapp.service.dto.AppNoRangeDto;
+import com.bassi.tmapp.service.dto.JournalStatsDto;
 import com.bassi.tmapp.service.dto.PartialTokenPhoneticDto;
 import com.bassi.tmapp.service.dto.PartialTrademarkTokenDto;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkDailyStatsDto;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
+import com.bassi.tmapp.service.dto.TrademarkStatsInterface;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
 import com.bassi.tmapp.service.dto.UserProfileDTO;
 import com.bassi.tmapp.service.extended.TmAgentServiceExtended;
@@ -19,6 +23,10 @@ import com.bassi.tmapp.service.extended.WordSanitizationService;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
 import com.bassi.tmapp.service.mapper.TrademarkMapper;
 import com.bassi.tmapp.service.webScraping.TrademarkScrapingService;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -443,5 +451,56 @@ public class TrademarkService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void saveTrademarksAndGenerateTokensInNewTransaction(Trademark tm, TrademarkSource trademarkSource) {
         saveTrademarksAndGenerateTokens(tm, trademarkSource);
+    }
+
+    public TrademarkDailyStatsDto getDailyStats() {
+        TrademarkDailyStatsDto dailyStatsDto = new TrademarkDailyStatsDto();
+        Long estimatedFilings = estimateTodayFilings();
+
+        List<TrademarkSuggestionDto> recentFilings = getRecentFilings(6);
+        if (!recentFilings.isEmpty()) {
+            Timestamp lastUpdated = recentFilings.get(recentFilings.size() - 1).getCreatedDate();
+            dailyStatsDto.setLastUpdated(lastUpdated);
+        }
+
+        Long totalTrademarks = trademarkRepository.findTotalTrademarks();
+        JournalStatsDto journalStatsDto = getLatestJournalStats();
+        dailyStatsDto.setApplicationsFiled(estimatedFilings);
+        dailyStatsDto.setJournalStatsDto(journalStatsDto);
+        dailyStatsDto.setRecentFilings(recentFilings);
+        dailyStatsDto.setTotalTrademarks(totalTrademarks);
+        return dailyStatsDto;
+    }
+
+    public long estimateTodayFilings() {
+        ZoneId zone = ZoneId.of("Asia/Kolkata");
+
+        ZonedDateTime start = ZonedDateTime.now(zone).toLocalDate().atStartOfDay(zone);
+        ZonedDateTime end = start.plusDays(1);
+
+        AppNoRangeDto range = trademarkRepository.findTodayAppRange(start, end);
+
+        if (range == null || range.getMinAppNo() == null || range.getMaxAppNo() == null) {
+            return 0;
+        }
+
+        return range.getMaxAppNo() - range.getMinAppNo() + 1;
+    }
+
+    public List<TrademarkSuggestionDto> getRecentFilings(int limit) {
+        return trademarkRepository
+            .findRecentFilings(limit)
+            .stream()
+            .map(t -> {
+                String slug = SlugUtil.generate(t.getName(), t.getTmClass(), t.getApplicationNo(), t.getType());
+
+                t.setUrl("/trademarks/" + slug);
+                return t;
+            })
+            .toList();
+    }
+
+    public JournalStatsDto getLatestJournalStats() {
+        return trademarkRepository.getLatestJournalStats();
     }
 }

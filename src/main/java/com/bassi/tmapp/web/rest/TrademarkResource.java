@@ -12,6 +12,7 @@ import com.bassi.tmapp.service.TrademarkQueryService;
 import com.bassi.tmapp.service.TrademarkService;
 import com.bassi.tmapp.service.criteria.TrademarkCriteria;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
+import com.bassi.tmapp.service.dto.TrademarkDailyStatsDto;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
 import com.bassi.tmapp.service.extended.dto.TrademarkWithLogoDto;
@@ -417,5 +418,10 @@ public class TrademarkResource {
                 trademark.getApplicationNo(),
                 trademark.getTmClass()
             );
+    }
+
+    @GetMapping("/daily-stats")
+    public ResponseEntity<TrademarkDailyStatsDto> getDailyStats() {
+        return ResponseEntity.ok(trademarkService.getDailyStats());
     }
 }

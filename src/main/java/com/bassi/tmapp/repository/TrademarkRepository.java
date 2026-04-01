@@ -4,12 +4,16 @@ import com.bassi.tmapp.domain.PublishedTm;
 import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.UserProfile;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
+import com.bassi.tmapp.service.dto.AppNoRangeDto;
+import com.bassi.tmapp.service.dto.JournalStatsDto;
 import com.bassi.tmapp.service.dto.StatusCountDTO;
 import com.bassi.tmapp.service.dto.TrademarkDTO;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateDto;
 import com.bassi.tmapp.service.dto.TrademarkSimilarityCandidateWithPubTmDto;
+import com.bassi.tmapp.service.dto.TrademarkStatsInterface;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionDto;
 import com.bassi.tmapp.service.dto.TrademarkSuggestionInterface;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -118,7 +122,7 @@ public interface TrademarkRepository
                   WHEN t.normalized_name LIKE CONCAT('% ', :prefix, '%') THEN 3
                   ELSE 4
               END,
-              t.normalized_name
+              t.normalized_name, t.application_no
             LIMIT :limit
         """,
         nativeQuery = true
@@ -164,4 +168,47 @@ public interface TrademarkRepository
 
     @Query(value = "SELECT tm.applicationNo FROM Trademark tm  order by tm.applicationNo desc limit 1")
     Long findLatestApplicationNo();
+
+    @Query(
+        """
+            SELECT
+                MIN(t.applicationNo) as minAppNo,
+                MAX(t.applicationNo) as maxAppNo
+            FROM Trademark t
+            WHERE t.createdDate >= :start AND t.createdDate < :end
+        """
+    )
+    AppNoRangeDto findTodayAppRange(@Param("start") ZonedDateTime start, @Param("end") ZonedDateTime end);
+
+    @Query(
+        value = """
+            SELECT t.name, t.application_no, t.tm_class, t.img_url, t.type, t.trademark_status,t.created_date
+            FROM trademark t
+            ORDER BY t.application_no desc
+            LIMIT :limit
+        """,
+        nativeQuery = true
+    )
+    List<TrademarkSuggestionDto> findRecentFilings(@Param("limit") Integer limit);
+
+    @Query("SELECT MAX(t.journalNo) FROM Trademark t")
+    Integer findLatestJournalNo();
+
+    @Query(
+        """
+            SELECT
+                t.journalNo as journalNo,
+                COUNT(t) as count,
+                MIN(t.createdDate) as publishedDate
+            FROM Trademark t
+            WHERE t.journalNo = (
+                SELECT MAX(t2.journalNo) FROM Trademark t2
+            )
+            GROUP BY t.journalNo
+        """
+    )
+    JournalStatsDto getLatestJournalStats();
+
+    @Query("SELECT count(*) FROM Trademark t")
+    Long findTotalTrademarks();
 }

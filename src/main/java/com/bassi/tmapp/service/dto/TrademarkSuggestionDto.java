@@ -1,7 +1,9 @@
 package com.bassi.tmapp.service.dto;
 
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 public class TrademarkSuggestionDto {
 
@@ -14,6 +16,8 @@ public class TrademarkSuggestionDto {
     private String url;
     private String proprietorName;
     private java.sql.Date applicationDate;
+    private Timestamp createdDate;
+    private String status;
 
     public TrademarkSuggestionDto(String name, String details, Long applicationNo, Integer tmClass, String imgUrl, String type) {
         super();
@@ -49,6 +53,32 @@ public class TrademarkSuggestionDto {
         this.imgUrl = imgUrl;
         this.proprietorName = proprietorName;
         this.applicationDate = applicationDate;
+        if (type != null) {
+            try {
+                this.type = TrademarkType.valueOf(type.toUpperCase());
+            } catch (Exception e) {
+                this.type = null;
+            }
+        }
+    }
+
+    public TrademarkSuggestionDto(
+        String name,
+        Long applicationNo,
+        Integer tmClass,
+        String imgUrl,
+        String type,
+        String status,
+        Timestamp createdDate
+    ) {
+        super();
+        this.name = name;
+        this.tmClass = tmClass;
+        this.applicationNo = applicationNo;
+        this.imgUrl = imgUrl;
+        this.status = status;
+        this.createdDate = createdDate;
+
         if (type != null) {
             try {
                 this.type = TrademarkType.valueOf(type.toUpperCase());
@@ -130,6 +160,14 @@ public class TrademarkSuggestionDto {
         this.applicationDate = applicationDate;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return (
@@ -165,5 +203,13 @@ public class TrademarkSuggestionDto {
             super.toString() +
             "]"
         );
+    }
+
+    public Timestamp getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Timestamp createdDate) {
+        this.createdDate = createdDate;
     }
 }
