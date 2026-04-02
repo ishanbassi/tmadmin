@@ -949,7 +949,7 @@ public class TrademarkScrapingService {
             }
         }
         if (headOffice != null && !headOffice.isBlank()) {
-            tm.setHeadOffice(HeadOffice.valueOf(headOffice.trim().toUpperCase()));
+            tm.setHeadOffice(headOffice.trim().toUpperCase());
         }
         if (type != null && !type.isBlank()) {
             TrademarkType tmType = type.equals("WORD") ? TrademarkType.TRADEMARK : type.equals("DEVICE") ? TrademarkType.IMAGEMARK : null;
