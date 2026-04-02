@@ -45,7 +45,7 @@ public class TrademarkScheduler {
         trademarkScrapingService.scrapeLatestTrademarks(account);
     }
 
-    @Scheduled(cron = "0 0 23-8 * * *", zone = "Asia/Kolkata")
+    @Scheduled(cron = "0 0 23,0-8 * * *", zone = "Asia/Kolkata")
     public void scheduledLateNightRun() throws Exception {
         if (isAutomationRunning.get()) {
             log.warn("Previous session still running, skipping this trigger.");
