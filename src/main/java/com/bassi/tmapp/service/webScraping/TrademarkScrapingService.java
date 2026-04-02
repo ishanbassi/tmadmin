@@ -933,17 +933,17 @@ public class TrademarkScrapingService {
             tm.setRenewalDate(LocalDate.parse(renewalDate, formatter));
         }
         if (applicationNo != null && !applicationNo.isBlank()) {
-            tm.setApplicationNo(Long.valueOf(applicationNo));
+            try {
+                Long result = Long.parseLong(extractNumber(applicationNo));
+                tm.setApplicationNo(result);
+            } catch (NumberFormatException ex) {
+                log.error("Application number could not be parsed, reason: {}", ex.getLocalizedMessage());
+            }
         }
         if (tmClass != null && !tmClass.isBlank()) {
             try {
-                Pattern pattern = Pattern.compile("^\\d+");
-                Matcher matcher = pattern.matcher(tmClass);
-
-                if (matcher.find()) {
-                    int result = Integer.parseInt(matcher.group());
-                    tm.setTmClass(result);
-                }
+                int result = Integer.parseInt(extractNumber(tmClass));
+                tm.setTmClass(result);
             } catch (NumberFormatException ex) {
                 log.error("Class could not be parsed, reason: {}", ex.getLocalizedMessage());
             }
@@ -1100,5 +1100,12 @@ public class TrademarkScrapingService {
             log.error("unable to save image, Reason: {}", e.getLocalizedMessage());
         }
         return filePath;
+    }
+
+    public static String extractNumber(String input) {
+        if (input == null) return null;
+
+        Matcher matcher = Pattern.compile("\\d+").matcher(input);
+        return matcher.find() ? matcher.group() : null;
     }
 }
