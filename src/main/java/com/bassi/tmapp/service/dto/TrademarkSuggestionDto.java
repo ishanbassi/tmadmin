@@ -17,7 +17,7 @@ public class TrademarkSuggestionDto {
     private String proprietorName;
     private java.sql.Date applicationDate;
     private Timestamp createdDate;
-    private String status;
+    private String trademarkStatus;
 
     public TrademarkSuggestionDto(String name, String details, Long applicationNo, Integer tmClass, String imgUrl, String type) {
         super();
@@ -68,7 +68,7 @@ public class TrademarkSuggestionDto {
         Integer tmClass,
         String imgUrl,
         String type,
-        String status,
+        String trademarkStatus,
         Timestamp createdDate
     ) {
         super();
@@ -76,7 +76,7 @@ public class TrademarkSuggestionDto {
         this.tmClass = tmClass;
         this.applicationNo = applicationNo;
         this.imgUrl = imgUrl;
-        this.status = status;
+        this.trademarkStatus = trademarkStatus;
         this.createdDate = createdDate;
 
         if (type != null) {
@@ -160,12 +160,12 @@ public class TrademarkSuggestionDto {
         this.applicationDate = applicationDate;
     }
 
-    public String getStatus() {
-        return status;
+    public String getTrademarkStatus() {
+        return trademarkStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setTrademarkStatus(String trademarkStatus) {
+        this.trademarkStatus = trademarkStatus;
     }
 
     @Override
