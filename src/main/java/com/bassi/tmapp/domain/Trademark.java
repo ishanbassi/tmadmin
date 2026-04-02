@@ -1,6 +1,5 @@
 package com.bassi.tmapp.domain;
 
-import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -54,9 +53,8 @@ public class Trademark implements Serializable {
     @Column(name = "proprietor_address")
     private String proprietorAddress;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "head_office")
-    private HeadOffice headOffice;
+    private String headOffice;
 
     @Column(name = "img_url")
     private String imgUrl;
@@ -268,16 +266,16 @@ public class Trademark implements Serializable {
         this.proprietorAddress = proprietorAddress;
     }
 
-    public HeadOffice getHeadOffice() {
+    public String getHeadOffice() {
         return this.headOffice;
     }
 
-    public Trademark headOffice(HeadOffice headOffice) {
+    public Trademark headOffice(String headOffice) {
         this.setHeadOffice(headOffice);
         return this;
     }
 
-    public void setHeadOffice(HeadOffice headOffice) {
+    public void setHeadOffice(String headOffice) {
         this.headOffice = headOffice;
     }
 

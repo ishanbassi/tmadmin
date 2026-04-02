@@ -4,7 +4,6 @@ import { IUserProfile } from 'app/entities/user-profile/user-profile.model';
 import { ITrademarkPlan } from 'app/entities/trademark-plan/trademark-plan.model';
 import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
-import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
 
@@ -18,7 +17,7 @@ export interface ITrademark {
   agentAddress?: string | null;
   proprietorName?: string | null;
   proprietorAddress?: string | null;
-  headOffice?: keyof typeof HeadOffice | null;
+  headOffice?: string | null;
   imgUrl?: string | null;
   tmClass?: number | null;
   journalNo?: number | null;

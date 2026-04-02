@@ -82,7 +82,7 @@ public class TrademarkQueryService extends QueryService<Trademark> {
                 buildStringSpecification(criteria.getAgentAddress(), Trademark_.agentAddress),
                 buildStringSpecification(criteria.getProprietorName(), Trademark_.proprietorName),
                 buildStringSpecification(criteria.getProprietorAddress(), Trademark_.proprietorAddress),
-                buildSpecification(criteria.getHeadOffice(), Trademark_.headOffice),
+                buildStringSpecification(criteria.getHeadOffice(), Trademark_.headOffice),
                 buildStringSpecification(criteria.getImgUrl(), Trademark_.imgUrl),
                 buildRangeSpecification(criteria.getTmClass(), Trademark_.tmClass),
                 buildRangeSpecification(criteria.getJournalNo(), Trademark_.journalNo),

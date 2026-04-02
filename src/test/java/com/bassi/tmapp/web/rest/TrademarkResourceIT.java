@@ -16,7 +16,6 @@ import com.bassi.tmapp.domain.Trademark;
 import com.bassi.tmapp.domain.TrademarkClass;
 import com.bassi.tmapp.domain.TrademarkPlan;
 import com.bassi.tmapp.domain.UserProfile;
-import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import com.bassi.tmapp.repository.TrademarkRepository;
@@ -83,8 +82,8 @@ class TrademarkResourceIT {
     private static final String DEFAULT_PROPRIETOR_ADDRESS = "AAAAAAAAAA";
     private static final String UPDATED_PROPRIETOR_ADDRESS = "BBBBBBBBBB";
 
-    private static final HeadOffice DEFAULT_HEAD_OFFICE = HeadOffice.DELHI;
-    private static final HeadOffice UPDATED_HEAD_OFFICE = HeadOffice.MUMBAI;
+    private static final String DEFAULT_HEAD_OFFICE = "AAAAAAAAAA";
+    private static final String UPDATED_HEAD_OFFICE = "BBBBBBBBBB";
 
     private static final String DEFAULT_IMG_URL = "AAAAAAAAAA";
     private static final String UPDATED_IMG_URL = "BBBBBBBBBB";
@@ -336,7 +335,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].agentAddress").value(hasItem(DEFAULT_AGENT_ADDRESS)))
             .andExpect(jsonPath("$.[*].proprietorName").value(hasItem(DEFAULT_PROPRIETOR_NAME)))
             .andExpect(jsonPath("$.[*].proprietorAddress").value(hasItem(DEFAULT_PROPRIETOR_ADDRESS)))
-            .andExpect(jsonPath("$.[*].headOffice").value(hasItem(DEFAULT_HEAD_OFFICE.toString())))
+            .andExpect(jsonPath("$.[*].headOffice").value(hasItem(DEFAULT_HEAD_OFFICE)))
             .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
             .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
@@ -396,7 +395,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.agentAddress").value(DEFAULT_AGENT_ADDRESS))
             .andExpect(jsonPath("$.proprietorName").value(DEFAULT_PROPRIETOR_NAME))
             .andExpect(jsonPath("$.proprietorAddress").value(DEFAULT_PROPRIETOR_ADDRESS))
-            .andExpect(jsonPath("$.headOffice").value(DEFAULT_HEAD_OFFICE.toString()))
+            .andExpect(jsonPath("$.headOffice").value(DEFAULT_HEAD_OFFICE))
             .andExpect(jsonPath("$.imgUrl").value(DEFAULT_IMG_URL))
             .andExpect(jsonPath("$.tmClass").value(DEFAULT_TM_CLASS))
             .andExpect(jsonPath("$.journalNo").value(DEFAULT_JOURNAL_NO))
@@ -962,6 +961,26 @@ class TrademarkResourceIT {
 
         // Get all the trademarkList where headOffice is not null
         defaultTrademarkFiltering("headOffice.specified=true", "headOffice.specified=false");
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByHeadOfficeContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where headOffice contains
+        defaultTrademarkFiltering("headOffice.contains=" + DEFAULT_HEAD_OFFICE, "headOffice.contains=" + UPDATED_HEAD_OFFICE);
+    }
+
+    @Test
+    @Transactional
+    void getAllTrademarksByHeadOfficeNotContainsSomething() throws Exception {
+        // Initialize the database
+        insertedTrademark = trademarkRepository.saveAndFlush(trademark);
+
+        // Get all the trademarkList where headOffice does not contain
+        defaultTrademarkFiltering("headOffice.doesNotContain=" + UPDATED_HEAD_OFFICE, "headOffice.doesNotContain=" + DEFAULT_HEAD_OFFICE);
     }
 
     @Test
@@ -2234,7 +2253,7 @@ class TrademarkResourceIT {
             .andExpect(jsonPath("$.[*].agentAddress").value(hasItem(DEFAULT_AGENT_ADDRESS)))
             .andExpect(jsonPath("$.[*].proprietorName").value(hasItem(DEFAULT_PROPRIETOR_NAME)))
             .andExpect(jsonPath("$.[*].proprietorAddress").value(hasItem(DEFAULT_PROPRIETOR_ADDRESS)))
-            .andExpect(jsonPath("$.[*].headOffice").value(hasItem(DEFAULT_HEAD_OFFICE.toString())))
+            .andExpect(jsonPath("$.[*].headOffice").value(hasItem(DEFAULT_HEAD_OFFICE)))
             .andExpect(jsonPath("$.[*].imgUrl").value(hasItem(DEFAULT_IMG_URL)))
             .andExpect(jsonPath("$.[*].tmClass").value(hasItem(DEFAULT_TM_CLASS)))
             .andExpect(jsonPath("$.[*].journalNo").value(hasItem(DEFAULT_JOURNAL_NO)))
