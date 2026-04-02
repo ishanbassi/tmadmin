@@ -39,8 +39,7 @@
     },
     {
       "fieldName": "headOffice",
-      "fieldType": "HeadOffice",
-      "fieldValues": "DELHI,MUMBAI,AHMEDABAD,KOLKATA,CHENNAI"
+      "fieldType": "String"
     },
     {
       "fieldName": "imgUrl",

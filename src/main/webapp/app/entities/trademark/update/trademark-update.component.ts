@@ -17,7 +17,6 @@ import { ITmAgent } from 'app/entities/tm-agent/tm-agent.model';
 import { TmAgentService } from 'app/entities/tm-agent/service/tm-agent.service';
 import { ITrademarkClass } from 'app/entities/trademark-class/trademark-class.model';
 import { TrademarkClassService } from 'app/entities/trademark-class/service/trademark-class.service';
-import { HeadOffice } from 'app/entities/enumerations/head-office.model';
 import { TrademarkType } from 'app/entities/enumerations/trademark-type.model';
 import { TrademarkSource } from 'app/entities/enumerations/trademark-source.model';
 import { TrademarkService } from '../service/trademark.service';
@@ -32,7 +31,6 @@ import { TrademarkFormGroup, TrademarkFormService } from './trademark-form.servi
 export class TrademarkUpdateComponent implements OnInit {
   isSaving = false;
   trademark: ITrademark | null = null;
-  headOfficeValues = Object.keys(HeadOffice);
   trademarkTypeValues = Object.keys(TrademarkType);
   trademarkSourceValues = Object.keys(TrademarkSource);
 

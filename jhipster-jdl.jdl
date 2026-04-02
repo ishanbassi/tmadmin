@@ -37,7 +37,7 @@ entity Trademark{
     agentAddress String
     proprietorName String
     proprietorAddress String
-    headOffice HeadOffice
+    headOffice String
     imgUrl String
     tmClass Integer
     journalNo Integer

@@ -1,6 +1,5 @@
 package com.bassi.tmapp.service.criteria;
 
-import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
@@ -22,23 +21,6 @@ import tech.jhipster.service.filter.*;
 @ParameterObject
 @SuppressWarnings("common-java:DuplicatedBlocks")
 public class TrademarkCriteria implements Serializable, Criteria {
-
-    /**
-     * Class for filtering HeadOffice
-     */
-    public static class HeadOfficeFilter extends Filter<HeadOffice> {
-
-        public HeadOfficeFilter() {}
-
-        public HeadOfficeFilter(HeadOfficeFilter filter) {
-            super(filter);
-        }
-
-        @Override
-        public HeadOfficeFilter copy() {
-            return new HeadOfficeFilter(this);
-        }
-    }
 
     /**
      * Class for filtering TrademarkType
@@ -94,7 +76,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
 
     private StringFilter proprietorAddress;
 
-    private HeadOfficeFilter headOffice;
+    private StringFilter headOffice;
 
     private StringFilter imgUrl;
 
@@ -162,7 +144,7 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.agentAddress = other.optionalAgentAddress().map(StringFilter::copy).orElse(null);
         this.proprietorName = other.optionalProprietorName().map(StringFilter::copy).orElse(null);
         this.proprietorAddress = other.optionalProprietorAddress().map(StringFilter::copy).orElse(null);
-        this.headOffice = other.optionalHeadOffice().map(HeadOfficeFilter::copy).orElse(null);
+        this.headOffice = other.optionalHeadOffice().map(StringFilter::copy).orElse(null);
         this.imgUrl = other.optionalImgUrl().map(StringFilter::copy).orElse(null);
         this.tmClass = other.optionalTmClass().map(IntegerFilter::copy).orElse(null);
         this.journalNo = other.optionalJournalNo().map(IntegerFilter::copy).orElse(null);
@@ -368,22 +350,22 @@ public class TrademarkCriteria implements Serializable, Criteria {
         this.proprietorAddress = proprietorAddress;
     }
 
-    public HeadOfficeFilter getHeadOffice() {
+    public StringFilter getHeadOffice() {
         return headOffice;
     }
 
-    public Optional<HeadOfficeFilter> optionalHeadOffice() {
+    public Optional<StringFilter> optionalHeadOffice() {
         return Optional.ofNullable(headOffice);
     }
 
-    public HeadOfficeFilter headOffice() {
+    public StringFilter headOffice() {
         if (headOffice == null) {
-            setHeadOffice(new HeadOfficeFilter());
+            setHeadOffice(new StringFilter());
         }
         return headOffice;
     }
 
-    public void setHeadOffice(HeadOfficeFilter headOffice) {
+    public void setHeadOffice(StringFilter headOffice) {
         this.headOffice = headOffice;
     }
 

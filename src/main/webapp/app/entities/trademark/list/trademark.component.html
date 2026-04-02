@@ -284,13 +284,7 @@
               <td>{{ trademark.agentAddress }}</td>
               <td>{{ trademark.proprietorName }}</td>
               <td>{{ trademark.proprietorAddress }}</td>
-              <td>
-                {{
-                  { null: '', DELHI: 'DELHI', MUMBAI: 'MUMBAI', AHMEDABAD: 'AHMEDABAD', KOLKATA: 'KOLKATA', CHENNAI: 'CHENNAI' }[
-                    trademark.headOffice ?? 'null'
-                  ]
-                }}
-              </td>
+              <td>{{ trademark.headOffice }}</td>
               <td>{{ trademark.imgUrl }}</td>
               <td>{{ trademark.tmClass }}</td>
               <td>{{ trademark.journalNo }}</td>

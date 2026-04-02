@@ -1,6 +1,5 @@
 package com.bassi.tmapp.service.dto;
 
-import com.bassi.tmapp.domain.enumeration.HeadOffice;
 import com.bassi.tmapp.domain.enumeration.TrademarkSource;
 import com.bassi.tmapp.domain.enumeration.TrademarkType;
 import java.io.Serializable;
@@ -35,7 +34,7 @@ public class TrademarkDTO implements Serializable {
 
     private String proprietorAddress;
 
-    private HeadOffice headOffice;
+    private String headOffice;
 
     private String imgUrl;
 
@@ -169,11 +168,11 @@ public class TrademarkDTO implements Serializable {
         this.proprietorAddress = proprietorAddress;
     }
 
-    public HeadOffice getHeadOffice() {
+    public String getHeadOffice() {
         return headOffice;
     }
 
-    public void setHeadOffice(HeadOffice headOffice) {
+    public void setHeadOffice(String headOffice) {
         this.headOffice = headOffice;
     }
 
