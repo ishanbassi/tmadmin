@@ -962,7 +962,7 @@ public class TrademarkScrapingService {
             log.error("Unable to save trademark image, Reason: {}", e.getLocalizedMessage());
         }
 
-        trademarkService.saveTrademarksAndGenerateTokensInNewTransaction(tm, null);
+        trademarkService.saveTrademarksAndGenerateTokensInNewTransaction(tm, TrademarkSource.SCRAPPER);
 
         WebElement backButtonElement = wait.until(
             ExpectedConditions.elementToBeClickable(By.cssSelector("#ViewModel .modal-header .btn-close"))
