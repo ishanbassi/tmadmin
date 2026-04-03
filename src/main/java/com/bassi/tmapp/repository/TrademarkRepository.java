@@ -175,10 +175,14 @@ public interface TrademarkRepository
                 MIN(t.applicationNo) as minAppNo,
                 MAX(t.applicationNo) as maxAppNo
             FROM Trademark t
-            WHERE t.createdDate >= :start AND t.createdDate < :end
+            WHERE t.createdDate >= :start AND t.createdDate < :end AND t.source = :source
         """
     )
-    AppNoRangeDto findTodayAppRange(@Param("start") ZonedDateTime start, @Param("end") ZonedDateTime end);
+    AppNoRangeDto findTodayAppRange(
+        @Param("start") ZonedDateTime start,
+        @Param("end") ZonedDateTime end,
+        @Param("source") TrademarkSource source
+    );
 
     @Query(
         value = """

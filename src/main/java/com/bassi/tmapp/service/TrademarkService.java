@@ -478,7 +478,7 @@ public class TrademarkService {
         ZonedDateTime start = ZonedDateTime.now(zone).toLocalDate().atStartOfDay(zone);
         ZonedDateTime end = start.plusDays(1);
 
-        AppNoRangeDto range = trademarkRepository.findTodayAppRange(start, end);
+        AppNoRangeDto range = trademarkRepository.findTodayAppRange(start, end, TrademarkSource.SCRAPPER);
 
         if (range == null || range.getMinAppNo() == null || range.getMaxAppNo() == null) {
             return 0;
