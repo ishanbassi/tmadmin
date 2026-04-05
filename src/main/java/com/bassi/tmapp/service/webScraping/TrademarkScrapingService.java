@@ -576,17 +576,17 @@ public class TrademarkScrapingService {
     private void solveExpression(WebDriver driver, WebDriverWait wait, WebElement buttonElement, Boolean isFirstStageCaptcha) {
         // Step 2: Read the CAPTCHA expression text
         boolean solved = false;
-        int maxAttempts = 5; // safety guard
+        int maxAttempts = 2;
         int attempt = 0;
         while (!solved && attempt < maxAttempts) {
             attempt++;
             WebElement labelElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("captchatext")));
             String labelExpressionText = labelElement.getText();
-            log.info("input value found: " + labelExpressionText);
+            log.info("input value found: {}", labelExpressionText);
 
             WebElement captchaElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("CaptchModel_CaptchaNumbers")));
             String inputExpressionText = captchaElement.getAttribute("value");
-            log.info("input value found: " + inputExpressionText);
+            log.info("input value found: {}", inputExpressionText);
 
             String expression = labelExpressionText.concat(" ").concat(inputExpressionText);
 
@@ -601,7 +601,7 @@ public class TrademarkScrapingService {
             HumanTyping.clearAndType(answerInput, answer);
             HumanDelay.betweenActions();
 
-            log.info("Computed answer: " + answer);
+            log.info("Computed answer: {}", answer);
             HumanClick.moveAndClick(driver, buttonElement);
             if (Boolean.TRUE.equals(isFirstStageCaptcha)) {
                 WebElement resultElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("swal2-html-container")));

@@ -204,6 +204,18 @@ otp:
 imap:
   accounts:
     - type: EMAIL
+      username: info@senton.in
+      password: Senton@2026
+      host: imap.hostinger.com
+      port: 993
+      folder: INBOX
+    - type: EMAIL
+      username: info@hcvkbolt.com
+      password: Hcvkbolt@2026
+      host: imap.hostinger.com
+      port: 993
+      folder: INBOX
+    - type: EMAIL
       username: support@trademarx.in
       password: Ish@n070720
       host: imap.hostinger.com
@@ -221,7 +233,3 @@ imap:
       host: imap.gmail.com
       port: 993
       folder: INBOX
-    - type: PHONE
-      phoneNumber: 6239771006
-    - type: PHONE
-      phoneNumber: 9878987497
