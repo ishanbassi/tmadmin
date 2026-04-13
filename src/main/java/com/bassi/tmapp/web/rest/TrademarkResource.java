@@ -373,15 +373,13 @@ public class TrademarkResource {
 
     @PostMapping("/automate/scrape/{journalNo}")
     public String executeTrademarkScrapingAutomation(@PathVariable("journalNo") Integer journalNo) throws Exception {
-        ImapAccount account = emailRotatorService.getNextAccount();
-        trademarkScrapingService.fillAndSubmitOtp(journalNo, account);
+        trademarkScrapingService.fillAndSubmitOtp(journalNo);
         return "Scraping Started";
     }
 
     @PostMapping("/automate/scrape/latest")
     public String executeLatestTrademarkScrapingAutomation() throws Exception {
-        ImapAccount account = emailRotatorService.getNextAccount();
-        trademarkScrapingService.scrapeLatestTrademarks(account);
+        trademarkScrapingService.scrapeLatestTrademarks();
         return "Scraping Started";
     }
 

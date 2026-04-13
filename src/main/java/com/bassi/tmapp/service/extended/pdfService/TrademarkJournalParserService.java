@@ -37,9 +37,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.slf4j.Logger;
@@ -97,7 +99,8 @@ public class TrademarkJournalParserService {
         TrademarkClassService trademarkClassService,
         JournalTrademarkMapper journalTrademarkMapper,
         TrademarkService trademarkService,
-        TrademarkRepository trademarkRepository
+        TrademarkRepository trademarkRepository,
+        WordSanitizationService wordSanitizationService
     ) {
         this.phoneticsServiceExtended = phoneticsServiceExtended;
         this.publishedTmRepositoryExtended = publishedTmRepositoryExtended;
@@ -105,6 +108,7 @@ public class TrademarkJournalParserService {
         this.journalTrademarkMapper = journalTrademarkMapper;
         this.trademarkService = trademarkService;
         this.trademarkRepository = trademarkRepository;
+        this.wordSanitizationService = wordSanitizationService;
     }
 
     @Async
@@ -191,11 +195,6 @@ public class TrademarkJournalParserService {
             log.error("Failed to process journal directory: {} because it does not exists", journalNo);
             return;
         }
-        Long count = trademarkRepository.countByJournalNoAndSource(Integer.valueOf(journalNo), TrademarkSource.JOURNAL_PUBLICATION);
-        if (count > 100) {
-            log.warn("{} Trademarks already exists for the journal No: {}.Skipping the process", count, journalNo);
-            return;
-        }
 
         File[] files = directory.listFiles();
         if (files == null) return;
@@ -205,7 +204,7 @@ public class TrademarkJournalParserService {
                 processDirectory(file, journalNo); // Recursively process subdirectories
             } else if (file.getName().toLowerCase().endsWith(".pdf")) {
                 self.readPdfAndSaveDetails(file.getAbsolutePath()); // Process the PDF
-                //                self.updateTrademarkStatusFromJournal(file.getAbsolutePath());
+                // self.updateTrademarkStatusFromJournal(file.getAbsolutePath());
             }
         }
     }
@@ -213,6 +212,13 @@ public class TrademarkJournalParserService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void readPdfAndSaveDetails(String path) {
         List<Trademark> publishedTrademarksDto = readPdf(path);
+        List<Long> applicationNumbers = publishedTrademarksDto.stream().map(a -> a.getApplicationNo()).toList();
+
+        List<Long> savedApplicationNumbers = trademarkRepository.findByApplicationNumberIn(applicationNumbers);
+        Set<Long> savedSet = new HashSet<>(savedApplicationNumbers);
+
+        publishedTrademarksDto = publishedTrademarksDto.stream().filter(tm -> !savedSet.contains(tm.getApplicationNo())).toList();
+        log.info(" Found {} entities for saving and  {} will be saved ", applicationNumbers.size(), publishedTrademarksDto.size());
 
         try {
             trademarkService.saveAllTrademarksAndGenerateTokensInBatch(publishedTrademarksDto);
@@ -243,7 +249,7 @@ public class TrademarkJournalParserService {
                     PdfCanvasProcessor processor = new PdfCanvasProcessor(strategy);
                     processor.processPageContent(page);
 
-                    //extract text
+                    // extract text
                     List<LineInfo> lines = strategy.getLines();
                     extractPublishedTrademark(lines, currentPublishedTmDto);
 
@@ -254,7 +260,7 @@ public class TrademarkJournalParserService {
                         currentPublishedTmDto.setImgUrl(path);
                     }
 
-                    // if both image and trademark	 is present, remove the trademark
+                    // if both image and trademark is present, remove the trademark
                     if (currentPublishedTmDto.getImgUrl() != null && (currentPublishedTmDto.getName() != null)) {
                         currentPublishedTmDto.setName(null);
                     }
@@ -337,7 +343,8 @@ public class TrademarkJournalParserService {
         if (associatedTmLine.isPresent()) {
             int associatedTmIdx = lines.indexOf(associatedTmLine.get());
 
-            // second condition ensures that we don't surpass the length of the total lines of the pdf
+            // second condition ensures that we don't surpass the length of the total lines
+            // of the pdf
             // because the position of the associated tms is not consistent across pages
             if (associatedTmIdx != -1 && lines.size() - associatedTmIdx >= 2) {
                 LineInfo associatedTmsLineInfo = lines.get(associatedTmIdx + 1);
@@ -426,7 +433,8 @@ public class TrademarkJournalParserService {
             int proprietorAddressMaxIdx = textIndexMap.containsKey(PublishedTmDTO.AGENT_NAME_ADDRESS)
                 ? textIndexMap.get(PublishedTmDTO.AGENT_NAME_ADDRESS)
                 : textIndexMap.get(PublishedTmDTO.TRADEMARK_USAGE);
-            // increasing the fromIndex by 2 because it's inclusive and next index is for proprietor name
+            // increasing the fromIndex by 2 because it's inclusive and next index is for
+            // proprietor name
             Optional<String> proprietorAddressText = lines
                 .subList(applicationNumberDateIdx + 2, proprietorAddressMaxIdx)
                 .stream()

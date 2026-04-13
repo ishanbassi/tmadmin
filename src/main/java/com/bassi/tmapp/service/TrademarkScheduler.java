@@ -41,8 +41,8 @@ public class TrademarkScheduler {
         isAutomationRunning.set(true);
 
         log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
-        ImapAccount account = emailRotatorService.getNextAccount();
-        trademarkScrapingService.scrapeLatestTrademarks(account);
+
+        trademarkScrapingService.scrapeLatestTrademarks();
     }
 
     @Scheduled(cron = "0 0 23,0-8 * * *", zone = "Asia/Kolkata")
@@ -55,11 +55,7 @@ public class TrademarkScheduler {
         isAutomationRunning.set(true);
 
         log.info("Automation Scheduler triggered at: {}", LocalDateTime.now());
-        ImapAccount account = emailRotatorService.getNextAccount();
-        while (account.isPhone()) {
-            account = emailRotatorService.getNextAccount();
-        }
-        trademarkScrapingService.executeTrademarkAutomationForUpdates(account);
+        trademarkScrapingService.executeTrademarkAutomationForUpdates();
     }
 
     @Scheduled(cron = "0 0 12 * * *", zone = "Asia/Kolkata")

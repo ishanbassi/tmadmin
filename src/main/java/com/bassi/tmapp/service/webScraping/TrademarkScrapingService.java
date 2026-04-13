@@ -549,15 +549,19 @@ public class TrademarkScrapingService {
     }
 
     @Async
-    public void executeTrademarkAutomationForUpdates(ImapAccount account) throws Exception {
+    public void executeTrademarkAutomationForUpdates() throws Exception {
         Integer journalNo = trademarkRepository.findLatestJournalNoWithMissingData();
-        fillAndSubmitOtp(journalNo, account);
+        fillAndSubmitOtp(journalNo);
     }
 
     @Async
     @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 300000))
-    public void fillAndSubmitOtp(Integer journalNo, ImapAccount account) throws Exception {
+    public void fillAndSubmitOtp(Integer journalNo) throws Exception {
         try {
+            ImapAccount account = emailRotatorService.getNextAccount();
+            while (account.isPhone()) {
+                account = emailRotatorService.getNextAccount();
+            }
             WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
@@ -972,8 +976,9 @@ public class TrademarkScrapingService {
 
     @Async
     @Retryable(retryFor = { OtpNotReceivedException.class, InvalidOtpException.class }, maxAttempts = 2, backoff = @Backoff(delay = 300000))
-    public void scrapeLatestTrademarks(ImapAccount account) throws Exception {
+    public void scrapeLatestTrademarks() throws Exception {
         try {
+            ImapAccount account = emailRotatorService.getNextAccount();
             WebDriver driver = createDriverWithProxy("27.34.242.98", 80);
 
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));

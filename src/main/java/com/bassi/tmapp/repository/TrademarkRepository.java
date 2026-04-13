@@ -215,4 +215,7 @@ public interface TrademarkRepository
 
     @Query("SELECT count(*) FROM Trademark t")
     Long findTotalTrademarks();
+
+    @Query("SELECT tm.applicationNo from Trademark tm where applicationNo IN ?1")
+    List<Long> findByApplicationNumberIn(List<Long> applicationNumbers);
 }
