@@ -373,6 +373,12 @@ public class TrademarkScrapingService {
             return;
         }
         HttpHeaders headers = new HttpHeaders();
+        headers.set("User-Agent", "Mozilla/5.0");
+        headers.set("Accept", "application/pdf,application/octet-stream,*/*");
+        headers.set("Accept-Language", "en-US,en;q=0.9");
+        headers.set("Connection", "keep-alive");
+        headers.set("Origin", "https://search.ipindia.gov.in");
+        headers.set("Referer", "https://search.ipindia.gov.in/IPOJournal/Journal/Journal");
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("FileName", pdfFileName);
