@@ -192,7 +192,7 @@ public class TrademarkScrapingService {
 
                     // Extract trademark and status
                     WebElement trademarkElement = wait.until(
-                        ExpectedConditions.presenceOfElementLocated(By.xpath("//td[text()='TM Applied For']"))
+                        ExpectedConditions.presenceOfElementLocated(By.xpath("//td[normalize-space()='TM Applied For']"))
                     );
                     String trademark = trademarkElement.findElement(By.xpath("following-sibling::td")).getText();
 
@@ -1043,7 +1043,7 @@ public class TrademarkScrapingService {
             )
         );
 
-        boolean exists = driver.findElements(By.xpath("//div[text()='Record Not Found']")).isEmpty();
+        boolean exists = driver.findElements(By.xpath("//div[normalize-space()='Record Not Found']")).isEmpty();
         return exists;
     }
 
