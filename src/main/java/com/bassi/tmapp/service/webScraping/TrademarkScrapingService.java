@@ -90,7 +90,7 @@ public class TrademarkScrapingService {
 
     private static final String TrademarkJournalBaseURL = "https://search.ipindia.gov.in/IPOJournal/Journal/";
     private static final String TrademarkStatusURL = "https://tmrsearch.ipindia.gov.in";
-    private static final int MAX_HOURLY_FILINGS = 500;
+    private static final int MAX_HOURLY_FILINGS = 1000;
 
     private static final Logger log = LoggerFactory.getLogger(TrademarkScrapingService.class);
     private final PublishedTmPhoneticsServiceExtended publishedTmPhoneticsServiceExtended;
@@ -858,7 +858,7 @@ public class TrademarkScrapingService {
         log.info(" Latest application number at {} is {}", istTime, latestApplicationNo);
 
         int scraped = 0;
-        for (Long appNo = latestApplicationNo; scraped <= 100; appNo--, scraped++) {
+        for (Long appNo = latestApplicationNo; scraped <= 1000; appNo--, scraped++) {
             Optional<Trademark> tm = trademarkRepository.findFirstByApplicationNoOrderById(appNo);
             if (tm.isPresent()) {
                 log.info("Skipping scraping the application number: {} because it already exists in the database", appNo);
