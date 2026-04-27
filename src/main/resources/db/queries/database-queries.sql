@@ -109,3 +109,8 @@ DROP INDEX idx_token_type;         -- 0 uses, completely dead
 DROP INDEX idx_phonetic_code;      -- 0 uses
 DROP INDEX idx_tp_phonetic_code;   -- 0 uses, exact duplicate
 DROP INDEX idx_tp_phonetic_token;  -- 0 uses
+
+
+
+ALTER TABLE trademark ALTER COLUMN proprietor_name TYPE VARCHAR(1000);
+ ALTER TABLE trademark ALTER COLUMN agent_name TYPE VARCHAR(1000);
